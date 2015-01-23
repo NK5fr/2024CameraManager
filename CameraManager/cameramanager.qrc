@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="icons">
+          <file alias="mosaic">img/mosaic.png</file>
+          <file alias="liveview">img/liveview.png</file>
+          <file alias="quit">img/quit.png</file>
+          <file alias="one">img/one.png</file>
+          <file alias="one_disabled">img/one_disabled.png</file>
+          <file alias="add">img/add.png</file>
+          <file alias="folder_delete">img/folder_delete.png</file>
+          <file alias="folder_add">img/folder_add.png</file>
+          <file alias="edit">img/edit.png</file>
+          <file alias="folder_home">img/folder_home.png</file>
+          <file alias="folder">img/folder.png</file>
+          <file alias="camera">img/camera.png</file>
+          <file alias="folder_camera">img/folder_camera.png</file>
+          <file alias="crosshair">img/crosshair.png</file>
+          <file alias="liveview_on">img/liveview_on.png</file>
+          <file alias="quality_high">img/quality_high.png</file>
+          <file alias="quality_low">img/quality_low.png</file>
+          <file alias="reset">img/reset.png</file>
+    </qresource>
+</RCC>
