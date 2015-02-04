@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     for (unsigned int i=0 ; i < cameraManagers.size(); ++i){
         AbstractCameraManager* manager = cameraManagers.at(i);
         manager->setMainWindow(this);
-        ui->SelectCameras->addItem(manager->getName().c_str());
+        ui->selectCameraManager->addItem(manager->getName().c_str());
     }
 
     /* Disable left menu header */
@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     /* SIGNALS/SLOTS */
 
-    connect(ui->CameraTree, SIGNAL(clicked(const QModelIndex)),
+    connect(ui->cameraTree, SIGNAL(clicked(const QModelIndex)),
             this, SLOT(on_CameraTree_itemClicked(const QModelIndex)));
     connect(bar->getFile(), SIGNAL(triggered(QAction*)),
             this, SLOT(menuProjectAction_triggered(QAction*)));
@@ -119,7 +119,7 @@ void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
     }
     selectedCameraManager = index;
     AbstractCameraManager* cm = cameraManagers.at(selectedCameraManager);
-    ui->CameraTree->setModel(cm->getModel());
+    ui->cameraTree->setModel(cm->getModel());
     ui->propertiesContainer->addWidget(cm->getPropertiesWidget());
     cm->getPropertiesWidget()->show();
     /*on_Detect_clicked();*/
@@ -179,24 +179,24 @@ void MainWindow::on_actionHighQuality_toggled(bool arg1){
 
 /* Create group in CameraTree */
 void MainWindow::on_addGroup(){
-    ui->CameraTree->edit( cameraManagers.at(selectedCameraManager)->addGroup() );
+    ui->cameraTree->edit( cameraManagers.at(selectedCameraManager)->addGroup() );
 }
 
 /* Rename group or camera in Camera Tree */
 void MainWindow::on_editItem(){
-    ui->CameraTree->edit( ui->CameraTree->currentIndex() );
+    ui->cameraTree->edit( ui->cameraTree->currentIndex() );
 }
 
 /* Put back initial camera or group name in Camera Tree */
 void MainWindow::on_resetItem(){
-    cameraManagers.at(selectedCameraManager)->resetItem( ui->CameraTree->currentIndex() );
+    cameraManagers.at(selectedCameraManager)->resetItem( ui->cameraTree->currentIndex() );
 }
 
 /* Remove group in CameraTree */
 void MainWindow::on_deleteGroup(){
-    if(!ui->CameraTree->currentIndex().isValid() ) return;
-    cameraManagers.at(selectedCameraManager)->removeGroup( ui->CameraTree->currentIndex() );
-    on_CameraTree_itemClicked(ui->CameraTree->currentIndex() );
+    if(!ui->cameraTree->currentIndex().isValid() ) return;
+    cameraManagers.at(selectedCameraManager)->removeGroup( ui->cameraTree->currentIndex() );
+    on_CameraTree_itemClicked(ui->cameraTree->currentIndex() );
 }
 
 /* Click on an item in CameraTree */
@@ -207,7 +207,7 @@ void MainWindow::on_CameraTree_itemClicked(const QModelIndex index){
     cameraManagers.at(selectedCameraManager)->cameraTree_itemClicked(index, str, icon, editable, deleteable);
 
     ui->label->setText( str );
-    if( icon>=0 && icon < 3 ) ui->propertiesIcon->setPixmap(propertiesIcons[icon]);
+    //if( icon>=0 && icon < 3 ) ui->propertiesIcon->setPixmap(propertiesIcons[icon]);
     //ui->label->adjustSize();
 }
 
@@ -389,8 +389,8 @@ void MainWindow::executeError(QProcess::ProcessError)
 void MainWindow::startCameraDetection(){
     while (detectCameras){
         if (ui != nullptr) {
-            ui->CameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
-            cout << "Searching for new cameras..." << endl;
+            ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
+            //cout << "Searching for new cameras..." << endl;
             Sleeper::sleep(1);
         } else {
             detectCameras = false;
@@ -414,7 +414,7 @@ void MainWindow::startUpdateProperties(){
 
 /*Action for Double clicking on one of the Project Tree's Item */
 void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index){
-    QTreeWidgetItem *item = ui->ProjectTree->selectedItems().at(0);
+    QTreeWidgetItem *item = ui->projectTree->selectedItems().at(0);
     if(item->child(0)!=NULL)
         return;
     QString fileName = item->text(0);
@@ -491,24 +491,24 @@ void MainWindow::menuProjectAction_triggered(QAction *action){
 
         if(folderName.toLower().contains("trackpoint")){
             /* Check if the project has already been loaded */
-            for(int i=0;i<ui->ProjectTree->invisibleRootItem()->childCount();i++){
-                if(ui->ProjectTree->invisibleRootItem()->child(i)->text(0) == folderName)
+            for(int i=0;i<ui->projectTree->invisibleRootItem()->childCount();i++){
+                if(ui->projectTree->invisibleRootItem()->child(i)->text(0) == folderName)
                     return;
             }
             /* Removing the '/' followed by the folder name for having only the path and not the name */
             QString projectPath = folderPath.mid(0, folderPath.lastIndexOf("/")); // grethe 2015.01.22, snu slashen
             cout << "Loading\n" << endl;
 
-            createTreeFolder(ui->ProjectTree->invisibleRootItem(), projectPath, folderName);
+            createTreeFolder(ui->projectTree->invisibleRootItem(), projectPath, folderName);
 
 
             /* Expand trackpoint folder, his child named application, and his grandchild named input */
-            ui->ProjectTree->invisibleRootItem()->child(0)->setExpanded(true);  // feiler her på setExpanded - GS 2015-01-19
-			      if(ui->ProjectTree->invisibleRootItem()->child(0)->child(0) != NULL && ui->ProjectTree->invisibleRootItem()->child(0)->child(0)->text(0)=="application"){	
-                ui->ProjectTree->invisibleRootItem()->child(0)->child(0)->setExpanded(true);
-                if(ui->ProjectTree->invisibleRootItem()->child(0)->child(0)->child(0) != NULL &&
-                        ui->ProjectTree->invisibleRootItem()->child(0)->child(0)->child(0)->text(0)=="input"){
-                    ui->ProjectTree->invisibleRootItem()->child(0)->child(0)->child(0)->setExpanded(true);
+            ui->projectTree->invisibleRootItem()->child(0)->setExpanded(true);  // feiler her på setExpanded - GS 2015-01-19
+			      if(ui->projectTree->invisibleRootItem()->child(0)->child(0) != NULL && ui->projectTree->invisibleRootItem()->child(0)->child(0)->text(0)=="application"){	
+                ui->projectTree->invisibleRootItem()->child(0)->child(0)->setExpanded(true);
+                if(ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0) != NULL &&
+                        ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->text(0)=="input"){
+                    ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->setExpanded(true);
                 }
             }
 
@@ -517,9 +517,9 @@ void MainWindow::menuProjectAction_triggered(QAction *action){
     } 
     //else If action = closing a project
     else if (action->text() == "Close project"){
-        QTreeWidgetItem *item = ui->ProjectTree->selectedItems().at(0);
-        if(item != NULL && ui->ProjectTree->indexOfTopLevelItem(item) != -1 && item->text(0) != QString("Config File")){
-            ui->ProjectTree->invisibleRootItem()->removeChild(item);
+        QTreeWidgetItem *item = ui->projectTree->selectedItems().at(0);
+        if(item != NULL && ui->projectTree->indexOfTopLevelItem(item) != -1 && item->text(0) != QString("Config File")){
+            ui->projectTree->invisibleRootItem()->removeChild(item);
             cout << "Removed" << endl;
         }
         if(item == NULL)

@@ -45,17 +45,17 @@ public:
     QDockWidget *CamerasWidget_2;
     QWidget *dockWidgetContents_4;
     QTabWidget *tabWidget;
-    QWidget *projects;
-    QLabel *label_2;
-    QTreeWidget *ProjectTree;
-    QWidget *camera;
-    QComboBox *SelectCameras;
+    QWidget *projectsWidget;
+    QWidget *cameraWidget;
+    QWidget* trackPointWidget;
+    QTreeWidget *projectTree;
+    QComboBox* selectCameraManager;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *propertiesContainer;
-    QLabel *propertiesIcon;
     QLabel *label;
-    QTreeView *CameraTree;
+    QTreeView *cameraTree;
 
+    // Lars Aksel - 04.02.2015 - Refactoring to use Layouts instead of hard-coded pixel coordinates
     void setupUi(QMainWindow *MainWindow) {
         if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1185, 664);
@@ -124,10 +124,12 @@ public:
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
         MainWindow->setStatusBar(statusbar);
+
+        QHBoxLayout* dockLayoutTop = new QHBoxLayout();
         CamerasWidget_2 = new QDockWidget(MainWindow);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
-        CamerasWidget_2->setMinimumSize(QSize(374, 512));
-        CamerasWidget_2->setMaximumSize(QSize(374, 602));
+        CamerasWidget_2->setMinimumSize(QSize(400, 0));
+        //CamerasWidget_2->setMaximumSize(QSize(374, 602));
         CamerasWidget_2->setContextMenuPolicy(Qt::DefaultContextMenu);
         CamerasWidget_2->setAcceptDrops(false);
         CamerasWidget_2->setLayoutDirection(Qt::LeftToRight);
@@ -135,54 +137,82 @@ public:
         CamerasWidget_2->setInputMethodHints(Qt::ImhNone);
         CamerasWidget_2->setFloating(false);
         CamerasWidget_2->setAllowedAreas(Qt::AllDockWidgetAreas);
+        CamerasWidget_2->setContentsMargins(QMargins(0, 0, 0, 0));
         dockWidgetContents_4 = new QWidget();
         dockWidgetContents_4->setObjectName(QStringLiteral("dockWidgetContents_4"));
-        tabWidget = new QTabWidget(dockWidgetContents_4);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 20, 371, 531));
-        tabWidget->setMinimumSize(QSize(371, 501));
-        projects = new QWidget();
-        projects->setObjectName(QStringLiteral("projects"));
-        label_2 = new QLabel(projects);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(30, 20, 161, 21));
-        ProjectTree = new QTreeWidget(projects);
-        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
-        __qtreewidgetitem->setText(0, QStringLiteral("1"));
-        ProjectTree->setHeaderItem(__qtreewidgetitem);
-        ProjectTree->setObjectName(QStringLiteral("ProjectTree"));
-        ProjectTree->setGeometry(QRect(5, 51, 361, 441));
-        ProjectTree->setContextMenuPolicy(Qt::CustomContextMenu);
-        ProjectTree->setHeaderHidden(true);
-        tabWidget->addTab(projects, QString());
-        camera = new QWidget();
-        camera->setObjectName(QStringLiteral("camera"));
-        SelectCameras = new QComboBox(camera);
-        SelectCameras->setObjectName(QStringLiteral("SelectCameras"));
-        SelectCameras->setGeometry(QRect(10, 10, 311, 27));
-        SelectCameras->setMinimumSize(QSize(311, 27));
-        verticalLayoutWidget = new QWidget(camera);
-        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(10, 230, 351, 261));
-        propertiesContainer = new QVBoxLayout(verticalLayoutWidget);
-        propertiesContainer->setSpacing(2);
-        propertiesContainer->setObjectName(QStringLiteral("propertiesContainer"));
-        propertiesContainer->setContentsMargins(0, 0, 0, 0);
-        propertiesIcon = new QLabel(camera);
-        propertiesIcon->setObjectName(QStringLiteral("propertiesIcon"));
-        propertiesIcon->setGeometry(QRect(20, 210, 31, 21));
-        label = new QLabel(camera);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(90, 210, 241, 17));
-        CameraTree = new QTreeView(camera);
-        CameraTree->setObjectName(QStringLiteral("CameraTree"));
-        CameraTree->setGeometry(QRect(10, 40, 351, 141));
-        CameraTree->setMinimumSize(QSize(351, 141));
-        CameraTree->setContextMenuPolicy(Qt::CustomContextMenu);
-        CameraTree->header()->setVisible(false);
-        tabWidget->addTab(camera, QString());
+        dockWidgetContents_4->setContentsMargins(QMargins(0, 0, 0, 0));
+        dockLayoutTop->addWidget(dockWidgetContents_4);
         CamerasWidget_2->setWidget(dockWidgetContents_4);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), CamerasWidget_2);
+        CamerasWidget_2->setLayout(dockLayoutTop);
+        
+        QVBoxLayout* dockLayout = new QVBoxLayout();
+        tabWidget = new QTabWidget(dockWidgetContents_4);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        dockLayout->addWidget(tabWidget);
+        dockWidgetContents_4->setLayout(dockLayout);
+
+        // Layout for all elements in Projects tab
+        QVBoxLayout* projectTabLayout = new QVBoxLayout();
+        projectsWidget = new QWidget();
+        projectsWidget->setObjectName(QStringLiteral("projects"));
+        
+        // Project Tree in Projects tab
+        projectTree = new QTreeWidget(projectsWidget);
+        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
+        __qtreewidgetitem->setText(0, QStringLiteral("1"));
+        projectTree->setHeaderItem(__qtreewidgetitem);
+        projectTree->setObjectName(QStringLiteral("ProjectTree"));
+        projectTree->setContextMenuPolicy(Qt::CustomContextMenu);
+        projectTree->setHeaderHidden(true);
+        projectTabLayout->addWidget(projectTree);
+
+        projectsWidget->setLayout(projectTabLayout);
+
+        // Layout for all elements inside Cameras tab
+        QVBoxLayout* cameraTabLayout = new QVBoxLayout();
+        cameraWidget = new QWidget();
+        cameraWidget->setObjectName(QStringLiteral("camera"));
+
+        // Select Camera Manager in Cameras tab
+        selectCameraManager = new QComboBox(cameraWidget);
+        selectCameraManager->setObjectName(QStringLiteral("SelectCameras"));
+        cameraTabLayout->addWidget(selectCameraManager);
+
+        // Camera Tree
+        cameraTree = new QTreeView(cameraWidget);
+        cameraTree->setObjectName(QStringLiteral("CameraTree"));
+        cameraTree->setContextMenuPolicy(Qt::CustomContextMenu);
+        cameraTree->header()->setVisible(false);
+        cameraTabLayout->addWidget(cameraTree);
+
+        // Label above Properties in Cameras tab
+        label = new QLabel(cameraWidget);
+        label->setObjectName(QStringLiteral("label"));
+        cameraTabLayout->addWidget(label);
+
+        // Properties in Cameras tab
+        verticalLayoutWidget = new QWidget(cameraWidget);
+        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
+        propertiesContainer = new QVBoxLayout(verticalLayoutWidget);
+        propertiesContainer->setSpacing(5);
+        propertiesContainer->setObjectName(QStringLiteral("propertiesContainer"));
+        propertiesContainer->setContentsMargins(0, 0, 0, 0);
+        cameraTabLayout->addWidget(verticalLayoutWidget);
+
+        cameraWidget->setLayout(cameraTabLayout);
+
+        // Layout for all elements in TrackPoint tab
+        QVBoxLayout* trackpointTabLayout = new QVBoxLayout();
+
+        // Tab for adjusting TrackPoint properties...
+        trackPointWidget = new QWidget();
+        trackPointWidget->setObjectName(QStringLiteral("trackpoint"));
+        
+        // Adding widgets to tabWidget
+        tabWidget->addTab(projectsWidget, QString("Projects"));
+        tabWidget->addTab(cameraWidget, QString("Cameras"));
+        tabWidget->addTab(trackPointWidget, QString("TrackPoint"));
 
         toolBar->addAction(actionLiveView);
         toolBar->addAction(actionUpdateImages);
@@ -196,7 +226,6 @@ public:
         retranslateUi(MainWindow);
 
         tabWidget->setCurrentIndex(0);
-
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -227,11 +256,7 @@ public:
 #ifndef QT_NO_TOOLTIP
         CamerasWidget_2->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
-        label_2->setText(QApplication::translate("MainWindow", "Projects and files List", 0));
-        tabWidget->setTabText(tabWidget->indexOf(projects), QApplication::translate("MainWindow", "Projects", 0));
-        propertiesIcon->setText(QString());
         label->setText(QApplication::translate("MainWindow", "No Selection", 0));
-        tabWidget->setTabText(tabWidget->indexOf(camera), QApplication::translate("MainWindow", "Cameras", 0));
     } // retranslateUi
 
 };

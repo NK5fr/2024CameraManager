@@ -12,6 +12,7 @@
 #include <QDebug>
 #include "cameraproperty.h"
 #include "qvideowidget.h"
+#include "imagedetect.h"
 
 
 /**
@@ -68,15 +69,24 @@ class AbstractCamera
          */
         void startCapture(QVideoWidget* videoWidget);
 
+        ImageDetect* getImageDetect() { return this->imageDetect; }
+        void setDetectPoints(bool detectPoints) { this->detectPoints = detectPoints; }
+        bool isDetectPoints() { return this->detectPoints; }
+
 
     protected:
         AbstractCamera();
+        virtual ~AbstractCamera();
 
         /**
          * @brief sendFrame send a new QImage for the view
          * @param img QImage grabbed from the camera
          */
         void sendFrame(QImage img);
+
+        // Lars Aksel - 30.01.2015
+        ImageDetect* imageDetect;
+        bool detectPoints;
 
     private:
         QVideoWidget* container;

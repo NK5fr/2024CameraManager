@@ -32,7 +32,6 @@ void FlyCamera::setProperty(CameraManager::CameraProperty* p)
         triggerMode.parameter = 0;
         triggerMode.source = 0;
         cam->SetTriggerMode(&triggerMode);
-
     } else {
         Error error;
         Property prop;
@@ -58,8 +57,7 @@ void FlyCamera::updateProperty(CameraManager::CameraProperty* p) {
     if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
         cam->GetTriggerMode(&triggerMode);
-        p->setAuto(triggerMode.onOff ? false:true);
-
+        p->setAuto(triggerMode.onOff ? false : true);
     } else {
         Error error;
         Property prop;
@@ -74,6 +72,7 @@ void FlyCamera::updateProperty(CameraManager::CameraProperty* p) {
         }
     }
 }
+
 FlyCapture2::PropertyType FlyCamera::getPropertyType(CameraManager::CameraProperty* p)
 {
     switch(p->getType()){
@@ -102,23 +101,46 @@ FlyCapture2::PropertyType FlyCamera::getPropertyType(CameraManager::CameraProper
         return TRIGGER_MODE;
         break;
     }
-
     return BRIGHTNESS;
 }
 
-
-QImage FlyCamera::captureImage()
-{
+// Lars Aksel - 30.01.2015 - Added support to ImageDetect
+QImage FlyCamera::captureImage() {
     Image img;
-    Error e=getCamera()->RetrieveBuffer(&img);
+    Error err = getCamera()->RetrieveBuffer(&img);
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+        return QImage();
+    }
     unsigned int x = img.GetCols();
     unsigned int y = img.GetRows();
-    unsigned char* picData = img.GetData();
+    unsigned char* imageBuffer = img.GetData();
     QImage image(x, y, QImage::Format_RGB32);
     for(unsigned int i = 0; i <y; i++){
         for(unsigned int j = 0; j <x; j++) {
-            unsigned char data = picData[i*x+j];
+            unsigned char data = imageBuffer[i*x+j];
             image.setPixel(j, i, qRgb(data, data, data));
+        }
+    }
+    if (detectPoints) {
+        if (imageDetect == nullptr) {
+            imageDetect = new ImageDetect(x, y, 50, 128);
+        }
+        imageDetect->setImage(imageBuffer);
+        imageDetect->imageDetectPoints();
+        ImPoint* points = imageDetect->getPoints();
+        
+        // Drawing the points on the image...
+        int crossWingSize = (int) (image.height() / 100);
+        for (int i = 0; i < imageDetect->getNumPoints(); i++) {
+            int xPos = points[i].x;
+            int yPos = points[i].y;
+            for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
+                image.setPixel(x, yPos, qRgb(255, 0, 0));
+            }
+            for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
+                image.setPixel(xPos, y, qRgb(255, 0, 0));
+            }
         }
     }
     return image;

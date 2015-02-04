@@ -22,8 +22,7 @@ AbstractCameraManager::AbstractCameraManager(bool empty)
     propertiesList.setRootIsDecorated(false);
     propertiesList.setColumnCount(4);
     propertiesList.setHeaderLabels(QStringList() << "Property" << "Auto" << "Value" << "Slider");
-
-
+    
     if(empty) return;
     QObject::connect(&cameraTree, SIGNAL(itemChanged(QStandardItem*)),
             this, SLOT(on_CameraTree_itemChanged(QStandardItem*)));
@@ -44,8 +43,6 @@ QStandardItemModel* AbstractCameraManager::getModel(){
 QTreeWidget *AbstractCameraManager::getPropertiesWidget(){
     return &propertiesList;
 }
-
-
 
 void AbstractCameraManager::updateImages(){
     for(int i=activeCameras.size()-1; i>=0; i--){
@@ -222,10 +219,10 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
     }
     /*cout << "newCameras" << newCameras.size()<< endl;*/
     //adding new cameras
-    for(unsigned int i=0; i<newCameras.size(); i++){
+    for(unsigned int i=0; i<newCameras.size(); i++) {
         AbstractCamera* cam = newCameras.at(i);
         QStandardItem *item = new QStandardItem(cam->getString().c_str());
-        item->setData(QVariant::fromValue( reinterpret_cast<quintptr>(cam) ), CameraRole);
+        item->setData(QVariant::fromValue(reinterpret_cast<quintptr>(cam)), CameraRole);
         //qDebug() << "setData " << camera << " data " << item->data(CameraRole).value<AbstractCamera *>();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);

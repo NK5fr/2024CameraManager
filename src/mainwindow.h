@@ -14,18 +14,18 @@
 #include <QTextEdit>  // gs
 #include <QTimer> // gs
 #include <QProcess> // gs
- 
+
 #include "menubar.h"
 #include "abstractcameramanager.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 
-enum PropertiesWidgetPosition{
-    PropertyName = 0, PropertyAuto = 1, PropertyValue = 2, PropertySlider = 3
-};
+    enum PropertiesWidgetPosition {
+        PropertyName = 0, PropertyAuto = 1, PropertyValue = 2, PropertySlider = 3
+    };
 
-extern bool crosshair, crosshairReal, forceHighQuality;
+    extern bool crosshair, crosshairReal, forceHighQuality;
 }
 
 class AbstractCameraManager;
@@ -51,10 +51,10 @@ public:
     void startCameraDetection();
     void startUpdateProperties();
 
-	// gs test
-	void execute(QString command, QProcess &p);
+    // gs test
+    void execute(QString command, QProcess &p);
 
-public slots:
+    public slots:
     /* All of them could probably be private */
     /** TOOL BAR **/
     void on_actionLiveView_toggled(bool arg1);
@@ -82,12 +82,12 @@ public slots:
     /*void on_Detect_clicked();*/
     /*void on_updatePropertiesButton_clicked();*/
 
-	/* grethe - output fra trackpoint */
-  void executeFinished(QProcess &p);
-	void executeError(QProcess::ProcessError);
-	void appendOutput();
-	void readStdOutput(QProcess &p);
-	void printOutput();
+    /* grethe - output fra trackpoint */
+    void executeFinished(QProcess &p);
+    void executeError(QProcess::ProcessError);
+    void appendOutput();
+    void readStdOutput(QProcess &p);
+    void printOutput();
 
 signals:
     void activateCrosshair(bool);
@@ -103,14 +103,14 @@ protected:
 private:
     // gs TEST for å real time output fra trackpoint
     QTextEdit* text_edit; //gs
-		QStringList options;  // gs
+    QStringList options;  // gs
 
     QProcess process;
     QTimer process_timer;
     QString process_file;
     qint64 process_file_pos;
 
-	/** CREATING FOLDER AND FILE ITEMS **/
+    /** CREATING FOLDER AND FILE ITEMS **/
     void createTreeItem(QTreeWidgetItem *parent, QString name);
     void createTreeFolder(QTreeWidgetItem *parent, QString path, QString name);
 
@@ -119,7 +119,7 @@ private:
     std::vector<AbstractCameraManager*> cameraManagers;
     int selectedCameraManager;
     QPixmap propertiesIcons[3];
-	
+
 
     QString projectsPath;
     QString calibrationPath;
@@ -129,9 +129,9 @@ private:
     /* Internal class to detect cameras */
     class ThreadDetectCamera : public QThread {
     public:
-        ThreadDetectCamera(MainWindow *w) : QThread() {window=w;}
+        ThreadDetectCamera(MainWindow *w) : QThread() { window = w; }
     protected:
-        void run(){
+        void run() {
             window->startCameraDetection();
         }
     private:
@@ -143,9 +143,9 @@ private:
     /* Internal class to update properties from cameras */
     class ThreadUpdateProperties : public QThread {
     public:
-        ThreadUpdateProperties(MainWindow *w) : QThread() {window=w;}
+        ThreadUpdateProperties(MainWindow *w) : QThread() { window = w; }
     protected:
-        void run(){
+        void run() {
             window->startUpdateProperties();
         }
     private:

@@ -146,6 +146,7 @@
     <ClCompile Include="..\src\emptycameramanager.cpp" />
     <ClCompile Include="..\src\flycamera.cpp" />
     <ClCompile Include="..\src\flycameramanager.cpp" />
+    <ClCompile Include="..\src\imagedetect.cpp" />
     <ClCompile Include="..\src\imageviewerwidget.cpp" />
     <ClCompile Include="..\src\iscamera.cpp" />
     <ClCompile Include="..\src\iscameramanager.cpp" />
@@ -305,6 +306,7 @@
     <ClInclude Include="..\src\emptycameramanager.h" />
     <ClInclude Include="..\src\flycamera.h" />
     <ClInclude Include="..\src\flycameramanager.h" />
+    <ClInclude Include="..\src\imagedetect.h" />
     <ClInclude Include="..\src\imageviewerwidget.h" />
     <ClInclude Include="..\src\iscamera.h" />
     <ClInclude Include="..\src\iscameramanager.h" />
