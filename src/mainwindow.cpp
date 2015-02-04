@@ -39,9 +39,7 @@ using namespace std;
 bool Ui::crosshair = false, Ui::crosshairReal = false, Ui::forceHighQuality = false;
 
 /* Constructor of MainWindow*/
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow),
-      selectedCameraManager(-1), tdc(this), detectCameras(true), tup(this){
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), selectedCameraManager(-1), tdc(this), detectCameras(true), tup(this) {
 
 	// g jan 2015: icons og filnavn er definert i cameramanager.qrc
     propertiesIcons[0] = QIcon(":/icons/camera").pixmap(16,16);
@@ -95,7 +93,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 /* Destructor of MainWindow */
 MainWindow::~MainWindow(){
-    delete ui;
+    //delete ui;
+    exit(0);
 }
 
 /* Adding or removing the MdiSubWindow furnished in parameter according to the add parameter */
@@ -111,7 +110,7 @@ void MainWindow::modifySubWindow(QMdiSubWindow* in, bool add){
 }
 
 /* Slot called when index of the cameras project changed */
-void MainWindow::on_SelectCameras_currentIndexChanged(int index){
+void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
     if(selectedCameraManager >= 0){
         AbstractCameraManager* camManager = cameraManagers.at(selectedCameraManager);
         camManager->activateLiveView(false);
@@ -124,8 +123,7 @@ void MainWindow::on_SelectCameras_currentIndexChanged(int index){
     ui->propertiesContainer->addWidget(cm->getPropertiesWidget());
     cm->getPropertiesWidget()->show();
     /*on_Detect_clicked();*/
-    if( ui->actionLiveView->isChecked() )
-        cm->activateLiveView( true );
+    if( ui->actionLiveView->isChecked() ) cm->activateLiveView( true );
 }
 
 /** TOOLBAR FUNCTIONS **/
@@ -209,8 +207,8 @@ void MainWindow::on_CameraTree_itemClicked(const QModelIndex index){
     cameraManagers.at(selectedCameraManager)->cameraTree_itemClicked(index, str, icon, editable, deleteable);
 
     ui->label->setText( str );
-    if( icon>=0 && icon < 3 )
-        ui->propertiesIcon->setPixmap(propertiesIcons[icon]);
+    if( icon>=0 && icon < 3 ) ui->propertiesIcon->setPixmap(propertiesIcons[icon]);
+    //ui->label->adjustSize();
 }
 
 /* Right click in CameraTree */
@@ -389,17 +387,21 @@ void MainWindow::executeError(QProcess::ProcessError)
 
 /* When Thread DetectCamera is launched, it call this method to find new camera */
 void MainWindow::startCameraDetection(){
-    while(detectCameras){
-        ui->CameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
-        cout << "Searching for new cameras..." << endl;
-        Sleeper::sleep(1);
+    while (detectCameras){
+        if (ui != nullptr) {
+            ui->CameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
+            cout << "Searching for new cameras..." << endl;
+            Sleeper::sleep(1);
+        } else {
+            detectCameras = false;
+        }
     }
 }
 
 /* When Thread UpdateProperties is launched, it call this method to update the selected camera properties */
 void MainWindow::startUpdateProperties(){
     while(bar->getRunLiveView()->isChecked()){
-        cout << "Updating properties..." << endl;
+        //cout << "Updating properties..." << endl;
         cameraManagers.at(selectedCameraManager)->updateProperties();
         Sleeper::sleep(1);
     }
@@ -420,16 +422,16 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index){
     QString folderName = item->text(0);
     while(item->parent()!=NULL){
         item = item->parent();
-        folderName = item->text(0) + "\\" + folderName;
+        folderName = item->text(0) + "/" + folderName;
     }
 
 
-    QString selectedProjectPath = QString(projectsPath + "\\" + folderName);
+    QString selectedProjectPath = QString(projectsPath + "/" + folderName);
 
     //TODO change this condition to something that allows more than one name.
     if(fileName.contains("options")){
         /* If the item is Config File */
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "\\" +fileName);
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" +fileName);
 
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->show();
@@ -541,7 +543,7 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, QString path, QString
     parent->addChild(rootItem);
 
     for(int i=0;i<list.size();i++){
-        if(list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")){
+        if(list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {
             if(list.at(i).isDir())
                 createTreeFolder(rootItem, fullPath, list.at(i).fileName());
             else
@@ -556,26 +558,26 @@ void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name){
     childItem->setText(0, name);
     QString iconPath;
     if(name.contains("socket"))
-        iconPath="..\\ProjetNorvege\\img\\coordinates.png";
+        iconPath="../CameraManager/img/coordinates.png";
     else if(name.contains("option") && name.contains(".txt"))
-        iconPath="..\\ProjetNorvege\\img\\config.png";
+        iconPath="../CameraManager/img/config.png";
     else if(name.contains("calibration_summary", Qt::CaseInsensitive)){
-        iconPath="..\\ProjetNorvege\\img\\camera.png";
+        iconPath="../CameraManager/img/camera.png";
         QTreeWidgetItem *item = parent;
         calibrationPath = name;
         while(item!=NULL){
-            calibrationPath = item->text(0) + "\\" + calibrationPath;
+            calibrationPath = item->text(0) + "/" + calibrationPath;
             item = item->parent();
         }
-        calibrationPath = projectsPath + "\\" + calibrationPath;
+        calibrationPath = projectsPath + "/" + calibrationPath;
     } else if(name.contains(".exe"))
-        iconPath="..\\ProjetNorvege\\img\\exe.png";
+        iconPath="../CameraManager/img/exe.png";
     else if(parent->text(0)=="output" && name.contains(".dat"))
-        iconPath="..\\ProjetNorvege\\img\\2D.png";
+        iconPath="../CameraManager/img/2D.png";
     else if(name.contains("grupper"))
-        iconPath="..\\ProjetNorvege\\img\\img.png";
+        iconPath="../CameraManager/img/img.png";
     else
-        iconPath="..\\ProjetNorvege\\img\\file.png";
+        iconPath="../CameraManager/img/file.png";
     childItem->setIcon(0, QIcon(iconPath));
     parent->addChild(childItem);
 }

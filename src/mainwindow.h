@@ -140,7 +140,7 @@ private:
     ThreadDetectCamera tdc;
     bool detectCameras;
 
-    /* Internal class to detect cameras */
+    /* Internal class to update properties from cameras */
     class ThreadUpdateProperties : public QThread {
     public:
         ThreadUpdateProperties(MainWindow *w) : QThread() {window=w;}

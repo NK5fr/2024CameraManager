@@ -60,6 +60,11 @@ class AbstractCameraManager : public QObject
         void updateImages();
         void updateProperties();
 
+        // Lars Aksel - 27.01.2015
+        void loadPropertiesDefaults();
+        bool loadPropertiesFromFile(QString& filepath);
+        bool savePropertiesToFile(QString& filepath);
+
         /**
          * @brief add a empty group of cameras in the model
          * @return the index in the model corresponding to this group, in order to select it
@@ -139,7 +144,8 @@ class AbstractCameraManager : public QObject
         void on_subwindow_closing(QObject* window);
         void on_propertyCheckbox_changed(int state);
         void on_propertySlider_changed(int val);
-    private:
+        void on_propertyValue_changed();
+    protected:
 
         MainWindow* mainWindow;
         bool liveView;
@@ -149,7 +155,7 @@ class AbstractCameraManager : public QObject
         QStandardItem* selectedItem;
         AbstractCamera* selectedCamera;
         QIcon folderIcon;
-        struct activeCameraEntry{ public:
+        struct activeCameraEntry { public:
             activeCameraEntry(AbstractCamera *c, QStandardItem* i)
                 : camera(c), treeItem(i), window(new QMdiSubWindow()) {
                 window->setAttribute(Qt::WA_DeleteOnClose);

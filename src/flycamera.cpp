@@ -6,34 +6,26 @@
 
 using namespace std;
 
-FlyCamera::FlyCamera()
-    : AbstractCamera(), capturing(false)
-{
+FlyCamera::FlyCamera() : AbstractCamera(), capturing(false) {
     cam = new Camera();
-
 }
 
-Camera* FlyCamera::getCamera()
-{
+Camera* FlyCamera::getCamera() {
     return cam;
 }
 
-PGRGuid* FlyCamera::getGuid()
-{
+PGRGuid* FlyCamera::getGuid() {
     return &guid;
 }
 
-CameraInfo* FlyCamera::getCameraInfo()
-{
+CameraInfo* FlyCamera::getCameraInfo() {
     return &camInfo;
 }
 
 void FlyCamera::setProperty(CameraManager::CameraProperty* p)
 {
-    if(p->getType() == CameraManager::AUTOTRIGGER)
-    {
+    if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
-
         cam->GetTriggerMode(&triggerMode);
         triggerMode.onOff = !p->getAuto();
         triggerMode.mode = 0;
@@ -41,44 +33,44 @@ void FlyCamera::setProperty(CameraManager::CameraProperty* p)
         triggerMode.source = 0;
         cam->SetTriggerMode(&triggerMode);
 
-    }else
-    {
+    } else {
         Error error;
         Property prop;
         prop.type = getPropertyType(p);
-       /* cout << "setProp" << p->getName().c_str() << p->getAuto() << endl;*/
+        //printf("setProp - Name: %s, Value: %f, isAuto: %u\n", p->getName().c_str(), p->getValue(), p->getAuto());
         error = cam->GetProperty(&prop);
-        if (error == PGRERROR_OK)
-        {
+        if (error == PGRERROR_OK) {
+            prop.onOff = p->getOnOff();
             prop.autoManualMode = p->getAuto();
-
+            prop.absControl = (p->getDecimals() > 0);
             prop.absValue = p->getValue();
             prop.valueA = (int) p->getValue();
             prop.valueB = (int) p->getValue();
-
             cam->SetProperty(&prop);
+        } else {
+            printf("Error in FlyCamera.cpp - setProperty: \n");
+            error.PrintErrorTrace();
         }
     }
 
 }
-void FlyCamera::updateProperty(CameraManager::CameraProperty* p)
-{
-    if(p->getType() == CameraManager::AUTOTRIGGER)
-    {
+void FlyCamera::updateProperty(CameraManager::CameraProperty* p) {
+    if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
         cam->GetTriggerMode(&triggerMode);
         p->setAuto(triggerMode.onOff ? false:true);
 
-    }else
-    {
+    } else {
         Error error;
         Property prop;
         prop.type = getPropertyType(p);
         error = cam->GetProperty(&prop);
-        if (error == PGRERROR_OK)
-        {
+        if (error == PGRERROR_OK) {
             p->setAuto(prop.autoManualMode);
             p->setValue(p->getDecimals() > 0 ? prop.absValue : prop.valueA);
+        } else {
+            printf("Error in FlyCamera.cpp - updateProperty: \n");
+            error.PrintErrorTrace();
         }
     }
 }
@@ -189,9 +181,8 @@ std::string FlyCamera::getString(){
     return name + " - " + ref;
 }
 
-FlyCamera::~FlyCamera()
-{
-    //dtor
+FlyCamera::~FlyCamera() {
+    if (capturing) stopAutoCapture();
 }
 
 

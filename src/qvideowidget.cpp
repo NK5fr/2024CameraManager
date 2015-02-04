@@ -25,7 +25,7 @@ void QVideoWidget::setImage(QImage image){
 		cout << "image er null" << endl ;  // gs lagt inn testutskrift
 		return;
 	}
-	cout << "image er IKKE null" << endl ;  // gs lagt inn testutskrift
+	//cout << "image er IKKE null" << endl ;  // gs lagt inn testutskrift
     mutex.lock();
     img = image.copy();
     image = QImage();

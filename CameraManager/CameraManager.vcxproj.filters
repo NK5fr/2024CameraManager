@@ -38,46 +38,73 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cameramanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_cameramanager.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_cameramanager.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_cameramanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_widgetgl.cpp">
+    <ClCompile Include="..\src\abstractcamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\abstractcameramanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\calibrationviewerwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cameraproperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\configfilereader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\configfileviewerwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\emptycameramanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flycamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flycameramanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\imageviewerwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iscamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iscameramanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\menubar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\qvideowidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\socketviewerwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\testcamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\testcameramanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\widgetgl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_abstractcameramanager.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_widgetgl.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_socketviewerwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_socketviewerwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qvideowidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qvideowidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_configfileviewerwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_configfileviewerwidget.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_abstractcameramanager.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_calibrationviewerwidget.cpp">
@@ -86,102 +113,63 @@
     <ClCompile Include="GeneratedFiles\Release\moc_calibrationviewerwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_abstractcameramanager.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_configfileviewerwidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_abstractcameramanager.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_configfileviewerwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\widgetgl.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\testcameramanager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\testcamera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qvideowidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\socketviewerwidget.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Release\moc_qvideowidget.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\qvideowidget.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_socketviewerwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\menubar.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Release\moc_socketviewerwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\mainwindow.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_widgetgl.cpp">
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\kode\iscameramanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\iscamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\imageviewerwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\flycameramanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\flycamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\emptycameramanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\configfileviewerwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\configfilereader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\cameraproperty.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\calibrationviewerwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\abstractcameramanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\abstractcamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\kode\main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Release\moc_widgetgl.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="cameramanager.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="cameramanager.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cameramanager.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\widgetgl.h">
+    <CustomBuild Include="..\src\abstractcameramanager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\socketviewerwidget.h">
+    <CustomBuild Include="..\src\calibrationviewerwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\qvideowidget.h">
+    <CustomBuild Include="..\src\configfileviewerwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\mainwindow.h">
+    <CustomBuild Include="..\src\mainwindow.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\configfileviewerwidget.h">
+    <CustomBuild Include="..\src\qvideowidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\calibrationviewerwidget.h">
+    <CustomBuild Include="..\src\socketviewerwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\kode\abstractcameramanager.h">
+    <CustomBuild Include="..\src\widgetgl.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -189,49 +177,49 @@
     <ClInclude Include="GeneratedFiles\ui_cameramanager.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\ui_mainwindow.h">
+    <ClInclude Include="..\src\abstractcamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\testcameramanager.h">
+    <ClInclude Include="..\src\cameraproperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\testcamera.h">
+    <ClInclude Include="..\src\configfilereader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\SleeperThread.h">
+    <ClInclude Include="..\src\emptycameramanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\sleeper.h">
+    <ClInclude Include="..\src\flycamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\menubar.h">
+    <ClInclude Include="..\src\flycameramanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\iscameramanager.h">
+    <ClInclude Include="..\src\imageviewerwidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\iscamera.h">
+    <ClInclude Include="..\src\iscamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\imageviewerwidget.h">
+    <ClInclude Include="..\src\iscameramanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\flycameramanager.h">
+    <ClInclude Include="..\src\menubar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\flycamera.h">
+    <ClInclude Include="..\src\sleeper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\emptycameramanager.h">
+    <ClInclude Include="..\src\SleeperThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\configfilereader.h">
+    <ClInclude Include="..\src\testcamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\cameraproperty.h">
+    <ClInclude Include="..\src\testcameramanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\kode\abstractcamera.h">
+    <ClInclude Include="..\src\ui_mainwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

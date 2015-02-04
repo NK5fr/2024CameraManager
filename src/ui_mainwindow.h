@@ -29,9 +29,9 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_MainWindow
-{
+class Ui_MainWindow {
 public:
+
     QAction *actionMosaic;
     QAction *actionUpdateImages;
     QAction *actionLiveView;
@@ -56,10 +56,8 @@ public:
     QLabel *label;
     QTreeView *CameraTree;
 
-    void setupUi(QMainWindow *MainWindow)
-    {
-        if (MainWindow->objectName().isEmpty())
-            MainWindow->setObjectName(QStringLiteral("MainWindow"));
+    void setupUi(QMainWindow *MainWindow) {
+        if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1185, 664);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
@@ -203,8 +201,7 @@ public:
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
-    void retranslateUi(QMainWindow *MainWindow)
-    {
+    void retranslateUi(QMainWindow *MainWindow) {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         actionMosaic->setText(QApplication::translate("MainWindow", "Mosaic", 0));
 #ifndef QT_NO_TOOLTIP

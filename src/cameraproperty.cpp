@@ -3,15 +3,16 @@
 
 using namespace CameraManager;
 
-CameraProperty::CameraProperty(CameraManager::PropertyType type, float min, float max, int decimals, bool canAuto)
-    :type(type), min(min), max(max), decimals(decimals), canAuto(canAuto) {
+CameraProperty::CameraProperty(CameraManager::PropertyType type, float min, float max, int decimals, bool canAuto, bool isAuto, bool onOff, float value)
+    :type(type), min(min), max(max), decimals(decimals), canAuto(canAuto), isAuto(isAuto) {
 
 }
 //Grethe 2015-01-20 for å sette startverdi på cameraproperties
-CameraProperty::CameraProperty(CameraManager::PropertyType type, float min, float max, int decimals, bool canAuto, float value)
-: type(type), min(min), max(max), decimals(decimals), canAuto(canAuto), val(value) {
+CameraProperty::CameraProperty(CameraManager::PropertyType type, QString name, float min, float max, int decimals, bool canAuto, bool isAuto, bool onOff, float value)
+    : type(type), name(name), min(min), max(max), decimals(decimals), canAuto(canAuto), isAuto(isAuto), onOff(onOff), val(value) {
 
 }
+/*
 std::string CameraProperty::getName(){
     //qDebug() << type;
     switch (type){
@@ -32,3 +33,4 @@ std::string CameraProperty::getName(){
     }
     return "unknown type";
 }
+*/
