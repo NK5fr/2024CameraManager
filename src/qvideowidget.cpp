@@ -38,12 +38,13 @@ void QVideoWidget::setImage(QImage image){
 
 void QVideoWidget::paintEvent(QPaintEvent *) {
     if( img.isNull() ) return;
-    //qDebug() << "scaled.topLeft()" << scaled;
     QImage scaledImg;
     QPainter painter(this);
-    if( mouseIn ){
-        QString sx("x:%1"), sy("y:%1");
-        if(Ui::crosshairReal){
+    painter.setRenderHint(QPainter::Antialiasing);
+    if (mouseIn) {
+        QString sx("x:%1");
+        QString sy("y:%1");
+        if (Ui::crosshairReal) {
             QPoint pos = (mouse-scaled.topLeft()) * ratio;
             sx = sx.arg(pos.x());
             sy = sy.arg(pos.y());
@@ -62,7 +63,7 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
 
             scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             painter.drawImage(scaled.topLeft(), scaledImg);
-        }else{
+        } else { // !Ui::crosshairReal
             QPointF pos = QPointF(mouse-scaled.topLeft()) * ratio;
             sx = sx.arg(pos.x());
             sy = sy.arg(pos.y());
@@ -86,7 +87,7 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
         painter.fillRect( 0, 0, 70, 35, Qt::white );
         painter.drawText( 1, 16, sx );
         painter.drawText( 1, 32, sy );
-    }else{
+    } else { // !mouseIn
         mutex.lock();
         scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Ui::forceHighQuality ? Qt::SmoothTransformation : Qt::FastTransformation);
         mutex.unlock();

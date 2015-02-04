@@ -50,12 +50,11 @@ public:
     QWidget* trackPointWidget;
     QTreeWidget *projectTree;
     QComboBox* selectCameraManager;
-    QWidget *verticalLayoutWidget;
+    QWidget *propertiesWidget;
     QVBoxLayout *propertiesContainer;
     QLabel *label;
     QTreeView *cameraTree;
 
-    // Lars Aksel - 04.02.2015 - Refactoring to use Layouts instead of hard-coded pixel coordinates
     void setupUi(QMainWindow *MainWindow) {
         if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1185, 664);
@@ -125,26 +124,20 @@ public:
         statusbar->setObjectName(QStringLiteral("statusbar"));
         MainWindow->setStatusBar(statusbar);
 
-        QHBoxLayout* dockLayoutTop = new QHBoxLayout();
         CamerasWidget_2 = new QDockWidget(MainWindow);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
         CamerasWidget_2->setMinimumSize(QSize(400, 0));
-        //CamerasWidget_2->setMaximumSize(QSize(374, 602));
         CamerasWidget_2->setContextMenuPolicy(Qt::DefaultContextMenu);
         CamerasWidget_2->setAcceptDrops(false);
-        CamerasWidget_2->setLayoutDirection(Qt::LeftToRight);
         CamerasWidget_2->setAutoFillBackground(false);
         CamerasWidget_2->setInputMethodHints(Qt::ImhNone);
         CamerasWidget_2->setFloating(false);
         CamerasWidget_2->setAllowedAreas(Qt::AllDockWidgetAreas);
-        CamerasWidget_2->setContentsMargins(QMargins(0, 0, 0, 0));
         dockWidgetContents_4 = new QWidget();
         dockWidgetContents_4->setObjectName(QStringLiteral("dockWidgetContents_4"));
-        dockWidgetContents_4->setContentsMargins(QMargins(0, 0, 0, 0));
-        dockLayoutTop->addWidget(dockWidgetContents_4);
+        dockWidgetContents_4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         CamerasWidget_2->setWidget(dockWidgetContents_4);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), CamerasWidget_2);
-        CamerasWidget_2->setLayout(dockLayoutTop);
         
         QVBoxLayout* dockLayout = new QVBoxLayout();
         tabWidget = new QTabWidget(dockWidgetContents_4);
@@ -192,13 +185,13 @@ public:
         cameraTabLayout->addWidget(label);
 
         // Properties in Cameras tab
-        verticalLayoutWidget = new QWidget(cameraWidget);
-        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        propertiesContainer = new QVBoxLayout(verticalLayoutWidget);
+        propertiesWidget = new QWidget(cameraWidget);
+        propertiesWidget->setObjectName(QStringLiteral("propertiesWidget"));
+        propertiesContainer = new QVBoxLayout(propertiesWidget);
         propertiesContainer->setSpacing(5);
         propertiesContainer->setObjectName(QStringLiteral("propertiesContainer"));
         propertiesContainer->setContentsMargins(0, 0, 0, 0);
-        cameraTabLayout->addWidget(verticalLayoutWidget);
+        cameraTabLayout->addWidget(propertiesWidget);
 
         cameraWidget->setLayout(cameraTabLayout);
 

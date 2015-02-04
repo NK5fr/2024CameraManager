@@ -200,26 +200,25 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
     /*cout << "oldCameras" << oldCameras.size() << endl;*/
     /*cout << "newCameras" << newCameras.size() << endl;*/
     //removing disconnected cameras
-    for(unsigned int i=0; i<oldCameras.size(); i++){
+    for (unsigned int i = 0; i < oldCameras.size(); i++) {
         QStandardItem* item = oldCameras.at(i);
         AbstractCamera* cam = reinterpret_cast<AbstractCamera *>( item->data(CameraRole).value<quintptr>() );
         /*cout << "oldCameras(" << i << "):" << cam << endl;*/
         bool found = false;
-        for(int j=newCameras.size()-1; j>=0; j--){
-            if(cam->equalsTo(newCameras.at(j))){
+        for (int j = newCameras.size() - 1; j >= 0; j--) {
+            if (cam->equalsTo(newCameras.at(j))) {
                 found = true;
                 newCameras.erase(newCameras.begin()+j);
                 continue;
             }
         }
-        if( !found ){ //remove if disconnected
+        if (!found){ //remove if disconnected
             activateCamera(cam, item, false);
             item->parent()->removeRow(item->row());
         }
     }
-    /*cout << "newCameras" << newCameras.size()<< endl;*/
     //adding new cameras
-    for(unsigned int i=0; i<newCameras.size(); i++) {
+    for (unsigned int i = 0; i < newCameras.size(); i++) {
         AbstractCamera* cam = newCameras.at(i);
         QStandardItem *item = new QStandardItem(cam->getString().c_str());
         item->setData(QVariant::fromValue(reinterpret_cast<quintptr>(cam)), CameraRole);
