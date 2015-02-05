@@ -31,7 +31,6 @@ QT_BEGIN_NAMESPACE
 
 class Ui_MainWindow {
 public:
-
     QAction *actionMosaic;
     QAction *actionUpdateImages;
     QAction *actionLiveView;

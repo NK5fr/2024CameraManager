@@ -68,11 +68,16 @@ public:
     void imageDetectPoints();
 
     void setImage(unsigned char* imarray) { this->imarray = imarray; }
-    unsigned char* getNewImage() { return this->newarray; }
     void setThreshold(int imlimit) { this->imlimit = imlimit; }
-    int getNumPoints() { return this->points->numpoints; }
-    ImPoint* getPoints() { return this->points->table; }
     void setSubwinSize(int subwinsiz);
+    void setMaxPix(int maxpix) { this->maxpix = maxpix; }
+    void setMinPix(int minpix) { this->minpix = minpix; }
+    ImPoint* getPoints() { return this->points->table; }
+    unsigned char* getFilteredImage() { return this->newarray; }
+    unsigned char* getImage() { return this->imarray; }
+    int getNumPoints() { return this->points->numpoints; }
+    int getMaxPix() { return this->maxpix; }
+    int getMinPix() { return this->minpix; }
 
 private:
     PointDef* pointDef;

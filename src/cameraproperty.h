@@ -43,8 +43,8 @@ namespace CameraManager {
          * @param decimals number of decimal for that property (used for the slider)
          * @param canAuto true if that property can be set to auto (will desactivate the slider)
          */
-        CameraProperty(PropertyType type, float min, float max, int decimals = 0, bool canAuto = false, bool isAuto = true, bool onOff = true, float value = 0);        
-        CameraProperty(PropertyType type, QString name, float min, float max, int decimals, bool canAuto, bool isAuto, bool onOff, float value);  // Lars Aksel 29.01.2015
+        //CameraProperty(PropertyType type, float min, float max, int decimals = 0, bool canAuto = false, bool isAuto = true, bool onOff = true, float value = 0);        
+        CameraProperty(PropertyType type, QString name, float min, float max, int decimals = 0, bool canAuto = false, bool isAuto = true, bool onOff = true, float value = 0);  // Lars Aksel 29.01.2015
 
 	    PropertyType getType(){ return type; }
 	    void setAuto(bool a){ isAuto = a; }
@@ -74,14 +74,6 @@ namespace CameraManager {
         float max;
         float val;
 	    int decimals;
-
-        // Lars Aksel - 29.01.2015
-        // Format7 Custom Video Resolution
-        int imageTop;
-        int imageLeft;
-        int imageWidth;
-        int imageHeight;
-        bool useCustomResolution;
 	};
 }
 
