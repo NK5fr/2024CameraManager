@@ -26,6 +26,7 @@
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QCheckBox>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,6 +55,15 @@ public:
     QLabel *label;
     QTreeView *cameraTree;
     QPushButton* loadDefaultCameraProperties;
+    QCheckBox* trackPointEnabled = nullptr;
+    QLineEdit* thresholdValueEdit = nullptr;
+    QLineEdit* subwinValueEdit = nullptr;
+    QLineEdit* minPointValueEdit = nullptr;
+    QLineEdit* maxPointValueEdit = nullptr;
+    QSlider* thresholdSlider = nullptr;
+    QSlider* subwinSlider = nullptr;
+    QSlider* minPointSlider = nullptr;
+    QSlider* maxPointSlider = nullptr;
 
     void setupUi(QMainWindow *MainWindow) {
         if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));
@@ -202,7 +212,7 @@ public:
         
         // Tab for adjusting TrackPoint properties...
         trackPointWidget = new QWidget();
-        trackPointWidget->setObjectName(QStringLiteral("trackpoint"));
+        trackPointWidget->setObjectName(QStringLiteral("trackpoint"));        
 
         // Adding widgets to tabWidget
         tabWidget->addTab(projectsWidget, QString("Projects"));

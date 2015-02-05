@@ -122,30 +122,32 @@ QImage FlyCamera::captureImage() {
             image.setPixel(j, i, qRgb(data, data, data));
         }
     }
-    if (detectPoints) {
-        if (imageDetect == nullptr) {
-            imageDetect = new ImageDetect(x, y, 
-                                          (trackPointProperty == nullptr) ? 50 : trackPointProperty->thresholdValue, 
-                                          (trackPointProperty == nullptr) ? 128 : trackPointProperty->subwinValue);
-        }
-        if (trackPointProperty != nullptr) {
-            imageDetect->setThreshold(trackPointProperty->thresholdValue);
-            imageDetect->setMinPix(trackPointProperty->minPointValue);
-            imageDetect->setMaxPix(trackPointProperty->maxPointValue);
-        }
-        imageDetect->setImage(imageBuffer);
-        imageDetect->imageDetectPoints();
-        ImPoint* points = imageDetect->getPoints();        
-        // Drawing the points on the image...
-        int crossWingSize = (int) (image.height() / 100);
-        for (int i = 0; i < imageDetect->getNumPoints(); i++) {
-            int xPos = points[i].x;
-            int yPos = points[i].y;
-            for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
-                image.setPixel(x, yPos, qRgb(255, 0, 0));
+    if (trackPointProperty != nullptr) {
+        if (trackPointProperty->trackPointPreview) {
+            if (imageDetect == nullptr) {
+                imageDetect = new ImageDetect(x, y,
+                                              (trackPointProperty == nullptr) ? 50 : trackPointProperty->thresholdValue,
+                                              (trackPointProperty == nullptr) ? 128 : trackPointProperty->subwinValue);
             }
-            for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
-                image.setPixel(xPos, y, qRgb(255, 0, 0));
+            if (trackPointProperty != nullptr) {
+                imageDetect->setThreshold(trackPointProperty->thresholdValue);
+                imageDetect->setMinPix(trackPointProperty->minPointValue);
+                imageDetect->setMaxPix(trackPointProperty->maxPointValue);
+            }
+            imageDetect->setImage(imageBuffer);
+            imageDetect->imageDetectPoints();
+            ImPoint* points = imageDetect->getPoints();
+            // Drawing the points on the image...
+            int crossWingSize = (int) (image.height() / 100);
+            for (int i = 0; i < imageDetect->getNumPoints(); i++) {
+                int xPos = points[i].x;
+                int yPos = points[i].y;
+                for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
+                    image.setPixel(x, yPos, qRgb(255, 0, 0));
+                }
+                for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
+                    image.setPixel(xPos, y, qRgb(255, 0, 0));
+                }
             }
         }
     }

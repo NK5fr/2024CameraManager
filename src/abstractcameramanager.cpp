@@ -428,6 +428,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
         slider->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
         slider->setProperty("ValueBox", QVariant::fromValue(reinterpret_cast<quintptr>(valueBox)));
         slider->setTracking(true); //might be wanted
+        slider->setValue(property.getValueToSlider());
         slider->setRange(property.getMinToSlider(), property.getMaxToSLider());
         propertiesList.setItemWidget(it, Ui::PropertySlider, slider);
 

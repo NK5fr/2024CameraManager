@@ -86,6 +86,9 @@ public slots:
 
     // Lars Aksel - 05.02.2015
     void on_LoadDefaults_Pushed();
+    void on_TrackPointChecked(int state);
+    void on_TrackPointValueChanged();
+    void on_TrackPointSliderValueChanged(int);
 
     /* grethe - output fra trackpoint */
     void executeFinished(QProcess &p);
@@ -130,6 +133,7 @@ private:
     void loadDefaultTrackPointSettings();
     void loadTrackPointSettingsFromFile(QString& filepath);
     void saveTrackPointSettingsToFile(QString& filepath, TrackPointProperty& props);
+    void setupTrackPointTab();
 
     QString projectsPath;
     QString calibrationPath;

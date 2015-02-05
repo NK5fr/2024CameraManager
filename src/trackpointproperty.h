@@ -4,6 +4,7 @@
 #include <qstring.h>
 
 struct TrackPointProperty {
+    bool trackPointPreview = false;
     QString thresholdText;  // Descriptive text for "Threshold"
     int thresholdValue = 0; // Actual value of the threshold
     int thresholdMin = 0;   // Minimal value, used for sliders
