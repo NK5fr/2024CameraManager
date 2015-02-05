@@ -369,6 +369,7 @@
     </CustomBuild>
     <ClInclude Include="..\src\testcamera.h" />
     <ClInclude Include="..\src\testcameramanager.h" />
+    <ClInclude Include="..\src\trackpointproperty.h" />
     <ClInclude Include="..\src\ui_mainwindow.h" />
     <CustomBuild Include="..\src\widgetgl.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

@@ -62,7 +62,7 @@ struct SubWin {
 
 class ImageDetect {
 public:
-    ImageDetect(int imageWidth, int imageHeight, int imlimit = 0, int subwinsiz = 0);
+    ImageDetect(int imageWidth, int imageHeight, int imlimit = 0, int subwinsiz = 0, int minPix = 0, int maxPix = 0);
     ~ImageDetect();
 
     void imageDetectPoints();

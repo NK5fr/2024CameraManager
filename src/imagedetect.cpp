@@ -2,11 +2,13 @@
 
 using namespace std;
 
-ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwinsiz) {
+ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwinsiz, int minPix, int maxPix) {
     this->imageWidth = imageWidth;
     this->imageHeight = imageHeight;
     this->subwinsiz = subwinsiz;
     this->imlimit = imlimit;
+    this->minpix = minPix;
+    this->maxpix = maxPix;
     newarray = new unsigned char[imageWidth * imageHeight];
     imarray = new unsigned char[imageWidth * imageHeight];
     swtab = new SubWin(imageWidth, imageHeight);

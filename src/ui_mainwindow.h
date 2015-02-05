@@ -53,6 +53,7 @@ public:
     QVBoxLayout *propertiesContainer;
     QLabel *label;
     QTreeView *cameraTree;
+    QPushButton* loadDefaultCameraProperties;
 
     void setupUi(QMainWindow *MainWindow) {
         if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));
@@ -192,15 +193,17 @@ public:
         propertiesContainer->setContentsMargins(0, 0, 0, 0);
         cameraTabLayout->addWidget(propertiesWidget);
 
+        // Load Defaults in Cameras tab
+        loadDefaultCameraProperties = new QPushButton(QString("Load Defaults"));
+        propertiesWidget->setObjectName(QStringLiteral("loadDefaultCameraProperties"));
+        cameraTabLayout->addWidget(loadDefaultCameraProperties);
+
         cameraWidget->setLayout(cameraTabLayout);
-
-        // Layout for all elements in TrackPoint tab
-        QVBoxLayout* trackpointTabLayout = new QVBoxLayout();
-
+        
         // Tab for adjusting TrackPoint properties...
         trackPointWidget = new QWidget();
         trackPointWidget->setObjectName(QStringLiteral("trackpoint"));
-        
+
         // Adding widgets to tabWidget
         tabWidget->addTab(projectsWidget, QString("Projects"));
         tabWidget->addTab(cameraWidget, QString("Cameras"));

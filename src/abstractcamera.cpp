@@ -6,7 +6,7 @@ using namespace std;
 
 AbstractCamera::AbstractCamera() : thread(this) {
     imageDetect = nullptr;
-    detectPoints = true;
+    detectPoints = false;
 }
 
 AbstractCamera::~AbstractCamera() {

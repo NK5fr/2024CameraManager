@@ -65,6 +65,10 @@ class AbstractCameraManager : public QObject
         bool loadPropertiesFromFile(QString& filepath);
         bool savePropertiesToFile(QString& filepath);
 
+        // Lars Aksel - 05.02.2015
+        void setTrackPointProperty(TrackPointProperty* prop) { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->setTrackPointProperty(prop); }
+        void enableImageDetect(bool onOff) { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->setDetectPoints(onOff); }
+
         /**
          * @brief add a empty group of cameras in the model
          * @return the index in the model corresponding to this group, in order to select it

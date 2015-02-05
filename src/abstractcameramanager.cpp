@@ -24,8 +24,7 @@ AbstractCameraManager::AbstractCameraManager(bool empty)
     propertiesList.setHeaderLabels(QStringList() << "Property" << "Auto" << "Value" << "Slider");
     
     if(empty) return;
-    QObject::connect(&cameraTree, SIGNAL(itemChanged(QStandardItem*)),
-            this, SLOT(on_CameraTree_itemChanged(QStandardItem*)));
+    QObject::connect(&cameraTree, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_CameraTree_itemChanged(QStandardItem*)));
     cameraTree.appendRow(&newCameraList);
     newCameraList.setIcon( QIcon(":/icons/folder_home") );
     newCameraList.setCheckable(true);
@@ -37,9 +36,11 @@ AbstractCameraManager::AbstractCameraManager(bool empty)
 void AbstractCameraManager::setMainWindow(MainWindow* window){
     mainWindow = window;
 }
+
 QStandardItemModel* AbstractCameraManager::getModel(){
     return &cameraTree;
 }
+
 QTreeWidget *AbstractCameraManager::getPropertiesWidget(){
     return &propertiesList;
 }
@@ -191,7 +192,6 @@ void AbstractCameraManager::activateLiveView(bool active){
 ///////////////////////////////////////////////////
 /////////////// Camera List related ///////////////
 ///////////////////////////////////////////////////
-
 QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
     std::vector<AbstractCamera*> newCameras;
     std::vector<QStandardItem*> oldCameras;
@@ -250,7 +250,6 @@ void AbstractCameraManager::removeGroup(QModelIndex index){
     for (int i = item->rowCount(); i > 0; i--){
         newCameraList.insertRow(0, item->takeRow(0));
     }
-
     parent->removeRow( item->row() );
     detectNewCamerasAndExpand();
 }
@@ -304,7 +303,6 @@ void AbstractCameraManager::on_CameraTree_itemChanged(QStandardItem* item){
     } else {
         cameraTree_recursiveCheck(item, checked);
     }
-
 }
 
 void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QString &string, int &icon, bool &editable, bool &deleteable){
@@ -337,11 +335,9 @@ void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QSt
     updateProperties();
 }
 
-
 ///////////////////////////////////////////////////
 //////////// Recursive in Camera List /////////////
 ///////////////////////////////////////////////////
-
 //uncheck all
 void AbstractCameraManager::desactiveAllCameras(){
     cameraTree_recursiveCheck(cameraTree.invisibleRootItem(), Qt::Unchecked);
@@ -352,10 +348,8 @@ void AbstractCameraManager::cameraTree_recursiveCheck(QStandardItem* parent, Qt:
     /*cout << "recursivecheck(" << checked << ") on " << parent->text() << endl;*/
     for(int i=0; i<parent->rowCount(); ++i){
          QStandardItem* currItem = parent->child(i);
-         if(currItem->checkState() != checked)
-             currItem->setCheckState(checked);
-         else
-             cameraTree_recursiveCheck(currItem, checked);
+         if(currItem->checkState() != checked) currItem->setCheckState(checked);
+         else cameraTree_recursiveCheck(currItem, checked);
     }
 }
 
@@ -363,8 +357,7 @@ void AbstractCameraManager::cameraTree_recursiveCheck(QStandardItem* parent, Qt:
 // @return first found AbstractCamera
 QStandardItem* AbstractCameraManager::cameraTree_recursiveFirstCamera(QStandardItem* parent){
     QVariant data = parent->data(CameraRole);
-    if(data.isValid())
-        return parent;
+    if(data.isValid()) return parent;
 
     for(int i=0; i<parent->rowCount(); ++i){
         QStandardItem* tmp = cameraTree_recursiveFirstCamera(parent->child(i));
@@ -380,7 +373,6 @@ void AbstractCameraManager::cameraTree_recursiveSetProperty(QStandardItem* paren
         reinterpret_cast<AbstractCamera *>( data.value<quintptr>() )->setProperty(prop);
         return;
     }
-
     for(int i=0; i<parent->rowCount(); ++i){
         cameraTree_recursiveSetProperty(parent->child(i), prop);
     }
@@ -390,10 +382,9 @@ void AbstractCameraManager::cameraTree_recursiveSetProperty(QStandardItem* paren
 void AbstractCameraManager::cameraTree_getCameraList(QStandardItem* parent, std::vector<QStandardItem*> *list){
     QVariant data = parent->data(CameraRole);
     if(data.isValid()){
-        list->push_back( parent );
+        list->push_back(parent);
         return;
     }
-
     for(int i=0; i<parent->rowCount(); ++i){
         cameraTree_getCameraList(parent->child(i), list);
     }
@@ -403,23 +394,23 @@ void AbstractCameraManager::cameraTree_getCameraList(QStandardItem* parent, std:
 ///////////////////////////////////////////////////
 //////////////// Properties related ///////////////
 ///////////////////////////////////////////////////
-
-void AbstractCameraManager::setProperties(std::vector<CameraProperty> &properties){
+void AbstractCameraManager::setProperties(std::vector<CameraProperty> &properties) {
+    propertiesList.clear();
     cameraProperties = std::vector<CameraProperty>(properties);
-    for(unsigned int i=0; i<cameraProperties.size(); i++){
+    for(unsigned int i = 0; i < cameraProperties.size(); i++){
         CameraProperty &property = cameraProperties.at(i);
         QTreeWidgetItem* it = new QTreeWidgetItem();
         it->setText( Ui::PropertyName, property.getName());
         propertiesList.addTopLevelItem(it);
         //checkbox
         QCheckBox* box = new QCheckBox();
-        box->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)) );
+        box->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
 
-        if(!property.getCanAuto()) box->setEnabled(false);
+        if (!property.getCanAuto()) box->setEnabled(false);
         propertiesList.setItemWidget(it, Ui::PropertyAuto, box);
-        connect( box, SIGNAL(stateChanged(int)), this, SLOT(on_propertyCheckbox_changed(int)) );
+        connect(box, SIGNAL(stateChanged(int)), this, SLOT(on_propertyCheckbox_changed(int)));
 
-        if( property.getType() == CameraManager::AUTOTRIGGER ) continue;
+        if (property.getType() == CameraManager::AUTOTRIGGER) continue;
 
         QSlider* slider = new QSlider(Qt::Horizontal);
         QLineEdit* valueBox = new QLineEdit(QString::number(property.getValue()));
@@ -440,8 +431,8 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
         slider->setRange(property.getMinToSlider(), property.getMaxToSLider());
         propertiesList.setItemWidget(it, Ui::PropertySlider, slider);
 
-        box->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)) );
-        connect( slider, SIGNAL(valueChanged(int)), this, SLOT(on_propertySlider_changed(int)) );
+        box->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)));
+        connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_propertySlider_changed(int)));
     }
     propertiesList.resizeColumnToContents(0);
     propertiesList.resizeColumnToContents(1);
@@ -450,17 +441,17 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
 }
 
 void AbstractCameraManager::on_propertyCheckbox_changed(int state){
-    if( selectedItem == NULL ) return;
+    if (selectedItem == NULL) return;
     CameraProperty* prop = reinterpret_cast<CameraProperty*>( sender()->property("CameraProperty").value<quintptr>() );
     cout << sender() << qPrintable(prop->getName()) << endl;
     prop->setAuto(state == Qt::Checked);
     cameraTree_recursiveSetProperty(selectedItem, prop);
 
     //(de)activate slider
-    if( prop->getType() == CameraManager::AUTOTRIGGER ) return;
+    if (prop->getType() == CameraManager::AUTOTRIGGER) return;
     QSlider* slider =  reinterpret_cast<QSlider*>( sender()->property("TreeWidgetSlider").value<quintptr>());
     cout << "Qslider" << slider << endl;
-    if(state != Qt::Checked){
+    if (state != Qt::Checked) {
         slider->setEnabled(true);
         slider->setValue(prop->getValueToSlider());
     } else {
@@ -469,7 +460,7 @@ void AbstractCameraManager::on_propertyCheckbox_changed(int state){
 }
 
 void AbstractCameraManager::on_propertySlider_changed(int val){
-    if( selectedItem == NULL ) return;
+    if (selectedItem == NULL) return;
     CameraProperty* prop = reinterpret_cast<CameraProperty*>( sender()->property("CameraProperty").value<quintptr>() );
     prop->setValueFromSlider(val);
     cameraTree_recursiveSetProperty(selectedItem, prop);

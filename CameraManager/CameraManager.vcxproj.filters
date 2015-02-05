@@ -228,6 +228,9 @@
     <ClInclude Include="..\src\imagedetect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\trackpointproperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\img\2D.png">

@@ -14,6 +14,8 @@
 #include <QTextEdit>  // gs
 #include <QTimer> // gs
 #include <QProcess> // gs
+#include <qsettings.h> // Lars Aksel
+#include "trackpointproperty.h" // Lars Aksel
 
 #include "menubar.h"
 #include "abstractcameramanager.h"
@@ -54,7 +56,7 @@ public:
     // gs test
     void execute(QString command, QProcess &p);
 
-    public slots:
+public slots:
     /* All of them could probably be private */
     /** TOOL BAR **/
     void on_actionLiveView_toggled(bool arg1);
@@ -81,6 +83,9 @@ public:
     /** TO BE DELETED **/
     /*void on_Detect_clicked();*/
     /*void on_updatePropertiesButton_clicked();*/
+
+    // Lars Aksel - 05.02.2015
+    void on_LoadDefaults_Pushed();
 
     /* grethe - output fra trackpoint */
     void executeFinished(QProcess &p);
@@ -109,6 +114,7 @@ private:
     QTimer process_timer;
     QString process_file;
     qint64 process_file_pos;
+    TrackPointProperty trackPointProperty; // Lars Aksel
 
     /** CREATING FOLDER AND FILE ITEMS **/
     void createTreeItem(QTreeWidgetItem *parent, QString name);
@@ -120,6 +126,10 @@ private:
     int selectedCameraManager;
     QPixmap propertiesIcons[3];
 
+    // Lars Aksel - Loading TrackPoint-Settings into TrackPoint-tab
+    void loadDefaultTrackPointSettings();
+    void loadTrackPointSettingsFromFile(QString& filepath);
+    void saveTrackPointSettingsToFile(QString& filepath, TrackPointProperty& props);
 
     QString projectsPath;
     QString calibrationPath;

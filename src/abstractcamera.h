@@ -13,6 +13,7 @@
 #include "cameraproperty.h"
 #include "qvideowidget.h"
 #include "imagedetect.h"
+#include "trackpointproperty.h"
 
 
 /**
@@ -69,8 +70,11 @@ class AbstractCamera
          */
         void startCapture(QVideoWidget* videoWidget);
 
+        // Lars Aksel - 05.02.2015
         ImageDetect* getImageDetect() { return this->imageDetect; }
+        TrackPointProperty* getTrackPointProperty() { return this->trackPointProperty; }
         void setDetectPoints(bool detectPoints) { this->detectPoints = detectPoints; }
+        void setTrackPointProperty(TrackPointProperty* prop) { this->trackPointProperty = prop; }
         bool isDetectPoints() { return this->detectPoints; }
 
 
@@ -86,6 +90,7 @@ class AbstractCamera
 
         // Lars Aksel - 30.01.2015
         ImageDetect* imageDetect;
+        TrackPointProperty* trackPointProperty;
         bool detectPoints;
 
     private:

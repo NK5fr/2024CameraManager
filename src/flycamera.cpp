@@ -124,12 +124,18 @@ QImage FlyCamera::captureImage() {
     }
     if (detectPoints) {
         if (imageDetect == nullptr) {
-            imageDetect = new ImageDetect(x, y, 50, 128);
+            imageDetect = new ImageDetect(x, y, 
+                                          (trackPointProperty == nullptr) ? 50 : trackPointProperty->thresholdValue, 
+                                          (trackPointProperty == nullptr) ? 128 : trackPointProperty->subwinValue);
+        }
+        if (trackPointProperty != nullptr) {
+            imageDetect->setThreshold(trackPointProperty->thresholdValue);
+            imageDetect->setMinPix(trackPointProperty->minPointValue);
+            imageDetect->setMaxPix(trackPointProperty->maxPointValue);
         }
         imageDetect->setImage(imageBuffer);
         imageDetect->imageDetectPoints();
-        ImPoint* points = imageDetect->getPoints();
-        
+        ImPoint* points = imageDetect->getPoints();        
         // Drawing the points on the image...
         int crossWingSize = (int) (image.height() / 100);
         for (int i = 0; i < imageDetect->getNumPoints(); i++) {
