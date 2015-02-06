@@ -92,6 +92,7 @@ class AbstractCamera
         ImageDetect* imageDetect;
         TrackPointProperty* trackPointProperty;
         bool detectPoints;
+        bool capturing;
 
     private:
         QVideoWidget* container;

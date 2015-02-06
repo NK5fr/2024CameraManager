@@ -6,7 +6,7 @@
 
 using namespace std;
 
-FlyCamera::FlyCamera() : AbstractCamera(), capturing(false) {
+FlyCamera::FlyCamera() : AbstractCamera() {
     cam = new Camera();
 }
 
@@ -171,30 +171,33 @@ void FlyCamera::stopAutoCapture(){
     getCamera()->StopCapture();
 }
 
-QImage FlyCamera::retrieveImage()
-{
-    cout << "Images begin to be retrieved" << endl;
+QImage FlyCamera::retrieveImage() {
+    if (capturing) return QImage();
+    capturing = true;
+    //cout << "Images begin to be retrieved" << endl;
     TriggerMode triggerMode;
     TriggerMode oldTrigger;
 
     cam->GetTriggerMode(&oldTrigger);
+    cam->GetTriggerMode(&triggerMode);
     triggerMode.onOff = false;
     cam->SetTriggerMode(&triggerMode);
 
-    cout << "Retrieving images..." << endl;
+    //cout << "Retrieving images..." << endl;
     cam->StartCapture();
 
 
-    cout << "Retrieving 1..." << endl;
+    //cout << "Retrieving 1..." << endl;
     QImage image = captureImage();
 
-    cout << "Retrieving 2..." << endl;
+    //cout << "Retrieving 2..." << endl;
     cam->SetTriggerMode(&oldTrigger);
 
-    cout << "Retrieving 3..." << endl;
+    //cout << "Retrieving 3..." << endl;
     cam->StopCapture();
 
-    cout << "Images retrieved" << endl;
+    //cout << "Images retrieved" << endl;
+    capturing = false;
     return image;
 }
 
