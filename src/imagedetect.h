@@ -28,15 +28,26 @@ struct Stripe {
 };
 
 struct PointDef {
-    PointDef(int height) : xlast(0), ylast(0), maxx(0), maxy(0), jlow(0), jhigh(0), ileft(0), iright(0) {
+    PointDef(int height, int max_points) : xlast(0), ylast(0), maxx(0), maxy(0), jlow(0), jhigh(0), ileft(0), iright(0) {
         stripes = new Stripe[height];
+        table = new ImPoint[max_points];
+        match = new ImPoint[max_points];
+        newpt = new ImPoint[max_points];
+        usedpt = new int[max_points];
     }
     ~PointDef() {
         delete[] stripes;
+        delete[] table;
+        delete[] match;
+        delete[] newpt;
     }
     Stripe* stripes;
     ImPoint pnt;
     ImPoint newpnt;
+    ImPoint* table;
+    ImPoint* match;
+    ImPoint* newpt;
+    int* usedpt;
     int xlast;
     int ylast;
     int maxx;
@@ -60,22 +71,83 @@ struct SubWin {
     }
 };
 
+/////////// Datatransfer out of duplicatePoints() and in to pointCoordinates() /////////////
+struct Vector {
+    double vec[4];
+    Vector() {
+        for (int i = 0; i < 4; i++) {
+            vec[i] = 0.0;
+        }
+    }
+    Vector(const double *vector) {
+        for (int i = 0; i < 4; i++) {
+            vec[i] = vector[i];
+        }
+    }
+    inline void setVector(double xb1, double yb1, double xb, double yb) {
+        vec[0] = xb1;
+        vec[1] = yb1;
+        vec[2] = xb;
+        vec[3] = yb;
+    }
+    inline double findDistance(Vector p2) {
+        double x = vec[0] - p2.vec[0];
+        double y = vec[1] - p2.vec[1];
+        return sqrt(x * x + y * y);
+    }
+};
+
+struct VectorOneCam {
+    int numpointsnew;
+    int* numOfMatches; // ML 2013-08-23
+    Vector* vectors;  // std constructor Vector() nullifies these
+    VectorOneCam(int max_points) {
+        numpointsnew = 0;
+        numOfMatches = new int[max_points];
+        vectors = new Vector[max_points];
+        for (int i = 0; i < max_points; i++) {
+            numOfMatches[i] = 0;
+        }
+    }
+    VectorOneCam(const VectorOneCam &original) : numpointsnew(original.numpointsnew) { // OBS: public copy constructor      
+        for (int i = 0; i < numpointsnew; i++) {
+            this->vectors[i] = original.vectors[i];
+            this->numOfMatches[i] = original.numOfMatches[i];   // ML 2013-08-23
+        }
+    }
+    VectorOneCam &operator=(const VectorOneCam &original) {  // OBS: public assignment operator      
+        if (this != &original) {
+            this->numpointsnew = original.numpointsnew;
+            for (int i = 0; i < numpointsnew; i++) {
+                this->vectors[i] = original.vectors[i];
+                this->numOfMatches[i] = original.numOfMatches[i];
+            }
+        }
+        return *this;
+    }
+};
+
 class ImageDetect {
 public:
     ImageDetect(int imageWidth, int imageHeight, int imlimit = 0, int subwinsiz = 0, int minPix = 0, int maxPix = 0);
     ~ImageDetect();
 
     void imageDetectPoints();
+    void imageRemoveBackground();
+    void removeDuplicatePoints();
 
     void setImage(unsigned char* imarray) { this->imarray = imarray; }
     void setThreshold(int imlimit) { this->imlimit = imlimit; }
     void setSubwinSize(int subwinsiz);
     void setMaxPix(int maxpix) { this->maxpix = maxpix; }
     void setMinPix(int minpix) { this->minpix = minpix; }
-    ImPoint* getPoints() { return this->points->table; }
+    void setMinSep(int minSep) { this->minsep = minSep; }
+    ImPoint* getInitPoints() { return this->points->table; }
+    ImPoint* getFinalPoints() { return this->pointDef->newpt; }
     unsigned char* getFilteredImage() { return this->newarray; }
     unsigned char* getImage() { return this->imarray; }
-    int getNumPoints() { return this->points->numpoints; }
+    int getInitNumPoints() { return this->points->numpoints; }
+    int getFinalNumPoints() { return this->duplRemoved->numpointsnew; }
     int getMaxPix() { return this->maxpix; }
     int getMinPix() { return this->minpix; }
 
@@ -83,11 +155,13 @@ private:
     PointDef* pointDef;
     ImPointsOneCam* points;
     SubWin* swtab;
+    VectorOneCam* duplRemoved;
     unsigned char* newarray;
     unsigned char* imarray;
 
     int minpix = 5;
     int maxpix = 20;
+    int minsep = 10;
     int imlimit;
     int subwinsiz;
     const int MAX_POINTS = 5000;
@@ -95,7 +169,6 @@ private:
     int imageWidth;
     int imageHeight;
 
-    void imageRemoveBackground();
     bool imageFindPoint();
     void imageDeletePoint();
     void subwinRead(int ix, int iy, int &ic, int &jc);
@@ -104,6 +177,6 @@ private:
     bool imagePointPosition();
     void imageMaxPixelPosition();
     void setNull(int frax, int tilx, int fray, int tily);
-    int maxval();    
+    int maxval();
 };
 #endif

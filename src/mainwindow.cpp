@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QProcess>
+#include "qmessagebox.h"
 
 #include <sstream>
 #include <iostream>
@@ -45,6 +46,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     propertiesIcons[0] = QIcon(":/icons/camera").pixmap(16, 16);
     propertiesIcons[1] = QIcon(":/icons/folder").pixmap(16, 16);
     propertiesIcons[2] = QIcon(":/icons/folder_camera").pixmap(16, 16);
+    
+    // Lars Aksel - 10.03.2015 - Save memory by loading icons only once...
+    icons[0] = QIcon(":/icons/folder");
+    icons[1] = QIcon(":/icons/coordinates");
+    icons[2] = QIcon(":/icons/config");
+    icons[3] = QIcon(":/icons/camera");
+    icons[4] = QIcon(":/icons/exe");
+    icons[5] = QIcon(":/icons/2d");
+    icons[6] = QIcon(":/icons/img");
+    icons[7] = QIcon(":/icons/file");
 
     ui->setupUi(this);
 
@@ -74,14 +85,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setMenuBar(bar);
 
     /* SIGNALS/SLOTS */
-    connect(ui->cameraTree, SIGNAL(clicked(const QModelIndex)), this, SLOT(on_CameraTree_itemClicked(const QModelIndex)));
+    connect(ui->cameraTree, SIGNAL(clicked(const QModelIndex)), this, SLOT(cameraTree_itemClicked(const QModelIndex)));
     connect(bar->getFile(), SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
     connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
 
     // Lars Aksel - 05.02.2015
-    connect(ui->loadDefaultCameraProperties, SIGNAL(released()), this, SLOT(on_LoadDefaults_Pushed()));
+    connect(ui->loadDefaultCameraProperties, SIGNAL(clicked()), this, SLOT(loadDefaultCameraProperties_clicked()));
 
     /* Title */
     setWindowTitle("Qt Camera Manager");
@@ -133,7 +144,8 @@ void MainWindow::on_actionLiveView_toggled(bool arg1) {
     bar->getRunLiveView()->setChecked(arg1);
     ui->actionUpdateImages->setEnabled(!arg1);
     cameraManagers.at(selectedCameraManager)->activateLiveView(arg1);
-    tup.start();
+    if (arg1) tup.start();
+    //else 
 }
 
 /* Clic on UpdateImage button */
@@ -196,11 +208,11 @@ void MainWindow::on_resetItem() {
 void MainWindow::on_deleteGroup() {
     if (!ui->cameraTree->currentIndex().isValid()) return;
     cameraManagers.at(selectedCameraManager)->removeGroup(ui->cameraTree->currentIndex());
-    on_CameraTree_itemClicked(ui->cameraTree->currentIndex());
+    cameraTree_itemClicked(ui->cameraTree->currentIndex());
 }
 
 /* Click on an item in CameraTree */
-void MainWindow::on_CameraTree_itemClicked(const QModelIndex index) {
+void MainWindow::cameraTree_itemClicked(const QModelIndex index) {
     QString str = "";
     bool editable, deleteable;
     int icon = 0;
@@ -227,7 +239,7 @@ void MainWindow::on_CameraTree_customContextMenuRequested(const QPoint &pos) {
     connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuCameraAction_triggered(QAction*)));
 }
 
-/* Click on item in CameraTree popup Menu */
+/* Click on item in CameraTree popup Menu */    
 void MainWindow::menuCameraAction_triggered(QAction *action) {
     if (action->text() == "Add Group")
         on_addGroup();
@@ -484,7 +496,7 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
             }
             /* Removing the '/' followed by the folder name for having only the path and not the name */
             QString projectPath = folderPath.mid(0, folderPath.lastIndexOf("/")); // grethe 2015.01.22, snu slashen
-            cout << "Loading\n" << endl;
+            cout << "Loading..\n" << endl;
 
             createTreeFolder(ui->projectTree->invisibleRootItem(), projectPath, folderName);
 
@@ -497,10 +509,16 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
                     ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->setExpanded(true);
                 }
             }
+        } else {
+            QMessageBox message;
+            message.setText("Foldername does not contain the word \"trackpoint\"!");
+            message.setWindowTitle("Error");
+            message.show();
         }
     }
     //else If action = closing a project
-    else if (action->text() == "Close project"){
+    else if (action->text() == "Close project") {
+        if (ui->projectTree->selectedItems().size() == 0) return; // No selected items...
         QTreeWidgetItem *item = ui->projectTree->selectedItems().at(0);
         if (item != NULL && ui->projectTree->indexOfTopLevelItem(item) != -1 && item->text(0) != QString("Config File")){
             ui->projectTree->invisibleRootItem()->removeChild(item);
@@ -510,7 +528,17 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
     }
 }
 
-void MainWindow::createTreeFolder(QTreeWidgetItem *parent, QString path, QString name) {
+// Lars Aksel - 10.03.2015 - Filter for "project-supported" files
+bool isProjectSupported(QString& path) {
+    bool retVal = false;
+    retVal |= (path.endsWith(".exe", Qt::CaseInsensitive));
+    retVal |= (path.endsWith(".pgm", Qt::CaseInsensitive));
+    retVal |= (path.endsWith(".dat", Qt::CaseInsensitive));
+    retVal |= (path.endsWith(".txt", Qt::CaseInsensitive));
+    return retVal;
+}
+
+void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name) {
     /* Creating path and opening DIR */
     QString fullPath = QString(path + "/" + name);  // grethe 2015-01-22, fjerner \\ og setter inn / istd
     //QString fullPath = QString(path);   // path og name er lik - fjerner derfor name .. GS 2015-01-2015
@@ -522,7 +550,7 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, QString path, QString
     /* Creating the projectItem, reading the files contained by the project, and adding them into the projectItem */
     QTreeWidgetItem *rootItem = new QTreeWidgetItem();
     rootItem->setText(0, tr(name.toUtf8().constData()));
-    rootItem->setIcon(0, QIcon(":/icons/folder"));   // G: kan her bruke icon fra cameramanager.qrc.
+    rootItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
     parent->addChild(rootItem);
 
     for (int i = 0; i < list.size(); i++){
@@ -530,7 +558,7 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, QString path, QString
             if (list.at(i).isDir())
                 createTreeFolder(rootItem, fullPath, list.at(i).fileName());
             else
-                createTreeItem(rootItem, list.at(i).fileName());
+                if (isProjectSupported(list.at(i).absoluteFilePath())) createTreeItem(rootItem, list.at(i).fileName());
         }
     }
     rootItem->sortChildren(0, Qt::AscendingOrder);
@@ -539,13 +567,17 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, QString path, QString
 void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name) {
     QTreeWidgetItem *childItem = new QTreeWidgetItem();
     childItem->setText(0, name);
-    QString iconPath;
-    if (name.contains("socket"))
-        iconPath = "../CameraManager/img/coordinates.png";
-    else if (name.contains("option") && name.endsWith(".txt"))
-        iconPath = "../CameraManager/img/config.png";
-    else if (name.contains("calibration_summary", Qt::CaseInsensitive)){
-        iconPath = "../CameraManager/img/camera.png";
+    //QString iconPath;
+    int iconptr = 7;
+    if (name.contains("socket")) {
+        //iconPath = ":/icons/coordinates";
+        iconptr = 1;
+    } else if (name.contains("option") && name.endsWith(".txt")) {
+        //iconPath = ":/icons/config";
+        iconptr = 2;
+    } else if (name.contains("calibration_summary", Qt::CaseInsensitive)){
+        //iconPath = ":/icons/camera";
+        iconptr = 3;
         QTreeWidgetItem *item = parent;
         calibrationPath = name;
         while (item != NULL){
@@ -553,20 +585,27 @@ void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name) {
             item = item->parent();
         }
         calibrationPath = projectsPath + "/" + calibrationPath;
-    } else if (name.endsWith(".exe"))
-        iconPath = "../CameraManager/img/exe.png";
-    else if (parent->text(0) == "output" && name.endsWith(".dat"))
-        iconPath = "../CameraManager/img/2D.png";
-    else if (name.contains("grupper"))
-        iconPath = "../CameraManager/img/img.png";
-    else
-        iconPath = "../CameraManager/img/file.png";
-    childItem->setIcon(0, QIcon(iconPath));
+    } else if (name.endsWith(".exe")) {
+        //iconPath = ":/icons/exe";
+        iconptr = 4;
+    } else if (parent->text(0) == "output" && name.endsWith(".dat")) {
+        //iconPath = ":/icons/2d";
+        iconptr = 5;
+    } else if (name.endsWith(".pgm")) {
+        //iconPath = ":/icons/img";
+        iconptr = 6;
+    } else {
+        //iconPath = ":/icons/file";
+    } 
+    childItem->setIcon(0, icons[iconptr]);
     parent->addChild(childItem);
 }
 
-void MainWindow::on_LoadDefaults_Pushed() {
+void MainWindow::loadDefaultCameraProperties_clicked() {
+    //bool tempStop = cameraManagers[selectedCameraManager]->isUpdateProperties();
+    //if (tempStop) cameraManagers[selectedCameraManager]->setUpdateProperties(false);
     cameraManagers[selectedCameraManager]->loadPropertiesDefaults();
+    //if (tempStop) cameraManagers[selectedCameraManager]->setUpdateProperties(true);
 }
 
 void MainWindow::loadDefaultTrackPointSettings() {
@@ -574,10 +613,13 @@ void MainWindow::loadDefaultTrackPointSettings() {
 }
 
 void MainWindow::on_TrackPointChecked(int state) {
-    printf("TrackPoint Preview: %s\n", ((state == Qt::Unchecked) ? "DISABLED" : "ENABLED"));
+    //printf("TrackPoint Preview: %s\n", ((state == Qt::Unchecked) ? "DISABLED" : "ENABLED"));
     trackPointProperty.trackPointPreview = (state == Qt::Checked);
-    ui->subwinValueEdit->setEnabled((state != Qt::Checked));
-    ui->subwinSlider->setEnabled((state != Qt::Checked));
+}
+
+void MainWindow::on_FilteredImageChecked(int state) {
+    //printf("Filtered Image Preview: %s\n", ((state == Qt::Unchecked) ? "DISABLED" : "ENABLED"));
+    trackPointProperty.filteredImagePreview = (state == Qt::Checked);
 }
 
 void MainWindow::on_TrackPointValueChanged() {
@@ -609,6 +651,10 @@ void MainWindow::on_TrackPointValueChanged() {
             ui->maxPointSlider->setValue(lineEdit->text().toInt());
         }
     }
+    if (lineEdit == ui->minSepValueEdit) {
+        trackPointProperty.minSepValue = lineEdit->text().toInt();
+        ui->minSepSlider->setValue(lineEdit->text().toInt());
+    }
 }
 
 void MainWindow::on_TrackPointSliderValueChanged(int value) {
@@ -639,6 +685,10 @@ void MainWindow::on_TrackPointSliderValueChanged(int value) {
             trackPointProperty.maxPointValue = ui->maxPointValueEdit->text().toInt();
         }
     }
+    if (slider == ui->minSepSlider) {
+        ui->minSepValueEdit->setText(QString::number(value));
+        trackPointProperty.minSepValue = ui->minSepValueEdit->text().toInt();
+    }
 }
 
 void MainWindow::loadTrackPointSettingsFromFile(QString& filepath) {
@@ -667,6 +717,12 @@ void MainWindow::loadTrackPointSettingsFromFile(QString& filepath) {
     prop.maxPointValue = settings.value("value").toInt();
     prop.maxPointMin = settings.value("min").toInt();
     prop.maxPointMax = settings.value("max").toInt();
+    settings.endGroup();
+    settings.beginGroup("MinimalSeparation");
+    prop.minSepText = settings.value("text").toString();
+    prop.minSepValue = settings.value("value").toInt();
+    prop.minSepMin = settings.value("min").toInt();
+    prop.minSepMax = settings.value("max").toInt();
     settings.endGroup();
     trackPointProperty = prop;
 }
@@ -697,6 +753,12 @@ void MainWindow::saveTrackPointSettingsToFile(QString& filepath, TrackPointPrope
     settings.setValue("min", QString::number(props.maxPointMin));
     settings.setValue("max", QString::number(props.maxPointMax));
     settings.endGroup();
+    settings.beginGroup("MinimalSeparation");
+    settings.setValue("text", props.minSepText);
+    settings.setValue("value", QString::number(props.minSepValue));
+    settings.setValue("min", QString::number(props.minSepMin));
+    settings.setValue("max", QString::number(props.minSepMax));
+    settings.endGroup();
 }
 
 void MainWindow::setupTrackPointTab() {
@@ -708,15 +770,22 @@ void MainWindow::setupTrackPointTab() {
     trackPointLayout->addWidget(ui->trackPointEnabled, 0, 1);
     connect(ui->trackPointEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_TrackPointChecked(int)));
 
+    QLabel* filteredImageLabel = new QLabel("Filtered Image Preview:");
+    ui->filteredImagePreviewEnabled = new QCheckBox();
+    ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
+    trackPointLayout->addWidget(filteredImageLabel, 1, 0);
+    trackPointLayout->addWidget(ui->filteredImagePreviewEnabled, 1, 1);
+    connect(ui->filteredImagePreviewEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_FilteredImageChecked(int)));
+
     QLabel* thresholdLabel = new QLabel(trackPointProperty.thresholdText);
     ui->thresholdValueEdit = new QLineEdit(QString::number(trackPointProperty.thresholdValue));
     ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
     ui->thresholdSlider = new QSlider(Qt::Horizontal);
     ui->thresholdSlider->setValue(trackPointProperty.thresholdValue);
     ui->thresholdSlider->setRange(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax);
-    trackPointLayout->addWidget(thresholdLabel, 1, 0);
-    trackPointLayout->addWidget(ui->thresholdValueEdit, 1, 1);
-    trackPointLayout->addWidget(ui->thresholdSlider, 1, 2);
+    trackPointLayout->addWidget(thresholdLabel, 2, 0);
+    trackPointLayout->addWidget(ui->thresholdValueEdit, 2, 1);
+    trackPointLayout->addWidget(ui->thresholdSlider, 2, 2);
     connect(ui->thresholdValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
@@ -726,9 +795,9 @@ void MainWindow::setupTrackPointTab() {
     ui->subwinSlider = new QSlider(Qt::Horizontal);
     ui->subwinSlider->setValue(trackPointProperty.subwinValue);
     ui->subwinSlider->setRange(trackPointProperty.subwinMin, trackPointProperty.subwinMax);
-    trackPointLayout->addWidget(subwinLabel, 2, 0);
-    trackPointLayout->addWidget(ui->subwinValueEdit, 2, 1);
-    trackPointLayout->addWidget(ui->subwinSlider, 2, 2);
+    trackPointLayout->addWidget(subwinLabel, 3, 0);
+    trackPointLayout->addWidget(ui->subwinValueEdit, 3, 1);
+    trackPointLayout->addWidget(ui->subwinSlider, 3, 2);
     connect(ui->subwinValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->subwinSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
@@ -738,9 +807,9 @@ void MainWindow::setupTrackPointTab() {
     ui->minPointSlider = new QSlider(Qt::Horizontal);
     ui->minPointSlider->setValue(trackPointProperty.minPointValue);
     ui->minPointSlider->setRange(trackPointProperty.minPointMin, trackPointProperty.minPointMax);
-    trackPointLayout->addWidget(minPointLabel, 3, 0);
-    trackPointLayout->addWidget(ui->minPointValueEdit, 3, 1);
-    trackPointLayout->addWidget(ui->minPointSlider, 3, 2);
+    trackPointLayout->addWidget(minPointLabel, 4, 0);
+    trackPointLayout->addWidget(ui->minPointValueEdit, 4, 1);
+    trackPointLayout->addWidget(ui->minPointSlider, 4, 2);
     connect(ui->minPointValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->minPointSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
@@ -750,11 +819,23 @@ void MainWindow::setupTrackPointTab() {
     ui->maxPointSlider = new QSlider(Qt::Horizontal);
     ui->maxPointSlider->setValue(trackPointProperty.maxPointValue);
     ui->maxPointSlider->setRange(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax);
-    trackPointLayout->addWidget(maxPointLabel, 4, 0);
-    trackPointLayout->addWidget(ui->maxPointValueEdit, 4, 1);
-    trackPointLayout->addWidget(ui->maxPointSlider, 4, 2);
+    trackPointLayout->addWidget(maxPointLabel, 5, 0);
+    trackPointLayout->addWidget(ui->maxPointValueEdit, 5, 1);
+    trackPointLayout->addWidget(ui->maxPointSlider, 5, 2);
     connect(ui->maxPointValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->maxPointSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
+    
+    QLabel* minSepLabel = new QLabel(trackPointProperty.minSepText);
+    ui->minSepValueEdit = new QLineEdit(QString::number(trackPointProperty.minSepValue));
+    ui->minSepValueEdit->setValidator(new QIntValidator(trackPointProperty.minSepMin, trackPointProperty.minSepMax, ui->minSepValueEdit));
+    ui->minSepSlider = new QSlider(Qt::Horizontal);
+    ui->minSepSlider->setValue(trackPointProperty.minSepValue);
+    ui->minSepSlider->setRange(trackPointProperty.minSepMin, trackPointProperty.minSepMax);
+    trackPointLayout->addWidget(minSepLabel, 6, 0);
+    trackPointLayout->addWidget(ui->minSepValueEdit, 6, 1);
+    trackPointLayout->addWidget(ui->minSepSlider, 6, 2);
+    connect(ui->minSepValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
+    connect(ui->minSepSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
     trackPointLayout->setAlignment(Qt::AlignCenter | Qt::AlignTop);
     ui->trackPointWidget->setLayout(trackPointLayout);

@@ -72,7 +72,7 @@ public slots:
     /** CAMERA TREE **/
     void on_CameraTree_customContextMenuRequested(const QPoint &);
     void menuCameraAction_triggered(QAction *);
-    void on_CameraTree_itemClicked(const QModelIndex);
+    void cameraTree_itemClicked(const QModelIndex);
     void on_SelectCameras_currentIndexChanged(int index);
 
     /** PROJECT TREE **/
@@ -85,8 +85,9 @@ public slots:
     /*void on_updatePropertiesButton_clicked();*/
 
     // Lars Aksel - 05.02.2015
-    void on_LoadDefaults_Pushed();
+    void loadDefaultCameraProperties_clicked();
     void on_TrackPointChecked(int state);
+    void on_FilteredImageChecked(int state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
 
@@ -121,13 +122,14 @@ private:
 
     /** CREATING FOLDER AND FILE ITEMS **/
     void createTreeItem(QTreeWidgetItem *parent, QString name);
-    void createTreeFolder(QTreeWidgetItem *parent, QString path, QString name);
+    void createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
 
     MenuBar *bar;
     Ui::MainWindow *ui;
     std::vector<AbstractCameraManager*> cameraManagers;
     int selectedCameraManager;
     QPixmap propertiesIcons[3];
+    QIcon icons[8]; // Lars Aksel - Handle for shared icons
 
     // Lars Aksel - Loading TrackPoint-Settings into TrackPoint-tab
     void loadDefaultTrackPointSettings();

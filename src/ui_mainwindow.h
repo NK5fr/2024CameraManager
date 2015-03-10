@@ -56,14 +56,17 @@ public:
     QTreeView *cameraTree;
     QPushButton* loadDefaultCameraProperties;
     QCheckBox* trackPointEnabled = nullptr;
+    QCheckBox* filteredImagePreviewEnabled = nullptr;
     QLineEdit* thresholdValueEdit = nullptr;
     QLineEdit* subwinValueEdit = nullptr;
     QLineEdit* minPointValueEdit = nullptr;
     QLineEdit* maxPointValueEdit = nullptr;
+    QLineEdit* minSepValueEdit = nullptr;
     QSlider* thresholdSlider = nullptr;
     QSlider* subwinSlider = nullptr;
     QSlider* minPointSlider = nullptr;
     QSlider* maxPointSlider = nullptr;
+    QSlider* minSepSlider = nullptr;
 
     void setupUi(QMainWindow *MainWindow) {
         if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));

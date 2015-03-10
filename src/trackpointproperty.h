@@ -5,6 +5,7 @@
 
 struct TrackPointProperty {
     bool trackPointPreview = false;
+    bool filteredImagePreview = false;
     QString thresholdText;  // Descriptive text for "Threshold"
     int thresholdValue = 0; // Actual value of the threshold
     int thresholdMin = 0;   // Minimal value, used for sliders
@@ -21,5 +22,9 @@ struct TrackPointProperty {
     int maxPointValue = 0;
     int maxPointMin = 0;
     int maxPointMax = 0;
+    QString minSepText;
+    int minSepValue = 0;
+    int minSepMin = 0;
+    int minSepMax = 0;
 };
 #endif

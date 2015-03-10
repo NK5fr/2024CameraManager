@@ -18,5 +18,11 @@
           <file alias="quality_high">img/quality_high.png</file>
           <file alias="quality_low">img/quality_low.png</file>
           <file alias="reset">img/reset.png</file>
+          <file alias="2d">img/2D.png</file>
+          <file alias="coordinates">img/coordinates.png</file>
+          <file alias="file">img/file.png</file>
+          <file alias="img">img/img.png</file>
+          <file alias="exe">img/exe.png</file>
+          <file alias="config">img/config.png</file>
     </qresource>
 </RCC>

@@ -73,9 +73,8 @@ class AbstractCamera
         // Lars Aksel - 05.02.2015
         ImageDetect* getImageDetect() { return this->imageDetect; }
         TrackPointProperty* getTrackPointProperty() { return this->trackPointProperty; }
-        void setDetectPoints(bool detectPoints) { this->detectPoints = detectPoints; }
         void setTrackPointProperty(TrackPointProperty* prop) { this->trackPointProperty = prop; }
-        bool isDetectPoints() { return this->detectPoints; }
+        bool isCapturing() { return this->capturing; }
 
 
     protected:
@@ -91,7 +90,6 @@ class AbstractCamera
         // Lars Aksel - 30.01.2015
         ImageDetect* imageDetect;
         TrackPointProperty* trackPointProperty;
-        bool detectPoints;
         bool capturing;
 
     private:

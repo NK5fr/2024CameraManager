@@ -40,7 +40,7 @@ FlyCameraManager::FlyCameraManager() : AbstractCameraManager() {
     */
 
     // Lars Aksel - 27.01.2015 - Loading camera properties from file
-    loadPropertiesDefaults();
+    loadPropertiesDefaultsInit();
     
     //gs 2015-01-20, fjerner nullstilling av value - setter den i koden over istedet
     //for(int i=prop.size()-1; i>=0; i--){

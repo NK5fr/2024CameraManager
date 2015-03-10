@@ -62,12 +62,16 @@ class AbstractCameraManager : public QObject
 
         // Lars Aksel - 27.01.2015
         void loadPropertiesDefaults();
-        bool loadPropertiesFromFile(QString& filepath);
+        void loadPropertiesDefaultsInit();
+        bool loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop);
         bool savePropertiesToFile(QString& filepath);
 
         // Lars Aksel - 05.02.2015
         void setTrackPointProperty(TrackPointProperty* prop) { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->setTrackPointProperty(prop); }
-        void enableImageDetect(bool onOff) { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->setDetectPoints(onOff); }
+        void stopCapturing() { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->stopAutoCapture(); }
+        void setUpdateProperties(bool onOff) { this->updateProps = onOff; }
+        bool isCapturing() { return this->liveView; }
+        bool isUpdateProperties() { return this->updateProps; }
 
         /**
          * @brief add a empty group of cameras in the model
@@ -143,6 +147,7 @@ class AbstractCameraManager : public QObject
          * @param properties vector of CameraProperty
          */
         void setProperties(std::vector<CameraManager::CameraProperty> &properties);
+        void updateProperties(std::vector<CameraManager::CameraProperty> &properties);
     private slots:
         void on_CameraTree_itemChanged(QStandardItem* item);
         void on_subwindow_closing(QObject* window);
@@ -152,13 +157,14 @@ class AbstractCameraManager : public QObject
     protected:
 
         MainWindow* mainWindow;
-        bool liveView;
         QStandardItemModel cameraTree;
         QStandardItem newCameraList;
         QTreeWidget propertiesList;
         QStandardItem* selectedItem;
         AbstractCamera* selectedCamera;
         QIcon folderIcon;
+        bool liveView;
+        bool updateProps;
         struct activeCameraEntry { public:
             activeCameraEntry(AbstractCamera *c, QStandardItem* i)
                 : camera(c), treeItem(i), window(new QMdiSubWindow()) {

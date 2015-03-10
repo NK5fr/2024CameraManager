@@ -12,8 +12,9 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
     newarray = new unsigned char[imageWidth * imageHeight];
     imarray = new unsigned char[imageWidth * imageHeight];
     swtab = new SubWin(imageWidth, imageHeight);
-    pointDef = new PointDef(imageHeight);
+    pointDef = new PointDef(imageHeight, MAX_POINTS);
     points = new ImPointsOneCam(MAX_POINTS);
+    duplRemoved = new VectorOneCam(MAX_POINTS);
 }
 
 ImageDetect::~ImageDetect() {
@@ -22,6 +23,7 @@ ImageDetect::~ImageDetect() {
     delete swtab;
     delete pointDef;
     delete points;
+    delete duplRemoved;
 }
 
 void ImageDetect::setSubwinSize(int subwinsiz) {
@@ -51,7 +53,7 @@ void ImageDetect::imageDetectPoints() {  // imno for logging
 
     // --- Remove image background in image from all cameras
     imageRemoveBackground();
-
+    //memcpy(filteredImage, newarray, imageWidth * imageHeight);
     // --- Loop over images from one camera
     int ic, jc;
     // --- Search for points
@@ -849,3 +851,104 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
     pointDef->iright = pointDef->iright + swtab->x1; // - 1
     return;
 } // SubwinFindPoint
+
+///////////// Image::duplicatePoints() /////////////////////////////////////////////////////
+//
+//
+void ImageDetect::removeDuplicatePoints() {  // imno for logging
+    // ---
+    // Written by: Stig Magnar Løvås, SINTEF 2000
+    // Adapted for R3DCV by Mildrid Ljosland and Else Lervik, HiST, 2009
+    //
+    // Purpose: To remove duplicate points
+    //          This routine replaces the previous program: FJERN
+    // Input:
+    //        minsep: Minimum distance [pixels] to the next separate point
+
+    int minsep2 = minsep * minsep;
+    //ProdRunImage *image = (ProdRunImage *)this;
+
+    // --- Get points from this image
+    // ---    Get and check number of points in image from each camera
+    int numpoints = points->numpoints;
+
+    if (numpoints > 0) { //THEN
+        /*
+        if (numpoints > MAX_POINTS) {
+            if (calibrationRun) {  // not possible to use polymorhism        
+                return numpoints;  // too large value. Continue with next.
+            } else {
+                //errorMsgAndExit("Overflow, number of points (" + createStrOneNo(numpoints) + ") > maxpoints (" + createStrOneNo(ArrayLimits::MAX_POINTS) + ").", "Serious error in DuplicatePoints(). Exits.");
+            }
+        }
+        */
+        // ---       Get all points in image
+        for (int i = 0; i < numpoints; i++) {
+            pointDef->table[i].x = points->table[i].x;
+            pointDef->table[i].y = points->table[i].y;
+            pointDef->table[i].weight = points->table[i].weight;
+        } //  END DO
+
+        int numpointsnew = 0;
+        int nummatch = 0;
+        // ---    Reset array for control of used points to zero
+        for (int i = 0; i < numpoints; i++) {
+            pointDef->usedpt[i] = 0;
+        }
+
+        // ---    Check for duplicate points
+        for (int i = 0; i < numpoints /*- 1*/; i++) { // Tar også med siste punkt
+            if (pointDef->usedpt[i] == 0) { //THEN
+                nummatch = 1;
+                pointDef->match[nummatch - 1] = pointDef->table[i];
+                pointDef->usedpt[i] = 1;
+                for (int j = i + 1; j < numpoints; j++) {
+                    double dist = pow((pointDef->table[j].x - pointDef->match[0].x), 2) + pow(pointDef->table[j].y - pointDef->match[0].y, 2);
+
+                    if (dist < minsep2 && pointDef->usedpt[j] == 0) { //THEN
+                        pointDef->match[nummatch] = pointDef->table[j];
+                        nummatch++;
+                        pointDef->usedpt[j] = 1;
+                    } //ENDIF
+                } //END DO
+                pointDef->newpt[numpointsnew].x = 0.0;
+                pointDef->newpt[numpointsnew].y = 0.0;
+                pointDef->newpt[numpointsnew].weight = 0.0;
+                for (int j = 0; j < nummatch; j++) {
+                    pointDef->newpt[numpointsnew].x += pointDef->match[j].x * pointDef->match[j].weight;
+                    pointDef->newpt[numpointsnew].y += pointDef->match[j].y * pointDef->match[j].weight;
+                    pointDef->newpt[numpointsnew].weight += pointDef->match[j].weight;
+                } //END DO
+                pointDef->newpt[numpointsnew].x /= pointDef->newpt[numpointsnew].weight;
+                pointDef->newpt[numpointsnew].y /= pointDef->newpt[numpointsnew].weight;
+                pointDef->newpt[numpointsnew].weight = nummatch;
+                numpointsnew++; // = numpointsnew + 1
+            } //ENDIF
+        } //END DO
+
+        duplRemoved->numpointsnew = numpointsnew;
+
+        for (int i = 0; i < numpointsnew; i++) {
+            // original format
+            // for002.dat format
+            double xb1, yb1;
+            if (pointDef->newpt[i].x < imageWidth + 1) { //then
+                xb1 = pointDef->newpt[i].x - 0.5;
+                yb1 = pointDef->newpt[i].y - 0.5;
+            } else if (pointDef->newpt[i].x < 2 * imageWidth + 1) { //then
+                xb1 = pointDef->newpt[i].x - (imageWidth + 0.5);
+                yb1 = pointDef->newpt[i].y - 0.5;
+            } else {
+                xb1 = pointDef->newpt[i].x - (2 * imageWidth + 0.5);
+                yb1 = pointDef->newpt[i].y - 0.5;
+            } //endif
+            double xb = xb1 - imageWidth / 2.0;
+            double yb = -yb1 + imageHeight / 2.0;
+            duplRemoved->vectors[i].setVector(xb1, yb1, xb, yb);
+            duplRemoved->numOfMatches[i] = pointDef->newpt[i].weight;  // ML 2013-08-23
+        } //END DO
+    } else {
+        duplRemoved->numpointsnew = 0;
+    }
+    //return numpoints;
+} // DuplicatePoints()

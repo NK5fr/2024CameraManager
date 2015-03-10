@@ -18,7 +18,7 @@ using namespace CameraManager;
 
 AbstractCameraManager::AbstractCameraManager(bool empty)
     : liveView(false), cameraTree() , newCameraList("Detected Cameras"), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
-
+    updateProps = true;
     propertiesList.setRootIsDecorated(false);
     propertiesList.setColumnCount(4);
     propertiesList.setHeaderLabels(QStringList() << "Property" << "Auto" << "Value" << "Slider");
@@ -26,7 +26,7 @@ AbstractCameraManager::AbstractCameraManager(bool empty)
     if(empty) return;
     QObject::connect(&cameraTree, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_CameraTree_itemChanged(QStandardItem*)));
     cameraTree.appendRow(&newCameraList);
-    newCameraList.setIcon( QIcon(":/icons/folder_home") );
+    newCameraList.setIcon(QIcon(":/icons/folder_home"));
     newCameraList.setCheckable(true);
     newCameraList.setDragEnabled(false);
     //newCameraList.setCheckState(Qt::Checked);
@@ -53,9 +53,10 @@ void AbstractCameraManager::updateImages(){
     }
 }
 
-void AbstractCameraManager::updateProperties(){
+void AbstractCameraManager::updateProperties() {
+    //if (!updateProps) return;
     AbstractCamera* selected = selectedCamera;
-    if( selected == NULL ) return ;
+    if (selected == nullptr) return;
     for( int i = propertiesList.topLevelItemCount()-1; i>=0; i--){
         QTreeWidgetItem* item = propertiesList.topLevelItem(i);
         QCheckBox* checkBox = qobject_cast<QCheckBox*>( propertiesList.itemWidget(item, Ui::PropertyAuto) );
@@ -63,8 +64,12 @@ void AbstractCameraManager::updateProperties(){
         QSlider* slider = reinterpret_cast<QSlider*>( checkBox->property("TreeWidgetSlider").value<quintptr>() );
         //qDebug() << "updating:" << prop->getName().c_str();
 
-        selected->updateProperty(prop);
-        item->setText(Ui::PropertyValue, prop->formatValue() );
+        // Lars Aksel - 09.02.2015 - Changed from updateProperties to setProperties
+        // This is not a good "fix", but seems to work...
+        //selected->updateProperty(prop);
+        selected->setProperty(prop);
+
+        item->setText(Ui::PropertyValue, prop->formatValue());
         checkBox->setChecked(prop->getAuto());
 
         if( prop->getType() == CameraManager::AUTOTRIGGER ) continue;
@@ -102,12 +107,23 @@ void setPropToSettings(QSettings& settings, CameraProperty& prop) {
 // Lars Aksel - Load default values from default-file
 void AbstractCameraManager::loadPropertiesDefaults() {
     QString settingsFile = QString(QDir::currentPath() + "/../props/defaultCameraSettings.ini");
-    loadPropertiesFromFile(settingsFile);
+    //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
+    std::vector<CameraProperty> prop;
+    loadPropertiesFromFile(settingsFile, prop);
+    //updateProperties(prop); // Use only update, not set! NOT WORKING!
+    setProperties(prop);
+}
+
+void AbstractCameraManager::loadPropertiesDefaultsInit() {
+    QString settingsFile = QString(QDir::currentPath() + "/../props/defaultCameraSettings.ini");
+    //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
+    std::vector<CameraProperty> prop;
+    loadPropertiesFromFile(settingsFile, prop);
+    setProperties(prop);
 }
 
 // Lars Aksel - Load camera properties from file
-bool AbstractCameraManager::loadPropertiesFromFile(QString& filepath) {
-    std::vector<CameraProperty> prop = std::vector<CameraProperty>();
+bool AbstractCameraManager::loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop) {
     QSettings settings(filepath, QSettings::IniFormat);
     QFileInfo fileInfo = QFileInfo(filepath);
     if (fileInfo.exists()) {
@@ -135,7 +151,6 @@ bool AbstractCameraManager::loadPropertiesFromFile(QString& filepath) {
         settings.beginGroup("AutoTrigger");
         setPropFromSettings(settings, prop, CameraManager::AUTOTRIGGER);
         settings.endGroup();
-        setProperties(prop);
         return true;
     } else {
         printf("Settings file does not exist: %s\n", qPrintable(filepath));
@@ -178,7 +193,7 @@ void AbstractCameraManager::activateLiveView(bool active){
     if( active ){
         for(int i=activeCameras.size()-1; i>=0; i--){
             activeCameraEntry& camEntry = activeCameras.at(i);
-            QVideoWidget* videoWidget = qobject_cast<QVideoWidget *>( camEntry.window->widget() );
+            QVideoWidget* videoWidget = qobject_cast<QVideoWidget *>(camEntry.window->widget());
             camEntry.camera->startCapture(videoWidget);
         }
     }else{
@@ -400,7 +415,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
     for(unsigned int i = 0; i < cameraProperties.size(); i++){
         CameraProperty &property = cameraProperties.at(i);
         QTreeWidgetItem* it = new QTreeWidgetItem();
-        it->setText( Ui::PropertyName, property.getName());
+        it->setText(Ui::PropertyName, property.getName());
         propertiesList.addTopLevelItem(it);
         //checkbox
         QCheckBox* box = new QCheckBox();
@@ -439,6 +454,26 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
     propertiesList.resizeColumnToContents(1);
     propertiesList.resizeColumnToContents(2);
     propertiesList.resizeColumnToContents(3);
+}
+
+// Lars Aksel - Update Properties-UI elements - DOES NOT WORK!
+void AbstractCameraManager::updateProperties(std::vector<CameraProperty> &properties) {
+    cameraProperties = std::vector<CameraProperty>(properties);
+    for (unsigned int i = 0; i < cameraProperties.size(); i++){
+        QTreeWidgetItem* it = propertiesList.topLevelItem(i);
+        CameraProperty &property = cameraProperties.at(i);
+        for (int j = activeCameras.size() - 1; j >= 0; j--){
+            activeCameras.at(j).camera->setProperty(&property);
+        }
+        QCheckBox* box = (QCheckBox*) propertiesList.itemWidget(it, Ui::PropertyAuto);
+        if (!property.getCanAuto()) box->setEnabled(false);
+        if (property.getType() == CameraManager::AUTOTRIGGER) continue;
+        QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(it, Ui::PropertyValue);
+        valueBox->setText(QString::number(property.getValue()));
+        QSlider* slider = (QSlider*) propertiesList.itemWidget(it, Ui::PropertySlider);
+        slider->setValue(property.getValueToSlider());
+        slider->setRange(property.getMinToSlider(), property.getMaxToSLider());        
+    }
 }
 
 void AbstractCameraManager::on_propertyCheckbox_changed(int state){

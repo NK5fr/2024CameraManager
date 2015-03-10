@@ -22,8 +22,7 @@ CameraInfo* FlyCamera::getCameraInfo() {
     return &camInfo;
 }
 
-void FlyCamera::setProperty(CameraManager::CameraProperty* p)
-{
+void FlyCamera::setProperty(CameraManager::CameraProperty* p) {
     if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
         cam->GetTriggerMode(&triggerMode);
@@ -112,42 +111,50 @@ QImage FlyCamera::captureImage() {
         err.PrintErrorTrace();
         return QImage();
     }
-    unsigned int x = img.GetCols();
-    unsigned int y = img.GetRows();
+    unsigned int width = img.GetCols();
+    unsigned int height = img.GetRows();
     unsigned char* imageBuffer = img.GetData();
-    QImage image(x, y, QImage::Format_RGB32);
-    for(unsigned int i = 0; i <y; i++){
-        for(unsigned int j = 0; j <x; j++) {
-            unsigned char data = imageBuffer[i*x+j];
-            image.setPixel(j, i, qRgb(data, data, data));
-        }
+    QImage image(width, height, QImage::Format_RGB32);
+    unsigned char* imgData = image.bits();
+    unsigned char imgVal = 0;
+    if (imageDetect == nullptr) {
+        imageDetect = new ImageDetect(width, height,
+                                        trackPointProperty->thresholdValue,
+                                        trackPointProperty->subwinValue);
     }
-    if (trackPointProperty != nullptr) {
-        if (trackPointProperty->trackPointPreview) {
-            if (imageDetect == nullptr) {
-                imageDetect = new ImageDetect(x, y,
-                                              (trackPointProperty == nullptr) ? 50 : trackPointProperty->thresholdValue,
-                                              (trackPointProperty == nullptr) ? 128 : trackPointProperty->subwinValue);
+    imageDetect->setThreshold(trackPointProperty->thresholdValue);
+    imageDetect->setMinPix(trackPointProperty->minPointValue);
+    imageDetect->setMaxPix(trackPointProperty->maxPointValue);
+    imageDetect->setSubwinSize(trackPointProperty->subwinValue);
+    imageDetect->setMinSep(trackPointProperty->minSepValue);
+    imageDetect->setImage(imageBuffer);
+    if (trackPointProperty->filteredImagePreview) {
+        imageDetect->imageRemoveBackground();
+        imageBuffer = imageDetect->getFilteredImage();
+    }
+    for (int i = 0; i < img.GetDataSize(); ++i) {
+        imgVal = imageBuffer[i];
+        imgData[(i * 4) + 0] = imgVal;  // Red
+        imgData[(i * 4) + 1] = imgVal;  // Green
+        imgData[(i * 4) + 2] = imgVal;  // Blue
+        imgData[(i * 4) + 3] = 255;     // Alpha
+    }
+    if (trackPointProperty->trackPointPreview) {
+        imageDetect->imageDetectPoints();
+        imageDetect->removeDuplicatePoints();
+        ImPoint* points = imageDetect->getFinalPoints();
+        // Drawing the points on the image...
+        int crossWingSize = (int) (height / 75);
+        for (int i = 0; i < imageDetect->getFinalNumPoints(); i++) {
+            int xPos = points[i].x;
+            int yPos = points[i].y;
+            // Line along X-axis
+            for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
+                image.setPixel(x, yPos, qRgb(255, 0, 0));
             }
-            if (trackPointProperty != nullptr) {
-                imageDetect->setThreshold(trackPointProperty->thresholdValue);
-                imageDetect->setMinPix(trackPointProperty->minPointValue);
-                imageDetect->setMaxPix(trackPointProperty->maxPointValue);
-            }
-            imageDetect->setImage(imageBuffer);
-            imageDetect->imageDetectPoints();
-            ImPoint* points = imageDetect->getPoints();
-            // Drawing the points on the image...
-            int crossWingSize = (int) (image.height() / 100);
-            for (int i = 0; i < imageDetect->getNumPoints(); i++) {
-                int xPos = points[i].x;
-                int yPos = points[i].y;
-                for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
-                    image.setPixel(x, yPos, qRgb(255, 0, 0));
-                }
-                for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
-                    image.setPixel(xPos, y, qRgb(255, 0, 0));
-                }
+            // Line along Y-axis
+            for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
+                image.setPixel(xPos, y, qRgb(255, 0, 0));
             }
         }
     }
@@ -174,7 +181,7 @@ void FlyCamera::stopAutoCapture(){
 QImage FlyCamera::retrieveImage() {
     if (capturing) return QImage();
     capturing = true;
-    //cout << "Images begin to be retrieved" << endl;
+    cout << "Images begin to be retrieved" << endl;
     TriggerMode triggerMode;
     TriggerMode oldTrigger;
 
@@ -183,20 +190,20 @@ QImage FlyCamera::retrieveImage() {
     triggerMode.onOff = false;
     cam->SetTriggerMode(&triggerMode);
 
-    //cout << "Retrieving images..." << endl;
+    cout << "Retrieving images..." << endl;
     cam->StartCapture();
 
 
-    //cout << "Retrieving 1..." << endl;
+    cout << "Retrieving 1..." << endl;
     QImage image = captureImage();
 
-    //cout << "Retrieving 2..." << endl;
+    cout << "Retrieving 2..." << endl;
     cam->SetTriggerMode(&oldTrigger);
 
-    //cout << "Retrieving 3..." << endl;
+    cout << "Retrieving 3..." << endl;
     cam->StopCapture();
 
-    //cout << "Images retrieved" << endl;
+    cout << "Images retrieved" << endl;
     capturing = false;
     return image;
 }

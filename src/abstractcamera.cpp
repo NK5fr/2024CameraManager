@@ -7,7 +7,6 @@ using namespace std;
 AbstractCamera::AbstractCamera() : thread(this) {
     imageDetect = nullptr;
     trackPointProperty = nullptr;
-    detectPoints = false;
     capturing = false;
 }
 
