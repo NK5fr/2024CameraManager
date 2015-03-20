@@ -41,7 +41,7 @@ void IsCamera::setProperty(CameraManager::CameraProperty* p)
         cam->SetProperty(&prop);
     }
 }
-void IsCamera::updateProperty(CameraManager::CameraProperty* p)
+void IsCamera::getProperty(CameraManager::CameraProperty* p)
 {
     Error error;
     Property prop;

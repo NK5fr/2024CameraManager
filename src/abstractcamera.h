@@ -33,7 +33,7 @@ class AbstractCamera
          * @brief (Pure virtual) get the value of that property for that camera
          * @param p property to update
          */
-        virtual void updateProperty(CameraManager::CameraProperty* p) = 0;
+        virtual void getProperty(CameraManager::CameraProperty* p) = 0;
 
         /**
          * @brief compare 2 cameras

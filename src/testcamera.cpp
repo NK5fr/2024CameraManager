@@ -27,7 +27,8 @@ void TestCamera::setProperty(CameraProperty* p){
     default: break;
     }
 }
-void TestCamera::updateProperty(CameraProperty* p){
+
+void TestCamera::getProperty(CameraProperty* p){
     p->setAuto(false);
     switch(p->getType()){
     case CameraManager::FRAMERATE: p->setValue(framerate);
@@ -52,7 +53,7 @@ void TestCamera::startAutoCapture(){
     while(capturing){
         Sleeper::sleep(1000/framerate);
 
-        sendFrame( generateImage() );
+        sendFrame(generateImage());
     }
     qDebug() << "Stopped autoCapture !";
 }

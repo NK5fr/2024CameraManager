@@ -13,7 +13,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QProcess>
-#include "qmessagebox.h"
+#include <QMessageBox>
 
 #include <sstream>
 #include <iostream>
@@ -391,20 +391,16 @@ void MainWindow::executeError(QProcess::ProcessError) {
 /** THREAD METHODS **/
 //////////////////////
 
-/* When Thread DetectCamera is launched, it call this method to find new camera */
+// When Thread DetectCamera is launched, it call this method to find new camera
 void MainWindow::startCameraDetection() {
     while (detectCameras){
-        if (ui != nullptr) {
-            ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
-            //cout << "Searching for new cameras..." << endl;
-            Sleeper::sleep(1);
-        } else {
-            detectCameras = false;
-        }
+        ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
+        //cout << "Searching for new cameras..." << endl;
+        Sleeper::sleep(1);
     }
 }
 
-/* When Thread UpdateProperties is launched, it call this method to update the selected camera properties */
+// When Thread UpdateProperties is launched, it call this method to update the selected camera properties
 void MainWindow::startUpdateProperties() {
     while (bar->getRunLiveView()->isChecked()){
         //cout << "Updating properties..." << endl;
@@ -441,8 +437,9 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     } else if (fileName.contains("socket")){
         /* Socket file, with 3D datas */
         SocketViewerWidget *svw = new SocketViewerWidget(selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
+        ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(svw);
-        svw->show();
+        svw->showMaximized();
 
     } else if (fileName.contains("calibration")){
         /* Calibration file */
@@ -450,12 +447,12 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         ui->centralwidget->addSubWindow(cvw);
         cvw->show();
 
-    } else if (fileName.contains("grupper")){
+    } else if (fileName.endsWith(".pgm")){
         /* Grupper image file */
 
         /* Hide the left menu to have almost all the screen */
-        bar->getHideCameraWidget()->setChecked(true);
-        ui->CamerasWidget_2->setVisible(false);
+        //bar->getHideCameraWidget()->setChecked(true);
+        //ui->CamerasWidget_2->setVisible(false);
 
         /* Calculating the top left point of the ImageViewerWidget */
         QSize size = ui->centralwidget->size();
@@ -530,12 +527,14 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
 
 // Lars Aksel - 10.03.2015 - Filter for "project-supported" files
 bool isProjectSupported(QString& path) {
-    bool retVal = false;
-    retVal |= (path.endsWith(".exe", Qt::CaseInsensitive));
-    retVal |= (path.endsWith(".pgm", Qt::CaseInsensitive));
-    retVal |= (path.endsWith(".dat", Qt::CaseInsensitive));
-    retVal |= (path.endsWith(".txt", Qt::CaseInsensitive));
-    return retVal;
+    if (path.endsWith(".exe", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".pgm", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".dat", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".txt", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
+    return false;
 }
 
 void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name) {
@@ -567,17 +566,13 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, 
 void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name) {
     QTreeWidgetItem *childItem = new QTreeWidgetItem();
     childItem->setText(0, name);
-    //QString iconPath;
-    int iconptr = 7;
+    int iconptr = 7; // :/icons/file
     if (name.contains("socket")) {
-        //iconPath = ":/icons/coordinates";
-        iconptr = 1;
+        iconptr = 1; // :/icons/coordinates
     } else if (name.contains("option") && name.endsWith(".txt")) {
-        //iconPath = ":/icons/config";
-        iconptr = 2;
+        iconptr = 2; // :/icons/config
     } else if (name.contains("calibration_summary", Qt::CaseInsensitive)){
-        //iconPath = ":/icons/camera";
-        iconptr = 3;
+        iconptr = 3; // :/icons/camera
         QTreeWidgetItem *item = parent;
         calibrationPath = name;
         while (item != NULL){
@@ -586,17 +581,12 @@ void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name) {
         }
         calibrationPath = projectsPath + "/" + calibrationPath;
     } else if (name.endsWith(".exe")) {
-        //iconPath = ":/icons/exe";
-        iconptr = 4;
+        iconptr = 4; // :/icons/exe
     } else if (parent->text(0) == "output" && name.endsWith(".dat")) {
-        //iconPath = ":/icons/2d";
-        iconptr = 5;
+        iconptr = 5; // :/icons/2d
     } else if (name.endsWith(".pgm")) {
-        //iconPath = ":/icons/img";
-        iconptr = 6;
-    } else {
-        //iconPath = ":/icons/file";
-    } 
+        iconptr = 6; // :/icons/img
+    }
     childItem->setIcon(0, icons[iconptr]);
     parent->addChild(childItem);
 }

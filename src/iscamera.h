@@ -20,23 +20,16 @@ public:
     virtual ~IsCamera();
 
     Camera* getCamera();
-
     PGRGuid* getGuid();
-
     CameraInfo* getCameraInfo();
 
     void setProperty(CameraManager::CameraProperty *p);
-
-    void updateProperty(CameraManager::CameraProperty *p);
-
+    void getProperty(CameraManager::CameraProperty *p);
     void startAutoCapture();
     void stopAutoCapture();
     void sendFrame(QImage img);
-
     QImage retrieveImage();
-
     bool equalsTo(AbstractCamera *c);
-
     std::string getString();
 
 private:
@@ -44,10 +37,7 @@ private:
     PGRGuid guid;
     CameraInfo camInfo;
     FlyCapture2::PropertyType getPropertyType(CameraManager::CameraProperty *p);
-
-
     bool capturing;
-
 };
 
 #endif // FLYCAMERA_H

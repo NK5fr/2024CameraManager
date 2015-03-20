@@ -1,371 +1,258 @@
 #include "widgetgl.h"
-#include "sleeper.h"
-#include <iostream>
-#include <QtCore/qmath.h>
-#include <QMenu>
 
 using namespace std;
 
-WidgetGL::WidgetGL(vector< vector < double > > *points, std::vector < float > minmax,
-                   SocketViewerWidget *socket, QString calibrationPath)
-    : pointsDatas(*points), minMax(minmax), initialScale(false), rotationAxis(' '),
-      keyPressed(0), svw(socket){
 
+// IMPORTANT: Must be compiled in Release-mode to enable rendering...
+WidgetGL::WidgetGL(vector<vector<Vector3d>> *points, vector<float> minmax, SocketViewerWidget* socket, QString calibrationPath)
+                   : QGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
     coordinatesShown = 0;
-    xRot = 0;
-    yRot = 0;
-    zRot = 0;
-
     qtBlack = QColor::fromCmykF(0.0, 0.0, 0.0, 0.25);
 
-    initializeDefaultRotation();
     initializingCameraCoordinates(calibrationPath);
     initializeGL();
-
-
-
+    
     /* Initializing the selected array */
-    for(int i=0;i<pointsDatas[0].size();i++)
+    for (int i = 0; i < pointData[0].size(); i++) {
         selected.insert(i, false);
-
+    }
+    rotX = 0;
+    rotY = 0;
+    camDistance = 4000;
     setMouseTracking(true);
     grabKeyboard();
-
-    /*initializingCameraCoordinates(calibrationPath);*/
-
+    //initializingCameraCoordinates(calibrationPath);
     installEventFilter(this);
-
     updateGL();
 }
 
-
-WidgetGL::~WidgetGL(){
-
+WidgetGL::~WidgetGL() {
 }
 
-void WidgetGL::initializeGL(){
- /*   qglClearColor(qtBlack.light());
-    glMatrixMode(GL_MODELVIEW);
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_DEPTH);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LINE);
-    glDisable(GL_CULL_FACE);
-
-    /* Scaling the painting area */
-/*    glScalef(1/((minMax[3]-minMax[0])*1.5),
-            1/((minMax[4]-minMax[1])*1.5),
-            1/((minMax[5]-minMax[2])*1.5));*/
+void WidgetGL::initializeGL() {
+    int height = this->height();
+    int width = this->width();
+    if (height == 0) height = 1;
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    GLfloat aspect = (GLfloat) width / (GLfloat) height;
+    const double PI = 3.1415926535;
+    double zNear = 0.3;
+    double zFar = 8000;
+    double fov = 60;
+    gluPerspective(fov, (GLfloat) width / (GLfloat) height, zNear, zFar);
 }
 
-void WidgetGL::initializeDefaultRotation(){
-    /* Initializing the cumulate rotation values */
-    cumulateXRot=0;
-    cumulateYRot=0;
-    cumulateZRot=0;
-
-    defaultRotation.resize(4);
-    for(int i=0;i<defaultRotation.size();i++)
-        defaultRotation[i].resize(3);
-    /* First */
-    defaultRotation[0][0]=351;
-    defaultRotation[0][1]=0;
-    defaultRotation[0][2]=9;
-    /* Second */
-    defaultRotation[1][0]=351;
-    defaultRotation[1][1]=0;
-    defaultRotation[1][2]=261;
-    /* Third */
-    defaultRotation[2][0]=351;
-    defaultRotation[2][1]=93;
-    defaultRotation[2][2]=306;
-    /* Fourth */
-    defaultRotation[3][0]=351;
-    defaultRotation[3][1]=0;
-    defaultRotation[3][2]=84;
-}
-
-void WidgetGL::initializingCameraCoordinates(QString calibrationPath){
-    cout << "calibrationPath : " << calibrationPath.toUtf8().constData() << endl;
+// TODO: Rewrite to support the calibration-file... (summary-version)
+void WidgetGL::initializingCameraCoordinates(QString calibrationPath) {
+    printf("CalibrationPath: %s\n", calibrationPath.toUtf8().constData());
     QFile myFile(calibrationPath);
-    if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text)){ return; }
-    /* Getting the combination */
-    vector < QString > combinations;
-    QString line = myFile.readLine();
-    QStringList combinationsList = line.split(" ");
-    combinations.resize(combinationsList.size()-1);
-    for(int i=0;i<combinationsList.size()-1;i++)
-        combinations[i]=combinationsList.at(i+1);
+    if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text)) return;
+    QString fullText = QString(myFile.readAll());
+    myFile.close();
 
-    camerasData.resize(combinations.size()*3);
-    for(int i=0;i<camerasData.size();i++)
-        camerasData.at(i).resize(3);
+    // Tries to find out how many cameras are registered in the calibration file...
+    QStringList lineList = fullText.split("\n");
+    int numCams = 0;
+    while (!lineList[numCams].isEmpty()) numCams++;
 
-    /* while file is not finished */
-    while(!myFile.atEnd()){
-        line = myFile.readLine();
-        /* Testing all the combinations from the vector 'combination' */
-        for(int i=0;i<combinations.size();i++){
-            /* If the line is the path line */
-            if(line.contains("C:\\")){
-                cout << "Line : " << line.mid(0,line.size()-1).toUtf8().constData()
-                     << ", combination : " << combinations[i].toUtf8().constData() << endl;
-                cout << "Line contains : " << line.contains(combinations[i]) << endl;
-            }
-            if(line.contains("C:\\") && line.contains(combinations[i])){
-                cout << "Combination : " << combinations[i].toUtf8().constData() << endl;
-                /* Loop for 3 cameras */
-                for(int j=0;j<3;j++){
-                    while(!line.contains("Camno") && !line.contains("Serial no."))
-                        line = myFile.readLine();
-                    /* Getting the camera number */
-                    int number = line.split(" ").at(1).split(".").at(0).toInt();
-                    /* Line down, to have the coordinates */
-                    line = myFile.readLine();
-                    /* Cleaning the list */
-                    QStringList list = line.split(" ");
-                    vector < QString > listCleaned;
-                    listCleaned.resize(list.size());
-                    QString tmp;
-                    /* cout << "Cleaning" << endl;*/
-                    int ind=0;
-                    for(int k=0;k<list.size();k++){
-                        tmp=list.at(k);
-                        tmp.replace(" ","");
-                        if(!tmp.isEmpty()){
-                            listCleaned[ind]=tmp;
-                            ind++;
-                        }
-                    }
-                    /* X, Y and Z */
-                    /*for(int k=0;k<listCleaned.size();k++)
-                        cout << "Value : '" << listCleaned.at(k).toUtf8().constData() << "'" << endl;
-                    cout << endl;*/
-                    camerasData[number][0]=listCleaned.at(1).toDouble();
-                    camerasData[number][1]=listCleaned.at(3).toDouble();
-                    camerasData[number][2]=listCleaned.at(5).toDouble();
-                }
-            }
-
-        }
+    // Generate list of cameras, and sets some values for them...
+    camerasData.resize(numCams);
+    for (int cam = 0; cam < numCams; cam++) {
+        QStringList camList = lineList[cam].split(QRegExp("[^0-9]+")); // First index in camList is empty...
+        camerasData[cam].camNo = camList[1].toInt();
+        camerasData[cam].serialNo = camList[2].toInt();
     }
-    for(int i=0;i<camerasData.size();i++){
-        for(int j=0;j<camerasData[i].size();j++){
-            cout << "Camera n°" << i << ", coordinate : " << j << ", value : " << camerasData[i][j] << endl;
+
+    int atLine = numCams;
+    // Scans for lines beginning with Camno, and grabs the first coordinates in the next line... (X0, Y0, Z0)
+    do {
+        atLine++;
+        // Find first instance of Camno, and jump to next line to grab the coordinates...
+        if (!lineList[atLine].startsWith("Camno")) continue;
+        int camIndex = lineList[atLine].split(QRegExp("[^0-9]+"))[1].toInt();
+        if (camIndex < 0 || camIndex >= numCams) printf("Could not get \'Camno\' from this line: %s\n", lineList[atLine].constData());
+        if (!camerasData[camIndex].valueSet) {
+            atLine++;
+            QStringList coords = lineList[atLine].split(QRegExp("\s*[XYZ][O0]:\s*"));
+            camerasData[camIndex].camPos.x = (coords[1].toDouble());
+            camerasData[camIndex].camPos.y = (coords[3].toDouble());
+            camerasData[camIndex].camPos.z = (coords[2].toDouble());
+            camerasData[camIndex].valueSet = true;
         }
+
+    } while (atLine + 1 < lineList.size());
+
+    // Prints out some info...
+    for (int i = 0; i < numCams; i++) {
+        printf("Camno: %u, SerialNo: %u\nX: %.2f\tY: %.2f\tZ: %.2f\n\n", camerasData[i].camNo, camerasData[i].serialNo, camerasData[i].camPos.x, camerasData[i].camPos.y, camerasData[i].camPos.z);
     }
 }
 
-void WidgetGL::paintGL(){
-    /* This one should be usefull
-                        * glTranslatef(1.5f, 0.0f, -7.0f);*/
+void WidgetGL::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-/*    glPointSize(4.0);
-    glLineWidth(3.0);
-
-    /* Rotation
-           * If the last force update was owed by a rotation
-           */
-/*    if(rotationAxis=='X')
-        glRotatef(xRot, 1.0, 0.0, 0.0);
-    if(rotationAxis=='Z')
-        glRotatef(zRot, 0.0, 1.0, 0.0);
-    if(rotationAxis=='Y')
-        glRotatef(yRot, 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
 
+    gluLookAt(cos(rotY) * sin(rotX) * camDistance, sin(rotY) * camDistance, cos(rotY) * cos(rotX) * camDistance, 0, 0, 0, 0, 1, 0);
+    
     /* Drawing points at the 'coordinatesShown' time */
-/*    glColor3f(0, 0, 0);
-    for(int i=0;i<(pointsDatas[coordinatesShown]).size();i=i+3){
-        glBegin(GL_POINTS);
-        glVertex3f(GLfloat(pointsDatas[coordinatesShown][i]),
-                   GLfloat(pointsDatas[coordinatesShown][i+2]),
-                GLfloat(pointsDatas[coordinatesShown][i+1]));
+    glPointSize(4.0);
+    glColor3f(1, 0, 0);
+
+    glColor3f(0.75f, 0.75f, 0.75f);
+    for (int point = 0; point < (pointData[0]).size(); point++){
+        glBegin(GL_LINE_STRIP);
+        for (int time = 0; time < coordinatesShown; time++) {
+            glVertex3f(GLfloat(pointData[time][point].x),
+                       GLfloat(pointData[time][point].y),
+                       GLfloat(pointData[time][point].z));
+        }
         glEnd();
     }
+    
+    glColor3f(1, 0, 0);
+    for (int time = 0; time < coordinatesShown; time++) {
+        for (int point = 0; point < (pointData[time]).size(); point++){
+            glBegin(GL_POINTS);
+            glVertex3f(GLfloat(pointData[time][point].x),
+                       GLfloat(pointData[time][point].y),
+                       GLfloat(pointData[time][point].z));
+            glEnd();
+        }
+    }
+
+    
     /* Drawing the cameras point */
-/*    glColor3f(0.9, 0, 0.9);
+    glColor3f(0.9, 0, 0.9);
     glPointSize(8.0);
-    for(int i=0;i<camerasData.size();i++){
+    for (int i = 0; i < camerasData.size(); i++){
         glBegin(GL_POINTS);
-        glVertex3f(GLfloat(camerasData[i][0]),
-                GLfloat(camerasData[i][2]),
-                GLfloat(camerasData[i][1]));
+        glVertex3f(camerasData[i].camPos.x, camerasData[i].camPos.y, camerasData[i].camPos.z);
         glEnd();
     }
 
-
-    /* Drawing axis lines
-           * X axis */
-
-/*    glColor3f(1, 0, 0);
+    const double gridSize = 2000;
+    // X Axis
+    glColor3f(1, 0, 0);
     glBegin(GL_LINES);
     glVertex3f(0, 0, 0);
-    glVertex3f(1000, 0, 0);
+    glVertex3f(gridSize, 0, 0);
     glEnd();
 
-    /* Y Axis */
-/*    glColor3f(0, 1, 0);
+    // Y Axis
+    glColor3f(0, 1, 0);
     glBegin(GL_LINES);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, 0, 1000);
+    glVertex3f(0, 0, gridSize);
     glEnd();
 
-    /* Z Axis */
-/*    glColor3f(0, 0, 1);
+    // Z Axis
+    glColor3f(0, 0, 1);
     glBegin(GL_LINES);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, 1000, 0);
+    glVertex3f(0, gridSize, 0);
     glEnd();
-
-    rotationAxis=' ';*/
 }
 
-void WidgetGL::resizeGL(int w, int h){
-    glViewport(0, 0, w, h);
+void WidgetGL::resizeGL(int width, int height) {
+    if (height == 0) height = 1;
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    GLfloat aspect = (GLfloat) width / (GLfloat) height;
+    const double PI = 3.1415926535;
+    double zNear = 1;
+    double zFar = 16000;
+    double fov = 60;
+    gluPerspective(fov, (GLfloat) width / (GLfloat) height, zNear, zFar);
 }
 
-
-void WidgetGL::showView(int viewTime){
-    coordinatesShown=viewTime;
-    /* Update with no rotation */
+void WidgetGL::showView(int viewTime) {
+    coordinatesShown = viewTime;
     updateGL();
 }
 
-
-bool WidgetGL::eventFilter(QObject *obj, QEvent *event){
-    if(event->type() == QEvent::KeyPress){
-        keyPressed=((QKeyEvent *)event)->key();
+bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
+    if (event->type() == QEvent::KeyPress){
+        keyPressed = ((QKeyEvent *) event)->key();
         /* If Left Arrow and into range */
-        if(keyPressed==Qt::Key_Left && coordinatesShown-1>=0 && coordinatesShown-1<pointsDatas.size()-1){
-            int newValue = coordinatesShown-1;
+        if (keyPressed == Qt::Key_Left && coordinatesShown - 1 >= 0) {
+            int newValue = coordinatesShown - 1;
             showView(newValue);
             svw->getTimeSlider()->setValue(newValue);
             return true;
         }
         /* If Right Arrow and into range */
-        if(keyPressed==Qt::Key_Right && coordinatesShown+1>=0 && coordinatesShown+1<pointsDatas.size()-1){
-            int newValue = coordinatesShown+1;
+        if (keyPressed == Qt::Key_Right && coordinatesShown + 1 < pointData.size()){
+            int newValue = coordinatesShown + 1;
             showView(newValue);
             svw->getTimeSlider()->setValue(newValue);
             return true;
         }
-        return true;
+        if (keyPressed == Qt::Key_Shift) {
+            adjustCamDistance = true;
+        }
     }
-    if(event->type() == QEvent::KeyRelease){
-        keyPressed=0;
-        return true;
+    if (event->type() == QEvent::KeyRelease){
+        keyPressed = 0;
+        if (((QKeyEvent *) event)->key() == Qt::Key_Shift) {
+            adjustCamDistance = false;
+        }
     }
-    if(event->type() == QEvent::Wheel){
-        QWheelEvent *eventWheel = (QWheelEvent *)event;
-        int num = (eventWheel->delta()/120)*-1;
+    if (event->type() == QEvent::Wheel){
+        QWheelEvent *eventWheel = (QWheelEvent *) event;
+        int num = (eventWheel->delta() / 120);
         /* No key Pressed, then change view */
-        if(keyPressed==0){
-            if(coordinatesShown+num>=0 && coordinatesShown+num<pointsDatas.size()-1){
-                int newValue = coordinatesShown+num;
+        if (keyPressed == 0) {
+            if (coordinatesShown + num >= 0 && coordinatesShown + num < pointData.size()) {
+                int newValue = coordinatesShown + num;
                 showView(newValue);
                 svw->getTimeSlider()->setValue(newValue);
             }
             return true;
         }
-        if(keyPressed==Qt::Key_X){
-            setXRotation(num*3);
-            return true;
-        }
-        if(keyPressed==Qt::Key_Y){
-            setYRotation(num*3);
-            return true;
-        }
-        if(keyPressed==Qt::Key_Z){
-            setZRotation(num*3);
+        const double deltaSpeed = 1;
+        if (adjustCamDistance) {
+            camDistance = max((double) 100, min(camDistance - (eventWheel->delta() * deltaSpeed), (double) 10000));
+            updateGL();
             return true;
         }
     }
-    if(event->type() == QEvent::MouseButtonPress){
-        QMouseEvent *mouseEvent = (QMouseEvent *)event;
-        if(mouseEvent->button()==Qt::RightButton){
-            QMenu *menu = new QMenu();
-            QString degree = QString::fromUtf8("\u00b0");
-            for(int i=0;i<defaultRotation.size();i++)
-                menu->addAction(QString("View point n"+degree+"%1").arg(i));
+    if (event->type() == QEvent::MouseMove){
+        QMouseEvent *mouseEvent = (QMouseEvent *) event;
+        if (mouseEvent->buttons() & Qt::RightButton) {
 
-            menu->popup(cursor().pos());
-            connect(menu, SIGNAL(triggered(QAction*)),
-                    this, SLOT(clickOnMenu(QAction*)));
-            return true;
         }
-/*        if(mouseEvent->button()==Qt::LeftButton){
-            cout << "Present !" << endl;
-            GLdouble model_view[16];
-            glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
+        if (mouseEvent->button() == Qt::LeftButton) {
 
-            GLdouble projection[16];
-            glGetDoublev(GL_PROJECTION_MATRIX, projection);
-
-            GLint viewport[4];
-            glGetIntegerv(GL_VIEWPORT, viewport);
-            cout << "Get model, proj and view" << endl;
-            GLdouble *x, *y, *z;
-            int res = gluProject(0.0, 0.0, 0.0, model_view, projection, viewport, x, y, z);
-            cout << "Res : " << res << endl;
-            cout << "x : " << *x
-                 << ",y : " << *y
-                 << ",z : " << *z << endl;
-            cout << "Event : x : " << mouseEvent->x()
-                 << ", y : " << mouseEvent->y() << endl;
-        }*/
+        }
     }
     return false;
 }
-void WidgetGL::clickOnMenu(QAction *action){
+
+void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
+    if (mouseEvent->buttons() & Qt::LeftButton) {
+        if (lastMouseX < 0 || lastMouseY < 0) {
+            lastMouseX = mouseEvent->screenPos().x();
+            lastMouseY = mouseEvent->screenPos().y();
+            return;
+        }
+        const double speed = 0.01;
+        const double PI = 3.1415926535;
+        double maxVerticalAngle = PI / 3; // 60 degrees in radians...
+        rotX += (lastMouseX - mouseEvent->screenPos().x()) * speed;
+        rotY = max(-maxVerticalAngle, min(rotY - ((lastMouseY - mouseEvent->screenPos().y()) * speed), maxVerticalAngle));
+        updateGL();
+    }
+    lastMouseX = mouseEvent->screenPos().x();
+    lastMouseY = mouseEvent->screenPos().y();
+}
+
+void WidgetGL::clickOnMenu(QAction *action) {
     QString number = action->text().split(QString::fromUtf8("\u00b0")).at(1);
     int nb = number.toInt();
-    setXRotation(360-cumulateXRot);
-    setYRotation(360-cumulateYRot);
-    setZRotation(360-cumulateZRot);
-
     initializeGL();
-
-    setXRotation(defaultRotation[nb][0]);
-    setYRotation(defaultRotation[nb][1]);
-    setZRotation(defaultRotation[nb][2]);
-}
-
-static void qNormalizeAngle(int &angle){
-    while (angle < 0)
-        angle += 360;
-    while (angle >= 360)
-        angle -= 360;
-}
-void WidgetGL::setXRotation(int angle){
-    qNormalizeAngle(angle);
-    xRot = angle;
-    cumulateXRot=cumulateXRot+angle;
-    qNormalizeAngle(cumulateXRot);
-    cout << "Cumulate X rot : " << cumulateXRot << endl;
-    /* Update with rotation */
-    rotationAxis='X';
-    updateGL();
-}
-
-void WidgetGL::setYRotation(int angle){
-    qNormalizeAngle(angle);
-    yRot = angle;
-    cumulateYRot=cumulateYRot+angle;
-    qNormalizeAngle(cumulateYRot);
-    cout << "Cumulate Y rot : " << cumulateYRot << endl;
-    /* Update with rotation */
-    rotationAxis='Y';
-    updateGL();
-}
-
-void WidgetGL::setZRotation(int angle){
-    qNormalizeAngle(angle);
-    zRot = angle;
-    cumulateZRot=cumulateZRot+angle;
-    qNormalizeAngle(cumulateZRot);
-    cout << "Cumulate Z rot : " << cumulateZRot << endl;
-    /* Update with rotation */
-    rotationAxis='Z';
-    updateGL();
 }

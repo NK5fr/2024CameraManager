@@ -21,7 +21,7 @@ class TestCamera : public AbstractCamera {
     public:
         TestCamera(std::string n);
         void setProperty(CameraProperty* p);
-        void updateProperty(CameraProperty* p);
+        void getProperty(CameraProperty* p);
         std::string getString(){ return n; }
         QImage retrieveImage();
         void startAutoCapture();

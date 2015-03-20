@@ -52,7 +52,7 @@ void FlyCamera::setProperty(CameraManager::CameraProperty* p) {
     }
 
 }
-void FlyCamera::updateProperty(CameraManager::CameraProperty* p) {
+void FlyCamera::getProperty(CameraManager::CameraProperty* p) {
     if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
         cam->GetTriggerMode(&triggerMode);

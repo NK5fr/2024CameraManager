@@ -1,42 +1,48 @@
 #ifndef WIDGETGL_H
 #define WIDGETGL_H
 
-#include <QtOpenGL/QGLWidget>
-
+#include <QtOpenGL/qgl.h>
 #include <QThread>
-#include <vector>
+#include <QtCore/qmath.h>
 #include <QMouseEvent>
-
-#include "socketviewerwidget.h"
-
+#include <QMenu>
+#include <vector>
 #include <iostream>
+#include <gl\GLU.h>
+
+#include "sleeper.h"
+#include "socketviewerwidget.h"
 
 using namespace std;
 
 class SocketViewerWidget;
 
-class WidgetGL : public QGLWidget{
+struct Vector3d {
+    double x;
+    double y;
+    double z;
+};
+
+struct CalibrationCameraInfo {
+    int camNo;
+    int serialNo;
+    Vector3d camPos;
+    bool valueSet = false;
+};
+
+class WidgetGL : public QGLWidget {
     Q_OBJECT
 public:
-    WidgetGL(vector<vector<double> > *points, std::vector < float > minmax,
-             SocketViewerWidget *socket, QString calibrationPath);
+    WidgetGL(vector<vector<Vector3d>>* points, vector<float> minmax, SocketViewerWidget* socket, QString calibrationPath);
     ~WidgetGL();
 
     void showView(int viewTime);
-
     void start3DcoordinatesView();
     void launchView(int viewTime);
     void stopView();
-
     bool threadIsRunning();
 
-
-
 public slots:
-    void setXRotation(int angle);
-    void setYRotation(int angle);
-    void setZRotation(int angle);
-
     void clickOnMenu(QAction *);
 
 protected:
@@ -44,45 +50,29 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
-    /*void wheelEvent(QWheelEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);*/
-
-
+    //void wheelEvent(QWheelEvent *event);
+    //void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    
 private:
-
-    void initializingCameraCoordinates(QString calibrationPath);
-
-    vector < QPoint > cameras;
-
-    int coordinatesShown;
-    vector< vector < double > > pointsDatas;
-    vector< vector < double > > camerasData;
-
+    SocketViewerWidget* svw;
+    vector<QPoint> cameras;
+    vector<vector<Vector3d>> pointData;
+    vector<CalibrationCameraInfo> camerasData;
     QHash <int, bool> selected;
-
-    /* Rotation */
-    int xRot, cumulateXRot;
-    int yRot, cumulateYRot;
-    int zRot, cumulateZRot;
-    char rotationAxis;
-    int keyPressed;
-
-    /* Default rotation */
-    void initializeDefaultRotation();
-    vector < vector < int > > defaultRotation;
-
-    /* Array of min and max value to store
-     * the scale of the 3D widget whch will be displayed
-     * 0, 1 and 2 for x, y and z min
-     * 3, 4 and 5 for x, y and z max */
-    vector < float > minMax;
-    bool initialScale;
-
     QPoint lastPos;
     QColor qtBlack;
+    int coordinatesShown;
+    int keyPressed;
+    bool initialScale;
+    int lastMouseX = -1;
+    int lastMouseY = -1;
+    double rotX;
+    double rotY;
+    double camDistance; 
+    bool adjustCamDistance = false;
 
-    SocketViewerWidget *svw;
+    void initializingCameraCoordinates(QString calibrationPath);
 };
 
 #endif // WIDGETGL_H

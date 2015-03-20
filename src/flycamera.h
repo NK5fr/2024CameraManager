@@ -27,8 +27,8 @@ public:
     PGRGuid* getGuid();        
     CameraInfo* getCameraInfo();
 
-    void setProperty(CameraManager::CameraProperty *p);
-    void updateProperty(CameraManager::CameraProperty *p);
+    void setProperty(CameraManager::CameraProperty* p);
+    void getProperty(CameraManager::CameraProperty* p);
 
 	void startAutoCapture();
     void stopAutoCapture();
