@@ -6,14 +6,9 @@
 #include <iostream>
 using namespace std;
 
-QVideoWidget::QVideoWidget(QWidget *parent) :
-    QWidget(parent),
-    lastSize(0, 0),
-    active(this->windowState() & Qt::WindowActive),
-    mouseIn( underMouse() )
-{
+QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
     setMouseTracking(Ui::crosshair);
-    connect( this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()) );
+    connect( this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
 }
 
 void QVideoWidget::receiveUpdate(){
@@ -37,7 +32,7 @@ void QVideoWidget::setImage(QImage image){
 }
 
 void QVideoWidget::paintEvent(QPaintEvent *) {
-    if( img.isNull() ) return;
+    if(img.isNull()) return;
     QImage scaledImg;
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -143,5 +138,3 @@ void QVideoWidget::changedState(Qt::WindowStates, Qt::WindowStates newState){
 void QVideoWidget::activateCrosshair(bool state){
     setMouseTracking(state);
 }
-
-

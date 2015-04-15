@@ -189,7 +189,8 @@ public:
         cameraTree = new QTreeView(cameraWidget);
         cameraTree->setObjectName(QStringLiteral("CameraTree"));
         cameraTree->setContextMenuPolicy(Qt::CustomContextMenu);
-        cameraTree->header()->setVisible(false);
+        cameraTree->setSortingEnabled(true);
+        //cameraTree->header()->setVisible(false);
         cameraTabLayout->addWidget(cameraTree);
 
         // Label above Properties in Cameras tab

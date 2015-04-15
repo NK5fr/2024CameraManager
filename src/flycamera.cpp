@@ -145,16 +145,21 @@ QImage FlyCamera::captureImage() {
         ImPoint* points = imageDetect->getFinalPoints();
         // Drawing the points on the image...
         int crossWingSize = (int) (height / 75);
+        int crossWidthSize = (int) (width / 300);
         for (int i = 0; i < imageDetect->getFinalNumPoints(); i++) {
             int xPos = points[i].x;
             int yPos = points[i].y;
             // Line along X-axis
             for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
-                image.setPixel(x, yPos, qRgb(255, 0, 0));
+                for (int width = yPos - (crossWidthSize / 2); width < yPos + (crossWidthSize / 2); width++) {
+                    image.setPixel(x, width, qRgb(255, 0, 0));
+                }
             }
             // Line along Y-axis
             for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
-                image.setPixel(xPos, y, qRgb(255, 0, 0));
+                for (int width = xPos - (crossWidthSize / 2); width < xPos + (crossWidthSize / 2); width++) {
+                    image.setPixel(width, y, qRgb(255, 0, 0));
+                }
             }
         }
     }
@@ -213,12 +218,11 @@ bool FlyCamera::equalsTo(AbstractCamera *c){
 }
 
 std::string FlyCamera::getString(){
-    string name = FlyCamera::getCameraInfo()->modelName;
-    ostringstream refTmp;
-    refTmp << FlyCamera::getCameraInfo()->serialNumber;
-    string ref = refTmp.str();
-
-    return name + " - " + ref;
+    ostringstream ss;
+    ss << FlyCamera::getCameraInfo()->modelName;
+    ss << " - ";
+    ss << FlyCamera::getCameraInfo()->serialNumber;
+    return ss.str();
 }
 
 FlyCamera::~FlyCamera() {

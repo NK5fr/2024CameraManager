@@ -6,8 +6,7 @@ ConfigFileReader::ConfigFileReader(QString path) {
 	Stream = new QTextStream(file);
 }
 
-ConfigFileReader::~ConfigFileReader(void)
-{
+ConfigFileReader::~ConfigFileReader(void) {
 	delete file;
 	delete Stream;
 }

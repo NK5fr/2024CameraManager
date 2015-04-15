@@ -134,7 +134,25 @@ class AbstractCameraManager : public QObject
          */
         void setMainWindow(MainWindow* window);        
 
+        struct activeCameraEntry {
+            activeCameraEntry(AbstractCamera *c, QStandardItem* i)
+                : camera(c), treeItem(i), window(new QMdiSubWindow()) {
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->setWindowFlags(Qt::Tool);
+                QVideoWidget* videoWidget = new QVideoWidget();
+                videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                window->setWidget(videoWidget);
+                window->resize(400, 300);
+                QObject::connect(window, SIGNAL(windowStateChanged(Qt::WindowStates, Qt::WindowStates)),
+                                 videoWidget, SLOT(changedState(Qt::WindowStates, Qt::WindowStates)));
+            }
+            //~activeCameraEntry(){ delete window; }
+            AbstractCamera* camera;
+            QStandardItem* treeItem;
+            QMdiSubWindow* window;
+        };
 
+        const std::vector<activeCameraEntry>& getActiveCameraEntries() { return this->activeCameras; }
 
     protected:
         /**
@@ -165,23 +183,7 @@ class AbstractCameraManager : public QObject
         QIcon folderIcon;
         bool liveView;
         bool updateProps;
-        struct activeCameraEntry { public:
-            activeCameraEntry(AbstractCamera *c, QStandardItem* i)
-                : camera(c), treeItem(i), window(new QMdiSubWindow()) {
-                window->setAttribute(Qt::WA_DeleteOnClose);
-                window->setWindowFlags(Qt::Tool);
-                QVideoWidget* videoWidget = new QVideoWidget();
-                videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                window->setWidget(videoWidget);
-                window->resize(400, 300);
-                QObject::connect(window, SIGNAL(windowStateChanged(Qt::WindowStates, Qt::WindowStates)),
-                                 videoWidget, SLOT(changedState(Qt::WindowStates, Qt::WindowStates)) );
-            }
-            //~activeCameraEntry(){ delete window; }
-            AbstractCamera* camera;
-            QStandardItem* treeItem;
-            QMdiSubWindow* window;
-        };
+        
         std::vector<activeCameraEntry> activeCameras;
         std::vector<CameraManager::CameraProperty> cameraProperties;
         void cameraTree_recursiveCheck(QStandardItem* parent, Qt::CheckState checked);

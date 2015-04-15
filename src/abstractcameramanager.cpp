@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QCheckBox>
 #include <QSlider>
+#include <qpushbutton.h>
 #include <algorithm>
 #include <iostream>
 
@@ -17,7 +18,7 @@ Q_DECLARE_METATYPE(CameraManager::CameraProperty *)
 using namespace CameraManager;
 
 AbstractCameraManager::AbstractCameraManager(bool empty)
-    : liveView(false), cameraTree() , newCameraList("Detected Cameras"), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
+    : liveView(false), cameraTree() , newCameraList(), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
     updateProps = true;
     propertiesList.setRootIsDecorated(false);
     propertiesList.setColumnCount(4);
@@ -25,8 +26,11 @@ AbstractCameraManager::AbstractCameraManager(bool empty)
     
     if(empty) return;
     QObject::connect(&cameraTree, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_CameraTree_itemChanged(QStandardItem*)));
+    //cameraTree.setColumnCount(4);
+    cameraTree.setHorizontalHeaderLabels(QStringList() << "Cameras" << "Serial" << "Model" << "Custom Name");
+    //cameraTree.setHorizontalHeaderItem(0, new QStandardItem("Hallo"));
     cameraTree.appendRow(&newCameraList);
-    newCameraList.setIcon(QIcon(":/icons/folder_home"));
+    //newCameraList.setIcon(QIcon(":/icons/folder_home"));
     newCameraList.setCheckable(true);
     newCameraList.setDragEnabled(false);
     //newCameraList.setCheckState(Qt::Checked);
@@ -48,7 +52,7 @@ QTreeWidget *AbstractCameraManager::getPropertiesWidget(){
 void AbstractCameraManager::updateImages(){
     for(int i=activeCameras.size()-1; i>=0; i--){
         activeCameraEntry& camEntry = activeCameras.at(i);
-        QVideoWidget* videoWidget = qobject_cast<QVideoWidget *>( camEntry.window->widget() );
+        QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(camEntry.window->widget());
         videoWidget->setImage(camEntry.camera->retrieveImage());
     }
 }
@@ -106,7 +110,7 @@ void setPropToSettings(QSettings& settings, CameraProperty& prop) {
 
 // Lars Aksel - Load default values from default-file
 void AbstractCameraManager::loadPropertiesDefaults() {
-    QString settingsFile = QString(QDir::currentPath() + "/../props/defaultCameraSettings.ini");
+    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
     //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
     std::vector<CameraProperty> prop;
     loadPropertiesFromFile(settingsFile, prop);
@@ -115,7 +119,7 @@ void AbstractCameraManager::loadPropertiesDefaults() {
 }
 
 void AbstractCameraManager::loadPropertiesDefaultsInit() {
-    QString settingsFile = QString(QDir::currentPath() + "/../props/defaultCameraSettings.ini");
+    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
     //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
     std::vector<CameraProperty> prop;
     loadPropertiesFromFile(settingsFile, prop);
@@ -190,13 +194,13 @@ bool AbstractCameraManager::savePropertiesToFile(QString& filepath) {
 
 void AbstractCameraManager::activateLiveView(bool active){
     liveView = active;
-    if( active ){
+    if (active) {
         for(int i=activeCameras.size()-1; i>=0; i--){
             activeCameraEntry& camEntry = activeCameras.at(i);
             QVideoWidget* videoWidget = qobject_cast<QVideoWidget *>(camEntry.window->widget());
             camEntry.camera->startCapture(videoWidget);
         }
-    }else{
+    } else {
         for(int i=activeCameras.size()-1; i>=0; i--){
             activeCameraEntry& camEntry = activeCameras.at(i);
             camEntry.camera->stopAutoCapture();
@@ -212,12 +216,12 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
     std::vector<QStandardItem*> oldCameras;
     cameraTree_getCameraList(cameraTree.invisibleRootItem(), &oldCameras);
     detectNewCameras(&newCameras);
-    /*cout << "oldCameras" << oldCameras.size() << endl;*/
-    /*cout << "newCameras" << newCameras.size() << endl;*/
+    //cout << "oldCameras" << oldCameras.size() << endl;
+    //cout << "newCameras" << newCameras.size() << endl;
     //removing disconnected cameras
     for (unsigned int i = 0; i < oldCameras.size(); i++) {
         QStandardItem* item = oldCameras.at(i);
-        AbstractCamera* cam = reinterpret_cast<AbstractCamera *>( item->data(CameraRole).value<quintptr>() );
+        AbstractCamera* cam = reinterpret_cast<AbstractCamera *>(item->data(CameraRole).value<quintptr>());
         /*cout << "oldCameras(" << i << "):" << cam << endl;*/
         bool found = false;
         for (int j = newCameras.size() - 1; j >= 0; j--) {
@@ -235,13 +239,29 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
     //adding new cameras
     for (unsigned int i = 0; i < newCameras.size(); i++) {
         AbstractCamera* cam = newCameras.at(i);
-        QStandardItem *item = new QStandardItem(cam->getString().c_str());
+        //QStandardItem* item = new QStandardItem(cam->getString().c_str());
+        QList<QStandardItem*> items;
+        QStandardItem* item = new QStandardItem();
         item->setData(QVariant::fromValue(reinterpret_cast<quintptr>(cam)), CameraRole);
-        //qDebug() << "setData " << camera << " data " << item->data(CameraRole).value<AbstractCamera *>();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
         item->setDropEnabled(false);
-        newCameraList.appendRow(item);
+        item->setEditable(false);
+        items.append(item);
+
+        item = new QStandardItem(cam->getSerial());
+        item->setData(QVariant::fromValue(reinterpret_cast<quintptr>(cam)), CameraRole);
+        item->setEditable(false);
+        items.append(item);
+
+        item = new QStandardItem(cam->getModel());
+        item->setData(QVariant::fromValue(reinterpret_cast<quintptr>(cam)), CameraRole);
+        item->setEditable(false);
+        items.append(item);
+
+        items.append(new QStandardItem(cam->getCustomName()));
+
+        newCameraList.appendRow(items);
     }
     return newCameraList.index();
 }
@@ -323,30 +343,34 @@ void AbstractCameraManager::on_CameraTree_itemChanged(QStandardItem* item){
 void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QString &string, int &icon, bool &editable, bool &deleteable){
     QStandardItem* clicked = getModel()->itemFromIndex(index);
     selectedItem = clicked;
-    QStandardItem* first = NULL;
-
-    string = clicked->text();
+    QStandardItem* first = nullptr;
+    
+    string = "No Selection";
     editable = true;
     deleteable = true;
     if (clicked->data(CameraRole).isValid()) {
         icon = 0;
         deleteable = false;
         first = clicked;
+        QModelIndex textIndex = getModel()->index(index.row(), 1, index.parent());
+        string = getModel()->itemFromIndex(textIndex)->text() + " - ";
+        textIndex = getModel()->index(index.row(), 2, index.parent());
+        string.append(getModel()->itemFromIndex(textIndex)->text());
     } else {
         if (clicked == &newCameraList) {
-            cout << "clicked == newCameraList" << endl;
+            //cout << "clicked == newCameraList" << endl;
             editable = false;
             deleteable = false;
         }
         first = cameraTree_recursiveFirstCamera(clicked);
-        if (first == NULL) icon = 1;
+        if (first == nullptr) icon = 1;
         else {
             icon = 2;
             // Lars Aksel - 27.01.2015 - Removed unnecessary text
             //string = clicked->text() + " <br /> (" + first->text() + ")";
         }
     }
-    selectedCamera = (first == NULL) ? NULL : reinterpret_cast<AbstractCamera *>( first->data(CameraRole).value<quintptr>() );
+    selectedCamera = (first == nullptr) ? nullptr : reinterpret_cast<AbstractCamera*>(first->data(CameraRole).value<quintptr>());
     updateProperties();
 }
 
@@ -374,21 +398,21 @@ QStandardItem* AbstractCameraManager::cameraTree_recursiveFirstCamera(QStandardI
     QVariant data = parent->data(CameraRole);
     if(data.isValid()) return parent;
 
-    for(int i=0; i<parent->rowCount(); ++i){
+    for (int i = 0; i < parent->rowCount(); ++i) {
         QStandardItem* tmp = cameraTree_recursiveFirstCamera(parent->child(i));
-        if( tmp != NULL ) return tmp;
+        if(tmp != nullptr) return tmp;
     }
-    return NULL;
+    return nullptr;
 }
 
 // set a property for all the AbstractCamera in QStandardItem and its decendants
 void AbstractCameraManager::cameraTree_recursiveSetProperty(QStandardItem* parent, CameraManager::CameraProperty* prop){
     QVariant data = parent->data(CameraRole);
-    if(data.isValid()) {
-        reinterpret_cast<AbstractCamera *>( data.value<quintptr>() )->setProperty(prop);
+    if (data.isValid()) {
+        reinterpret_cast<AbstractCamera *>(data.value<quintptr>())->setProperty(prop);
         return;
     }
-    for(int i=0; i<parent->rowCount(); ++i){
+    for (int i = 0; i < parent->rowCount(); ++i) {
         cameraTree_recursiveSetProperty(parent->child(i), prop);
     }
 }
@@ -396,15 +420,14 @@ void AbstractCameraManager::cameraTree_recursiveSetProperty(QStandardItem* paren
 //add to the vector all found AbstractCamera in QStandardItem and its decendants
 void AbstractCameraManager::cameraTree_getCameraList(QStandardItem* parent, std::vector<QStandardItem*> *list){
     QVariant data = parent->data(CameraRole);
-    if(data.isValid()){
+    if (data.isValid()) {
         list->push_back(parent);
         return;
     }
-    for(int i=0; i<parent->rowCount(); ++i){
+    for (int i = 0; i < parent->rowCount(); ++i) {
         cameraTree_getCameraList(parent->child(i), list);
     }
 }
-
 
 ///////////////////////////////////////////////////
 //////////////// Properties related ///////////////

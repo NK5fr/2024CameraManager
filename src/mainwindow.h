@@ -16,6 +16,7 @@
 #include <QProcess> // gs
 #include <qsettings.h> // Lars Aksel
 #include "trackpointproperty.h" // Lars Aksel
+#include "externalprocess.h"
 
 #include "menubar.h"
 #include "abstractcameramanager.h"
@@ -54,7 +55,7 @@ public:
     void startUpdateProperties();
 
     // gs test
-    void execute(QString command, QProcess &p);
+    //void execute(QString command, QProcess &p);
 
 public slots:
     /* All of them could probably be private */
@@ -73,6 +74,7 @@ public slots:
     void on_CameraTree_customContextMenuRequested(const QPoint &);
     void menuCameraAction_triggered(QAction *);
     void cameraTree_itemClicked(const QModelIndex);
+    void cameraTree_itemDoubleClicked(const QModelIndex);
     void on_SelectCameras_currentIndexChanged(int index);
 
     /** PROJECT TREE **/
@@ -92,11 +94,13 @@ public slots:
     void on_TrackPointSliderValueChanged(int);
 
     /* grethe - output fra trackpoint */
+    /*
     void executeFinished(QProcess &p);
     void executeError(QProcess::ProcessError);
     void appendOutput();
     void readStdOutput(QProcess &p);
     void printOutput();
+    */
 
 signals:
     void activateCrosshair(bool);
@@ -111,13 +115,15 @@ protected:
 
 private:
     // gs TEST for å real time output fra trackpoint
-    QTextEdit* text_edit; //gs
-    QStringList options;  // gs
-
+    ExternalProcess* trackPointProcess; // Lars Aksel
+    //QTextEdit* trackPointOutput; //gs
+    //QStringList options;  // gs
+    /*
     QProcess process;
     QTimer process_timer;
     QString process_file;
     qint64 process_file_pos;
+    */
     TrackPointProperty trackPointProperty; // Lars Aksel
 
     /** CREATING FOLDER AND FILE ITEMS **/

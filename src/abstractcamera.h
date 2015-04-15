@@ -47,6 +47,9 @@ class AbstractCamera
          * @return String containing these informations
          */
         virtual std::string getString() = 0;
+        virtual inline QString getSerial() { return serial; }
+        virtual inline QString getModel() { return model; }
+        virtual inline QString getCustomName() { return customName; }
 
         /**
          * @brief (Pure virtual) start callback based Liveview
@@ -93,6 +96,9 @@ class AbstractCamera
         bool capturing;
 
     private:
+        QString customName;
+        QString serial;
+        QString model;
         QVideoWidget* container;
         class CaptureThread : public QThread {
             public :

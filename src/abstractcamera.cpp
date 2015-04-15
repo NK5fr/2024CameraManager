@@ -8,6 +8,8 @@ AbstractCamera::AbstractCamera() : thread(this) {
     imageDetect = nullptr;
     trackPointProperty = nullptr;
     capturing = false;
+    serial = "UNKNOWN SERIAL";
+    model = "UNKNOWN MODEL";
 }
 
 AbstractCamera::~AbstractCamera() {

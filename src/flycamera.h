@@ -33,6 +33,9 @@ public:
 	void startAutoCapture();
     void stopAutoCapture();
 
+    inline QString getSerial() { return QString::number(camInfo.serialNumber); }
+    inline QString getModel() { return QString(camInfo.modelName); }
+
     QImage retrieveImage();
         
     bool equalsTo(AbstractCamera *c);        

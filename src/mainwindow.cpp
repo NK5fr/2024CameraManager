@@ -14,6 +14,8 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QMessageBox>
+#include "qprocess.h" //gs
+#include "qdebug.h"   //gs
 
 #include <sstream>
 #include <iostream>
@@ -32,8 +34,6 @@
 #include "calibrationviewerwidget.h"
 #include "imageviewerwidget.h"
 #include "sleeper.h"
-#include "qprocess.h" //gs
-#include "qdebug.h"   //gs
 
 using namespace std;
 
@@ -86,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     /* SIGNALS/SLOTS */
     connect(ui->cameraTree, SIGNAL(clicked(const QModelIndex)), this, SLOT(cameraTree_itemClicked(const QModelIndex)));
+    connect(ui->cameraTree, SIGNAL(doubleClicked(const QModelIndex)), this, SLOT(cameraTree_itemDoubleClicked(const QModelIndex)));
     connect(bar->getFile(), SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
     connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
@@ -130,7 +131,7 @@ void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
         camManager->getPropertiesWidget()->hide();
     }
     selectedCameraManager = index;
-    AbstractCameraManager* cm = cameraManagers.at(selectedCameraManager);
+    AbstractCameraManager* cm = cameraManagers.at(selectedCameraManager); 
     ui->cameraTree->setModel(cm->getModel());
     ui->propertiesContainer->addWidget(cm->getPropertiesWidget());
     cm->getPropertiesWidget()->show();
@@ -224,6 +225,25 @@ void MainWindow::cameraTree_itemClicked(const QModelIndex index) {
     //ui->label->adjustSize();
 }
 
+void MainWindow::cameraTree_itemDoubleClicked(const QModelIndex index) {
+    QStandardItem* clicked = cameraManagers.at(selectedCameraManager)->getModel()->itemFromIndex(index);
+    if (index.column() == 0) return;
+    if (clicked->data(CameraRole).isValid()) {
+        AbstractCamera* camera = (clicked == nullptr) ? nullptr : reinterpret_cast<AbstractCamera*>(clicked->data(CameraRole).value<quintptr>());
+        for (int i = 0; i < cameraManagers.at(selectedCameraManager)->getActiveCameraEntries().size(); i++) {
+            if (camera == cameraManagers.at(selectedCameraManager)->getActiveCameraEntries()[i].camera) {
+                QMdiSubWindow* win = cameraManagers.at(selectedCameraManager)->getActiveCameraEntries()[i].window;
+                if (win->isMaximized()) {
+                    win->showNormal();
+                } else {
+                    win->showMaximized();
+                }
+                break;
+            }
+        }
+    }
+}
+
 /* Right click in CameraTree */
 void MainWindow::on_CameraTree_customContextMenuRequested(const QPoint &pos) {
     /* Creating a menu with allowed actions */
@@ -235,7 +255,6 @@ void MainWindow::on_CameraTree_customContextMenuRequested(const QPoint &pos) {
     menu->addAction("Reset Name");
 
     menu->popup(cursor().pos());
-
     connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuCameraAction_triggered(QAction*)));
 }
 
@@ -297,95 +316,46 @@ void MainWindow::menuBarClicked(QAction* action) {
         ui->toolBar->setVisible(!bar->getHideToolBarWidget()->isChecked());
     else if (action->text() == "Run Trackpoint"){
         /*if(defined(WIN64) || defined(WIN32)){*/
-        QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
+        //QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
         //QProcess *process = new QProcess();
-        process_file = "tmp.txt";
-        QString path = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/"); // gs
-        process.setWorkingDirectory(path);		                              // gs
-        process.setProcessChannelMode(QProcess::MergedChannels);						// gs
-        process.setStandardOutputFile(process_file);                        // gs
-
-
-        text_edit = new QTextEdit();  // legger til et tekstfelt i hovedvinduet
-        setCentralWidget(text_edit);
-        text_edit->setText(process.readAllStandardOutput());  // gs	
-        text_edit->setText("Kjøring av TrackPoint pågår"); // gs 
+        //process_file = "tmp.txt";
+        //QString path = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/"); // gs
+        //process.setWorkingDirectory(path);		                              // gs
+        //process.setProcessChannelMode(QProcess::MergedChannels);						// gs
+        //process.setStandardOutputFile(process_file);
+        /*
+        trackPointOutput = new QTextEdit();  // legger til et tekstfelt i hovedvinduet
+        ui->centralwidget->addSubWindow(trackPointOutput);
+        trackPointOutput->showMaximized();
+        //setCentralWidget(text_edit);        
+        trackPointOutput->setText("Running TrackPoint!"); // gs 
 
         //connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(executeFinished(process)));
-        //connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdOutput(process))); //gs
+        connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdOutput(process))); //gs
         //connect(&process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(executeError(QProcess::ProcessError)));
-        process_timer.setInterval(100);
-        process_timer.setSingleShot(false);
-        //connect(&process_timer, SIGNAL(timeout()), this, SLOT(appendOutput()));
+        //process_timer.setInterval(100);
+        //process_timer.setSingleShot(false);
+        
 
-
-        //execute(executable, process);
-        //process->start(executable);
-        //process->waitForStarted();					  // gs
-
-        //	process->startDetached(executable);		// gs
-        //	process->waitForFinished(-1);			// gs
-        //	process->close();						// gs
-
-        /* }*/
-        //QDebugStream cout(std::cout, textEdit);  // gs
-        //  QDebugStream cerr(std::cerr, textEdit);  // gs
-
-        connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(printOutput())); //gs
-        options.clear();  // gs
+        //connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(printOutput())); //gs
+        //options.clear();  // gs
+        //process.execute();
         process.start(executable, options); // gs
         process.waitForFinished();  // gs
+        */
 
-        //	process.setReadChannelMode(QProcess::MergedChannels);
+        QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
 
-
-        /* Problem - få trackpoint output til ui---kontrollen text_edit.. -  */
+        QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
+        trackPointProcess = new ExternalProcess();
+        trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);
+        trackPointProcess->setWorkingDirectory(trackPointPath);
+        //trackPointProcess->start("tracert www.google.com");
+        trackPointProcess->start(executable);
+        ui->centralwidget->addSubWindow(trackPointProcess->getTextEdit());
+        trackPointProcess->getTextEdit()->show();
     }
 }
-//gs
-void MainWindow::execute(QString command, QProcess &p) {
-    text_edit->append(p.readAllStandardOutput());
-    QFile::remove(process_file);
-    process_file_pos = 0;
-    process.start(command);
-    process_timer.start();
-
-
-}
-//gs
-void MainWindow::printOutput() {
-    text_edit->setPlainText(process.readAllStandardOutput());
-}
-//gs
-void MainWindow::readStdOutput(QProcess &p) {
-    text_edit->append(p.readAllStandardOutput());
-}
-
-// gs
-void MainWindow::appendOutput() {
-    QFile file(process_file);
-    if (!file.open(QIODevice::ReadOnly)) return;
-
-    if (file.size() > process_file_pos) {
-        file.seek(process_file_pos);
-        text_edit->moveCursor(QTextCursor::End);
-        text_edit->insertPlainText(file.readAll());
-        process_file_pos = file.pos();
-    }
-    file.close();
-}
-//gs
-
-void MainWindow::executeFinished(QProcess &p) {
-    process_timer.stop();
-    appendOutput();
-}
-//gs
-void MainWindow::executeError(QProcess::ProcessError) {
-    process_timer.stop();
-    appendOutput();
-}
-// END GS TEST trackpoint output //
 
 //////////////////////
 /** THREAD METHODS **/
@@ -397,6 +367,7 @@ void MainWindow::startCameraDetection() {
         ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
         //cout << "Searching for new cameras..." << endl;
         Sleeper::sleep(1);
+        ui->cameraTree->header()->resizeSections(QHeaderView::ResizeToContents);
     }
 }
 
@@ -441,9 +412,9 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
 
-    } else if (fileName.contains("calibration")){
+    } else if (fileName.contains("calibration_summary")){
         /* Calibration file */
-        CalibrationViewerWidget *cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
+        CalibrationViewerWidget *cvw = new CalibrationViewerWidget(selectedProjectPath + "/" + fileName.toUtf8().constData());
         ui->centralwidget->addSubWindow(cvw);
         cvw->show();
 
@@ -531,9 +502,10 @@ bool isProjectSupported(QString& path) {
     if (path.endsWith(".pgm", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".dat", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".txt", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
+    if (path.contains("socket", Qt::CaseInsensitive) && path.endsWith(".dat", Qt::CaseInsensitive)) return true;
+    //if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
+    //if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
+    //if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
     return false;
 }
 
@@ -599,7 +571,7 @@ void MainWindow::loadDefaultCameraProperties_clicked() {
 }
 
 void MainWindow::loadDefaultTrackPointSettings() {
-    loadTrackPointSettingsFromFile(QString(QDir::currentPath() + "/../props/defaultTrackPointSettings.ini"));
+    loadTrackPointSettingsFromFile(QString(QDir::currentPath() + "/props/defaultTrackPointSettings.ini"));
 }
 
 void MainWindow::on_TrackPointChecked(int state) {
