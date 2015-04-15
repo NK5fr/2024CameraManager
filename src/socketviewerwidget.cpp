@@ -175,12 +175,17 @@ void SocketViewerWidget::init() {
     //fovConeSizeSlider->setMaximumSize(QSize(400, 100));
     fovConeSizeSlider->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
+    QGridLayout* sliderLayout = new QGridLayout();
+    sliderLayout->addWidget(new QLabel("Camera Distance:"), 0, 0);
+    sliderLayout->addWidget(new QLabel("FOV Camera-cone:"), 1, 0);
+    sliderLayout->addWidget(camDistanceSlider, 0, 1);
+    sliderLayout->addWidget(fovConeSizeSlider, 1, 1);
+
     QVBoxLayout* showPlaneButtonLayout = new QVBoxLayout();
     showPlaneButtonLayout->addWidget(showXYPlane);
     showPlaneButtonLayout->addWidget(showXZPlane);
     showPlaneButtonLayout->addWidget(showYZPlane);
-    showPlaneButtonLayout->addWidget(camDistanceSlider);
-    showPlaneButtonLayout->addWidget(fovConeSizeSlider);
+    showPlaneButtonLayout->addLayout(sliderLayout);
 
     QHBoxLayout* buttonCheckBoxLayout = new QHBoxLayout();
     buttonCheckBoxLayout->addLayout(showPlaneButtonLayout);
@@ -192,11 +197,13 @@ void SocketViewerWidget::init() {
     //combinedLayout->addLayout(menuLayout);
     combinedLayout->addLayout(buttonCheckBoxLayout);
     combinedLayout->addWidget(showSocketText);
+    combinedLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     buttonPanel = new QWidget();
     buttonPanel->setLayout(combinedLayout);
     buttonPanel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     buttonPanel->setContextMenuPolicy(Qt::CustomContextMenu);
+    //buttonPanel->setContentsMargins(QMargins(0, 0, 0, 0));
 
     hideButton = new QPushButton("Hide/Show Button-Panel");
 

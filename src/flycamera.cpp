@@ -168,13 +168,13 @@ QImage FlyCamera::captureImage() {
 
 void FlyCamera::startAutoCapture(){
     capturing = true;
-    cout << "Starting autoCapture" << endl;
+    printf("Starting autoCapture\n");
     getCamera()->StartCapture();
     while(capturing){
         QImage image = captureImage();
         AbstractCamera::sendFrame(image);
     }
-    cout << "Stopped autoCapture !";
+    printf("Stopped autoCapture !\n");
 }
 
 void FlyCamera::stopAutoCapture(){
@@ -186,7 +186,7 @@ void FlyCamera::stopAutoCapture(){
 QImage FlyCamera::retrieveImage() {
     if (capturing) return QImage();
     capturing = true;
-    cout << "Images begin to be retrieved" << endl;
+    printf("Images begin to be retrieved\n");
     TriggerMode triggerMode;
     TriggerMode oldTrigger;
 
@@ -195,20 +195,20 @@ QImage FlyCamera::retrieveImage() {
     triggerMode.onOff = false;
     cam->SetTriggerMode(&triggerMode);
 
-    cout << "Retrieving images..." << endl;
+    printf("Retrieving images...\n");
     cam->StartCapture();
 
 
-    cout << "Retrieving 1..." << endl;
+    printf("Retrieving 1...\n");
     QImage image = captureImage();
 
-    cout << "Retrieving 2..." << endl;
+    printf("Retrieving 2...\n");
     cam->SetTriggerMode(&oldTrigger);
 
-    cout << "Retrieving 3..." << endl;
+    printf("Retrieving 3...\n");
     cam->StopCapture();
 
-    cout << "Images retrieved" << endl;
+    printf("Images retrieved\n");
     capturing = false;
     return image;
 }

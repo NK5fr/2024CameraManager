@@ -11,7 +11,6 @@
 #include <iostream>
 #include <gl\GLU.h>
 
-#include "sleeper.h"
 #include "socketviewerwidget.h"
 #include "calibrationfile.h"
 #include "datastructs.h"

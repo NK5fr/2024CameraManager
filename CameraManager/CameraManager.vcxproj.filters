@@ -210,12 +210,6 @@
     <ClInclude Include="..\src\menubar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\sleeper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\SleeperThread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\testcamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>

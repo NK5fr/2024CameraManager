@@ -33,7 +33,6 @@
 #include "socketviewerwidget.h"
 #include "calibrationviewerwidget.h"
 #include "imageviewerwidget.h"
-#include "sleeper.h"
 
 using namespace std;
 
@@ -365,8 +364,8 @@ void MainWindow::menuBarClicked(QAction* action) {
 void MainWindow::startCameraDetection() {
     while (detectCameras){
         ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
-        //cout << "Searching for new cameras..." << endl;
-        Sleeper::sleep(1);
+        //printf("Searching for new cameras...\n");
+        QThread::msleep(100);
         ui->cameraTree->header()->resizeSections(QHeaderView::ResizeToContents);
     }
 }
@@ -374,9 +373,9 @@ void MainWindow::startCameraDetection() {
 // When Thread UpdateProperties is launched, it call this method to update the selected camera properties
 void MainWindow::startUpdateProperties() {
     while (bar->getRunLiveView()->isChecked()){
-        //cout << "Updating properties..." << endl;
+        //printf("Updating properties...\n");
         cameraManagers.at(selectedCameraManager)->updateProperties();
-        Sleeper::sleep(1);
+        QThread::msleep(250);
     }
 }
 
