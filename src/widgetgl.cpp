@@ -27,6 +27,8 @@ WidgetGL::WidgetGL(vector<vector<Vector3d>> *points, vector<float> minmax, Socke
     showFloorLines = true; 
     showCameraLegs = false;
     showOrtho = false;
+    showFromCamera = false;
+    camViewIndex = 0;
 
     rotX = 0;
     rotY = 0;
@@ -44,22 +46,25 @@ WidgetGL::~WidgetGL() {
 void WidgetGL::initializeGL() {
     int height = this->height();
     int width = this->width();
+    updateProjection(width, height, 60);
+}
+
+void WidgetGL::updateProjection(int width, int height, double fov) {
     if (height == 0) height = 1;
     glEnable(GL_DEPTH_TEST);
+    //glViewport((WidgetGL::width() - width), (WidgetGL::height() - height), (WidgetGL::width() - width) + width, (WidgetGL::height() - height) + height);
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glOrtho()
-    
     if (showOrtho) {
-        //gluOrtho2D(-width * scale, width * scale, -height * scale, height * scale);
+        double scale = camDistance / 1000;
+        glOrtho(-width * scale, width * scale, -height * scale, height * scale, -1000000, 1000000);
     } else {
-        GLfloat aspect = (GLfloat) width / (GLfloat) height;
-        const double PI = 3.1415926535;
-        double zNear = 1;
-        double zFar = 160000;
-        double fov = 60;
-        gluPerspective(fov, (GLfloat) width / (GLfloat) height, zNear, zFar);
+        GLdouble aspect = (GLdouble) width / (GLdouble) height;
+        //const double PI = 3.1415926535;
+        const double zNear = 1;
+        const double zFar = 160000;
+        gluPerspective(fov, aspect, zNear, zFar);
     }
 }
 
@@ -83,17 +88,187 @@ void WidgetGL::initializingCameras() {
     }
 }
 
+void WidgetGL::setViewFromCamera(int index) {
+    if (index < 0 || index >= camerasData.size()) return;
+
+    int camScreenWidth = camerasData[index]->pixelWidth;
+    int camScreenHeight = camerasData[index]->pixelHeight;
+    int newScreenWidth = width();
+    int newScreenHeight = height();
+
+    if (((double) newScreenWidth / (double) newScreenHeight) > ((double) camScreenWidth / (double) camScreenHeight)) {
+        newScreenWidth = (newScreenHeight * camScreenWidth) / camScreenHeight;
+    } else {
+        newScreenHeight = (newScreenWidth * camScreenHeight) / camScreenWidth;
+    }
+
+    updateProjection(newScreenWidth, newScreenWidth, camerasData[index]->fovWidth);
+}
+
+bool gluInvertMatrix(const double m[16], double invOut[16]) {
+    double inv[16], det;
+    int i;
+
+    inv[0] = m[5] * m[10] * m[15] -
+        m[5] * m[11] * m[14] -
+        m[9] * m[6] * m[15] +
+        m[9] * m[7] * m[14] +
+        m[13] * m[6] * m[11] -
+        m[13] * m[7] * m[10];
+
+    inv[4] = -m[4] * m[10] * m[15] +
+        m[4] * m[11] * m[14] +
+        m[8] * m[6] * m[15] -
+        m[8] * m[7] * m[14] -
+        m[12] * m[6] * m[11] +
+        m[12] * m[7] * m[10];
+
+    inv[8] = m[4] * m[9] * m[15] -
+        m[4] * m[11] * m[13] -
+        m[8] * m[5] * m[15] +
+        m[8] * m[7] * m[13] +
+        m[12] * m[5] * m[11] -
+        m[12] * m[7] * m[9];
+
+    inv[12] = -m[4] * m[9] * m[14] +
+        m[4] * m[10] * m[13] +
+        m[8] * m[5] * m[14] -
+        m[8] * m[6] * m[13] -
+        m[12] * m[5] * m[10] +
+        m[12] * m[6] * m[9];
+
+    inv[1] = -m[1] * m[10] * m[15] +
+        m[1] * m[11] * m[14] +
+        m[9] * m[2] * m[15] -
+        m[9] * m[3] * m[14] -
+        m[13] * m[2] * m[11] +
+        m[13] * m[3] * m[10];
+
+    inv[5] = m[0] * m[10] * m[15] -
+        m[0] * m[11] * m[14] -
+        m[8] * m[2] * m[15] +
+        m[8] * m[3] * m[14] +
+        m[12] * m[2] * m[11] -
+        m[12] * m[3] * m[10];
+
+    inv[9] = -m[0] * m[9] * m[15] +
+        m[0] * m[11] * m[13] +
+        m[8] * m[1] * m[15] -
+        m[8] * m[3] * m[13] -
+        m[12] * m[1] * m[11] +
+        m[12] * m[3] * m[9];
+
+    inv[13] = m[0] * m[9] * m[14] -
+        m[0] * m[10] * m[13] -
+        m[8] * m[1] * m[14] +
+        m[8] * m[2] * m[13] +
+        m[12] * m[1] * m[10] -
+        m[12] * m[2] * m[9];
+
+    inv[2] = m[1] * m[6] * m[15] -
+        m[1] * m[7] * m[14] -
+        m[5] * m[2] * m[15] +
+        m[5] * m[3] * m[14] +
+        m[13] * m[2] * m[7] -
+        m[13] * m[3] * m[6];
+
+    inv[6] = -m[0] * m[6] * m[15] +
+        m[0] * m[7] * m[14] +
+        m[4] * m[2] * m[15] -
+        m[4] * m[3] * m[14] -
+        m[12] * m[2] * m[7] +
+        m[12] * m[3] * m[6];
+
+    inv[10] = m[0] * m[5] * m[15] -
+        m[0] * m[7] * m[13] -
+        m[4] * m[1] * m[15] +
+        m[4] * m[3] * m[13] +
+        m[12] * m[1] * m[7] -
+        m[12] * m[3] * m[5];
+
+    inv[14] = -m[0] * m[5] * m[14] +
+        m[0] * m[6] * m[13] +
+        m[4] * m[1] * m[14] -
+        m[4] * m[2] * m[13] -
+        m[12] * m[1] * m[6] +
+        m[12] * m[2] * m[5];
+
+    inv[3] = -m[1] * m[6] * m[11] +
+        m[1] * m[7] * m[10] +
+        m[5] * m[2] * m[11] -
+        m[5] * m[3] * m[10] -
+        m[9] * m[2] * m[7] +
+        m[9] * m[3] * m[6];
+
+    inv[7] = m[0] * m[6] * m[11] -
+        m[0] * m[7] * m[10] -
+        m[4] * m[2] * m[11] +
+        m[4] * m[3] * m[10] +
+        m[8] * m[2] * m[7] -
+        m[8] * m[3] * m[6];
+
+    inv[11] = -m[0] * m[5] * m[11] +
+        m[0] * m[7] * m[9] +
+        m[4] * m[1] * m[11] -
+        m[4] * m[3] * m[9] -
+        m[8] * m[1] * m[7] +
+        m[8] * m[3] * m[5];
+
+    inv[15] = m[0] * m[5] * m[10] -
+        m[0] * m[6] * m[9] -
+        m[4] * m[1] * m[10] +
+        m[4] * m[2] * m[9] +
+        m[8] * m[1] * m[6] -
+        m[8] * m[2] * m[5];
+
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+    if (det == 0)
+        return false;
+
+    det = 1.0 / det;
+
+    for (i = 0; i < 16; i++)
+        invOut[i] = inv[i] * det;
+
+    return true;
+}
+
 void WidgetGL::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    if (showOrtho) {        
-        double scale = camDistance / 1000;
-        glOrtho(-width() * scale, width() * scale, -height() * scale, height() * scale, -1000000, 1000000);
-        gluLookAt(cos(rotY) * sin(rotX), cos(rotY) * cos(rotX), sin(rotY), 0, 0, 0, 0, 0, 1);
+    if (showFromCamera) {
+        //gluLookAt(camerasData[camViewIndex]->camPos.x, camerasData[camViewIndex]->camPos.y, camerasData[camViewIndex]->camPos.z, 0, 0, 0, 0, 0, 1);
+        setViewFromCamera(camViewIndex);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        //glPushMatrix();
+        //glTranslatef(-camerasData[camViewIndex]->camPos.x, -camerasData[camViewIndex]->camPos.y, -camerasData[camViewIndex]->camPos.z);
+        // Orienting camera
+        double alpha = camerasData[camViewIndex]->orient.alpha;    // In radians
+        double beta = camerasData[camViewIndex]->orient.beta;      // In radians
+        double kappa = camerasData[camViewIndex]->orient.kappa;    // In radians
+        GLdouble rotationMatrix[16] = {
+            cos(alpha) * cos(kappa) + (sin(alpha) * sin(beta) * sin(kappa)), cos(beta) * sin(kappa), -sin(alpha) * cos(kappa) + (cos(alpha) * sin(beta) * sin(kappa)), camerasData[camViewIndex]->camPos.x,
+            sin(alpha) * sin(beta) * cos(kappa) - cos(alpha) * sin(kappa), cos(beta) * cos(kappa), sin(alpha) * sin(kappa) + cos(alpha) * sin(beta) * cos(kappa), camerasData[camViewIndex]->camPos.y,
+            sin(alpha) * cos(beta), -sin(beta), cos(alpha) * cos(beta), camerasData[camViewIndex]->camPos.z,
+            0,                                                                  0,                          0,                                                                  1
+        };
+        GLdouble invMatrix[16];
+        gluInvertMatrix(rotationMatrix, invMatrix);
+        glMultMatrixd(invMatrix);
+        //glmatrix
+        //glRotated(180, 0, 1, 0);
+        //glPopMatrix();
     } else {
-        gluLookAt(cos(rotY) * sin(rotX) * camDistance, cos(rotY) * cos(rotX) * camDistance, sin(rotY) * camDistance, 0, 0, 0, 0, 0, 1);
+        if (showOrtho) {
+            gluLookAt(cos(rotY) * sin(rotX), cos(rotY) * cos(rotX), sin(rotY), 0, 0, 0, 0, 0, 1);
+        } else {
+            gluLookAt(cos(rotY) * sin(rotX) * camDistance, cos(rotY) * cos(rotX) * camDistance, sin(rotY) * camDistance, 0, 0, 0, 0, 0, 1);
+        }
     }
     
     glPointSize(4.0);
@@ -145,16 +320,14 @@ void WidgetGL::paintGL() {
             glPushMatrix();
             glColor3f(0.9, 0, 0.9);
             glPointSize(8.0);
+            //glRotated(camerasData[i]->orient.kappa  * (180 / PI), 0, 0, 1);
+            //glRotated(camerasData[i]->orient.beta   * (180 / PI), 0, 1, 0);
+            //glRotated(camerasData[i]->orient.alpha  * (180 / PI), 1, 0, 0);
             glTranslatef(camerasData[i]->camPos.x, camerasData[i]->camPos.y, camerasData[i]->camPos.z);
             glBegin(GL_POINTS);
             glVertex3f(0, 0, 0);
             glEnd();
-            glRotated(camerasData[i]->orient.kappa  * (180 / PI), 0, 0, 1);
-            //glRotated(90, 1, 0, 0);
-            //glRotated(camerasData[i]->orient.alpha  * (180 / PI), 1, 0, 0);
-            //glRotated(camerasData[i]->orient.beta   * (180 / PI), 0, 1, 0);
-            //glRotated(camerasData[i]->orient.kappa  * (180 / PI), 0, 0, 1);
-
+            
             // Render tripod
             if (showCameraLegs) {
                 const double tripodAngle = 20; // in degrees
@@ -171,6 +344,18 @@ void WidgetGL::paintGL() {
 
             // Render FOV-pyramid
             if (showFovCone) {
+                // Orienting camera
+                double alpha = camerasData[i]->orient.alpha;    // In radians
+                double beta = camerasData[i]->orient.beta;      // In radians
+                double kappa = camerasData[i]->orient.kappa;    // In radians
+                GLdouble rotationMatrix[16] = {
+                    cos(alpha) * cos(kappa) + (sin(alpha) * sin(beta) * sin(kappa)),    cos(beta) * sin(kappa),     -sin(alpha)*cos(kappa) + (cos(alpha) * sin(beta) * sin(kappa)),     0,
+                    sin(alpha) * sin(beta) * cos(kappa) - cos(alpha) * sin(kappa),      cos(beta) * cos(kappa),     sin(alpha) * sin(kappa) + cos(alpha) * sin(beta) * cos(kappa),      0,
+                    sin(alpha) * cos(beta),                                             -sin(beta),                 cos(alpha) * cos(beta),                                             0,
+                    0,                                                                  0,                          0,                                                                  1
+                };
+                glMultMatrixd(rotationMatrix);
+
                 // Converting the FOV's to degrees from radians
                 double fovW = (camerasData[i]->fovWidth * (180.0 / PI));
                 double fovH = (camerasData[i]->fovHeight * (180.0 / PI));
@@ -186,18 +371,19 @@ void WidgetGL::paintGL() {
                 // Drawing the bottom of the FOV-pyramid (square)
                 glPushMatrix();
                 glBegin(GL_LINE_LOOP);
-                glVertex3f(w2, l, h2);
-                glVertex3f(-w2, l, h2);
-                glVertex3f(-w2, l, -h2);
-                glVertex3f(w2, l, -h2);
+                glVertex3f(w2, h2, -l);
+                glVertex3f(-w2, h2, -l);
+                glVertex3f(-w2, -h2, -l);
+                glVertex3f(w2, -h2, -l);
+
                 glEnd();
                 glPopMatrix();
                 
                 // Drawing lines from lens to the FOV-Square
                 glPushMatrix();
-                glRotated((fovW / 2), 0, 0, 1);
+                glRotated((fovW / 2), 0, 1, 0);
                 glRotated((fovH / 2), 1, 0, 0);
-                glScaled(0, coneSize, 0);
+                glScaled(0, 0, -coneSize);
                 glBegin(GL_LINE_STRIP);
                 glVertex3f(0, 0, 0);
                 glVertex3f(1, 1, 1);
@@ -205,9 +391,9 @@ void WidgetGL::paintGL() {
                 glPopMatrix();
 
                 glPushMatrix();
-                glRotated((fovW / 2), 0, 0, -1);
+                glRotated((fovW / 2), 0, -1, 0);
                 glRotated((fovH / 2), 1, 0, 0);
-                glScaled(0, coneSize, 0);
+                glScaled(0, 0, -coneSize);
                 glBegin(GL_LINE_STRIP);
                 glVertex3f(0, 0, 0);
                 glVertex3f(1, 1, 1);
@@ -215,9 +401,9 @@ void WidgetGL::paintGL() {
                 glPopMatrix();
                 
                 glPushMatrix();
-                glRotated((fovW / 2), 0, 0, 1);
+                glRotated((fovW / 2), 0, 1, 0);
                 glRotated((fovH / 2), -1, 0, 0);
-                glScaled(0, coneSize, 0);
+                glScaled(0, 0, -coneSize);
                 glBegin(GL_LINE_STRIP);
                 glVertex3f(0, 0, 0);
                 glVertex3f(1, 1, 1);
@@ -225,9 +411,9 @@ void WidgetGL::paintGL() {
                 glPopMatrix();
 
                 glPushMatrix();
-                glRotated((fovW / 2), 0, 0, -1);
+                glRotated((fovW / 2), 0, -1, 0);
                 glRotated((fovH / 2), -1, 0, 0);
-                glScaled(0, coneSize, 0);
+                glScaled(0, 0, -coneSize);
                 glBegin(GL_LINE_STRIP);
                 glVertex3f(0, 0, 0);
                 glVertex3f(1, 1, 1);
@@ -367,7 +553,7 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
 }
 
 void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
-    if (mouseEvent->buttons() & Qt::LeftButton) {
+    if (mouseEvent->buttons() & Qt::LeftButton && !showFromCamera) {
         if (lastMouseX < 0 || lastMouseY < 0) {
             lastMouseX = mouseEvent->screenPos().x();
             lastMouseY = mouseEvent->screenPos().y();
@@ -391,18 +577,21 @@ void WidgetGL::clickOnMenu(QAction *action) {
 }
 
 void WidgetGL::showXYPlane() {
+    if (showFromCamera) return;
     rotX = PI;
     rotY = PI / 2;
     updateGL();
 }
 
 void WidgetGL::showXZPlane() {
+    if (showFromCamera) return;
     rotX = PI;
     rotY = 0;
     updateGL();
 }
 
 void WidgetGL::showYZPlane() {
+    if (showFromCamera) return;
     rotX = PI / 2;
     rotY = 0;
     updateGL();

@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QHeaderView>
@@ -55,6 +56,8 @@ public:
     QLabel *label;
     QTreeView *cameraTree;
     QPushButton* loadDefaultCameraProperties;
+    QPushButton* quickSaveCameraProperties;
+    QPushButton* quickLoadCameraProperties;
     QCheckBox* trackPointEnabled = nullptr;
     QCheckBox* filteredImagePreviewEnabled = nullptr;
     QLineEdit* thresholdValueEdit = nullptr;
@@ -139,7 +142,8 @@ public:
 
         CamerasWidget_2 = new QDockWidget(MainWindow);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
-        CamerasWidget_2->setMinimumSize(QSize(400, 0));
+        CamerasWidget_2->setMinimumSize(QSize(200, 0));
+        CamerasWidget_2->setBaseSize(QSize(600, 0));
         CamerasWidget_2->setContextMenuPolicy(Qt::DefaultContextMenu);
         CamerasWidget_2->setAcceptDrops(false);
         CamerasWidget_2->setAutoFillBackground(false);
@@ -208,9 +212,15 @@ public:
         cameraTabLayout->addWidget(propertiesWidget);
 
         // Load Defaults in Cameras tab
+        QGridLayout* cameraSettingsButtonPanel = new QGridLayout();
+        quickSaveCameraProperties = new QPushButton("Quick Save");
+        cameraSettingsButtonPanel->addWidget(quickSaveCameraProperties, 0, 0);
+        quickLoadCameraProperties = new QPushButton("Quick Load");
+        cameraSettingsButtonPanel->addWidget(quickLoadCameraProperties, 0, 1);
         loadDefaultCameraProperties = new QPushButton(QString("Load Defaults"));
+        cameraSettingsButtonPanel->addWidget(loadDefaultCameraProperties, 1, 0, 1, 2);
         propertiesWidget->setObjectName(QStringLiteral("loadDefaultCameraProperties"));
-        cameraTabLayout->addWidget(loadDefaultCameraProperties);
+        cameraTabLayout->addLayout(cameraSettingsButtonPanel);
 
         cameraWidget->setLayout(cameraTabLayout);
         
@@ -271,7 +281,7 @@ public:
 };
 
 namespace Ui {
-    class MainWindow: public Ui_MainWindow {};
+    class MainWindow : public Ui_MainWindow {};
 } // namespace Ui
 
 QT_END_NAMESPACE

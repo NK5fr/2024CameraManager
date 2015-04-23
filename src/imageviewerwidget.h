@@ -6,37 +6,39 @@
 #include <QLabel>
 #include <QSize>
 #include <QPoint>
+#include <qfile.h>
 
 #include <vector>
 
 using namespace std;
 
-class ImageViewerWidget : public QMdiSubWindow{
+class ImageViewerWidget : public QMdiSubWindow {
 public:
-    ImageViewerWidget(QString path, QString n, QSize s);
+    ImageViewerWidget(QString path, QString filename);
+
+    void scaleImageToWindow(const QSize& size);
+
 protected:
     void mousePressEvent(QMouseEvent *mouseEvent);
     void wheelEvent(QWheelEvent *event);
+    void resizeEvent(QResizeEvent * resizeEvent);
 
 private:
-    void initializingImage(QString n);
-    QString name;
-    QString projectPath;
-    QString relativePathToDatas;
+    QString filename;
+    QString path;
     QString fullPath;
-
-    bool correspondingData;
-
-    QSize size;
     QSize imageSize;
+    QPixmap image;
     QPoint point;
-    QLabel *labelImage;
-
+    QLabel labelImage;
+    vector<vector<QPoint>> points;
     int camerasNb;
     int pointsNb;
-    void initializingPoints();
-    vector < vector < QPoint > > points;
+    bool correspondingData;
 
+    void setImageFromFile(const QString& filepath);
+    //void initializingImage(const QString& filepath);
+    void initializingPoints();
 };
 
 #endif // IMAGEVIEWERWIDGET_H

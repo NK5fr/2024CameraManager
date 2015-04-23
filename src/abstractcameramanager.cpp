@@ -17,8 +17,7 @@ Q_DECLARE_METATYPE(CameraManager::CameraProperty *)
 
 using namespace CameraManager;
 
-AbstractCameraManager::AbstractCameraManager(bool empty)
-    : liveView(false), cameraTree() , newCameraList(), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
+AbstractCameraManager::AbstractCameraManager(bool empty) : liveView(false), cameraTree() , newCameraList(), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
     updateProps = true;
     propertiesList.setRootIsDecorated(false);
     propertiesList.setColumnCount(4);
@@ -211,7 +210,7 @@ void AbstractCameraManager::activateLiveView(bool active){
 ///////////////////////////////////////////////////
 /////////////// Camera List related ///////////////
 ///////////////////////////////////////////////////
-QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
+QModelIndex AbstractCameraManager::detectNewCamerasAndExpand() {
     std::vector<AbstractCamera*> newCameras;
     std::vector<QStandardItem*> oldCameras;
     cameraTree_getCameraList(cameraTree.invisibleRootItem(), &oldCameras);
@@ -221,12 +220,13 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(){
     //removing disconnected cameras
     for (unsigned int i = 0; i < oldCameras.size(); i++) {
         QStandardItem* item = oldCameras.at(i);
-        AbstractCamera* cam = reinterpret_cast<AbstractCamera *>(item->data(CameraRole).value<quintptr>());
+        AbstractCamera* cam = reinterpret_cast<AbstractCamera*>(item->data(CameraRole).value<quintptr>());
         /*cout << "oldCameras(" << i << "):" << cam << endl;*/
         bool found = false;
         for (int j = newCameras.size() - 1; j >= 0; j--) {
             if (cam->equalsTo(newCameras.at(j))) {
                 found = true;
+                delete newCameras[j]; // Fix for memory-leak - Lars Aksel - 19.04.2015
                 newCameras.erase(newCameras.begin()+j);
                 continue;
             }
@@ -298,7 +298,7 @@ void AbstractCameraManager::resetItem(QModelIndex index){
 
 void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem* item, bool active){
     cout << "activateCamera( " << camera << ", " << active << ")" << endl;
-    int i = activeCameras.size()-1;
+    int i = activeCameras.size() - 1;
     while (i >= 0 && activeCameras.at(i).camera != camera) --i;
 
     if (i >= 0){
@@ -314,7 +314,7 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
         if (active) {
             activeCameraEntry entry = activeCameraEntry(camera, item);
             connect(entry.window, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
-            entry.window->setWindowTitle(item->text());
+            entry.window->setWindowTitle(camera->getString().c_str());
             mainWindow->modifySubWindow(entry.window, true);
             activeCameras.push_back(entry);
             connect(mainWindow, SIGNAL(activateCrosshair(bool)), qobject_cast<QVideoWidget*>(entry.window->widget()), SLOT(activateCrosshair(bool)));
@@ -323,7 +323,7 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
     }
 }
 
-void AbstractCameraManager::on_subwindow_closing(QObject *window){
+void AbstractCameraManager::on_subwindow_closing(QObject *window) {
     cout << "closing " << window << endl;
     int i = activeCameras.size()-1;
     while(i>=0 && activeCameras.at(i).window != window) --i;
@@ -331,10 +331,10 @@ void AbstractCameraManager::on_subwindow_closing(QObject *window){
     if(i>=0) activeCameras.at(i).treeItem->setCheckState(Qt::Unchecked);
 }
 
-void AbstractCameraManager::on_CameraTree_itemChanged(QStandardItem* item){
+void AbstractCameraManager::on_CameraTree_itemChanged(QStandardItem* item) {
     Qt::CheckState checked = item->checkState();
     if( item->data(CameraRole).isValid() ){
-        activateCamera( reinterpret_cast<AbstractCamera*>( item->data(CameraRole).value<quintptr>() ), item, checked == Qt::Checked);
+        activateCamera(reinterpret_cast<AbstractCamera*>(item->data(CameraRole).value<quintptr>()), item, checked == Qt::Checked);
     } else {
         cameraTree_recursiveCheck(item, checked);
     }
@@ -443,7 +443,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
         //checkbox
         QCheckBox* box = new QCheckBox();
         box->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
-
+        box->setChecked(property.getAuto());
         if (!property.getCanAuto()) box->setEnabled(false);
         propertiesList.setItemWidget(it, Ui::PropertyAuto, box);
         connect(box, SIGNAL(stateChanged(int)), this, SLOT(on_propertyCheckbox_changed(int)));
@@ -489,6 +489,7 @@ void AbstractCameraManager::updateProperties(std::vector<CameraProperty> &proper
             activeCameras.at(j).camera->setProperty(&property);
         }
         QCheckBox* box = (QCheckBox*) propertiesList.itemWidget(it, Ui::PropertyAuto);
+        box->setChecked(property.getAuto());
         if (!property.getCanAuto()) box->setEnabled(false);
         if (property.getType() == CameraManager::AUTOTRIGGER) continue;
         QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(it, Ui::PropertyValue);

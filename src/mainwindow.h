@@ -57,7 +57,7 @@ public:
     // gs test
     //void execute(QString command, QProcess &p);
 
-public slots:
+private slots:
     /* All of them could probably be private */
     /** TOOL BAR **/
     void on_actionLiveView_toggled(bool arg1);
@@ -86,12 +86,19 @@ public slots:
     /*void on_Detect_clicked();*/
     /*void on_updatePropertiesButton_clicked();*/
 
-    // Lars Aksel - 05.02.2015
+    // Lars Aksel - 20.04.2015
+    void quickLoadTrackPointSettings();
+    void quickSaveTrackPointSettings();
+    void loadDefaultTrackPointSettings_clicked();
     void loadDefaultCameraProperties_clicked();
     void on_TrackPointChecked(int state);
     void on_FilteredImageChecked(int state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
+
+    // Lars Aksel - Loading/Saving Camera Properties
+    void quickLoadCameraSettings();
+    void quickSaveCameraSettings();
 
     /* grethe - output fra trackpoint */
     /*

@@ -65,6 +65,7 @@ class AbstractCameraManager : public QObject
         void loadPropertiesDefaultsInit();
         bool loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop);
         bool savePropertiesToFile(QString& filepath);
+        void setProperties(std::vector<CameraManager::CameraProperty> &properties);
 
         // Lars Aksel - 05.02.2015
         void setTrackPointProperty(TrackPointProperty* prop) { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->setTrackPointProperty(prop); }
@@ -164,7 +165,6 @@ class AbstractCameraManager : public QObject
          * @brief add properties that can be set and retrieved to/from  cameras for this API
          * @param properties vector of CameraProperty
          */
-        void setProperties(std::vector<CameraManager::CameraProperty> &properties);
         void updateProperties(std::vector<CameraManager::CameraProperty> &properties);
     private slots:
         void on_CameraTree_itemChanged(QStandardItem* item);

@@ -5,38 +5,30 @@
 #include <iostream>
 
 using namespace std;
+using namespace FlyCapture2;
 
 FlyCamera::FlyCamera() : AbstractCamera() {
-    cam = new Camera();
 }
 
-Camera* FlyCamera::getCamera() {
-    return cam;
-}
-
-PGRGuid* FlyCamera::getGuid() {
-    return &guid;
-}
-
-CameraInfo* FlyCamera::getCameraInfo() {
-    return &camInfo;
+FlyCamera::~FlyCamera() {
+    if (capturing) stopAutoCapture();
 }
 
 void FlyCamera::setProperty(CameraManager::CameraProperty* p) {
     if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
-        cam->GetTriggerMode(&triggerMode);
+        cam.GetTriggerMode(&triggerMode);
         triggerMode.onOff = !p->getAuto();
         triggerMode.mode = 0;
         triggerMode.parameter = 0;
         triggerMode.source = 0;
-        cam->SetTriggerMode(&triggerMode);
+        cam.SetTriggerMode(&triggerMode);
     } else {
         Error error;
         Property prop;
         prop.type = getPropertyType(p);
         //printf("setProp - Name: %s, Value: %f, isAuto: %u\n", p->getName().c_str(), p->getValue(), p->getAuto());
-        error = cam->GetProperty(&prop);
+        error = cam.GetProperty(&prop);
         if (error == PGRERROR_OK) {
             prop.onOff = p->getOnOff();
             prop.autoManualMode = p->getAuto();
@@ -44,24 +36,24 @@ void FlyCamera::setProperty(CameraManager::CameraProperty* p) {
             prop.absValue = p->getValue();
             prop.valueA = (int) p->getValue();
             prop.valueB = (int) p->getValue();
-            cam->SetProperty(&prop);
+            cam.SetProperty(&prop);
         } else {
             printf("Error in FlyCamera.cpp - setProperty: \n");
             error.PrintErrorTrace();
         }
     }
-
 }
+
 void FlyCamera::getProperty(CameraManager::CameraProperty* p) {
     if(p->getType() == CameraManager::AUTOTRIGGER) {
         TriggerMode triggerMode;
-        cam->GetTriggerMode(&triggerMode);
+        cam.GetTriggerMode(&triggerMode);
         p->setAuto(triggerMode.onOff ? false : true);
     } else {
         Error error;
         Property prop;
         prop.type = getPropertyType(p);
-        error = cam->GetProperty(&prop);
+        error = cam.GetProperty(&prop);
         if (error == PGRERROR_OK) {
             p->setAuto(prop.autoManualMode);
             p->setValue(p->getDecimals() > 0 ? prop.absValue : prop.valueA);
@@ -72,8 +64,7 @@ void FlyCamera::getProperty(CameraManager::CameraProperty* p) {
     }
 }
 
-FlyCapture2::PropertyType FlyCamera::getPropertyType(CameraManager::CameraProperty* p)
-{
+FlyCapture2::PropertyType FlyCamera::getPropertyType(CameraManager::CameraProperty* p) {
     switch(p->getType()){
     case CameraManager::BRIGHTNESS:
         return BRIGHTNESS;
@@ -121,6 +112,15 @@ QImage FlyCamera::captureImage() {
         imageDetect = new ImageDetect(width, height,
                                         trackPointProperty->thresholdValue,
                                         trackPointProperty->subwinValue);
+    }
+
+    // If the dimensions of the image is changed during capture 
+    if (imageDetect->getImageWidth() != width || imageDetect->getImageHeight() != height) {
+        printf("Warning: Image-size changed during capture!\n");
+        delete imageDetect;
+        imageDetect = new ImageDetect(width, height,
+                                      trackPointProperty->thresholdValue,
+                                      trackPointProperty->subwinValue);
     }
     imageDetect->setThreshold(trackPointProperty->thresholdValue);
     imageDetect->setMinPix(trackPointProperty->minPointValue);
@@ -190,23 +190,23 @@ QImage FlyCamera::retrieveImage() {
     TriggerMode triggerMode;
     TriggerMode oldTrigger;
 
-    cam->GetTriggerMode(&oldTrigger);
-    cam->GetTriggerMode(&triggerMode);
+    cam.GetTriggerMode(&oldTrigger);
+    cam.GetTriggerMode(&triggerMode);
     triggerMode.onOff = false;
-    cam->SetTriggerMode(&triggerMode);
+    cam.SetTriggerMode(&triggerMode);
 
     printf("Retrieving images...\n");
-    cam->StartCapture();
+    cam.StartCapture();
 
 
     printf("Retrieving 1...\n");
     QImage image = captureImage();
 
     printf("Retrieving 2...\n");
-    cam->SetTriggerMode(&oldTrigger);
+    cam.SetTriggerMode(&oldTrigger);
 
     printf("Retrieving 3...\n");
-    cam->StopCapture();
+    cam.StopCapture();
 
     printf("Images retrieved\n");
     capturing = false;
@@ -223,10 +223,6 @@ std::string FlyCamera::getString(){
     ss << " - ";
     ss << FlyCamera::getCameraInfo()->serialNumber;
     return ss.str();
-}
-
-FlyCamera::~FlyCamera() {
-    if (capturing) stopAutoCapture();
 }
 
 

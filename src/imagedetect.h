@@ -150,6 +150,8 @@ public:
     int getFinalNumPoints() { return this->duplRemoved->numpointsnew; }
     int getMaxPix() { return this->maxpix; }
     int getMinPix() { return this->minpix; }
+    int getImageWidth() { return this->imageWidth; }
+    int getImageHeight() { return this->imageHeight; }
 
 private:
     PointDef* pointDef;

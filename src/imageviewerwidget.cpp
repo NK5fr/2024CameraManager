@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QStringList>
 #include <QWheelEvent>
+#include <qdebug.h>
 
 #include <QtCore/qmath.h>
 
@@ -13,43 +14,47 @@
 
 using namespace std;
 
-ImageViewerWidget::ImageViewerWidget(QString path, QString n, QSize s) :
-    projectPath(path), relativePathToDatas("../../output"), size(s){
-
-    initializingImage(n);
+ImageViewerWidget::ImageViewerWidget(QString path, QString filename) :
+    path(path), filename(filename) {
+    fullPath = path + "/" + filename;
+    setImageFromFile(fullPath);
+    labelImage.setAlignment(Qt::AlignCenter);
+    setWidget(&labelImage);
+    setWindowFlags(Qt::SubWindow);
+    setWindowTitle(filename);
+    //initializingPoints();
 }
 
-
-void ImageViewerWidget::initializingImage(QString n){
-    name=n;
-    fullPath=projectPath+"/"+name;
-    QFile myFile(fullPath);
-
-    if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        cout << "Fail to open the file : "<< QString(fullPath).toUtf8().constData() << endl;
+void ImageViewerWidget::setImageFromFile(const QString& filepath) {
+    QFile file(filepath);
+    if (!file.exists()) {
+        qDebug("File does not exist: %s\n", filepath);
         return;
     }
-    QPixmap image(fullPath);
-    imageSize=image.size();
-    QPixmap resized = image.scaled(size, Qt::KeepAspectRatio, Qt::FastTransformation);
-    QLabel *label = new QLabel();
-    label->setPixmap(resized);
-    setWidget(label);
-    setMaximumSize(image.size());
-    setWindowFlags(Qt::SubWindow);
-    setWindowTitle(name);
-    initializingPoints();
+    /*
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug("Failed to open the file : %s\n", filepath);
+        return;
+    } */   
+    bool loaded = image.load(filepath);
+    if (loaded) {
+        labelImage.setPixmap(image);
+        imageSize = image.size();
+    } else {
+        qDebug("Image could not be loaded...\n");
+    }
 }
 
 void ImageViewerWidget::initializingPoints(){
-    /* Initializing with wrong size */
-    points = vector < vector < QPoint > >(50, vector < QPoint >(0));
+    /*
+    // Initializing with wrong size 
+    points = vector<vector<QPoint>>(50, vector<QPoint>(0));
 
-    /* Having the number of the image (to load the right data file number) */
-    QString underscoreString= name.split("_").at(1);
+    // Having the number of the image (to load the right data file number) 
+    QString underscoreString = name.split("_").at(1);
     QString number = underscoreString.split(".").at(0);
 
-    /* Removing the first 0 because the data file has only 4 number and not 5 as the image file */
+    // Removing the first 0 because the data file has only 4 number and not 5 as the image file 
     number=number.mid(1, number.size());
     QString relativeImagePath = relativePathToDatas + "/" + number + ".dat";
     QFile myFile(projectPath + "/" + relativeImagePath);
@@ -66,22 +71,22 @@ void ImageViewerWidget::initializingPoints(){
         while(!myFile.atEnd() && !line.contains("Camera no"))
             line=myFile.readLine();
 
-        /* Getting the line with points number */
+        // Getting the line with points number 
         line=myFile.readLine();
         QStringList list = line.split(" ");
-        /* Removing the last char because it is the \n */
+        // Removing the last char because it is the \n 
         QString tmp = list.at(list.size()-1);
         pointsNb=tmp.mid(0, tmp.size()-1).toInt();
         points[camerasNb].resize(pointsNb);
         for(int i=0;i<pointsNb;i++){
-            /* Spliting line with ' ' */
+            // Spliting line with ' ' 
             line=myFile.readLine();
             list=line.split(" ");
             int j=0;
-            /* Removing useless cells */
+            // Removing useless cells 
             while(j<list.size()){
                 QString tmp = list.at(j);
-                /* Removing useless spaces from cells */
+                // Removing useless spaces from cells 
                 tmp.replace(QString(" "), QString(""));
                 if(!tmp.toDouble() && tmp!=QString("0"))
                     list.removeAt(j);
@@ -93,77 +98,61 @@ void ImageViewerWidget::initializingPoints(){
         camerasNb++;
     }
     points.resize(camerasNb);
+    */
 }
 
 void ImageViewerWidget::mousePressEvent(QMouseEvent *mouseEvent){
-    if(!correspondingData)
-        return;
-    /* Getting the coordinates into the widget */
-    QPoint realPoint = QWidget::mapFromGlobal(cursor().pos());
-    /* Getting the right ratio */
-    double widthRatio = imageSize.width()/size.width();
-    double heightRatio = imageSize.height()/size.height();
-    double ratio;
-    if(widthRatio>heightRatio)
-        ratio=widthRatio;
-    else
-        ratio=heightRatio;
-    /* Setting the images coordinates */
-    realPoint.setX(realPoint.x()*ratio);
-    realPoint.setY(realPoint.y()*ratio);
+    QPoint relativeMousePos = mouseEvent->pos();
+    QSize widgetSize = size();
+    double x = 0;
+    double y = 0;
+    int imX = 1280;
+    int imY = 1024;
+    bool isMultipleImages = true;
+    int scaledImageWidth = 0;
+    int scaledImageHeight = 0;
 
-    /* Getting the camera n°*/
-    int columnNumber = realPoint.x()/(imageSize.width()/3);
-    int lineNumber = realPoint.y()/(imageSize.height()/2);
-
-    int cameraNumber = lineNumber*3+columnNumber;
-
-    /* Setting the x and y coordinates according to the camera number */
-    realPoint.setX(realPoint.x()%(imageSize.width()/3));
-    realPoint.setY(realPoint.y()%(imageSize.height()/2));
-
-    /* Getting the closest point */
-    int ind=0;
-    QPoint closest=points[cameraNumber][0];
-
-    /* Calculating int distances in x and y axis */
-    int xDist = qFabs(realPoint.x()-closest.x());
-    int yDist = qFabs(realPoint.y()-closest.y());
-    int distance=sqrt(qPow(xDist, 2) + qPow(yDist, 2));
-
-    /* tmp var to compare */
-    int tmpDistance;
-    QPoint tmpPoint;
-
-    for(int i=1;i<points[cameraNumber].size();i++){
-        tmpPoint = points[cameraNumber][i];
-        xDist = qFabs(realPoint.x()-tmpPoint.x());
-        yDist = qFabs(realPoint.y()-tmpPoint.y());
-        tmpDistance = sqrt(qPow(xDist, 2) + qPow(yDist, 2));
-        if(distance>tmpDistance){
-            distance=tmpDistance;
-            closest=tmpPoint;
-            ind=i;
-        }
+    if ((widgetSize.width() / widgetSize.height()) > (imageSize.width() / imageSize.height())) { // If background is wider than image (Sides are blank)
+        scaledImageWidth = (imageSize.width() * widgetSize.height()) / imageSize.height();
+        scaledImageHeight = widgetSize.height();
+        x = ((widgetSize.width() - scaledImageWidth) / 2);
+    } else { // If background is smaller (in width) than image (top and bottom is blank)
+        scaledImageWidth = widgetSize.width();
+        scaledImageHeight = (widgetSize.width() * imageSize.height()) / imageSize.width();
+        y = ((widgetSize.height() - scaledImageHeight) / 2);
     }
-    /* The point must be closer than 10 pixels in each axis */
-    if(distance<sqrt(qPow(10, 2) + qPow(10, 2))){
-        QString degree = QString::fromUtf8("\u00b0");
-        QString camera = QString("Camera n"+degree+" : %1").arg(cameraNumber);
-        QString pointNumber = QString("\nPoint n"+degree+" : %1").arg(ind);
-        QString xPos = QString("\nx : %1").arg(closest.x());
-        QString yPos = QString("\ny : %1").arg(closest.y());
 
-        QString stringPos = camera + pointNumber + xPos + yPos;
-        QToolTip::showText(cursor().pos(), stringPos, this);
+    double imageX = ((double) relativeMousePos.x() - x);
+    double imageY = ((double) relativeMousePos.y() - y);
+
+    int imageCoordX = (int) ((imageX / (double) scaledImageWidth) * imageSize.width());
+    int imageCoordY = (int) ((imageY / (double) scaledImageHeight) * imageSize.height());
+
+
+    int imageNr = 0;
+    if (isMultipleImages) {
+        imageNr = ((imageSize.width() / imX) * (imageCoordY / imY)) + (imageCoordX / imX);
+        imageCoordX %= imX;
+        imageCoordY %= imY;
     }
+
+    printf("X: %u, Y: %u\n", (int) imageX, (int) imageY);
+    printf("ImageX: %u, ImageY: %u\n", imageCoordX, imageCoordY);
+
+    QString xPos = QString("X: %1").arg(imageCoordX);
+    QString yPos = QString("\nY: %1").arg(imageCoordY);
+    QString imgNr = QString("\nImage: %1").arg(imageNr);
+
+    QString stringPos = xPos + yPos + imgNr;
+    QToolTip::showText(cursor().pos(), stringPos, this);
 }
 
-void ImageViewerWidget::wheelEvent(QWheelEvent *event){
+void ImageViewerWidget::wheelEvent(QWheelEvent* event){
+    /*
     QString underscoreString= name.split("_").at(1);
     QString number = underscoreString.split(".").at(0);
     int num = number.toInt()+(event->delta()/120);
-    /* time can't be bellow 0 */
+    // time can't be bellow 0 
     if(num<0)
         return;
     QString name = QString("grupper_");
@@ -172,5 +161,16 @@ void ImageViewerWidget::wheelEvent(QWheelEvent *event){
         name = name + QString("%1").arg(0);
     name = name + QString("%1.pgm").arg(num);
     initializingImage(name);
+    */
+}
 
+void ImageViewerWidget::scaleImageToWindow(const QSize& size) {
+    labelImage.setPixmap(image.scaled(size, Qt::KeepAspectRatio));
+}
+
+void ImageViewerWidget::resizeEvent(QResizeEvent * resizeEvent) {
+    QWidget::resizeEvent(resizeEvent);
+    //size = resizeEvent->size();
+    scaleImageToWindow(resizeEvent->size());
+    showMaximized();
 }

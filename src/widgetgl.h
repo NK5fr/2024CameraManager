@@ -29,6 +29,9 @@ public:
     void showXYPlane();
     void showXZPlane();
     void showYZPlane();
+
+    void updateProjection(int width, int height, double fov);
+    void setViewFromCamera(int index);
     
     inline void setShowFovCone(bool onOff) { this->showFovCone = onOff; }
     inline void setShowPreceedingPoints(bool onOff) { this->showPreceedingPoints = onOff; }
@@ -78,6 +81,7 @@ private:
     QColor qtBlack;
     int coordinatesShown;
     int keyPressed;
+    int camViewIndex;
     bool initialScale;
     int lastMouseX = -1;
     int lastMouseY = -1;
@@ -96,6 +100,7 @@ private:
     bool showFloorLines;
     bool showCameraLegs;
     bool showOrtho;
+    bool showFromCamera;
 
     void initializingCameras();
 };
