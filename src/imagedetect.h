@@ -149,7 +149,7 @@ public:
     void setMinSep(int minSep) { this->minsep = minSep; }
     ImPoint* getInitPoints() { return initPoints; }
     ImPoint* getFinalPoints() { return finalPoints; }
-    unsigned char* getFilteredImage() { return this->newarray; }
+    unsigned char* getFilteredImage() { return this->newarray2; }
     unsigned char* getImage() { return this->imarray; }
     int getInitNumPoints() { return numPoints; }
     int getFinalNumPoints() { return numFinalPoints; }
@@ -167,6 +167,7 @@ private:
     SubWin* swtab;
     VectorOneCam* duplRemoved;
     unsigned char* newarray;
+    unsigned char* newarray2;
     unsigned char* imarray;
 
     int minpix = 5;
@@ -178,7 +179,7 @@ private:
 
     bool running = false;
     bool writingToPoints = false;
-    int threadSleepMs = 10;
+    int threadSleepMs = 1;
 
     int numPoints = 0;
     int numFinalPoints = 0;

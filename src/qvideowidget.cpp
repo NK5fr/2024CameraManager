@@ -17,6 +17,8 @@ QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), a
 }
 
 QVideoWidget::~QVideoWidget() {
+    imageDetect->stop();
+    imgDetThread->wait();
     delete imageDetect;
 }
 
@@ -25,6 +27,7 @@ void QVideoWidget::receiveUpdate(){
     update();
 }
 void QVideoWidget::setImage(QImage* image){
+    if (image == nullptr) return;
     if(image->isNull()){
 		cout << "image er null" << endl ;  // gs lagt inn testutskrift
 		return;
@@ -34,10 +37,9 @@ void QVideoWidget::setImage(QImage* image){
     img = image->copy();
     //image = QImage();
     mutex.unlock();
-    if(lastSize != img.size())
-        resizeEvent();
+    if(lastSize != img.size()) resizeEvent();
 
-    //emit forceUpdate();
+    emit forceUpdate();
 }
 
 void QVideoWidget::paintEvent(QPaintEvent *) {
@@ -46,13 +48,8 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    mutex.lock();
-    QImage imgCopy = img.copy();
-    mutex.unlock();
-
     unsigned int width = img.width();
     unsigned int height = img.height();
-    unsigned char* imgData = imgCopy.bits();
     unsigned char imgVal = 0;
 
     QPen redPen(QColor(255, 0, 0), 2);
@@ -61,18 +58,17 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
 
     if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
         if (imageDetect == nullptr) {
-            imageDetect = new ImageDetect(width, height,
-                                          trackPointProperty->thresholdValue,
-                                          trackPointProperty->subwinValue);
+            imageDetect = new ImageDetect(width, height, trackPointProperty->thresholdValue, trackPointProperty->subwinValue);
+            imgDetThread = new ImageDetectThread(imageDetect);
+            imgDetThread->start();
         }
 
         // If the dimensions of the image is changed during capture 
         if (imageDetect->getImageWidth() != width || imageDetect->getImageHeight() != height) {
             printf("Warning: Image-size changed during capture!\n");
-            delete imageDetect;
-            imageDetect = new ImageDetect(width, height,
-                                          trackPointProperty->thresholdValue,
-                                          trackPointProperty->subwinValue);
+            return;
+            //delete imageDetect;
+            //imageDetect = new ImageDetect(width, height, trackPointProperty->thresholdValue, trackPointProperty->subwinValue);
         }
         imageDetect->setThreshold(trackPointProperty->thresholdValue);
         imageDetect->setMinPix(trackPointProperty->minPointValue);
@@ -81,35 +77,41 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
         imageDetect->setMinSep(trackPointProperty->minSepValue);
         if (!imageDetect->isBusy()) {
             unsigned char* imageBuffer = new unsigned char[width * height];
+            mutex.lock();
             for (int i = 0; i < width * height; ++i) {
-                imageBuffer[i] = imgData[i * 4];
+                imageBuffer[i] = img.bits()[i * 4];
             }
-            imageDetect->setImage(imageBuffer);
+            mutex.unlock();
+            imageDetect->setImage(imageBuffer); // imageDetect has ownership of imageBuffer, so it has the responsibility of deleting it.
         }
     }
 
     if (trackPointProperty->filteredImagePreview) {
         //imageDetect->imageRemoveBackground();
+        QImage imgCopy = img.copy();
         unsigned char* newImageBuffer = imageDetect->getFilteredImage();
+        mutex.lock();
         for (int i = 0; i < width * height; ++i) {
             imgVal = newImageBuffer[i];
-            imgData[(i * 4) + 0] = imgVal;  // Red
-            imgData[(i * 4) + 1] = imgVal;  // Green
-            imgData[(i * 4) + 2] = imgVal;  // Blue
-            imgData[(i * 4) + 3] = 255;     // Alpha
+            imgCopy.bits()[(i * 4) + 0] = imgVal;  // Red
+            imgCopy.bits()[(i * 4) + 1] = imgVal;  // Green
+            imgCopy.bits()[(i * 4) + 2] = imgVal;  // Blue
+            imgCopy.bits()[(i * 4) + 3] = 255;     // Alpha
         }
+        mutex.unlock();
         scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         painter.drawImage(scaled.topLeft(), scaledImg);
     } else {
-        scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         painter.drawImage(scaled.topLeft(), scaledImg);
     }
     if (trackPointProperty->trackPointPreview) {
         //imageDetect->imageDetectPoints();
         ImPoint* points;
         int numPoints;
+        while (imageDetect->isWritingToPoints());
         if (trackPointProperty->removeDuplicates) {
-            imageDetect->removeDuplicatePoints();
+            //imageDetect->removeDuplicatePoints();
             points = imageDetect->getFinalPoints();
             numPoints = imageDetect->getFinalNumPoints();
         } else {
@@ -120,8 +122,8 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
         int crossWingSize = (int) (height / 75);
         int crossWidthSize = (int) (width / 300);
         for (int i = 0; i < numPoints; i++) {
-            int xPos = ((double) points[i].x * ((double) scaled.size().width() / imgCopy.width())) + scaled.topLeft().x();
-            int yPos = ((double) points[i].y * ((double) scaled.size().height() / imgCopy.height())) + scaled.topLeft().y();
+            int xPos = ((double) points[i].x * ((double) scaled.size().width() / img.width())) + scaled.topLeft().x();
+            int yPos = ((double) points[i].y * ((double) scaled.size().height() / img.height())) + scaled.topLeft().y();
 
             if (trackPointProperty->showCoordinates) {
                 painter.fillRect(xPos, yPos, 105, 12, Qt::white);
@@ -148,7 +150,7 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
         if (xPos + magnifierSize > size().width()) xPos -= magnifierSize;
         if (yPos + magnifierSize > size().height()) yPos -= magnifierSize;
 
-        QImage magnifiedImage = imgCopy.copy(imageCoordX - (magnifiedAreaSize / 2), imageCoordY - (magnifiedAreaSize / 2), magnifiedAreaSize, magnifiedAreaSize);
+        QImage magnifiedImage = img.copy(imageCoordX - (magnifiedAreaSize / 2), imageCoordY - (magnifiedAreaSize / 2), magnifiedAreaSize, magnifiedAreaSize);
         magnifiedImage = magnifiedImage.scaled(QSize(magnifierSize, magnifierSize), Qt::KeepAspectRatio);
         painter.drawImage(xPos, yPos, magnifiedImage);
         painter.drawLine(QLine(xPos + (magnifierSize / 2), yPos, xPos + (magnifierSize / 2), yPos + magnifierSize));

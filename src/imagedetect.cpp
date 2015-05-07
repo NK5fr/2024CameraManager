@@ -10,6 +10,7 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
     this->minpix = minPix;
     this->maxpix = maxPix;
     newarray = new unsigned char[imageWidth * imageHeight];
+    newarray2 = new unsigned char[imageWidth * imageHeight];
     //imarray = new unsigned char[imageWidth * imageHeight];
     imarray = nullptr;
     initPoints = new ImPoint[MAX_POINTS];
@@ -23,6 +24,9 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
 ImageDetect::~ImageDetect() {
     delete[] newarray;
     delete[] imarray;
+    delete[] newarray2;
+    delete[] initPoints;
+    delete[] finalPoints;
     delete swtab;
     delete pointDef;
     delete points;
@@ -39,14 +43,18 @@ void ImageDetect::start() {
     running = true;
     while (running) {
         if (imarray != nullptr) {
+            imageRemoveBackground();
+            memcpy(newarray2, newarray, imageWidth * imageHeight);
             imageDetectPoints();
             removeDuplicatePoints();
             writingToPoints = true;
+            int size = sizeof(ImPoint) * this->points->numpoints;
+            int size2 = sizeof(ImPoint) * this->duplRemoved->numpointsnew;
             memcpy(initPoints, this->points->table, sizeof(ImPoint) * this->points->numpoints);
             memcpy(finalPoints, this->pointDef->newpt, sizeof(ImPoint) * this->duplRemoved->numpointsnew);
-            writingToPoints = false;
             numPoints = this->points->numpoints;
             numFinalPoints = this->duplRemoved->numpointsnew;
+            writingToPoints = false;
             delete[] imarray;
             imarray = nullptr;
         } else {
