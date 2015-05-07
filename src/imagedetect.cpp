@@ -10,7 +10,10 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
     this->minpix = minPix;
     this->maxpix = maxPix;
     newarray = new unsigned char[imageWidth * imageHeight];
-    imarray = new unsigned char[imageWidth * imageHeight];
+    //imarray = new unsigned char[imageWidth * imageHeight];
+    imarray = nullptr;
+    initPoints = new ImPoint[MAX_POINTS];
+    finalPoints = new ImPoint[MAX_POINTS];
     swtab = new SubWin(imageWidth, imageHeight);
     pointDef = new PointDef(imageHeight, MAX_POINTS);
     points = new ImPointsOneCam(MAX_POINTS);
@@ -30,6 +33,34 @@ void ImageDetect::setSubwinSize(int subwinsiz) {
     if (this->subwinsiz != subwinsiz) {
         this->subwinsiz = subwinsiz;
     }
+}
+
+void ImageDetect::start() {
+    running = true;
+    while (running) {
+        if (imarray != nullptr) {
+            imageDetectPoints();
+            removeDuplicatePoints();
+            writingToPoints = true;
+            memcpy(initPoints, this->points->table, sizeof(ImPoint) * this->points->numpoints);
+            memcpy(finalPoints, this->pointDef->newpt, sizeof(ImPoint) * this->duplRemoved->numpointsnew);
+            writingToPoints = false;
+            numPoints = this->points->numpoints;
+            numFinalPoints = this->duplRemoved->numpointsnew;
+            delete[] imarray;
+            imarray = nullptr;
+        } else {
+            QThread::msleep(threadSleepMs);
+        }
+    }
+}
+
+void ImageDetect::stop() {
+    running = false;
+}
+
+bool ImageDetect::isBusy() {
+    return (imarray != nullptr);
 }
 
 void ImageDetect::imageDetectPoints() {  // imno for logging

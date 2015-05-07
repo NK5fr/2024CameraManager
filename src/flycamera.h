@@ -27,10 +27,10 @@ public:
 
 	void startAutoCapture();
     void stopAutoCapture();
-    QImage retrieveImage();
+    QImage* retrieveImage();
         
     bool equalsTo(AbstractCamera *c);        
-	std::string getString();
+	  std::string getString();
 
 private:
     FlyCapture2::Camera cam;
@@ -39,7 +39,7 @@ private:
 
 	FlyCapture2::PropertyType getPropertyType(CameraManager::CameraProperty *p);
 
-    QImage captureImage();
+    QImage* captureImage();
 };
 
 #endif // FLYCAMERA_H

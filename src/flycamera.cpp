@@ -95,73 +95,22 @@ FlyCapture2::PropertyType FlyCamera::getPropertyType(CameraManager::CameraProper
 }
 
 // Lars Aksel - 30.01.2015 - Added support to ImageDetect
-QImage FlyCamera::captureImage() {
+QImage* FlyCamera::captureImage() {
     Image img;
     Error err = getCamera()->RetrieveBuffer(&img);
     if (err != PGRERROR_OK) {
         err.PrintErrorTrace();
-        return QImage();
+        return nullptr;
     }
-    unsigned int width = img.GetCols();
-    unsigned int height = img.GetRows();
-    unsigned char* imageBuffer = img.GetData();
-    QImage image(width, height, QImage::Format_RGB32);
-    unsigned char* imgData = image.bits();
-    unsigned char imgVal = 0;
-    if (imageDetect == nullptr) {
-        imageDetect = new ImageDetect(width, height,
-                                        trackPointProperty->thresholdValue,
-                                        trackPointProperty->subwinValue);
-    }
-
-    // If the dimensions of the image is changed during capture 
-    if (imageDetect->getImageWidth() != width || imageDetect->getImageHeight() != height) {
-        printf("Warning: Image-size changed during capture!\n");
-        delete imageDetect;
-        imageDetect = new ImageDetect(width, height,
-                                      trackPointProperty->thresholdValue,
-                                      trackPointProperty->subwinValue);
-    }
-    imageDetect->setThreshold(trackPointProperty->thresholdValue);
-    imageDetect->setMinPix(trackPointProperty->minPointValue);
-    imageDetect->setMaxPix(trackPointProperty->maxPointValue);
-    imageDetect->setSubwinSize(trackPointProperty->subwinValue);
-    imageDetect->setMinSep(trackPointProperty->minSepValue);
-    imageDetect->setImage(imageBuffer);
-    if (trackPointProperty->filteredImagePreview) {
-        imageDetect->imageRemoveBackground();
-        imageBuffer = imageDetect->getFilteredImage();
-    }
-    for (int i = 0; i < img.GetDataSize(); ++i) {
-        imgVal = imageBuffer[i];
-        imgData[(i * 4) + 0] = imgVal;  // Red
-        imgData[(i * 4) + 1] = imgVal;  // Green
-        imgData[(i * 4) + 2] = imgVal;  // Blue
-        imgData[(i * 4) + 3] = 255;     // Alpha
-    }
-    if (trackPointProperty->trackPointPreview) {
-        imageDetect->imageDetectPoints();
-        imageDetect->removeDuplicatePoints();
-        ImPoint* points = imageDetect->getFinalPoints();
-        // Drawing the points on the image...
-        int crossWingSize = (int) (height / 75);
-        int crossWidthSize = (int) (width / 300);
-        for (int i = 0; i < imageDetect->getFinalNumPoints(); i++) {
-            int xPos = points[i].x;
-            int yPos = points[i].y;
-            // Line along X-axis
-            for (int x = xPos - crossWingSize; x <= xPos + crossWingSize; x++) {
-                for (int width = yPos - (crossWidthSize / 2); width < yPos + (crossWidthSize / 2); width++) {
-                    image.setPixel(x, width, qRgb(255, 0, 0));
-                }
-            }
-            // Line along Y-axis
-            for (int y = yPos - crossWingSize; y <= yPos + crossWingSize; y++) {
-                for (int width = xPos - (crossWidthSize / 2); width < xPos + (crossWidthSize / 2); width++) {
-                    image.setPixel(width, y, qRgb(255, 0, 0));
-                }
-            }
-        }
+    unsigned imgVal;
+    QImage* image = new QImage(img.GetCols(), img.GetRows(), QImage::Format::Format_RGB32);
+    unsigned char* imgBuffer = image->bits();
+    for (int i = 0; i < img.GetCols() * img.GetRows(); ++i) {
+        imgVal = img.GetData()[i];
+        imgBuffer[(i * 4) + 0] = imgVal;  // Red
+        imgBuffer[(i * 4) + 1] = imgVal;  // Green
+        imgBuffer[(i * 4) + 2] = imgVal;  // Blue
+        imgBuffer[(i * 4) + 3] = 255;     // Alpha
     }
     return image;
 }
@@ -171,7 +120,7 @@ void FlyCamera::startAutoCapture(){
     printf("Starting autoCapture\n");
     getCamera()->StartCapture();
     while(capturing){
-        QImage image = captureImage();
+        QImage* image = captureImage();
         AbstractCamera::sendFrame(image);
     }
     printf("Stopped autoCapture !\n");
@@ -183,8 +132,8 @@ void FlyCamera::stopAutoCapture(){
     getCamera()->StopCapture();
 }
 
-QImage FlyCamera::retrieveImage() {
-    if (capturing) return QImage();
+QImage* FlyCamera::retrieveImage() {
+    if (capturing) return nullptr;
     capturing = true;
     printf("Images begin to be retrieved\n");
     TriggerMode triggerMode;
@@ -200,7 +149,7 @@ QImage FlyCamera::retrieveImage() {
 
 
     printf("Retrieving 1...\n");
-    QImage image = captureImage();
+    QImage* image = captureImage();
 
     printf("Retrieving 2...\n");
     cam.SetTriggerMode(&oldTrigger);

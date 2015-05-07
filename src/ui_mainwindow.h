@@ -60,6 +60,8 @@ public:
     QPushButton* quickLoadCameraProperties;
     QCheckBox* trackPointEnabled = nullptr;
     QCheckBox* filteredImagePreviewEnabled = nullptr;
+    QCheckBox* showCoordinateLabelEnabled = nullptr;
+    QCheckBox* removeDuplicatPointsEnabled = nullptr;
     QLineEdit* thresholdValueEdit = nullptr;
     QLineEdit* subwinValueEdit = nullptr;
     QLineEdit* minPointValueEdit = nullptr;
@@ -142,13 +144,13 @@ public:
 
         CamerasWidget_2 = new QDockWidget(MainWindow);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
-        CamerasWidget_2->setMinimumSize(QSize(200, 0));
-        CamerasWidget_2->setBaseSize(QSize(600, 0));
+        CamerasWidget_2->setMinimumSize(QSize(500, 0));
+        CamerasWidget_2->setBaseSize(QSize(750, 0));
         CamerasWidget_2->setContextMenuPolicy(Qt::DefaultContextMenu);
         CamerasWidget_2->setAcceptDrops(false);
         CamerasWidget_2->setAutoFillBackground(false);
         CamerasWidget_2->setInputMethodHints(Qt::ImhNone);
-        CamerasWidget_2->setFloating(false);
+        //CamerasWidget_2->setFloating(false);
         CamerasWidget_2->setAllowedAreas(Qt::AllDockWidgetAreas);
         dockWidgetContents_4 = new QWidget();
         dockWidgetContents_4->setObjectName(QStringLiteral("dockWidgetContents_4"));
@@ -174,7 +176,13 @@ public:
         projectTree->setHeaderItem(__qtreewidgetitem);
         projectTree->setObjectName(QStringLiteral("ProjectTree"));
         projectTree->setContextMenuPolicy(Qt::CustomContextMenu);
-        projectTree->setHeaderHidden(true);
+        QStringList ColumnNames;
+        ColumnNames << "Filename" << "Filesize" << "Last modified" << "Filetype";
+        projectTree->setHeaderLabels(ColumnNames);
+        //projectTree->setHeaderHidden(true);
+        projectTree->setSortingEnabled(true);
+        projectTree->setColumnCount(4);
+        projectTree->setColumnWidth(0, 200);
         projectTabLayout->addWidget(projectTree);
 
         projectsWidget->setLayout(projectTabLayout);

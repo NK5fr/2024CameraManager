@@ -31,6 +31,12 @@ namespace Ui {
     extern bool crosshair, crosshairReal, forceHighQuality;
 }
 
+namespace FileInfo {
+    enum FileType {
+        ConfigurationFile, SocketFile, Folder, ImageFile, CalibrationFile, Executable, TextFile
+    };
+}
+
 class AbstractCameraManager;
 
 /**
@@ -93,6 +99,8 @@ private slots:
     void loadDefaultCameraProperties_clicked();
     void on_TrackPointChecked(int state);
     void on_FilteredImageChecked(int state);
+    void on_ShowCoordinateLabelChecked(int state);
+    void on_RemoveDuplicatesChecked(int state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
 
@@ -134,7 +142,7 @@ private:
     TrackPointProperty trackPointProperty; // Lars Aksel
 
     /** CREATING FOLDER AND FILE ITEMS **/
-    void createTreeItem(QTreeWidgetItem *parent, QString name);
+    void createTreeItem(QTreeWidgetItem *parent, QString name, QString filepath);
     void createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
 
     MenuBar *bar;

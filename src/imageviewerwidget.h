@@ -6,39 +6,48 @@
 #include <QLabel>
 #include <QSize>
 #include <QPoint>
+#include <qgridlayout.h>
 #include <qfile.h>
+#include <QImage>
+#include <QToolTip>
+#include <QFile>
+#include <QStringList>
+#include <QWheelEvent>
+#include <qdebug.h>
+#include <QtCore/qmath.h>
+#include <qpushbutton.h>
+
+#include "imagewidget.h"
+#include "imageselectpointwidget.h"
 
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
 class ImageViewerWidget : public QMdiSubWindow {
 public:
     ImageViewerWidget(QString path, QString filename);
-
-    void scaleImageToWindow(const QSize& size);
+    ~ImageViewerWidget();
 
 protected:
-    void mousePressEvent(QMouseEvent *mouseEvent);
-    void wheelEvent(QWheelEvent *event);
-    void resizeEvent(QResizeEvent * resizeEvent);
+    void mousePressEvent(QMouseEvent* mouseEvent);
+    void wheelEvent(QWheelEvent* event);
 
 private:
     QString filename;
     QString path;
     QString fullPath;
-    QSize imageSize;
-    QPixmap image;
     QPoint point;
-    QLabel labelImage;
     vector<vector<QPoint>> points;
+    ImageSelectPointWidget imageWidget;
     int camerasNb;
     int pointsNb;
     bool correspondingData;
 
     void setImageFromFile(const QString& filepath);
     //void initializingImage(const QString& filepath);
-    void initializingPoints();
+    //void initializingPoints();
 };
 
 #endif // IMAGEVIEWERWIDGET_H

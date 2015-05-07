@@ -43,7 +43,7 @@ void TestCamera::getProperty(CameraProperty* p){
     }
 }
 
-QImage TestCamera::retrieveImage(){
+QImage* TestCamera::retrieveImage(){
     return generateImage();
 }
 
@@ -77,9 +77,9 @@ void TestCamera::generateBack(){
     p.end();
 }
 
-QImage TestCamera::generateImage(){
-    QImage img( back );
-    QPainter p(&img);
+QImage* TestCamera::generateImage(){
+    QImage* img = new QImage(back);
+    QPainter p(img);
     p.setPen(Qt::red);
     p.drawRect(QRect( QPoint(rand()%100, rand()%100), QPoint(crop-rand()%100, crop-rand()%100) ));
     p.setPen(Qt::green);

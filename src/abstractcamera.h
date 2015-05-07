@@ -12,8 +12,6 @@
 #include <QDebug>
 #include "cameraproperty.h"
 #include "qvideowidget.h"
-#include "imagedetect.h"
-#include "trackpointproperty.h"
 
 
 /**
@@ -50,6 +48,7 @@ public:
     virtual inline QString getSerial() { return serial; }
     virtual inline QString getModel() { return model; }
     virtual inline QString getCustomName() { return customName; }
+    virtual inline void setCustomName(QString name) { this->customName = name; }
 
     /**
         * @brief (Pure virtual) start callback based Liveview
@@ -65,7 +64,7 @@ public:
         * @brief (Pure virtual) get one image from camera
         * @return QImage image
         */
-    virtual QImage retrieveImage() = 0;
+    virtual QImage* retrieveImage() = 0;
 
     /**
         * @brief start liveview capture from manager
@@ -74,11 +73,8 @@ public:
     void startCapture(QVideoWidget* videoWidget);
 
     // Lars Aksel - 05.02.2015
-    ImageDetect* getImageDetect() { return this->imageDetect; }
-    TrackPointProperty* getTrackPointProperty() { return this->trackPointProperty; }
-    void setTrackPointProperty(TrackPointProperty* prop) { this->trackPointProperty = prop; }
     bool isCapturing() { return this->capturing; }
-
+    QVideoWidget* getVideoContainer() { return this->container; }
 
 protected:
     AbstractCamera();
@@ -87,11 +83,9 @@ protected:
         * @brief sendFrame send a new QImage for the view
         * @param img QImage grabbed from the camera
         */
-    void sendFrame(QImage img);
+    void sendFrame(QImage* img);
 
     // Lars Aksel - 30.01.2015
-    ImageDetect* imageDetect;
-    TrackPointProperty* trackPointProperty;
     bool capturing;
 
 private:

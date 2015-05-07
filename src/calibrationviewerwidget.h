@@ -41,23 +41,23 @@ enum Calibration{
 class CalibrationViewerWidget : public QMdiSubWindow {
     Q_OBJECT
 public:
-    CalibrationViewerWidget(QString path);
+    CalibrationViewerWidget(QString path, QString name);
 
     /* Left clic */
-    //void clicOnCalibrationEdit(int lig);
-    //CalibrationEdit *getFileContain(){ return fileContain; }
+    void clicOnCalibrationEdit(int lig);
+    CalibrationEdit *getFileContain(){ return fileContain; }
 
 private slots:
-/*
     void onRightClic();
     void menuProjectAction_triggered(QAction*);
     void menuCalibration(QAction*);
-    */
+    
 private:
     // Lars Aksel
     CalibrationFile* calibrationFile;
 
-    /*
+    QString fullPath;
+    
     // Basic informations
     int view;
 
@@ -105,16 +105,17 @@ private:
     // Editable ?
     bool textEditable;
     QFrame *frame;
-    */
+    
 };
 
-/*
+
 class CalibrationEdit : public QTextEdit {
 public:
     CalibrationEdit(CalibrationViewerWidget *c) : calib(c){
         setReadOnly(true);
         setContextMenuPolicy(Qt::CustomContextMenu);
         setMouseTracking(true);
+        setFont(QFont("Courier", 9));
     }
 
     QString getKeyByLine(int line){
@@ -143,7 +144,6 @@ protected:
 private:
     CalibrationViewerWidget *calib;
 };
-*/
 
 
 #endif // CALIBRATIONVIEWERWIDGET_H

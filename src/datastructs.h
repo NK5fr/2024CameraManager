@@ -15,6 +15,30 @@ struct Orientation {
 };
 
 namespace TrackPoint {
+    //struct 
+
+    struct PointInCamera {
+        PointInCamera() {
+            camNo = -1;
+            pointX = -1;
+            pointY = -1;
+            isUsed = true;
+            isInitialized = false;
+        }
+        PointInCamera(int x, int y, int camNo) {
+            pointX = x;
+            pointY = y;
+            this->camNo = camNo;
+            isUsed = true;
+            isInitialized = true;
+        }
+        int camNo;
+        int pointX;
+        int pointY;
+        bool isUsed;
+        bool isInitialized;
+    };
+
     struct Camera {
         int camNo;
         int serialNo;
@@ -24,7 +48,7 @@ namespace TrackPoint {
         double fovHeight = 0;   // In radians
         Vector3d camPos;
         Orientation orient;
-        double cameraConstant;  // Unit pixels, from the camerasensor to the focus-point.
+        double cameraConstant;  // In pixels, focal-length from camera-sensor.
         double cameraConstantStdDev;
         bool valueSet = false;
     };

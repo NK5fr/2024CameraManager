@@ -1,6 +1,7 @@
 #ifndef DETECTPARTICLES
 #define DETECTPARTICLES
 
+#include <qthread.h>
 #include <algorithm>
 
 struct ImPoint {
@@ -127,10 +128,14 @@ struct VectorOneCam {
     }
 };
 
+
 class ImageDetect {
 public:
     ImageDetect(int imageWidth, int imageHeight, int imlimit = 0, int subwinsiz = 0, int minPix = 0, int maxPix = 0);
     ~ImageDetect();
+
+    void start();
+    void stop();
 
     void imageDetectPoints();
     void imageRemoveBackground();
@@ -142,16 +147,19 @@ public:
     void setMaxPix(int maxpix) { this->maxpix = maxpix; }
     void setMinPix(int minpix) { this->minpix = minpix; }
     void setMinSep(int minSep) { this->minsep = minSep; }
-    ImPoint* getInitPoints() { return this->points->table; }
-    ImPoint* getFinalPoints() { return this->pointDef->newpt; }
+    ImPoint* getInitPoints() { return initPoints; }
+    ImPoint* getFinalPoints() { return finalPoints; }
     unsigned char* getFilteredImage() { return this->newarray; }
     unsigned char* getImage() { return this->imarray; }
-    int getInitNumPoints() { return this->points->numpoints; }
-    int getFinalNumPoints() { return this->duplRemoved->numpointsnew; }
+    int getInitNumPoints() { return numPoints; }
+    int getFinalNumPoints() { return numFinalPoints; }
     int getMaxPix() { return this->maxpix; }
     int getMinPix() { return this->minpix; }
     int getImageWidth() { return this->imageWidth; }
     int getImageHeight() { return this->imageHeight; }
+    bool isWritingToPoints() { return writingToPoints; }
+    bool isBusy();
+    bool isRunning() { return running; }
 
 private:
     PointDef* pointDef;
@@ -167,7 +175,16 @@ private:
     int imlimit;
     int subwinsiz;
     const int MAX_POINTS = 5000;
-    
+
+    bool running = false;
+    bool writingToPoints = false;
+    int threadSleepMs = 10;
+
+    int numPoints = 0;
+    int numFinalPoints = 0;
+    ImPoint* initPoints = nullptr;
+    ImPoint* finalPoints = nullptr;
+
     int imageWidth;
     int imageHeight;
 
@@ -181,4 +198,16 @@ private:
     void setNull(int frax, int tilx, int fray, int tily);
     int maxval();
 };
+
+class ImageDetectThread : public QThread {
+public:
+    ImageDetectThread(ImageDetect* w) : QThread() { imgDet = w; }
+protected:
+    void run() {
+        imgDet->start();
+    }
+private:
+    ImageDetect* imgDet;
+};
+
 #endif

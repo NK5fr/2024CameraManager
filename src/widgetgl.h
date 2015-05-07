@@ -9,7 +9,7 @@
 
 #include <vector>
 #include <iostream>
-#include <gl\GLU.h>
+#include <GL/glu.h>
 
 #include "socketviewerwidget.h"
 #include "calibrationfile.h"
@@ -29,9 +29,6 @@ public:
     void showXYPlane();
     void showXZPlane();
     void showYZPlane();
-
-    void updateProjection(int width, int height, double fov);
-    void setViewFromCamera(int index);
     
     inline void setShowFovCone(bool onOff) { this->showFovCone = onOff; }
     inline void setShowPreceedingPoints(bool onOff) { this->showPreceedingPoints = onOff; }
@@ -91,7 +88,6 @@ private:
     double coneSize;
     bool adjustCamDistance = false;
     
-    // Lars Aksel - Check off/on settings...
     bool showFovCone;
     bool showPreceedingPoints;
     bool showLines;
@@ -103,6 +99,8 @@ private:
     bool showFromCamera;
 
     void initializingCameras();
+    void updateProjection(int width, int height, double fov);
+    void setViewFromCamera(int index);
 };
 
 #endif // WIDGETGL_H

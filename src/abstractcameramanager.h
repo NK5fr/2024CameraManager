@@ -68,7 +68,18 @@ class AbstractCameraManager : public QObject
         void setProperties(std::vector<CameraManager::CameraProperty> &properties);
 
         // Lars Aksel - 05.02.2015
-        void setTrackPointProperty(TrackPointProperty* prop) { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->setTrackPointProperty(prop); }
+        void setTrackPointProperty(TrackPointProperty* prop) { 
+            for (int i = activeCameras.size() - 1; i >= 0; i--) {
+                if (activeCameras.at(i).camera->getVideoContainer() == nullptr) continue;
+                activeCameras.at(i).camera->getVideoContainer()->setTrackPointProperty(prop);
+            }
+        }
+        void updateContainer() {
+            for (int i = activeCameras.size() - 1; i >= 0; i--) {
+                if (activeCameras.at(i).camera->getVideoContainer() == nullptr) continue;
+                activeCameras.at(i).camera->getVideoContainer()->update(); 
+            }
+        }
         void stopCapturing() { for (int i = activeCameras.size() - 1; i >= 0; i--) activeCameras.at(i).camera->stopAutoCapture(); }
         void setUpdateProperties(bool onOff) { this->updateProps = onOff; }
         bool isCapturing() { return this->liveView; }

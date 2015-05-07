@@ -39,7 +39,8 @@ ConfigFileViewerWidget::ConfigFileViewerWidget(QString path) : textEditable(true
 
 	showWizardView();
 	//TTODO: change this to something more relative, like the size of all widgets or else. It's for compability with smaller screens.
-	this->resize(575, 375);
+    this->resize(575, 375);
+    fileContain->setFont(QFont("Courier", 9));
     fileContain->setReadOnly(!textEditable);
 
 		//TTODO: Check if this really works correctly.
