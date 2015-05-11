@@ -75,6 +75,7 @@ public:
     // Lars Aksel - 05.02.2015
     bool isCapturing() { return this->capturing; }
     QVideoWidget* getVideoContainer() { return this->container; }
+    void setVideoContainer(QVideoWidget* videoWidget) { this->container = videoWidget; }
 
 protected:
     AbstractCamera();

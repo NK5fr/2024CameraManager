@@ -21,7 +21,7 @@ AbstractCameraManager::AbstractCameraManager(bool empty) : liveView(false), came
     updateProps = true;
     propertiesList.setRootIsDecorated(false);
     propertiesList.setColumnCount(4);
-    propertiesList.setHeaderLabels(QStringList() << "Property" << "Auto" << "Value" << "Slider");
+    propertiesList.setHeaderLabels(QStringList() << "Property" << "Auto" << "Write value" << "Read value" << "Slider");
     
     if(empty) return;
     QObject::connect(&cameraTree, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_CameraTree_itemChanged(QStandardItem*)));
@@ -196,7 +196,7 @@ void AbstractCameraManager::activateLiveView(bool active){
     if (active) {
         for(int i=activeCameras.size()-1; i>=0; i--){
             activeCameraEntry& camEntry = activeCameras.at(i);
-            QVideoWidget* videoWidget = qobject_cast<QVideoWidget *>(camEntry.window->widget());
+            QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(camEntry.window->widget());
             camEntry.camera->startCapture(videoWidget);
         }
     } else {
@@ -316,6 +316,8 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             connect(entry.window, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
             entry.window->setWindowTitle(camera->getString().c_str());
             mainWindow->modifySubWindow(entry.window, true);
+            QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(entry.window->widget());
+            camera->setVideoContainer(videoWidget);
             activeCameras.push_back(entry);
             connect(mainWindow, SIGNAL(activateCrosshair(bool)), qobject_cast<QVideoWidget*>(entry.window->widget()), SLOT(activateCrosshair(bool)));
             if(liveView) entry.camera->startCapture(qobject_cast<QVideoWidget *>(entry.window->widget()));
@@ -468,7 +470,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
         slider->setTracking(true); //might be wanted
         slider->setValue(property.getValueToSlider());
         slider->setRange(property.getMinToSlider(), property.getMaxToSLider());
-        propertiesList.setItemWidget(it, Ui::PropertySlider, slider);
+        propertiesList.setItemWidget(it, Ui::PropertySlider + 1, slider);
 
         box->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)));
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_propertySlider_changed(int)));
@@ -477,6 +479,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
     propertiesList.resizeColumnToContents(1);
     propertiesList.resizeColumnToContents(2);
     propertiesList.resizeColumnToContents(3);
+    propertiesList.resizeColumnToContents(4);
 }
 
 // Lars Aksel - Update Properties-UI elements - DOES NOT WORK!

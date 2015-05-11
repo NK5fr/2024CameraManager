@@ -41,7 +41,7 @@ protected:
     void resizeEvent (QResizeEvent* event = NULL);
 
     void mouseMoveEvent (QMouseEvent* event);
-    //void enterEvent (QEvent *);
+    void enterEvent (QEvent *);
     void leaveEvent (QEvent *);
 
 private:

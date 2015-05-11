@@ -163,6 +163,7 @@ void MainWindow::on_actionLiveView_toggled(bool arg1) {
 
 /* Clic on UpdateImage button */
 void MainWindow::on_actionUpdateImages_triggered() {
+    cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
     cameraManagers.at(selectedCameraManager)->updateImages();
 }
 

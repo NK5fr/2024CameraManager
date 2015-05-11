@@ -10,7 +10,7 @@ using namespace std;
 using namespace FlyCapture2;
 
 QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
-    setMouseTracking(Ui::crosshair);
+    setMouseTracking(true);
     imageDetect = nullptr;
     trackPointProperty = nullptr;
     connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
@@ -54,6 +54,7 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
 
     QPen redPen(QColor(255, 0, 0), 2);
     QPen blackPen(QColor(0, 0, 0), 2);
+    QPen whitePen(QColor(255, 255, 255), 2);
     painter.setPen(redPen);
 
     if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
@@ -137,15 +138,19 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
         //imageDetect->setImage(nullptr);
     }
 
-    if (Ui::crosshairReal) {
+    if (Ui::crosshair && mouseIn) {
         const int magnifiedAreaSize = 25;
         const int magnifierSize = 200;
 
         QPoint pos = mouse - scaled.topLeft();
-        int xPos = pos.x();
-        int yPos = pos.y();
-        int imageCoordX = 0;
-        int imageCoordY = 0;
+        int xPos = mouse.x();
+        int yPos = mouse.y();
+        int imageCoordX = ((float) pos.x() * ((float) img.width() / scaled.width()));
+        int imageCoordY = ((float) pos.y() * ((float) img.height() / scaled.height()));
+
+        painter.setPen(blackPen);
+        painter.drawText(2, 15, "X: " + QString::number(imageCoordX, 'f', 2) + " ,Y: " + QString::number(imageCoordY, 'f', 2));
+        painter.setPen(whitePen);
 
         if (xPos + magnifierSize > size().width()) xPos -= magnifierSize;
         if (yPos + magnifierSize > size().height()) yPos -= magnifierSize;
@@ -233,26 +238,19 @@ void QVideoWidget::resizeEvent(QResizeEvent *){
     lastSize = img.size();
 }
 
-//void QVideoWidget::enterEvent(QEvent *){}
+void QVideoWidget::enterEvent(QEvent *) {
+    mouseIn = true;
+}
+
 void QVideoWidget::leaveEvent(QEvent *){
     if(!Ui::crosshair) return;
     mouseIn = false;
-    unsetCursor();
     update();
 }
 void QVideoWidget::mouseMoveEvent ( QMouseEvent * event ){
     if(!Ui::crosshair) return;
     mouse = event->pos();
-    bool tmp = mouseIn;
-    mouseIn = scaled.contains(mouse);
-
-    if( mouseIn && !tmp )
-        //setCursor(Qt::BlankCursor);
-    if( !mouseIn && tmp )
-        //unsetCursor();
-
-    if( tmp || mouseIn )
-        update();
+    update();
 }
 
 void QVideoWidget::changedState(Qt::WindowStates, Qt::WindowStates newState){
