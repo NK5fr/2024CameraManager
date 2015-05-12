@@ -357,14 +357,14 @@ void MainWindow::menuBarClicked(QAction* action) {
         process.waitForFinished();  // gs
         */
 
-        //QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
+        QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
 
-        //QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
+        QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
         trackPointProcess = new ExternalProcess();
         trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);
-        //trackPointProcess->setWorkingDirectory(trackPointPath);
-        trackPointProcess->start("tracert www.google.com");
-        //trackPointProcess->start(executable);
+        trackPointProcess->setWorkingDirectory(trackPointPath);
+        //trackPointProcess->start("tracert www.google.com");
+        trackPointProcess->start(executable);
         ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(trackPointProcess->getTextEdit());
         trackPointProcess->getTextEdit()->showMaximized();

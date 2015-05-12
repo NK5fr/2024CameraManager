@@ -12,6 +12,7 @@ using namespace FlyCapture2;
 QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
     setMouseTracking(true);
     imageDetect = nullptr;
+    mouseIn = false;
     trackPointProperty = nullptr;
     connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
 }
@@ -38,7 +39,7 @@ void QVideoWidget::setImage(QImage* image){
     //image = QImage();
     mutex.unlock();
     if(lastSize != img.size()) resizeEvent();
-
+    else scaledImage = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
     emit forceUpdate();
 }
 
@@ -100,11 +101,13 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
             imgCopy.bits()[(i * 4) + 3] = 255;     // Alpha
         }
         mutex.unlock();
-        scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        painter.drawImage(scaled.topLeft(), scaledImg);
+        //scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        //painter.drawImage(scaled.topLeft(), scaledImg);
+        painter.drawImage(scaled.topLeft(), scaledImage);
     } else {
-        scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        painter.drawImage(scaled.topLeft(), scaledImg);
+        //scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        //painter.drawImage(scaled.topLeft(), scaledImg);
+        painter.drawImage(scaled.topLeft(), scaledImage);
     }
     if (trackPointProperty->trackPointPreview) {
         //imageDetect->imageDetectPoints();
@@ -221,20 +224,20 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
 }
 
 void QVideoWidget::resizeEvent(QResizeEvent *){
-    if( img.isNull() ) return;
+    if (img.isNull()) return;
     mutex.lock();
-    QImage tmp = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
+    scaledImage = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
     mutex.unlock();
     QPoint pos;
-    if( tmp.height() == this->height() ){
-        pos = QPoint( (this->width()-tmp.width())/2 , 0 );
-        ratio = (float)img.width() / tmp.width();
+    if (scaledImage.height() == this->height()){
+        pos = QPoint((this->width() - scaledImage.width()) / 2, 0);
+        ratio = (float) img.width() / scaledImage.width();
     }else{
-        pos = QPoint( 0, (this->height()-tmp.height())/2 );
-        ratio = (float)img.height() / tmp.height();
+        pos = QPoint(0, (this->height() - scaledImage.height()) / 2);
+        ratio = (float) img.height() / scaledImage.height();
     }
     //qDebug() << "ratio" << ratio;
-    scaled = QRect(pos, tmp.size());
+    scaled = QRect(pos, scaledImage.size());
     lastSize = img.size();
 }
 
@@ -242,15 +245,21 @@ void QVideoWidget::enterEvent(QEvent *) {
     mouseIn = true;
 }
 
-void QVideoWidget::leaveEvent(QEvent *){
+void QVideoWidget::leaveEvent(QEvent *) {
     if(!Ui::crosshair) return;
     mouseIn = false;
     update();
 }
+
 void QVideoWidget::mouseMoveEvent ( QMouseEvent * event ){
     if(!Ui::crosshair) return;
     mouse = event->pos();
     update();
+}
+
+void QVideoWidget::mouseDoubleClickEvent(QMouseEvent* event) {
+    if (isMaximized()) showNormal();
+    else showMaximized();
 }
 
 void QVideoWidget::changedState(Qt::WindowStates, Qt::WindowStates newState){

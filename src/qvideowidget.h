@@ -38,14 +38,13 @@ public slots:
 
 protected:
     void paintEvent (QPaintEvent* event);
-    void resizeEvent (QResizeEvent* event = NULL);
-
+    void resizeEvent (QResizeEvent* event = nullptr);
+    void mouseDoubleClickEvent(QMouseEvent* event);
     void mouseMoveEvent (QMouseEvent* event);
-    void enterEvent (QEvent *);
-    void leaveEvent (QEvent *);
+    void enterEvent (QEvent*);
+    void leaveEvent (QEvent*);
 
 private:
-    QImage* imgTemp;
     QImage img;
     QImage scaledImage;
     QMutex mutex;

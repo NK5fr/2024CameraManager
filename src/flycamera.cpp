@@ -102,15 +102,70 @@ QImage* FlyCamera::captureImage() {
         err.PrintErrorTrace();
         return nullptr;
     }
-    unsigned imgVal;
+    quint64 val;
     QImage* image = new QImage(img.GetCols(), img.GetRows(), QImage::Format::Format_RGB32);
-    unsigned char* imgBuffer = image->bits();
-    for (int i = 0; i < img.GetCols() * img.GetRows(); ++i) {
+    //unsigned char* imgBuffer = image->bits();
+    quint64* resBuffer = (quint64*) image->bits();
+    quint64* flyCapData = (quint64*) img.GetData();
+    unsigned int bufferSize = (img.GetCols() * img.GetRows()) / sizeof(quint64);
+    for (int i = 0; i < bufferSize; ++i) {
+        val = flyCapData[i];
+
+        // 1 byte of 8 bytes
+        resBuffer[(i * 4)] |= (val & 0xFF);
+        resBuffer[(i * 4)] |= (val & 0xFF) >> 8;
+        resBuffer[(i * 4)] |= (val & 0xFF) >> 16;
+        resBuffer[(i * 4)] |= 0xFF00000000000000 >> 24;
+
+        // 2 byte of 8 bytes
+        resBuffer[(i * 4)] |= (val & 0x00FF) >> 32;
+        resBuffer[(i * 4)] |= (val & 0x00FF) >> 40;
+        resBuffer[(i * 4)] |= (val & 0x00FF) >> 48;
+        resBuffer[(i * 4)] |= 0xFF00000000000000 >> 56;
+
+        // 3 byte of 8 bytes
+        resBuffer[(i * 4) + 1] |= (val & 0x0000FF);
+        resBuffer[(i * 4) + 1] |= (val & 0x0000FF) >> 8;
+        resBuffer[(i * 4) + 1] |= (val & 0x0000FF) >> 16;
+        resBuffer[(i * 4) + 1] |= 0xFF >> 24;
+
+        // 4 byte of 8 bytes
+        resBuffer[(i * 4) + 1] |= (val & 0x000000FF) >> 32;
+        resBuffer[(i * 4) + 1] |= (val & 0x000000FF) >> 40;
+        resBuffer[(i * 4) + 1] |= (val & 0x000000FF) >> 48;
+        resBuffer[(i * 4) + 1] |= 0xFF00000000000000 >> 56;
+
+        // 5 byte of 8 bytes
+        resBuffer[(i * 4) + 2] |= (val & 0x00000000FF);
+        resBuffer[(i * 4) + 2] |= (val & 0x00000000FF) >> 8;
+        resBuffer[(i * 4) + 2] |= (val & 0x00000000FF) >> 16;
+        resBuffer[(i * 4) + 2] |= 0xFF00000000000000 >> 24;
+
+        // 6 byte of 8 bytes
+        resBuffer[(i * 4) + 2] |= (val & 0x0000000000FF) >> 32;
+        resBuffer[(i * 4) + 2] |= (val & 0x0000000000FF) >> 40;
+        resBuffer[(i * 4) + 2] |= (val & 0x0000000000FF) >> 48;
+        resBuffer[(i * 4) + 2] |= 0xFF00000000000000 >> 56;
+
+        // 7 byte of 8 bytes
+        resBuffer[(i * 4) + 3] |= (val & 0x000000000000FF);
+        resBuffer[(i * 4) + 3] |= (val & 0x000000000000FF) >> 8;
+        resBuffer[(i * 4) + 3] |= (val & 0x000000000000FF) >> 16;
+        resBuffer[(i * 4) + 3] |= 0xFF00000000000000 >> 24;
+
+        // 8 byte of 8 bytes
+        resBuffer[(i * 4) + 3] |= (val & 0x00000000000000FF) >> 32;
+        resBuffer[(i * 4) + 3] |= (val & 0x00000000000000FF) >> 40;
+        resBuffer[(i * 4) + 3] |= (val & 0x00000000000000FF) >> 48;
+        resBuffer[(i * 4) + 3] |= 0xFF00000000000000 >> 56;
+
+        /*
         imgVal = img.GetData()[i];
         imgBuffer[(i * 4) + 0] = imgVal;  // Red
         imgBuffer[(i * 4) + 1] = imgVal;  // Green
         imgBuffer[(i * 4) + 2] = imgVal;  // Blue
         imgBuffer[(i * 4) + 3] = 255;     // Alpha
+        */
     }
     return image;
 }
