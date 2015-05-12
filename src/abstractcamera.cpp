@@ -28,7 +28,6 @@ void AbstractCamera::startCapture(QVideoWidget* videoWidget){
     thread.start();
 }
 
-void AbstractCamera::sendFrame(QImage* img){
-    container->setImage(img);
-    delete img;
+void AbstractCamera::sendFrame(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
+    container->setImage(imgBuffer, bufferSize, imageWidth, imageHeight);
 }

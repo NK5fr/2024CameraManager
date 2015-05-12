@@ -64,7 +64,7 @@ public:
         * @brief (Pure virtual) get one image from camera
         * @return QImage image
         */
-    virtual QImage* retrieveImage() = 0;
+    virtual bool retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) = 0;
 
     /**
         * @brief start liveview capture from manager
@@ -84,7 +84,7 @@ protected:
         * @brief sendFrame send a new QImage for the view
         * @param img QImage grabbed from the camera
         */
-    void sendFrame(QImage* img);
+    void sendFrame(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
 
     // Lars Aksel - 30.01.2015
     bool capturing;

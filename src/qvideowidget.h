@@ -23,7 +23,7 @@ public:
     explicit QVideoWidget(QWidget *parent = 0);
     ~QVideoWidget();
 
-    void setImage(QImage* image);
+    void setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
 
     ImageDetect* getImageDetect() { return this->imageDetect; }
     TrackPointProperty* getTrackPointProperty() { return this->trackPointProperty; }
@@ -50,6 +50,10 @@ private:
     QMutex mutex;
     QSize lastSize;
     QRect scaled;
+    unsigned char* imgBuffer;
+    unsigned int bufferSize;
+    unsigned int imageWidth;
+    unsigned int imageHeight;
     float ratio;
     bool active;
     bool mouseIn;
@@ -57,6 +61,8 @@ private:
     ImageDetect* imageDetect;
     ImageDetectThread* imgDetThread;
     TrackPointProperty* trackPointProperty;
+
+    void setQImage(QImage& img, unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
 };
 
 #endif // QVIDEOWIDGET_H

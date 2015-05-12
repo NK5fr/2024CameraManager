@@ -23,7 +23,7 @@ class TestCamera : public AbstractCamera {
         void setProperty(CameraProperty* p);
         void getProperty(CameraProperty* p);
         std::string getString(){ return n; }
-        QImage* retrieveImage();
+        bool retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
         void startAutoCapture();
         void stopAutoCapture();
     private:

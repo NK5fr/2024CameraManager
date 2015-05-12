@@ -14,6 +14,10 @@ QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), a
     imageDetect = nullptr;
     mouseIn = false;
     trackPointProperty = nullptr;
+    imgBuffer = nullptr;
+    bufferSize = 0;
+    imageWidth = 0;
+    imageHeight = 0;
     connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
 }
 
@@ -27,27 +31,34 @@ void QVideoWidget::receiveUpdate(){
     //trick to pass the update to the main thread...
     update();
 }
-void QVideoWidget::setImage(QImage* image){
-    if (image == nullptr) return;
-    if(image->isNull()){
-		cout << "image er null" << endl ;  // gs lagt inn testutskrift
-		return;
-	}
-	//cout << "image er IKKE null" << endl ;  // gs lagt inn testutskrift
+void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
+    if (imgBuffer == nullptr) return;
+
     mutex.lock();
-    img = image->copy();
-    //image = QImage();
+    if (img.isNull() || img.width() != imageWidth || img.height() != imageHeight) {
+        img = QImage(imageWidth, imageHeight, QImage::Format_Indexed8);
+        QVector<QRgb> colorTable;
+        for (int i = 0; i<256; ++i) colorTable << qRgb(i, i, i);
+        img.setColorTable(colorTable);
+    }
+    memcpy(img.bits(), imgBuffer, bufferSize);
     mutex.unlock();
-    if(lastSize != img.size()) resizeEvent();
-    else scaledImage = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
+    this->imgBuffer = imgBuffer;
+    this->bufferSize = bufferSize;
+    this->imageWidth = imageWidth;
+    this->imageHeight = imageHeight;
+    resizeEvent();
     emit forceUpdate();
 }
 
+void setQImage(QImage* img, unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
+    
+}
+
 void QVideoWidget::paintEvent(QPaintEvent *) {
-    if(img.isNull()) return;
-    QImage scaledImg;
+    if(imgBuffer = nullptr) return;
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
+    //painter.setRenderHint(QPainter::Antialiasing);
 
     unsigned int width = img.width();
     unsigned int height = img.height();
@@ -57,7 +68,6 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
     QPen blackPen(QColor(0, 0, 0), 2);
     QPen whitePen(QColor(255, 255, 255), 2);
     painter.setPen(redPen);
-
     if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
         if (imageDetect == nullptr) {
             imageDetect = new ImageDetect(width, height, trackPointProperty->thresholdValue, trackPointProperty->subwinValue);
@@ -78,36 +88,29 @@ void QVideoWidget::paintEvent(QPaintEvent *) {
         imageDetect->setSubwinSize(trackPointProperty->subwinValue);
         imageDetect->setMinSep(trackPointProperty->minSepValue);
         if (!imageDetect->isBusy()) {
-            unsigned char* imageBuffer = new unsigned char[width * height];
+            unsigned char* imageBuffer = new unsigned char[bufferSize];
             mutex.lock();
-            for (int i = 0; i < width * height; ++i) {
-                imageBuffer[i] = img.bits()[i * 4];
-            }
-            mutex.unlock();
+            memcpy(imageBuffer, img.bits(), bufferSize);
             imageDetect->setImage(imageBuffer); // imageDetect has ownership of imageBuffer, so it has the responsibility of deleting it.
+            mutex.unlock();
         }
     }
 
     if (trackPointProperty->filteredImagePreview) {
         //imageDetect->imageRemoveBackground();
-        QImage imgCopy = img.copy();
+        //QImage imgCopy = img.copy();
         unsigned char* newImageBuffer = imageDetect->getFilteredImage();
         mutex.lock();
-        for (int i = 0; i < width * height; ++i) {
-            imgVal = newImageBuffer[i];
-            imgCopy.bits()[(i * 4) + 0] = imgVal;  // Red
-            imgCopy.bits()[(i * 4) + 1] = imgVal;  // Green
-            imgCopy.bits()[(i * 4) + 2] = imgVal;  // Blue
-            imgCopy.bits()[(i * 4) + 3] = 255;     // Alpha
-        }
-        mutex.unlock();
-        //scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        //painter.drawImage(scaled.topLeft(), scaledImg);
+        memcpy(img.bits(), newImageBuffer, bufferSize);
+        scaledImage = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
         painter.drawImage(scaled.topLeft(), scaledImage);
+        mutex.unlock();
     } else {
         //scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         //painter.drawImage(scaled.topLeft(), scaledImg);
+        mutex.lock();
         painter.drawImage(scaled.topLeft(), scaledImage);
+        mutex.unlock();
     }
     if (trackPointProperty->trackPointPreview) {
         //imageDetect->imageDetectPoints();
@@ -236,7 +239,6 @@ void QVideoWidget::resizeEvent(QResizeEvent *){
         pos = QPoint(0, (this->height() - scaledImage.height()) / 2);
         ratio = (float) img.height() / scaledImage.height();
     }
-    //qDebug() << "ratio" << ratio;
     scaled = QRect(pos, scaledImage.size());
     lastSize = img.size();
 }

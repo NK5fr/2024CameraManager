@@ -43,7 +43,7 @@ void TestCamera::getProperty(CameraProperty* p){
     }
 }
 
-QImage* TestCamera::retrieveImage(){
+bool TestCamera::retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
     return generateImage();
 }
 
@@ -52,8 +52,7 @@ void TestCamera::startAutoCapture(){
     qDebug() << "Starting autoCapture";
     while(capturing){
         QThread::msleep(1000/framerate);
-
-        sendFrame(generateImage());
+        sendFrame(nullptr, 0, 0, 0);
     }
     qDebug() << "Stopped autoCapture !";
 }
