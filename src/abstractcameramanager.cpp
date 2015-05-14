@@ -52,10 +52,10 @@ void AbstractCameraManager::updateImages(){
     for(int i=activeCameras.size()-1; i>=0; i--){
         activeCameraEntry& camEntry = activeCameras.at(i);
         QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(camEntry.window->widget());
-        unsigned char* imgBuffer;
-        unsigned int bufferSize;
-        unsigned int imageWidth;
-        unsigned int imageHeight;
+        unsigned char* imgBuffer = nullptr;
+        unsigned int bufferSize = 0;
+        unsigned int imageWidth = 0;
+        unsigned int imageHeight = 0;
         if (camEntry.camera->retrieveImage(imgBuffer, bufferSize, imageWidth, imageHeight)) {
             videoWidget->setImage(imgBuffer, bufferSize, imageWidth, imageHeight);
         }

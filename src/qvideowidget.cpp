@@ -9,7 +9,7 @@
 using namespace std;
 using namespace FlyCapture2;
 
-QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
+QVideoWidget::QVideoWidget(QWidget *parent) : QOpenGLWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
     setMouseTracking(true);
     imageDetect = nullptr;
     mouseIn = false;
@@ -19,228 +19,114 @@ QVideoWidget::QVideoWidget(QWidget *parent) : QWidget(parent), lastSize(0, 0), a
     imageWidth = 0;
     imageHeight = 0;
     connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
+    //initializeGL();
+    //update(); 
+    //texture.createEmptyTexture(640, 480);
 }
 
 QVideoWidget::~QVideoWidget() {
-    imageDetect->stop();
-    imgDetThread->wait();
-    delete imageDetect;
+    if (imageDetect != nullptr) {
+        imageDetect->stop();
+        imgDetThread->wait();
+        delete imageDetect;
+    }
 }
 
 void QVideoWidget::receiveUpdate(){
     //trick to pass the update to the main thread...
+    updateView();
+    if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
+        texture.createEmptyTexture(imageWidth, imageHeight);
+    }
+    texture.updateTexture(imgBuffer, bufferSize);
     update();
 }
+
 void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
     if (imgBuffer == nullptr) return;
-
-    mutex.lock();
-    if (img.isNull() || img.width() != imageWidth || img.height() != imageHeight) {
-        img = QImage(imageWidth, imageHeight, QImage::Format_Indexed8);
-        QVector<QRgb> colorTable;
-        for (int i = 0; i<256; ++i) colorTable << qRgb(i, i, i);
-        img.setColorTable(colorTable);
+    if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
+        this->imgBuffer = new unsigned char[bufferSize];
+        this->imageWidth = imageWidth;
+        this->imageHeight = imageHeight;
+        //update();
+    } else {
+        this->imageWidth = imageWidth;
+        this->imageHeight = imageHeight;
     }
-    memcpy(img.bits(), imgBuffer, bufferSize);
-    mutex.unlock();
-    this->imgBuffer = imgBuffer;
+    memcpy(this->imgBuffer, imgBuffer, bufferSize);
     this->bufferSize = bufferSize;
-    this->imageWidth = imageWidth;
-    this->imageHeight = imageHeight;
-    resizeEvent();
+    //updateView();
+    //resizeEvent();
     emit forceUpdate();
 }
 
-void setQImage(QImage* img, unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    
-}
+void QVideoWidget::updateView() {
+    //glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glViewport(0, 0, this->width(), this->height());
+    glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    int width = this->width();
+    int height = this->height();
+    QSize s = size();
+    glOrtho(0, this->width(), this->height(), 0, 1, -1);
+    glMatrixMode(GL_MODELVIEW);
 
-void QVideoWidget::paintEvent(QPaintEvent *) {
-    if(imgBuffer = nullptr) return;
-    QPainter painter(this);
-    //painter.setRenderHint(QPainter::Antialiasing);
-
-    unsigned int width = img.width();
-    unsigned int height = img.height();
-    unsigned char imgVal = 0;
-
-    QPen redPen(QColor(255, 0, 0), 2);
-    QPen blackPen(QColor(0, 0, 0), 2);
-    QPen whitePen(QColor(255, 255, 255), 2);
-    painter.setPen(redPen);
-    if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
-        if (imageDetect == nullptr) {
-            imageDetect = new ImageDetect(width, height, trackPointProperty->thresholdValue, trackPointProperty->subwinValue);
-            imgDetThread = new ImageDetectThread(imageDetect);
-            imgDetThread->start();
-        }
-
-        // If the dimensions of the image is changed during capture 
-        if (imageDetect->getImageWidth() != width || imageDetect->getImageHeight() != height) {
-            printf("Warning: Image-size changed during capture!\n");
-            return;
-            //delete imageDetect;
-            //imageDetect = new ImageDetect(width, height, trackPointProperty->thresholdValue, trackPointProperty->subwinValue);
-        }
-        imageDetect->setThreshold(trackPointProperty->thresholdValue);
-        imageDetect->setMinPix(trackPointProperty->minPointValue);
-        imageDetect->setMaxPix(trackPointProperty->maxPointValue);
-        imageDetect->setSubwinSize(trackPointProperty->subwinValue);
-        imageDetect->setMinSep(trackPointProperty->minSepValue);
-        if (!imageDetect->isBusy()) {
-            unsigned char* imageBuffer = new unsigned char[bufferSize];
-            mutex.lock();
-            memcpy(imageBuffer, img.bits(), bufferSize);
-            imageDetect->setImage(imageBuffer); // imageDetect has ownership of imageBuffer, so it has the responsibility of deleting it.
-            mutex.unlock();
-        }
-    }
-
-    if (trackPointProperty->filteredImagePreview) {
-        //imageDetect->imageRemoveBackground();
-        //QImage imgCopy = img.copy();
-        unsigned char* newImageBuffer = imageDetect->getFilteredImage();
-        mutex.lock();
-        memcpy(img.bits(), newImageBuffer, bufferSize);
-        scaledImage = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
-        painter.drawImage(scaled.topLeft(), scaledImage);
-        mutex.unlock();
+    if (((float) width / height) > ((float) imageWidth / imageHeight)) {
+        scaled.setHeight(height);
+        scaled.setWidth(((float) imageWidth / imageHeight) * height);
+        scaled.setTop(0);
+        scaled.setLeft((width - (((float) imageWidth / imageHeight) * height)) / 2);
     } else {
-        //scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        //painter.drawImage(scaled.topLeft(), scaledImg);
-        mutex.lock();
-        painter.drawImage(scaled.topLeft(), scaledImage);
-        mutex.unlock();
+        scaled.setHeight(((float) imageHeight / imageWidth) * width);
+        scaled.setWidth(width);
+        scaled.setTop((height - (((float) imageHeight / imageWidth) * width)) / 2);
+        scaled.setLeft(0);
     }
-    if (trackPointProperty->trackPointPreview) {
-        //imageDetect->imageDetectPoints();
-        ImPoint* points;
-        int numPoints;
-        while (imageDetect->isWritingToPoints());
-        if (trackPointProperty->removeDuplicates) {
-            //imageDetect->removeDuplicatePoints();
-            points = imageDetect->getFinalPoints();
-            numPoints = imageDetect->getFinalNumPoints();
-        } else {
-            points = imageDetect->getInitPoints();
-            numPoints = imageDetect->getInitNumPoints();
-        }
-        // Drawing the points on the image...
-        int crossWingSize = (int) (height / 75);
-        int crossWidthSize = (int) (width / 300);
-        for (int i = 0; i < numPoints; i++) {
-            int xPos = ((double) points[i].x * ((double) scaled.size().width() / img.width())) + scaled.topLeft().x();
-            int yPos = ((double) points[i].y * ((double) scaled.size().height() / img.height())) + scaled.topLeft().y();
-
-            if (trackPointProperty->showCoordinates) {
-                painter.fillRect(xPos, yPos, 105, 12, Qt::white);
-                painter.setPen(blackPen);
-                painter.drawText(xPos + 2, yPos + 10, "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
-                painter.setPen(redPen);
-            }
-            painter.drawLine(xPos, yPos - crossWingSize, xPos, yPos + crossWingSize);
-            painter.drawLine(xPos - crossWingSize, yPos, xPos + crossWingSize, yPos);
-        }
-        //imageDetect->setImage(nullptr);
-    }
-
-    if (Ui::crosshair && mouseIn) {
-        const int magnifiedAreaSize = 25;
-        const int magnifierSize = 200;
-
-        QPoint pos = mouse - scaled.topLeft();
-        int xPos = mouse.x();
-        int yPos = mouse.y();
-        int imageCoordX = ((float) pos.x() * ((float) img.width() / scaled.width()));
-        int imageCoordY = ((float) pos.y() * ((float) img.height() / scaled.height()));
-
-        painter.setPen(blackPen);
-        painter.drawText(2, 15, "X: " + QString::number(imageCoordX, 'f', 2) + " ,Y: " + QString::number(imageCoordY, 'f', 2));
-        painter.setPen(whitePen);
-
-        if (xPos + magnifierSize > size().width()) xPos -= magnifierSize;
-        if (yPos + magnifierSize > size().height()) yPos -= magnifierSize;
-
-        QImage magnifiedImage = img.copy(imageCoordX - (magnifiedAreaSize / 2), imageCoordY - (magnifiedAreaSize / 2), magnifiedAreaSize, magnifiedAreaSize);
-        magnifiedImage = magnifiedImage.scaled(QSize(magnifierSize, magnifierSize), Qt::KeepAspectRatio);
-        painter.drawImage(xPos, yPos, magnifiedImage);
-        painter.drawLine(QLine(xPos + (magnifierSize / 2), yPos, xPos + (magnifierSize / 2), yPos + magnifierSize));
-        painter.drawLine(QLine(xPos, yPos + (magnifierSize / 2), xPos + magnifierSize, yPos + (magnifierSize / 2)));
-        painter.drawRect(xPos, yPos, magnifierSize, magnifierSize);
-    }
-
-    /*
-    if (mouseIn) {
-        QString sx("x:%1");
-        QString sy("y:%1");
-        if (Ui::crosshairReal) {
-            QPoint pos = (mouse-scaled.topLeft()) * ratio;
-            sx = sx.arg(pos.x());
-            sy = sy.arg(pos.y());
-
-            mutex.lock();
-            QImage imgCopy = img.copy();
-            mutex.unlock();
-            QPainter painterImg(&imgCopy);
-            painterImg.drawPixmap(pos-QPoint(15, 15), QPixmap(":/icons/crosshair"));
-            painterImg.drawLine(0, pos.y(), pos.x()-15, pos.y());
-            painterImg.drawLine(pos.x()+16, pos.y(), imgCopy.width(), pos.y());
-
-            painterImg.drawLine(pos.x(), 0, pos.x(), pos.y()-15);
-            painterImg.drawLine(pos.x(), pos.y()+16, pos.x(), imgCopy.height());
-            painterImg.end();
-
-            scaledImg = imgCopy.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            painter.drawImage(scaled.topLeft(), scaledImg);
-        } else { // !Ui::crosshairReal
-            QPointF pos = QPointF(mouse-scaled.topLeft()) * ratio;
-            sx = sx.arg(pos.x());
-            sy = sy.arg(pos.y());
-
-            mutex.lock();
-            scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            mutex.unlock();
-            painter.drawImage(scaled.topLeft(), scaledImg);
-
-            painter.drawPixmap(mouse-QPoint(15, 15), QPixmap(":/icons/crosshair"));
-            painter.drawLine(scaled.left(), mouse.y(), mouse.x()-15, mouse.y());
-            painter.drawLine(mouse.x()+16, mouse.y(), scaled.right(), mouse.y());
-
-            painter.drawLine(mouse.x(), scaled.top(), mouse.x(), mouse.y()-15);
-            painter.drawLine(mouse.x(), mouse.y()+16, mouse.x(), scaled.bottom());
-        }
-
-        QFont font(painter.font());
-        font.setPixelSize(15);
-        painter.setFont(font);
-        painter.fillRect( 0, 0, 70, 35, Qt::white );
-        painter.drawText( 1, 16, sx );
-        painter.drawText( 1, 32, sy );
-    } else { // !mouseIn
-        mutex.lock();
-        scaledImg = img.scaled(this->size(), Qt::KeepAspectRatio, Ui::forceHighQuality ? Qt::SmoothTransformation : Qt::FastTransformation);
-        mutex.unlock();
-        painter.drawImage(scaled.topLeft(), scaledImg);
-    }
-    painter.end();
-    */
 }
 
-void QVideoWidget::resizeEvent(QResizeEvent *){
-    if (img.isNull()) return;
-    mutex.lock();
-    scaledImage = img.scaled(this->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
-    mutex.unlock();
-    QPoint pos;
-    if (scaledImage.height() == this->height()){
-        pos = QPoint((this->width() - scaledImage.width()) / 2, 0);
-        ratio = (float) img.width() / scaledImage.width();
-    }else{
-        pos = QPoint(0, (this->height() - scaledImage.height()) / 2);
-        ratio = (float) img.height() / scaledImage.height();
-    }
-    scaled = QRect(pos, scaledImage.size());
-    lastSize = img.size();
+void QVideoWidget::initializeGL() {
+    initializeOpenGLFunctions();
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    updateView();
+}
+
+void QVideoWidget::paintGL() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(1, 1, 1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glEnable(GL_TEXTURE_2D);
+    texture.bind();
+    glTranslated(scaled.left(), scaled.top(), 0);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2d(0, 0);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex2d(scaled.width(), 0);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2d(scaled.width(), scaled.height());
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex2d(0, scaled.height());
+    glEnd();
+    texture.unbind();
+    glDisable(GL_TEXTURE_2D);
+}
+
+void QVideoWidget::resizeGL(int width, int height) {
+}
+
+void QVideoWidget::resizeEvent(QResizeEvent* event) {
+    QOpenGLWidget::resizeEvent(event);
+    updateView();
+}
+
+void QVideoWidget::showEvent(QShowEvent* event) {
+    QOpenGLWidget::showEvent(event);
+    updateView();
 }
 
 void QVideoWidget::enterEvent(QEvent *) {
@@ -269,5 +155,5 @@ void QVideoWidget::changedState(Qt::WindowStates, Qt::WindowStates newState){
 }
 
 void QVideoWidget::activateCrosshair(bool state){
-    setMouseTracking(state);
+    //setMouseTracking(state);
 }

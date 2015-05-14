@@ -1,14 +1,11 @@
-/**
- * \file qvideowidget.h
- * \author Virgile Wozny
- */
 
+// Written by: Lars Aksel Tveråmo
 
-#ifndef QVIDEOWIDGET_H
-#define QVIDEOWIDGET_H
+#ifndef QOPENGLVIDEOWIDGET_H
+#define QOPENGLVIDEOWIDGET_H
 
 #include <qwidget.h>
-#include <QtOpenGL>
+#include <QtOpenGL/qgl.h>
 #include <QtCore/qmath.h>
 #include <QThread>
 #include <QMutex>
@@ -16,15 +13,11 @@
 #include "trackpointproperty.h"
 #include "texture.h"
 
-/**
- * QVideoWidget
- * \brief display images from cameras, handle resizing and crosshair display.
- */
-class QVideoWidget : public QOpenGLWidget, protected QOpenGLFunctions {
+class QOpenglVideoWidget : public QGLWidget {
     Q_OBJECT
 public:
-    explicit QVideoWidget(QWidget* parent = 0);
-    ~QVideoWidget();
+    QOpenglVideoWidget();
+    ~QOpenglVideoWidget();
 
     void setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
 
@@ -35,7 +28,7 @@ public:
 signals:
     void forceUpdate();
 public slots:
-    void changedState (Qt::WindowStates oldState, Qt::WindowStates newState);
+    void changedState(Qt::WindowStates oldState, Qt::WindowStates newState);
     void activateCrosshair(bool state);
     void receiveUpdate();
 
@@ -44,7 +37,6 @@ protected:
     void paintGL();
     void resizeGL(int w, int h);
     void resizeEvent(QResizeEvent* event = nullptr);
-    void showEvent(QShowEvent* event = nullptr);
     void mouseDoubleClickEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void enterEvent(QEvent*);
@@ -55,18 +47,12 @@ private:
     ImageDetectThread* imgDetThread;
     TrackPointProperty* trackPointProperty;
     OpenGL::Texture texture;
-    QPoint mouse;
-    QSize lastSize;
-    QRect scaled;
     unsigned char* imgBuffer;
     unsigned int bufferSize;
     unsigned int imageWidth;
     unsigned int imageHeight;
-    float ratio;
-    bool active;
     bool mouseIn;
-
-    void updateView();
 };
 
-#endif // QVIDEOWIDGET_H
+
+#endif
