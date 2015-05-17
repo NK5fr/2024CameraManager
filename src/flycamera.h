@@ -27,10 +27,10 @@ public:
 
 	void startAutoCapture();
     void stopAutoCapture();
-    bool retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
+    unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight);
         
     bool equalsTo(AbstractCamera *c);        
-	  std::string getString();
+	std::string getString();
 
 private:
     FlyCapture2::Camera cam;

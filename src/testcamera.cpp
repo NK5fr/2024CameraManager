@@ -43,8 +43,9 @@ void TestCamera::getProperty(CameraProperty* p){
     }
 }
 
-bool TestCamera::retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    return generateImage();
+unsigned char* TestCamera::retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) {
+    //unsigned char* buffer = generateImage(bufferSize, imageWidth, imageHeight);
+    return generateImage(bufferSize, imageWidth, imageHeight);
 }
 
 void TestCamera::startAutoCapture(){
@@ -76,7 +77,7 @@ void TestCamera::generateBack(){
     p.end();
 }
 
-QImage* TestCamera::generateImage(){
+unsigned char* TestCamera::generateImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) {
     QImage* img = new QImage(back);
     QPainter p(img);
     p.setPen(Qt::red);
@@ -86,5 +87,8 @@ QImage* TestCamera::generateImage(){
     p.setPen(Qt::blue);
     p.drawRect(QRect( QPoint(rand()%100, rand()%100), QPoint(crop-rand()%100, crop-rand()%100) ));
     p.end();
-    return img;
+    *bufferSize = img->byteCount();
+    *imageWidth = img->width();
+    *imageHeight = img->height();
+    return img->bits();
 }

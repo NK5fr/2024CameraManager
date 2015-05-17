@@ -23,7 +23,7 @@ class TestCamera : public AbstractCamera {
         void setProperty(CameraProperty* p);
         void getProperty(CameraProperty* p);
         std::string getString(){ return n; }
-        bool retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
+        unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight);
         void startAutoCapture();
         void stopAutoCapture();
     private:
@@ -35,7 +35,7 @@ class TestCamera : public AbstractCamera {
         int crop;
         QImage back;
 
-        QImage* generateImage();
+        unsigned char* generateImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight);
         void generateBack();
 };
 

@@ -12,6 +12,7 @@ using namespace FlyCapture2;
 QVideoWidget::QVideoWidget(QWidget *parent) : QOpenGLWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
     setMouseTracking(true);
     imageDetect = nullptr;
+    imgDetThread = nullptr;
     mouseIn = false;
     trackPointProperty = nullptr;
     imgBuffer = nullptr;
@@ -19,9 +20,6 @@ QVideoWidget::QVideoWidget(QWidget *parent) : QOpenGLWidget(parent), lastSize(0,
     imageWidth = 0;
     imageHeight = 0;
     connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
-    //initializeGL();
-    //update(); 
-    //texture.createEmptyTexture(640, 480);
 }
 
 QVideoWidget::~QVideoWidget() {
@@ -32,13 +30,14 @@ QVideoWidget::~QVideoWidget() {
     }
 }
 
+void QVideoWidget::initializeGL() {
+    initializeOpenGLFunctions();
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    updateView();
+}
+
 void QVideoWidget::receiveUpdate(){
     //trick to pass the update to the main thread...
-    updateView();
-    if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
-        texture.createEmptyTexture(imageWidth, imageHeight);
-    }
-    texture.updateTexture(imgBuffer, bufferSize);
     update();
 }
 
@@ -48,15 +47,14 @@ void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, u
         this->imgBuffer = new unsigned char[bufferSize];
         this->imageWidth = imageWidth;
         this->imageHeight = imageHeight;
-        //update();
-    } else {
-        this->imageWidth = imageWidth;
-        this->imageHeight = imageHeight;
     }
     memcpy(this->imgBuffer, imgBuffer, bufferSize);
     this->bufferSize = bufferSize;
-    //updateView();
-    //resizeEvent();
+    
+    if (trackPointProperty != nullptr) {
+        //if ()
+    }
+
     emit forceUpdate();
 }
 
@@ -87,13 +85,13 @@ void QVideoWidget::updateView() {
     }
 }
 
-void QVideoWidget::initializeGL() {
-    initializeOpenGLFunctions();
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    updateView();
-}
-
 void QVideoWidget::paintGL() {
+    updateView();
+    if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
+        texture.createEmptyTexture(imageWidth, imageHeight);
+    }
+    texture.updateTexture(imgBuffer, bufferSize);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);

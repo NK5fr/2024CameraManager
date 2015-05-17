@@ -56,7 +56,8 @@ void AbstractCameraManager::updateImages(){
         unsigned int bufferSize = 0;
         unsigned int imageWidth = 0;
         unsigned int imageHeight = 0;
-        if (camEntry.camera->retrieveImage(imgBuffer, bufferSize, imageWidth, imageHeight)) {
+        imgBuffer = camEntry.camera->retrieveImage(&bufferSize, &imageWidth, &imageHeight);
+        if (imgBuffer != nullptr) {
             videoWidget->setImage(imgBuffer, bufferSize, imageWidth, imageHeight);
         }
     }
@@ -68,28 +69,52 @@ void AbstractCameraManager::updateProperties() {
     if (selected == nullptr) return;
     for( int i = propertiesList.topLevelItemCount()-1; i>=0; i--){
         QTreeWidgetItem* item = propertiesList.topLevelItem(i);
-        QCheckBox* checkBox = qobject_cast<QCheckBox*>( propertiesList.itemWidget(item, Ui::PropertyAuto) );
-        CameraManager::CameraProperty * prop = reinterpret_cast<CameraManager::CameraProperty*>( checkBox->property("CameraProperty").value<quintptr>() );
-        QSlider* slider = reinterpret_cast<QSlider*>( checkBox->property("TreeWidgetSlider").value<quintptr>() );
+        QCheckBox* checkBox = qobject_cast<QCheckBox*>(propertiesList.itemWidget(item, Ui::PropertyAuto));
+        CameraManager::CameraProperty * prop = reinterpret_cast<CameraManager::CameraProperty*>(checkBox->property("CameraProperty").value<quintptr>());
+        QSlider* slider = reinterpret_cast<QSlider*>(checkBox->property("TreeWidgetSlider").value<quintptr>());
         //qDebug() << "updating:" << prop->getName().c_str();
 
         // Lars Aksel - 09.02.2015 - Changed from updateProperties to setProperties
-        // This is not a good "fix", but seems to work...
         //selected->updateProperty(prop);
         selected->setProperty(prop);
 
-        item->setText(Ui::PropertyValue, prop->formatValue());
+        item->setText(Ui::PropertyWriteValue, prop->formatValue());
         checkBox->setChecked(prop->getAuto());
+
+        CameraManager::CameraProperty readProp(prop->getType(), prop->getName(), prop->getMin(), prop->getMax(), prop->getDecimals(), prop->getCanAuto(), prop->getAuto(), prop->getOnOff(), prop->getValue());
+        selected->getProperty(&readProp);
+        QString val = readProp.formatValue();
+        //item->setText(Ui::PropertyReadValue, readProp.formatValue());
+
+        QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(item, Ui::PropertyReadValue);
+        if (valueBox != nullptr) valueBox->setText(val);
 
         if( prop->getType() == CameraManager::AUTOTRIGGER ) continue;
         slider->setValue(prop->getValueToSlider());
         slider->setEnabled(!prop->getAuto());
-
     }
 }
 
 // Lars Aksel - Helper function for getting values
 void setPropFromSettings(QSettings& settings, std::vector<CameraProperty>& prop, CameraManager::PropertyType val) {
+    CameraProperty camProp(val,
+        settings.value("text").toString(),
+        settings.value("min").toFloat(),
+        settings.value("max").toFloat(),
+        settings.value("decimals").toFloat(),
+        true,
+        settings.value("auto").toBool(),
+        settings.value("on_off").toBool(),
+        settings.value("value").toFloat());
+    for (unsigned int i = 0; i < prop.size(); i++) {
+        if (prop[i].getType() == val) {
+            memcpy(&prop[i], &camProp, sizeof(camProp));
+            break;
+        }
+    }
+}
+
+void setNewPropFromSettings(QSettings& settings, std::vector<CameraProperty>& prop, CameraManager::PropertyType val) {
     prop.push_back(CameraProperty(val,
         settings.value("text").toString(),
         settings.value("min").toFloat(),
@@ -101,38 +126,7 @@ void setPropFromSettings(QSettings& settings, std::vector<CameraProperty>& prop,
         settings.value("value").toFloat()));
 }
 
-// Lars Aksel - Helper function for setting values
-void setPropToSettings(QSettings& settings, CameraProperty& prop) {
-    settings.setValue("text", prop.getName());
-    settings.setValue("min", QString::number(prop.getMin()));
-    settings.setValue("max", QString::number(prop.getMax()));
-    settings.setValue("decimals", QString::number(prop.getDecimals()));
-    settings.setValue("abs_control", (prop.getDecimals() > 0));
-    settings.setValue("auto", prop.getAuto());
-    settings.setValue("on_off", prop.getOnOff());
-    settings.setValue("value", QString::number(prop.getValue()));
-}
-
-// Lars Aksel - Load default values from default-file
-void AbstractCameraManager::loadPropertiesDefaults() {
-    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
-    //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
-    std::vector<CameraProperty> prop;
-    loadPropertiesFromFile(settingsFile, prop);
-    //updateProperties(prop); // Use only update, not set! NOT WORKING!
-    setProperties(prop);
-}
-
-void AbstractCameraManager::loadPropertiesDefaultsInit() {
-    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
-    //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
-    std::vector<CameraProperty> prop;
-    loadPropertiesFromFile(settingsFile, prop);
-    setProperties(prop);
-}
-
-// Lars Aksel - Load camera properties from file
-bool AbstractCameraManager::loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop) {
+bool AbstractCameraManager::updatePropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop) {
     QSettings settings(filepath, QSettings::IniFormat);
     QFileInfo fileInfo = QFileInfo(filepath);
     if (fileInfo.exists()) {
@@ -159,6 +153,71 @@ bool AbstractCameraManager::loadPropertiesFromFile(QString& filepath, std::vecto
         settings.endGroup();
         settings.beginGroup("AutoTrigger");
         setPropFromSettings(settings, prop, CameraManager::AUTOTRIGGER);
+        settings.endGroup();
+        return true;
+    } else {
+        printf("Settings file does not exist: %s\n", qPrintable(filepath));
+        return false;
+    }
+}
+
+// Lars Aksel - Helper function for setting values
+void setPropToSettings(QSettings& settings, CameraProperty& prop) {
+    settings.setValue("text", prop.getName());
+    settings.setValue("min", QString::number(prop.getMin()));
+    settings.setValue("max", QString::number(prop.getMax()));
+    settings.setValue("decimals", QString::number(prop.getDecimals()));
+    settings.setValue("abs_control", (prop.getDecimals() > 0));
+    settings.setValue("auto", prop.getAuto());
+    settings.setValue("on_off", prop.getOnOff());
+    settings.setValue("value", QString::number(prop.getValue()));
+}
+
+// Lars Aksel - Load default values from default-file
+void AbstractCameraManager::loadPropertiesDefaults() {
+    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
+    std::vector<CameraProperty> prop = std::vector<CameraProperty>();
+    //std::vector<CameraProperty> prop;
+    loadPropertiesFromFile(settingsFile, prop);
+    updateProperties(prop);
+}
+
+void AbstractCameraManager::loadPropertiesDefaultsInit() {
+    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
+    //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
+    std::vector<CameraProperty> prop;
+    loadPropertiesFromFile(settingsFile, prop);
+    setProperties(prop);
+}
+
+// Lars Aksel - Load camera properties from file
+bool AbstractCameraManager::loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop) {
+    QSettings settings(filepath, QSettings::IniFormat);
+    QFileInfo fileInfo = QFileInfo(filepath);
+    if (fileInfo.exists()) {
+        settings.beginGroup("Brightness");
+        setNewPropFromSettings(settings, prop, CameraManager::BRIGHTNESS);
+        settings.endGroup();
+        settings.beginGroup("Gain");
+        setNewPropFromSettings(settings, prop, CameraManager::GAIN);
+        settings.endGroup();
+        settings.beginGroup("Exposure");
+        setNewPropFromSettings(settings, prop, CameraManager::EXPOSURE);
+        settings.endGroup();
+        settings.beginGroup("Gamma");
+        setNewPropFromSettings(settings, prop, CameraManager::GAMMA);
+        settings.endGroup();
+        settings.beginGroup("Shutter");
+        setNewPropFromSettings(settings, prop, CameraManager::SHUTTER);
+        settings.endGroup();
+        settings.beginGroup("Pan");
+        setNewPropFromSettings(settings, prop, CameraManager::PAN);
+        settings.endGroup();
+        settings.beginGroup("FrameRate");
+        setNewPropFromSettings(settings, prop, CameraManager::FRAMERATE);
+        settings.endGroup();
+        settings.beginGroup("AutoTrigger");
+        setNewPropFromSettings(settings, prop, CameraManager::AUTOTRIGGER);
         settings.endGroup();
         return true;
     } else {
@@ -318,7 +377,7 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
         }
     } else {
         if (active) {
-            activeCameraEntry entry = activeCameraEntry(camera, item);
+            activeCameraEntry entry = activeCameraEntry(camera, item); // Potential Memory-leak of created windows in constructor!
             connect(entry.window, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
             entry.window->setWindowTitle(camera->getString().c_str());
             mainWindow->modifySubWindow(entry.window, true);
@@ -441,7 +500,7 @@ void AbstractCameraManager::cameraTree_getCameraList(QStandardItem* parent, std:
 //////////////// Properties related ///////////////
 ///////////////////////////////////////////////////
 void AbstractCameraManager::setProperties(std::vector<CameraProperty> &properties) {
-    propertiesList.clear();
+    //propertiesList.clear();
     cameraProperties = std::vector<CameraProperty>(properties);
     for(unsigned int i = 0; i < cameraProperties.size(); i++){
         CameraProperty &property = cameraProperties.at(i);
@@ -459,24 +518,31 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
         if (property.getType() == CameraManager::AUTOTRIGGER) continue;
 
         QSlider* slider = new QSlider(Qt::Horizontal);
-        QLineEdit* valueBox = new QLineEdit(QString::number(property.getValue()));
-        valueBox->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)));
-        valueBox->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
-        valueBox->setProperty("TreeWidgetItem", QVariant::fromValue(reinterpret_cast<quintptr>(it)));
-        valueBox->setFrame(false);
+        QLineEdit* writeValueBox = new QLineEdit(property.formatValue());
+        writeValueBox->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)));
+        writeValueBox->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
+        writeValueBox->setProperty("TreeWidgetItem", QVariant::fromValue(reinterpret_cast<quintptr>(it)));
+        writeValueBox->setFrame(false);
         QDoubleValidator* validator = new QDoubleValidator(property.getMin(), property.getMax(), property.getDecimals(), this);
         validator->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
-        valueBox->setValidator(validator);
-        propertiesList.setItemWidget(it, Ui::PropertyValue, valueBox);
-        connect(valueBox, SIGNAL(returnPressed()), this, SLOT(on_propertyValue_changed()));
+        writeValueBox->setValidator(validator);
+        propertiesList.setItemWidget(it, Ui::PropertyWriteValue, writeValueBox);
+        connect(writeValueBox, SIGNAL(returnPressed()), this, SLOT(on_propertyValue_changed()));
+
+
+
+        QLineEdit* readValueBox = new QLineEdit(property.formatValue());
+        readValueBox->setFrame(false);
+        readValueBox->setReadOnly(true);
+        propertiesList.setItemWidget(it, Ui::PropertyReadValue, readValueBox);
 
         //slider
         slider->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
-        slider->setProperty("ValueBox", QVariant::fromValue(reinterpret_cast<quintptr>(valueBox)));
+        slider->setProperty("ValueBox", QVariant::fromValue(reinterpret_cast<quintptr>(writeValueBox)));
         slider->setTracking(true); //might be wanted
         slider->setValue(property.getValueToSlider());
         slider->setRange(property.getMinToSlider(), property.getMaxToSLider());
-        propertiesList.setItemWidget(it, Ui::PropertySlider + 1, slider);
+        propertiesList.setItemWidget(it, Ui::PropertySlider, slider);
 
         box->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)));
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_propertySlider_changed(int)));
@@ -488,12 +554,12 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
     propertiesList.resizeColumnToContents(4);
 }
 
-// Lars Aksel - Update Properties-UI elements - DOES NOT WORK!
+// Lars Aksel - Update Properties-UI elements.
 void AbstractCameraManager::updateProperties(std::vector<CameraProperty> &properties) {
-    cameraProperties = std::vector<CameraProperty>(properties);
+    //cameraProperties = std::vector<CameraProperty>(properties);
     for (unsigned int i = 0; i < cameraProperties.size(); i++){
         QTreeWidgetItem* it = propertiesList.topLevelItem(i);
-        CameraProperty &property = cameraProperties.at(i);
+        CameraProperty &property = properties.at(i);
         for (int j = activeCameras.size() - 1; j >= 0; j--){
             activeCameras.at(j).camera->setProperty(&property);
         }
@@ -501,8 +567,16 @@ void AbstractCameraManager::updateProperties(std::vector<CameraProperty> &proper
         box->setChecked(property.getAuto());
         if (!property.getCanAuto()) box->setEnabled(false);
         if (property.getType() == CameraManager::AUTOTRIGGER) continue;
-        QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(it, Ui::PropertyValue);
+        QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(it, Ui::PropertyWriteValue);
         valueBox->setText(QString::number(property.getValue()));
+        
+        CameraManager::CameraProperty readProp(property.getType(), property.getName(), property.getMin(), property.getMax(), property.getDecimals(), property.getCanAuto(), property.getAuto(), property.getOnOff(), property.getValue());
+        selectedCamera->getProperty(&readProp);
+        QString val = readProp.formatValue();
+        //it->setText(Ui::PropertyReadValue, readProp.formatValue());
+        QLineEdit* readValueBox = (QLineEdit*) propertiesList.itemWidget(it, Ui::PropertyReadValue);
+        //readValueBox->setText(readProp.formatValue());
+
         QSlider* slider = (QSlider*) propertiesList.itemWidget(it, Ui::PropertySlider);
         slider->setValue(property.getValueToSlider());
         slider->setRange(property.getMinToSlider(), property.getMaxToSLider());        

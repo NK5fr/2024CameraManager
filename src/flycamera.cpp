@@ -126,8 +126,8 @@ void FlyCamera::stopAutoCapture(){
     getCamera()->StopCapture();
 }
 
-bool FlyCamera::retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    if (capturing) return false;
+unsigned char* FlyCamera::retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) {
+    if (capturing) return nullptr;
     capturing = true;
     //printf("Images begin to be retrieved\n");
     TriggerMode triggerMode;
@@ -143,11 +143,13 @@ bool FlyCamera::retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize,
 
     //printf("Retrieving 1...\n");
     Image* image = captureImage();
-    imgBuffer = image->GetData();
-    bufferSize = image->GetDataSize();
-    imageWidth = image->GetCols();
-    imageHeight = image->GetRows();
 
+    *bufferSize = image->GetDataSize();
+    *imageWidth = image->GetCols();
+    *imageHeight = image->GetRows();
+    unsigned char* imageBuffer = new unsigned char[image->GetDataSize()];
+    memcpy(imageBuffer, image->GetData(), image->GetDataSize());
+    delete image;
     //printf("Retrieving 2...\n");
     cam.SetTriggerMode(&oldTrigger);
 
@@ -156,7 +158,7 @@ bool FlyCamera::retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize,
 
     //printf("Images retrieved\n");
     capturing = false;
-    return true;
+    return imageBuffer;
 }
 
 bool FlyCamera::equalsTo(AbstractCamera *c){

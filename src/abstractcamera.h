@@ -64,7 +64,7 @@ public:
         * @brief (Pure virtual) get one image from camera
         * @return QImage image
         */
-    virtual bool retrieveImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) = 0;
+    virtual unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) = 0;
 
     /**
         * @brief start liveview capture from manager

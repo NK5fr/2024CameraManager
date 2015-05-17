@@ -20,8 +20,8 @@ bool AbstractCamera::equalsTo(AbstractCamera* c){
 
 void AbstractCamera::startCapture(QVideoWidget* videoWidget){
     if(videoWidget == NULL){
-        qDebug() << "[ERROR] startCapture(QVideoWidget): videoWidget is NULL";
-        cout << "---------------------------------------" << endl << "Erreur" << endl;
+        //qDebug() << "[ERROR] startCapture(QVideoWidget): videoWidget is NULL";
+        //cout << "---------------------------------------" << endl << "Erreur" << endl;
         return;
     }
     container = videoWidget;

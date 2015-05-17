@@ -776,7 +776,7 @@ void MainWindow::quickLoadCameraSettings() {
     } else {
         std::vector<CameraProperty> prop;
         cameraManagers[selectedCameraManager]->loadPropertiesFromFile(quickFile, prop);
-        cameraManagers[selectedCameraManager]->setProperties(prop);
+        cameraManagers[selectedCameraManager]->updateProperties(prop);
     }
 }
 

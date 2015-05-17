@@ -25,7 +25,7 @@ namespace Ui {
     class MainWindow;
 
     enum PropertiesWidgetPosition {
-        PropertyName = 0, PropertyAuto = 1, PropertyValue = 2, PropertySlider = 3
+        PropertyName = 0, PropertyAuto = 1, PropertyWriteValue = 2, PropertyReadValue = 3, PropertySlider = 4
     };
 
     extern bool crosshair, crosshairReal, forceHighQuality;
