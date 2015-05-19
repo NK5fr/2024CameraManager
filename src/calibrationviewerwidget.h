@@ -131,7 +131,7 @@ public:
     }
 
 protected:
-    void mousePressEvent(QMouseEvent *event){
+    void mousePressEvent(QMouseEvent *event) {
         QTextEdit::mousePressEvent(event);
         if(event->button() != Qt::LeftButton)
             return;

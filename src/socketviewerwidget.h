@@ -31,14 +31,13 @@ public:
     QSlider *getTimeSlider();
 
 private slots:
-    void onRightClick();
-    void menuProjectAction_triggered(QAction*);
     void valueChanged(int);
     void areaBarsMoved(int);
     void showXYPlaneFunc();
     void showXZPlaneFunc();
     void showYZPlaneFunc();
     void showSocketTextFunc();
+    void show3DWidgetFunc();
     void hideButtonPanelFunc();
     void showPreceedingPointsStateChanged(int);
     void showLinesStateChanged(int);
@@ -87,6 +86,7 @@ private:
     QPushButton* showXZPlane;
     QPushButton* showYZPlane;
     QPushButton* showSocketText;
+    QPushButton* show3DWidget;
     QPushButton* hideButton;
 
     /* Table view */
@@ -114,6 +114,7 @@ private:
     WidgetGL* widgetGL;
     QWidget* widgetGLWindow;
     QWidget* buttonPanel;
+    QWidget textWidget;
 };
 
 class CoordinatesLabel : public QLabel {

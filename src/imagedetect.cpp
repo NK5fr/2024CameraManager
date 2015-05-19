@@ -43,8 +43,10 @@ void ImageDetect::start() {
     running = true;
     while (running) {
         if (imarray != nullptr) {
-            imageRemoveBackground();
-            memcpy(newarray2, newarray, imageWidth * imageHeight);
+            if (removeBackgroundFirst) {
+                imageRemoveBackground();
+                memcpy(newarray2, newarray, imageWidth * imageHeight);
+            }
             imageDetectPoints();
             removeDuplicatePoints();
             writingToPoints = true;

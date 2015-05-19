@@ -61,7 +61,6 @@ void WidgetGL::updateProjection(int width, int height, double fov) {
         glOrtho(-width * scale, width * scale, -height * scale, height * scale, -1000000, 1000000);
     } else {
         GLdouble aspect = (GLdouble) width / (GLdouble) height;
-        //const double PI = 3.1415926535;
         const double zNear = 1;
         const double zFar = 160000;
         gluPerspective(fov, aspect, zNear, zFar);

@@ -147,6 +147,7 @@ public:
     void setMaxPix(int maxpix) { this->maxpix = maxpix; }
     void setMinPix(int minpix) { this->minpix = minpix; }
     void setMinSep(int minSep) { this->minsep = minSep; }
+    void setRemoveBackround(bool remBack) { this->removeBackgroundFirst = remBack; }
     ImPoint* getInitPoints() { return initPoints; }
     ImPoint* getFinalPoints() { return finalPoints; }
     unsigned char* getFilteredImage() { return this->newarray2; }
@@ -157,6 +158,7 @@ public:
     int getMinPix() { return this->minpix; }
     int getImageWidth() { return this->imageWidth; }
     int getImageHeight() { return this->imageHeight; }
+    const int getMaxPoints() { return this->MAX_POINTS; }
     bool isWritingToPoints() { return writingToPoints; }
     bool isBusy();
     bool isRunning() { return running; }
@@ -177,8 +179,10 @@ private:
     int subwinsiz;
     const int MAX_POINTS = 5000;
 
+    bool removeBackgroundFirst = false;
     bool running = false;
     bool writingToPoints = false;
+
     int threadSleepMs = 1;
 
     int numPoints = 0;

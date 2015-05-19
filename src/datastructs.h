@@ -50,6 +50,25 @@ namespace TrackPoint {
         Orientation orient;
         double cameraConstant;  // In pixels, focal-length from camera-sensor.
         double cameraConstantStdDev;
+        double XH;
+        double XHStdDev;
+        double YH;
+        double YHStdDev;
+        double AF;
+        double AFStdDev;
+        double ORT;
+        double ORTStdDev;
+        double F1;
+        double F1StdDev;
+        double F2;
+        double F2StdDev;
+        double F3;
+        double F3StdDev;
+        double P1;
+        double P1StdDev;
+        double P2;
+        double P2StdDev;
+        double RO;
         bool valueSet = false;
     };
 

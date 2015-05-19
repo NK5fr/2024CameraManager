@@ -39,7 +39,6 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString n, QString calibPat
     init();
     show3DView();
 
-    connect(&fileContain, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onRightClick()));
     setWindowTitle(name);
 }
 
@@ -79,29 +78,11 @@ void SocketViewerWidget::extractDataFromText() {
     rowNumber = rowNumberLocal;
 }
 
-// Right click on the main widget of the viewer
-void SocketViewerWidget::onRightClick() {
-    // Creating a menu with allowed actions
-    QMenu *menu = new QMenu();
-    menu->addAction("3D View");
-    menu->popup(cursor().pos());
-    connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
-}
-
-/* Click on a menu item */
-void SocketViewerWidget::menuProjectAction_triggered(QAction* action) {
-    if (action->text() == "3D View") {
-        show3DView();
-    }
-}
-
-/* Show files as text view */
-void SocketViewerWidget::showTextView() {
-    setFocusPolicy(Qt::NoFocus);
-    setWidget(&fileContain);
-}
-
 void SocketViewerWidget::init() {
+    QFrame* line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+
     // Line Edit and Slider to choose time to show
     spinBox = new QSpinBox();
     spinBox->setMinimum(0);
@@ -161,6 +142,8 @@ void SocketViewerWidget::init() {
     showYZPlane = new QPushButton("Show YZ-plane");
     showSocketText = new QPushButton("Show Socketfile");
     showSocketText->setMinimumHeight(50);
+    show3DWidget = new QPushButton("Show 3D View");
+    show3DWidget->setMinimumHeight(50);
 
     camDistanceSlider = new QSlider(Qt::Orientation::Horizontal);
     camDistanceSlider->setMaximum(20000);
@@ -196,7 +179,7 @@ void SocketViewerWidget::init() {
     QVBoxLayout* combinedLayout = new QVBoxLayout();
     //combinedLayout->addLayout(menuLayout);
     combinedLayout->addLayout(buttonCheckBoxLayout);
-    combinedLayout->addWidget(showSocketText);
+    //combinedLayout->addWidget(showSocketText);
     combinedLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     buttonPanel = new QWidget();
@@ -213,11 +196,19 @@ void SocketViewerWidget::init() {
     layout->addLayout(menuLayout);
     layout->addWidget(hideButton);
     layout->addWidget(buttonPanel);
+    layout->addWidget(line);
+    layout->addWidget(showSocketText);
 
     hideButtonPanelFunc();
 
     widgetGLWindow = new QWidget();
     widgetGLWindow->setLayout(layout);
+
+
+    QVBoxLayout* textLayout = new QVBoxLayout();
+    textLayout->addWidget(&fileContain);
+    textLayout->addWidget(show3DWidget);
+    textWidget.setLayout(textLayout);
 
     connect(showPreceedingPoints, SIGNAL(stateChanged(int)), this, SLOT(showPreceedingPointsStateChanged(int)));
     connect(showLines, SIGNAL(stateChanged(int)), this, SLOT(showLinesStateChanged(int)));
@@ -228,6 +219,7 @@ void SocketViewerWidget::init() {
     connect(showFloor, SIGNAL(stateChanged(int)), this, SLOT(showFloorStateChanged(int)));
     connect(showOrtho, SIGNAL(stateChanged(int)), this, SLOT(showOrthoStateChanged(int)));
     connect(showSocketText, SIGNAL(clicked()), this, SLOT(showSocketTextFunc()));
+    connect(show3DWidget, SIGNAL(clicked()), this, SLOT(show3DWidgetFunc()));
     connect(showXYPlane, SIGNAL(clicked()), this, SLOT(showXYPlaneFunc()));
     connect(showXZPlane, SIGNAL(clicked()), this, SLOT(showXZPlaneFunc()));
     connect(showYZPlane, SIGNAL(clicked()), this, SLOT(showYZPlaneFunc()));
@@ -302,7 +294,13 @@ void SocketViewerWidget::showYZPlaneFunc() {
 }
 
 void SocketViewerWidget::showSocketTextFunc() {
-    showTextView();
+    setWidget(&textWidget);
+    //showTextView();
+}
+
+void SocketViewerWidget::show3DWidgetFunc() {
+    setWidget(widgetGLWindow);
+    //showTextView();
 }
 
 void SocketViewerWidget::hideButtonPanelFunc() {

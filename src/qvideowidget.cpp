@@ -44,15 +44,33 @@ void QVideoWidget::receiveUpdate(){
 void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
+        if (this->imgBuffer != nullptr) delete[] this->imgBuffer;
         this->imgBuffer = new unsigned char[bufferSize];
         this->imageWidth = imageWidth;
         this->imageHeight = imageHeight;
     }
     memcpy(this->imgBuffer, imgBuffer, bufferSize);
     this->bufferSize = bufferSize;
-    
+    if (imageDetect == nullptr) {
+        imageDetect = new ImageDetect(imageWidth, imageHeight);
+        imgDetThread = new ImageDetectThread(imageDetect);
+        imgDetThread->start();
+    }
     if (trackPointProperty != nullptr) {
-        //if ()
+        if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
+            
+            imageDetect->setThreshold(trackPointProperty->thresholdValue);
+            imageDetect->setMinPix(trackPointProperty->minPointValue);
+            imageDetect->setMaxPix(trackPointProperty->maxPointValue);
+            imageDetect->setSubwinSize(trackPointProperty->subwinValue);
+            imageDetect->setMinSep(trackPointProperty->minSepValue);
+            if (!imageDetect->isBusy()) {
+                unsigned char* buffer = new unsigned char[bufferSize];
+                memcpy(buffer, imgBuffer, bufferSize);
+                imageDetect->setImage(buffer); // ImageDetect gets ownership of the buffer
+            }
+        }
+        imageDetect->setRemoveBackround(trackPointProperty->filteredImagePreview);
     }
 
     emit forceUpdate();
@@ -90,7 +108,13 @@ void QVideoWidget::paintGL() {
     if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
         texture.createEmptyTexture(imageWidth, imageHeight);
     }
-    texture.updateTexture(imgBuffer, bufferSize);
+    if (imageDetect != nullptr && trackPointProperty != nullptr) {
+        if (trackPointProperty->filteredImagePreview) {
+            texture.updateTexture(imageDetect->getFilteredImage(), bufferSize);
+        } else texture.updateTexture(imgBuffer, bufferSize);
+    } else {
+        texture.updateTexture(imgBuffer, bufferSize);
+    }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glClearColor(1, 1, 1, 1);
@@ -112,6 +136,41 @@ void QVideoWidget::paintGL() {
     glEnd();
     texture.unbind();
     glDisable(GL_TEXTURE_2D);
+
+
+    if (imageDetect != nullptr && trackPointProperty != nullptr) {
+        if (trackPointProperty->trackPointPreview) {
+            ImPoint* points;
+            int numPoints;
+            if (trackPointProperty->removeDuplicates) {
+                points = imageDetect->getFinalPoints();
+                numPoints = imageDetect->getFinalNumPoints();
+            } else {
+                points = imageDetect->getInitPoints();
+                numPoints = imageDetect->getInitNumPoints();
+            }
+            int crossWingSize = (int) (height() / 75);
+            glLineWidth(2);
+            for (int i = 0; i < numPoints; i++) {
+                int w = scaled.width();
+                int h = scaled.height();
+                double xPos = ((double) points[i].x * ((double) scaled.width() / imageWidth));
+                double yPos = ((double) points[i].y * ((double) scaled.height() / imageHeight));
+
+                glColor3f(1, 0, 0);
+                glBegin(GL_LINES);
+                glVertex2d(xPos - crossWingSize, yPos);
+                glVertex2d(xPos + crossWingSize, yPos);
+                glEnd();
+
+                glBegin(GL_LINES);
+                glVertex2d(xPos, yPos - crossWingSize);
+                glVertex2d(xPos, yPos + crossWingSize);
+                glEnd();
+                glColor3f(1, 1, 1);
+            }
+        }
+    }
 }
 
 void QVideoWidget::resizeGL(int width, int height) {
