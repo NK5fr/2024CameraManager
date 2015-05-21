@@ -414,7 +414,7 @@ void SocketViewerWidget::startClient() {
     //QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
 
     portLineEdit = new QLineEdit("1250");
-    portLineEdit->setValidator(new QIntValidator(1, 65535, this));
+    //portLineEdit->setValidator(new QIntValidator(1, 65535, this));
 
     hostLabel->setBuddy(hostCombo);
     portLabel->setBuddy(portLineEdit);
@@ -435,7 +435,7 @@ void SocketViewerWidget::startClient() {
     //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(enableGetFortuneButton()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(quitButton, SIGNAL(clicked()), socketDialog, SLOT(close()));
-    connect(tcpSocket, SIGNAL(connected()), this, SLOT(readSocketLine()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
@@ -478,18 +478,24 @@ void SocketViewerWidget::stopClient() {
 }
 
 void SocketViewerWidget::readSocketLine() {
-    //QDataStream in(tcpSocket);
-    QByteArray data;
-    qDebug() << tcpSocket->readAll();
-    //in >> data;
-    QString socketLine = QString::fromLocal8Bit(data);
+    QTextStream in(tcpSocket);
+    //qDebug() << "Reading (bytes): " << tcpSocket->bytesAvailable();
+    QByteArray buffer;
+    while (tcpSocket->bytesAvailable() > 0) {
+        buffer += tcpSocket->readAll();
+    }
+    //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
+
+    QString socketLine = QString::fromLocal8Bit(buffer);
+    fileContain.append(socketLine);
     vector<Vector3d*> pos = readLine(socketLine);
     if (pos.size() > 0) {
       widgetGL->appendPoints(pos);
-      valueChanged(coordinatesShown++);
+      slider->setMaximum(rowNumber - 1);
+      spinBox->setMaximum(rowNumber - 1);
       rowNumber++;
-      slider->setMaximum(rowNumber);
-      spinBox->setMaximum(rowNumber);
+      valueChanged(coordinatesShown);
+      coordinatesShown += 1;
     }
 }
 
