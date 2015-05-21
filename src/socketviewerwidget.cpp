@@ -52,13 +52,13 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
 }
 
 SocketViewerWidget::SocketViewerWidget() {
-  fileContain.setReadOnly(true);
-  fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
-  fileContain.setText(fullText);
-  fileContain.setWindowTitle(filename);
-  fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
-  coordinatesShown = 0;
-  hideButtonPanel = true;
+    fileContain.setReadOnly(true);
+    fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
+    fileContain.setText(fullText);
+    fileContain.setWindowTitle(filename);
+    fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    coordinatesShown = 0;
+    hideButtonPanel = true;
     widgetGL = new WidgetGL(this);
     init();
     show3DView();
