@@ -32,8 +32,8 @@ struct Vector3d; // Implemented in datastructs.h
 class SocketViewerWidget : public QMdiSubWindow {
     Q_OBJECT
 public:
-    SocketViewerWidget(QString path, QString nameFile, QString calibPath);
-    SocketViewerWidget();
+    SocketViewerWidget(QString path, QString nameFile, QString calibPath); // Loading from file
+    SocketViewerWidget(); // Loading from network (Shows dialogbox for IP and Port input)
     ~SocketViewerWidget();
 
     void displayToolTip(CoordinatesLabel *label);
@@ -61,7 +61,7 @@ private slots:
 
     void connectToServer();
     void readSocketLine();
-    void displayError(QAbstractSocket::SocketError socketError);
+    void displayError(QAbstractSocket::SocketError);
     void sessionOpened();
 
 
@@ -70,13 +70,12 @@ private:
     void extractDataFromText();
     void showTextView();
     vector<Vector3d*> readLine(QString line);
-    //void showTableView();
     void show3DView();
 
     void init();
 
     int view;
-    QString name;
+    QString filename;
     QString fullPath;
     QString tmpPath;
     QString calibrationPath;
@@ -113,14 +112,11 @@ private:
     vector<bool> showPoints;
 
     /* Used for the 3D visualization */
-    /* Min and max values for the scale */
-    vector<float> minMax;
     /* Lines and columns number */
     int linesNumber;
-    int columnsNumber;
     int rowNumber;
     /* The 2D array */
-    vector<vector<Vector3d>> pointData;
+    vector<vector<Vector3d*>> pointData;
     /* The time shown */
     int coordinatesShown;
     bool hideButtonPanel;

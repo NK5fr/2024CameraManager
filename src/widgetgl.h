@@ -22,13 +22,16 @@ class SocketViewerWidget;
 class WidgetGL : public QGLWidget {
     Q_OBJECT
 public:
-    WidgetGL(vector<vector<Vector3d>>* points, vector<float> minmax, SocketViewerWidget* socket, QString calibrationPath);
+    WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>>* points, QString calibrationPath);
+    WidgetGL(SocketViewerWidget* socket);
     ~WidgetGL();
 
     void showView(int viewTime);
     void showXYPlane();
     void showXZPlane();
     void showYZPlane();
+
+    void appendPoints(vector<Vector3d*> points) { this->pointData.push_back(points); }
     
     inline void setShowFovCone(bool onOff) { this->showFovCone = onOff; }
     inline void setShowPreceedingPoints(bool onOff) { this->showPreceedingPoints = onOff; }
@@ -70,22 +73,19 @@ protected:
 private:
     SocketViewerWidget* svw;
     CalibrationFile* calibFile;
-    //vector<QPoint> cameras;
-    vector<vector<Vector3d>> pointData;
+    vector<vector<Vector3d*>> pointData;
     vector<TrackPoint::Camera*> camerasData;
-    QHash <int, bool> selected;
     QPoint lastPos;
-    QColor qtBlack;
     int coordinatesShown;
     int keyPressed;
     int camViewIndex;
-    bool initialScale;
     int lastMouseX = -1;
     int lastMouseY = -1;
     double rotX;
     double rotY;
     double camDistance;
     double coneSize;
+    bool initialScale;
     bool adjustCamDistance = false;
     
     bool showFovCone;

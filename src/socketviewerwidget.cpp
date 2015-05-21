@@ -27,8 +27,8 @@
 using namespace std;
 
 /* Constructor */
-SocketViewerWidget::SocketViewerWidget(QString path, QString n, QString calibPath)
-    : name(n), fullPath(path + "/" + name), tmpPath(path), calibrationPath(calibPath), view(0), linesNumber(0), columnsNumber(0) {
+SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString calibPath)
+    : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), view(0), linesNumber(0) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
     //fileContain = new QTextEdit();
     readTextFromFile();
@@ -36,18 +36,18 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString n, QString calibPat
     fileContain.setReadOnly(true);
     fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
     fileContain.setText(fullText);
-    fileContain.setWindowTitle(name);
+    fileContain.setWindowTitle(filename);
     fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
     hideButtonPanel = true;
 
     // WidgetGL
-    widgetGL = new WidgetGL(&pointData, minMax, this, calibrationPath);
+    widgetGL = new WidgetGL(this, &pointData, calibrationPath);
 
     init();
     show3DView();
 
-    setWindowTitle(name);
+    setWindowTitle(filename);
     startClient();
 }
 
@@ -100,8 +100,8 @@ vector<Vector3d*> SocketViewerWidget::readLine(QString line) {
         QRegularExpressionMatch match = i.next();
         Vector3d* v = new Vector3d();
         v->x = match.captured(1).toDouble();
-        v->y = match.captured(2).toDouble();
-        v->z = match.captured(3).toDouble();
+        v->y = match.captured(3).toDouble();
+        v->z = match.captured(2).toDouble();
         vectors.push_back(v);
     }
     return vectors;
@@ -111,26 +111,10 @@ void SocketViewerWidget::extractDataFromText() {
     QStringList lineList = fullText.split("\n");
     linesNumber = lineList.size();
 
-    readLine(lineList[0]);
-    //QRegularExpression coordsRegExr("(-?\\d+\.?\\d*)(?:\\s+)(-?\\d+\\.?\\d*)(?:\\s+)(-?\\d+\\.?\\d*)"); // TODO Change over to use regular expressions...
-    
-    QStringList rowList = lineList[0].split(" \t");
-    columnsNumber = rowList.size() - 1;
-    if (columnsNumber % 3 != 0) printf("Not correct number for tracked points!\n");
-    int numPoints = columnsNumber / 3;
-    //pointData.resize(linesNumber);
     int rowNumberLocal = 0;
     for (int row = 0; row < linesNumber; row++) {
         if (lineList[row].isEmpty()) continue;
-        rowList = lineList[row].split(" ");
-        vector<Vector3d> points;
-        points.resize(numPoints);
-        //pointData[row].resize(numPoints);
-        for (int col = 0; col < numPoints; col++) {
-            points[col].x = rowList[(col * 3) + 0].toDouble();
-            points[col].y = rowList[(col * 3) + 2].toDouble();
-            points[col].z = rowList[(col * 3) + 1].toDouble();
-        }
+        vector<Vector3d*> points = readLine(lineList[row]);
         pointData.push_back(points);
         rowNumberLocal++;
     }
@@ -422,7 +406,6 @@ void SocketViewerWidget::fovConeSizeValueChanged(int value) {
 }
 
 void SocketViewerWidget::connectToServer() {
-    socketDialog->close();
     tcpSocket->abort();
     tcpSocket->connectToHost(hostCombo->currentText(), portLineEdit->text().toInt());
 }
@@ -446,7 +429,9 @@ void SocketViewerWidget::startClient() {
     portLabel->setBuddy(portLineEdit);
 
     QPushButton* quitButton = new QPushButton("Quit");
+    quitButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QPushButton* startButton = new QPushButton("Connect");
+    startButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
     buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
@@ -505,6 +490,8 @@ void SocketViewerWidget::readSocketLine() {
     QString socketLine;
     in >> socketLine;
     vector<Vector3d*> pos = readLine(socketLine);
+    widgetGL->appendPoints(pos);
+    widgetGL->showView(coordinatesShown++);
 }
 
 void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) {
@@ -512,24 +499,26 @@ void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) 
         case QAbstractSocket::RemoteHostClosedError:
             break;
         case QAbstractSocket::HostNotFoundError:
-            QMessageBox::information(this, tr("Fortune Client"),
+            QMessageBox::information(this, "Camera Manager Client",
                                      "The host was not found. Please check the "
                                      "host name and port settings.");
             break;
         case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(this, tr("Fortune Client"),
+            QMessageBox::information(this, "Camera Manager Client",
                                      "The connection was refused by the peer. "
-                                     "Make sure the fortune server is running, "
+                                     "Make sure the TrackPoint server is running, "
                                      "and check that the host name and port "
                                      "settings are correct.");
             break;
         default:
-            QMessageBox::information(this, "Fortune Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
+            QMessageBox::information(this, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
     }
     //getFortuneButton->setEnabled(true);
 }
 
 void SocketViewerWidget::sessionOpened() {
+    socketDialog->close();
+    coordinatesShown = 0;
     /*
     // Save the used configuration
     QNetworkConfiguration config = networkSession->configuration();
