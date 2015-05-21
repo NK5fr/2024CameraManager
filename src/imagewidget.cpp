@@ -205,8 +205,8 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent* event) {
                 //point->isInitialized = true;
             }
         } else if (event->button() == Qt::MouseButton::RightButton && point != nullptr) {
-            point->isUsed = !point->isUsed;
-            point->isInitialized = true;
+            //point->isUsed = !point->isUsed;
+            //point->isInitialized = true;
         }
         //points[(indexY * (image.width() / subImageSize.width())) + indexX] = point;
     }
