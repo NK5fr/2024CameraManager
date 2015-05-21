@@ -90,6 +90,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
+    connect(ui->projectTree, SIGNAL(itemExpanded(QTreeWidgetItem*)), this, SLOT(expandFilePath_ProjectTree(QTreeWidgetItem*)));
+    connect(ui->projectTree, SIGNAL(itemCollapsed(QTreeWidgetItem*)), this, SLOT(collapsedFilePath_ProjectTree(QTreeWidgetItem*)));
 
     // Lars Aksel - 05.02.2015
     connect(ui->loadDefaultCameraProperties, SIGNAL(clicked()), this, SLOT(loadDefaultCameraProperties_clicked()));
@@ -1015,4 +1017,17 @@ void MainWindow::setupTrackPointTab() {
     vBoxLayout->addLayout(buttonGridLayout);
 
     ui->trackPointWidget->setLayout(vBoxLayout);
+}
+
+void MainWindow::expandFilePath_ProjectTree(QTreeWidgetItem* item) {
+    ui->projectTree->resizeColumnToContents(0);
+    ui->projectTree->resizeColumnToContents(1);
+    ui->projectTree->resizeColumnToContents(2);
+    // Load the rest of the files...
+}
+
+void MainWindow::collapsedFilePath_ProjectTree(QTreeWidgetItem* item) {
+    ui->projectTree->resizeColumnToContents(0);
+    ui->projectTree->resizeColumnToContents(1);
+    ui->projectTree->resizeColumnToContents(2);
 }

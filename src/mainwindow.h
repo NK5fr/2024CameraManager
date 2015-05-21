@@ -103,6 +103,8 @@ private slots:
     void on_RemoveDuplicatesChecked(int state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
+    void expandFilePath_ProjectTree(QTreeWidgetItem*);
+    void collapsedFilePath_ProjectTree(QTreeWidgetItem*);
 
     // Lars Aksel - Loading/Saving Camera Properties
     void quickLoadCameraSettings();
