@@ -11,11 +11,17 @@
 #include <QLabel>
 #include <QToolTip>
 #include <QGridLayout>
+#include <QtNetwork\qtcpsocket.h>
 #include <vector>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "widgetgl.h"
 
 using namespace std;
+
+class QTcpSocket;
+class QNetworkSession;
 
 class CoordinatesLabel;
 class WidgetGL;
@@ -50,10 +56,14 @@ private slots:
     void camDistanceValueChanged(int);
     void fovConeSizeValueChanged(int);
 
+    void readSocketLine();
+    void displayError(QAbstractSocket::SocketError socketError);
+
 private:
     void readTextFromFile();
     void extractDataFromText();
     void showTextView();
+    vector<Vector3d*> readLine(QString line);
     //void showTableView();
     void show3DView();
 
@@ -108,6 +118,19 @@ private:
     /* The time shown */
     int coordinatesShown;
     bool hideButtonPanel;
+
+    const char* ipAddress;
+    const char* port;
+    int sock;
+    bool clientRunning;
+    bool stopped;
+
+    QTcpSocket *tcpSocket;
+    QNetworkSession *networkSession;
+    quint16 blockSize;
+
+    void startClient();
+    void stopClient();
 
     QSlider* slider;
     QSpinBox* spinBox;
