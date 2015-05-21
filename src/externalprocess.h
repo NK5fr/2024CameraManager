@@ -20,7 +20,11 @@ public:
 
 private slots:
     void readStdOutput();
+    void readErrOutput();
     void readError();
+    void terminateRun(QObject*);
+
+
 private:
     QTextEdit* edit;
 };

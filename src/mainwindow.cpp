@@ -330,44 +330,15 @@ void MainWindow::menuBarClicked(QAction* action) {
     else if (action->text() == "Hide ToolBar")
         ui->toolBar->setVisible(!bar->getHideToolBarWidget()->isChecked());
     else if (action->text() == "Run Trackpoint"){
-        /*if(defined(WIN64) || defined(WIN32)){*/
-        //QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
-        //QProcess *process = new QProcess();
-        //process_file = "tmp.txt";
-        //QString path = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/"); // gs
-        //process.setWorkingDirectory(path);		                              // gs
-        //process.setProcessChannelMode(QProcess::MergedChannels);						// gs
-        //process.setStandardOutputFile(process_file);
-        /*
-        trackPointOutput = new QTextEdit();  // legger til et tekstfelt i hovedvinduet
-        ui->centralwidget->addSubWindow(trackPointOutput);
-        trackPointOutput->showMaximized();
-        //setCentralWidget(text_edit);        
-        trackPointOutput->setText("Running TrackPoint!"); // gs 
-
-        //connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(executeFinished(process)));
-        connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdOutput(process))); //gs
-        //connect(&process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(executeError(QProcess::ProcessError)));
-        //process_timer.setInterval(100);
-        //process_timer.setSingleShot(false);
-        
-
-        //connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(printOutput())); //gs
-        //options.clear();  // gs
-        //process.execute();
-        process.start(executable, options); // gs
-        process.waitForFinished();  // gs
-        */
-
-        QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
-
+        //QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
         QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
+
         trackPointProcess = new ExternalProcess();
-        trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);
-        trackPointProcess->setWorkingDirectory(trackPointPath);
+        //trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);
+        //trackPointProcess->setWorkingDirectory(trackPointPath);
         //trackPointProcess->start("tracert www.google.com");
         trackPointProcess->start(executable);
-        ui->centralwidget->closeAllSubWindows();
+        //ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(trackPointProcess->getTextEdit());
         trackPointProcess->getTextEdit()->showMaximized();
     }
