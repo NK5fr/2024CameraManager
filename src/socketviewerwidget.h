@@ -63,6 +63,7 @@ private slots:
     void readSocketLine();
     void displayError(QAbstractSocket::SocketError);
     void sessionOpened();
+    void socketConnected();
 
 
 private:

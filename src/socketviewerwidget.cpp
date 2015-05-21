@@ -435,6 +435,7 @@ void SocketViewerWidget::startClient() {
     //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(enableGetFortuneButton()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(quitButton, SIGNAL(clicked()), socketDialog, SLOT(close()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(readSocketLine()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
@@ -477,20 +478,26 @@ void SocketViewerWidget::stopClient() {
 }
 
 void SocketViewerWidget::readSocketLine() {
-    QDataStream in(tcpSocket);
-    QString socketLine;
-    in >> socketLine;
+    //QDataStream in(tcpSocket);
+    QByteArray data;
+    qDebug() << tcpSocket->readAll();
+    //in >> data;
+    QString socketLine = QString::fromLocal8Bit(data);
     vector<Vector3d*> pos = readLine(socketLine);
-    widgetGL->appendPoints(pos);
-    valueChanged(coordinatesShown++);
-    rowNumber++;
-    slider->setMaximum(rowNumber);
-    spinBox->setMaximum(rowNumber);
+    if (pos.size() > 0) {
+      widgetGL->appendPoints(pos);
+      valueChanged(coordinatesShown++);
+      rowNumber++;
+      slider->setMaximum(rowNumber);
+      spinBox->setMaximum(rowNumber);
+    }
 }
 
 void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) {
     switch (socketError) {
-        case QAbstractSocket::RemoteHostClosedError:
+    case QAbstractSocket::RemoteHostClosedError:
+          QMessageBox::information(this, "Camera Manager Client",
+                                      "Remote Host Closed.");
             break;
         case QAbstractSocket::HostNotFoundError:
             QMessageBox::information(this, "Camera Manager Client",
@@ -510,9 +517,12 @@ void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) 
     //getFortuneButton->setEnabled(true);
 }
 
+void SocketViewerWidget::socketConnected() {
+  socketDialog->close();
+  coordinatesShown = 0;
+}
+
 void SocketViewerWidget::sessionOpened() {
-    socketDialog->close();
-    coordinatesShown = 0;
     /*
     // Save the used configuration
     QNetworkConfiguration config = networkSession->configuration();
