@@ -463,7 +463,6 @@ void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
             return;
         }
         const double speed = 0.005;
-        const double PI = 3.1415926535;
         double maxVerticalAngle = PI / 2; // 90 degrees in radians...
         rotX += (lastMouseX - mouseEvent->screenPos().x()) * speed;
         rotY = max(-maxVerticalAngle, min(rotY + ((lastMouseY - mouseEvent->screenPos().y()) * speed), maxVerticalAngle));

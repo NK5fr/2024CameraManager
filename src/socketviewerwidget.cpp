@@ -60,9 +60,9 @@ SocketViewerWidget::SocketViewerWidget() {
     coordinatesShown = 0;
     hideButtonPanel = true;
     widgetGL = new WidgetGL(this);
+    rowNumber = 1;
     init();
     show3DView();
-
     setWindowTitle("Live from TrackPoint-Server");
     startClient();
 }
@@ -482,7 +482,10 @@ void SocketViewerWidget::readSocketLine() {
     in >> socketLine;
     vector<Vector3d*> pos = readLine(socketLine);
     widgetGL->appendPoints(pos);
-    widgetGL->showView(coordinatesShown++);
+    valueChanged(coordinatesShown++);
+    rowNumber++;
+    slider->setMaximum(rowNumber);
+    spinBox->setMaximum(rowNumber);
 }
 
 void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) {
