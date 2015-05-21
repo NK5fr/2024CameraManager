@@ -32,7 +32,7 @@ QVideoWidget::~QVideoWidget() {
 
 void QVideoWidget::initializeGL() {
     initializeOpenGLFunctions();
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     updateView();
 }
 
@@ -168,6 +168,13 @@ void QVideoWidget::paintGL() {
                 glVertex2d(xPos, yPos + crossWingSize);
                 glEnd();
                 glColor3f(1, 1, 1);
+
+                if (trackPointProperty->showCoordinates) {
+                    QPainter painter(this);
+                    QPoint pos = scaled.topLeft() + QPoint(xPos, yPos);
+                    painter.fillRect(pos.x(), pos.y(), 105, 12, Qt::white);
+                    painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
+                }
             }
         }
     }
