@@ -11,11 +11,18 @@
 #include <QLabel>
 #include <QToolTip>
 #include <QGridLayout>
+#include <QtNetwork\qtcpsocket.h>
+#include <QtNetwork\qhostaddress.h>
 #include <vector>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "widgetgl.h"
 
 using namespace std;
+
+class QTcpSocket;
+class QNetworkSession;
 
 class CoordinatesLabel;
 class WidgetGL;
@@ -25,7 +32,9 @@ struct Vector3d; // Implemented in datastructs.h
 class SocketViewerWidget : public QMdiSubWindow {
     Q_OBJECT
 public:
-    SocketViewerWidget(QString path, QString nameFile, QString calibPath);
+    SocketViewerWidget(QString path, QString nameFile, QString calibPath); // Loading from file
+    SocketViewerWidget(); // Loading from network (Shows dialogbox for IP and Port input)
+    ~SocketViewerWidget();
 
     void displayToolTip(CoordinatesLabel *label);
     QSlider *getTimeSlider();
@@ -50,17 +59,23 @@ private slots:
     void camDistanceValueChanged(int);
     void fovConeSizeValueChanged(int);
 
+    void connectToServer();
+    void readSocketLine();
+    void displayError(QAbstractSocket::SocketError);
+    void sessionOpened();
+
+
 private:
     void readTextFromFile();
     void extractDataFromText();
     void showTextView();
-    //void showTableView();
+    vector<Vector3d*> readLine(QString line);
     void show3DView();
 
     void init();
 
     int view;
-    QString name;
+    QString filename;
     QString fullPath;
     QString tmpPath;
     QString calibrationPath;
@@ -97,17 +112,30 @@ private:
     vector<bool> showPoints;
 
     /* Used for the 3D visualization */
-    /* Min and max values for the scale */
-    vector<float> minMax;
     /* Lines and columns number */
     int linesNumber;
-    int columnsNumber;
     int rowNumber;
     /* The 2D array */
-    vector<vector<Vector3d>> pointData;
+    vector<vector<Vector3d*>> pointData;
     /* The time shown */
     int coordinatesShown;
     bool hideButtonPanel;
+
+    const char* ipAddress;
+    const char* port;
+    int sock;
+    bool clientRunning;
+    bool stopped;
+
+    QHostAddress hostAddress;
+    QTcpSocket* tcpSocket = nullptr;
+    QNetworkSession* networkSession = nullptr;
+    QLineEdit* portLineEdit = nullptr;
+    QComboBox* hostCombo = nullptr;
+    QDialog* socketDialog = nullptr;
+
+    void startClient();
+    void stopClient();
 
     QSlider* slider;
     QSpinBox* spinBox;

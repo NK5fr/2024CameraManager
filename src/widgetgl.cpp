@@ -4,21 +4,13 @@ using namespace std;
 
 static const double PI = 3.1415926535;
 
-WidgetGL::WidgetGL(vector<vector<Vector3d>> *points, vector<float> minmax, SocketViewerWidget* socket, QString calibrationPath) : QGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
+WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points, QString calibrationPath) : QGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
     coordinatesShown = 0;
-    qtBlack = QColor::fromCmykF(0.0, 0.0, 0.0, 0.25);
     calibFile = new CalibrationFile(calibrationPath);
 
     initializingCameras();
     initializeGL();
     
-    /* Initializing the selected array */
-    if (pointData.size() > 0) {
-        for (int i = 0; i < pointData[0].size(); i++) {
-            selected.insert(i, false);
-        }
-    }
-
     showFovCone = true;
     showPreceedingPoints = false;
     showLines = false;
@@ -151,9 +143,9 @@ void WidgetGL::paintGL() {
         for (int point = 0; point < (pointData[0]).size(); point++){
             glBegin(GL_LINE_STRIP);
             for (int time = 0; time <= coordinatesShown; time++) {
-                glVertex3f(GLfloat(pointData[time][point].x),
-                           GLfloat(pointData[time][point].z),
-                           GLfloat(pointData[time][point].y));
+                glVertex3f(GLfloat(pointData[time][point]->x),
+                           GLfloat(pointData[time][point]->z),
+                           GLfloat(pointData[time][point]->y));
             }
             glEnd();
         }
@@ -165,9 +157,9 @@ void WidgetGL::paintGL() {
         for (int time = 0; time < coordinatesShown; time++) {
             for (int point = 0; point < (pointData[time]).size(); point++){
                 glBegin(GL_POINTS);
-                glVertex3f(GLfloat(pointData[time][point].x),
-                           GLfloat(pointData[time][point].z),
-                           GLfloat(pointData[time][point].y));
+                glVertex3f(GLfloat(pointData[time][point]->x),
+                           GLfloat(pointData[time][point]->z),
+                           GLfloat(pointData[time][point]->y));
                 glEnd();
             }
         }
@@ -177,9 +169,9 @@ void WidgetGL::paintGL() {
     if (pointData.size() > 0) {
         for (int point = 0; point < (pointData[coordinatesShown]).size(); point++){
             glBegin(GL_POINTS);
-            glVertex3f(GLfloat(pointData[coordinatesShown][point].x),
-                        GLfloat(pointData[coordinatesShown][point].z),
-                        GLfloat(pointData[coordinatesShown][point].y));
+            glVertex3f(GLfloat(pointData[coordinatesShown][point]->x),
+                       GLfloat(pointData[coordinatesShown][point]->z),
+                       GLfloat(pointData[coordinatesShown][point]->y));
             glEnd();
         }
     }    

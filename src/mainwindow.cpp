@@ -329,6 +329,11 @@ void MainWindow::menuBarClicked(QAction* action) {
 
     else if (action->text() == "Hide ToolBar")
         ui->toolBar->setVisible(!bar->getHideToolBarWidget()->isChecked());
+    else if (action->text() == "Connect to Server") {
+        SocketViewerWidget* svw = new SocketViewerWidget();
+        ui->centralwidget->addSubWindow(svw);
+        svw->showMaximized();
+    }
     else if (action->text() == "Run Trackpoint"){
         //QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
         QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");

@@ -80,6 +80,7 @@ MenuBar::MenuBar(){
 
     trackpoint = new QMenu("Trackpoint");
     trackpoint->addAction("Run Trackpoint");
+    trackpoint->addAction("Connect to Server");
 
 
     addMenu(file);

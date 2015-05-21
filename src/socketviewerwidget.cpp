@@ -10,6 +10,14 @@
 #include <QLineEdit>
 #include <QFont>
 #include <QtOpenGL/QtOpenGL>
+#include <QtNetwork/qtcpsocket.h>
+#include <QtNetwork/qabstractsocket.h>
+#include <qnetwork.h>
+#include <QtNetwork/qhostinfo.h>
+#include <QtNetwork/qnetworkinterface.h>
+#include <QtNetwork/qnetworkconfiguration.h>
+#include <QtNetwork/qnetworkconfigmanager.h>
+#include <QtNetwork/qnetworksession.h>
 
 #include <string.h>
 #include <iostream>
@@ -19,10 +27,34 @@
 using namespace std;
 
 /* Constructor */
-SocketViewerWidget::SocketViewerWidget(QString path, QString n, QString calibPath)
-    : name(n), fullPath(path + "/" + name), tmpPath(path), calibrationPath(calibPath), view(0), linesNumber(0), columnsNumber(0) {
+SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString calibPath)
+    : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), view(0), linesNumber(0) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
     //fileContain = new QTextEdit();
+    readTextFromFile();
+    extractDataFromText();
+    fileContain.setReadOnly(true);
+    fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
+    fileContain.setText(fullText);
+    fileContain.setWindowTitle(filename);
+    fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    coordinatesShown = 0;
+    hideButtonPanel = true;
+
+    // WidgetGL
+    widgetGL = new WidgetGL(this, &pointData, calibrationPath);
+
+    init();
+    show3DView();
+
+    setWindowTitle(filename);
+    startClient();
+}
+
+SocketViewerWidget::SocketViewerWidget() {
+    /* Creating QTextEdit, which need to be known to save file later if asked */
+    //fileContain = new QTextEdit();
+    /*
     readTextFromFile();
     extractDataFromText();
     fileContain.setReadOnly(true);
@@ -38,8 +70,19 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString n, QString calibPat
 
     init();
     show3DView();
+    */
 
-    setWindowTitle(name);
+    setWindowTitle("Live from TrackPoint-Server");
+    startClient();
+}
+
+SocketViewerWidget::~SocketViewerWidget() {
+    tcpSocket->close();
+    delete tcpSocket;
+    delete networkSession;
+    delete portLineEdit;
+    delete hostCombo;
+    delete socketDialog;
 }
 
 void SocketViewerWidget::readTextFromFile() {
@@ -49,29 +92,29 @@ void SocketViewerWidget::readTextFromFile() {
     myFile.close();
 }
 
+vector<Vector3d*> SocketViewerWidget::readLine(QString line) {
+    QRegularExpression coordsRegEx("(\\-?\\d+\\.?\\d*)(?:\\s*)(\\-?\\d+\\.?\\d*)(?:\\s*)(\\-?\\d+\\.?\\d*)");
+    QRegularExpressionMatchIterator i = coordsRegEx.globalMatch(line);
+    vector<Vector3d*> vectors;
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        Vector3d* v = new Vector3d();
+        v->x = match.captured(1).toDouble();
+        v->y = match.captured(3).toDouble();
+        v->z = match.captured(2).toDouble();
+        vectors.push_back(v);
+    }
+    return vectors;
+}
+
 void SocketViewerWidget::extractDataFromText() {
     QStringList lineList = fullText.split("\n");
     linesNumber = lineList.size();
 
-    //QRegularExpression coordsRegExr("(-?\\d+\.?\\d*)(?:\\s+)(-?\\d+\\.?\\d*)(?:\\s+)(-?\\d+\\.?\\d*)"); // TODO Change over to use regular expressions...
-    
-    QStringList rowList = lineList[0].split(" \t");
-    columnsNumber = rowList.size() - 1;
-    if (columnsNumber % 3 != 0) printf("Not correct number for tracked points!\n");
-    int numPoints = columnsNumber / 3;
-    //pointData.resize(linesNumber);
     int rowNumberLocal = 0;
     for (int row = 0; row < linesNumber; row++) {
         if (lineList[row].isEmpty()) continue;
-        rowList = lineList[row].split(" ");
-        vector<Vector3d> points;
-        points.resize(numPoints);
-        //pointData[row].resize(numPoints);
-        for (int col = 0; col < numPoints; col++) {
-            points[col].x = rowList[(col * 3) + 0].toDouble();
-            points[col].y = rowList[(col * 3) + 2].toDouble();
-            points[col].z = rowList[(col * 3) + 1].toDouble();
-        }
+        vector<Vector3d*> points = readLine(lineList[row]);
         pointData.push_back(points);
         rowNumberLocal++;
     }
@@ -360,4 +403,136 @@ void SocketViewerWidget::camDistanceValueChanged(int value) {
 void SocketViewerWidget::fovConeSizeValueChanged(int value) {
     widgetGL->setFOVConeSize((double) value);
     widgetGL->updateGL();
+}
+
+void SocketViewerWidget::connectToServer() {
+    tcpSocket->abort();
+    tcpSocket->connectToHost(hostCombo->currentText(), portLineEdit->text().toInt());
+}
+
+void SocketViewerWidget::startClient() {
+    socketDialog = new QDialog(this);
+
+    QLabel* hostLabel = new QLabel("Server name:");
+    QLabel* portLabel = new QLabel("Server port:");
+    hostCombo = new QComboBox;
+    hostCombo->setEditable(true);
+    
+    hostCombo->addItem(QString("127.0.0.1"));
+    // find out IP addresses of this machine
+    //QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+
+    portLineEdit = new QLineEdit("1250");
+    portLineEdit->setValidator(new QIntValidator(1, 65535, this));
+
+    hostLabel->setBuddy(hostCombo);
+    portLabel->setBuddy(portLineEdit);
+
+    QPushButton* quitButton = new QPushButton("Quit");
+    quitButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QPushButton* startButton = new QPushButton("Connect");
+    startButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox;
+    buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
+    buttonBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    tcpSocket = new QTcpSocket(this);
+
+    //connect(hostCombo, SIGNAL(editTextChanged(QString)), this, SLOT(enableGetFortuneButton()));
+    //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(enableGetFortuneButton()));
+    connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
+    connect(quitButton, SIGNAL(clicked()), socketDialog, SLOT(close()));
+    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
+    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+
+    QGridLayout *mainLayout = new QGridLayout;
+    mainLayout->addWidget(hostLabel,    0, 0);
+    mainLayout->addWidget(hostCombo,    0, 1);
+    mainLayout->addWidget(portLabel,    1, 0);
+    mainLayout->addWidget(portLineEdit, 1, 1);
+    mainLayout->addWidget(buttonBox,    2, 0, 1, 2);
+    socketDialog->setLayout(mainLayout);
+
+    /*
+    QNetworkConfigurationManager manager;
+    if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
+        // Get saved network configuration
+        QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
+        settings.beginGroup(QLatin1String("QtNetwork"));
+        const QString id = settings.value(QLatin1String("DefaultNetworkConfiguration")).toString();
+        settings.endGroup();
+
+        // If the saved network configuration is not currently discovered use the system default
+        QNetworkConfiguration config = manager.configurationFromIdentifier(id);
+        if ((config.state() & QNetworkConfiguration::Discovered) !=
+            QNetworkConfiguration::Discovered) {
+            config = manager.defaultConfiguration();
+        }
+
+        networkSession = new QNetworkSession(config, this);
+        connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
+
+        //getFortuneButton->setEnabled(false);
+        //statusLabel->setText("Opening network session.");
+        networkSession->open();
+    }*/
+    socketDialog->show();
+}
+
+void SocketViewerWidget::stopClient() {
+
+}
+
+void SocketViewerWidget::readSocketLine() {
+    QDataStream in(tcpSocket);
+    QString socketLine;
+    in >> socketLine;
+    vector<Vector3d*> pos = readLine(socketLine);
+    widgetGL->appendPoints(pos);
+    widgetGL->showView(coordinatesShown++);
+}
+
+void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) {
+    switch (socketError) {
+        case QAbstractSocket::RemoteHostClosedError:
+            break;
+        case QAbstractSocket::HostNotFoundError:
+            QMessageBox::information(this, "Camera Manager Client",
+                                     "The host was not found. Please check the "
+                                     "host name and port settings.");
+            break;
+        case QAbstractSocket::ConnectionRefusedError:
+            QMessageBox::information(this, "Camera Manager Client",
+                                     "The connection was refused by the peer. "
+                                     "Make sure the TrackPoint server is running, "
+                                     "and check that the host name and port "
+                                     "settings are correct.");
+            break;
+        default:
+            QMessageBox::information(this, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
+    }
+    //getFortuneButton->setEnabled(true);
+}
+
+void SocketViewerWidget::sessionOpened() {
+    socketDialog->close();
+    coordinatesShown = 0;
+    /*
+    // Save the used configuration
+    QNetworkConfiguration config = networkSession->configuration();
+    QString id;
+    if (config.type() == QNetworkConfiguration::UserChoice) id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
+    else id = config.identifier();
+
+    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
+    settings.beginGroup(QLatin1String("QtNetwork"));
+    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
+    settings.endGroup();
+
+    //statusLabel->setText("This examples requires that you run the Fortune Server example as well.");
+
+    //enableGetFortuneButton();
+    */
 }
