@@ -32,6 +32,28 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points
     updateGL();
 }
 
+WidgetGL::WidgetGL(SocketViewerWidget* socket) : QGLWidget(socket) {
+  showFovCone = true;
+  showPreceedingPoints = false;
+  showLines = false;
+  showCameras = false;
+  showCoordinateSystem = true;
+  showFloorLines = true;
+  showCameraLegs = false;
+  showOrtho = false;
+  showFromCamera = false; // NOT USED
+  camViewIndex = 0;       // NOT USED
+
+  rotX = 0;
+  rotY = 0;
+  camDistance = 4000;
+  coneSize = 500;
+  setMouseTracking(true);
+  grabKeyboard();
+  installEventFilter(this);
+  updateGL();
+}
+
 WidgetGL::~WidgetGL() {
 }
 

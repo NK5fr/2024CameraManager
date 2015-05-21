@@ -52,25 +52,16 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
 }
 
 SocketViewerWidget::SocketViewerWidget() {
-    /* Creating QTextEdit, which need to be known to save file later if asked */
-    //fileContain = new QTextEdit();
-    /*
-    readTextFromFile();
-    extractDataFromText();
-    fileContain.setReadOnly(true);
-    fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
-    fileContain.setText(fullText);
-    fileContain.setWindowTitle(name);
-    fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
-    coordinatesShown = 0;
-    hideButtonPanel = true;
-
-    // WidgetGL
-    widgetGL = new WidgetGL(&pointData, minMax, this, calibrationPath);
-
+  fileContain.setReadOnly(true);
+  fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
+  fileContain.setText(fullText);
+  fileContain.setWindowTitle(filename);
+  fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+  coordinatesShown = 0;
+  hideButtonPanel = true;
+    widgetGL = new WidgetGL(this);
     init();
     show3DView();
-    */
 
     setWindowTitle("Live from TrackPoint-Server");
     startClient();
