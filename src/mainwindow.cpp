@@ -932,7 +932,7 @@ void MainWindow::setupTrackPointTab() {
 
     QLabel* removeDuplicatesLabel = new QLabel("Remove Duplicates:");
     ui->removeDuplicatPointsEnabled = new QCheckBox();
-    ui->removeDuplicatPointsEnabled->setChecked(trackPointProperty.showCoordinates);
+    ui->removeDuplicatPointsEnabled->setChecked(trackPointProperty.removeDuplicates);
     trackPointLayout->addWidget(removeDuplicatesLabel, 3, 0);
     trackPointLayout->addWidget(ui->removeDuplicatPointsEnabled, 3, 1);
     connect(ui->removeDuplicatPointsEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_RemoveDuplicatesChecked(int)));
