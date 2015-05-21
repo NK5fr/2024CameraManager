@@ -12,6 +12,7 @@
 #include <QToolTip>
 #include <QGridLayout>
 #include <QtNetwork\qtcpsocket.h>
+#include <QtNetwork\qhostaddress.h>
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
@@ -32,6 +33,8 @@ class SocketViewerWidget : public QMdiSubWindow {
     Q_OBJECT
 public:
     SocketViewerWidget(QString path, QString nameFile, QString calibPath);
+    SocketViewerWidget();
+    ~SocketViewerWidget();
 
     void displayToolTip(CoordinatesLabel *label);
     QSlider *getTimeSlider();
@@ -56,8 +59,11 @@ private slots:
     void camDistanceValueChanged(int);
     void fovConeSizeValueChanged(int);
 
+    void connectToServer();
     void readSocketLine();
     void displayError(QAbstractSocket::SocketError socketError);
+    void sessionOpened();
+
 
 private:
     void readTextFromFile();
@@ -125,9 +131,12 @@ private:
     bool clientRunning;
     bool stopped;
 
-    QTcpSocket *tcpSocket;
-    QNetworkSession *networkSession;
-    quint16 blockSize;
+    QHostAddress hostAddress;
+    QTcpSocket* tcpSocket = nullptr;
+    QNetworkSession* networkSession = nullptr;
+    QLineEdit* portLineEdit = nullptr;
+    QComboBox* hostCombo = nullptr;
+    QDialog* socketDialog = nullptr;
 
     void startClient();
     void stopClient();

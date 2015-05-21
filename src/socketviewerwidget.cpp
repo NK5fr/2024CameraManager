@@ -51,6 +51,40 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString n, QString calibPat
     startClient();
 }
 
+SocketViewerWidget::SocketViewerWidget() {
+    /* Creating QTextEdit, which need to be known to save file later if asked */
+    //fileContain = new QTextEdit();
+    /*
+    readTextFromFile();
+    extractDataFromText();
+    fileContain.setReadOnly(true);
+    fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
+    fileContain.setText(fullText);
+    fileContain.setWindowTitle(name);
+    fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    coordinatesShown = 0;
+    hideButtonPanel = true;
+
+    // WidgetGL
+    widgetGL = new WidgetGL(&pointData, minMax, this, calibrationPath);
+
+    init();
+    show3DView();
+    */
+
+    setWindowTitle("Live from TrackPoint-Server");
+    startClient();
+}
+
+SocketViewerWidget::~SocketViewerWidget() {
+    tcpSocket->close();
+    delete tcpSocket;
+    delete networkSession;
+    delete portLineEdit;
+    delete hostCombo;
+    delete socketDialog;
+}
+
 void SocketViewerWidget::readTextFromFile() {
     QFile myFile(fullPath);
     if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text)) return;
@@ -387,67 +421,56 @@ void SocketViewerWidget::fovConeSizeValueChanged(int value) {
     widgetGL->updateGL();
 }
 
+void SocketViewerWidget::connectToServer() {
+    socketDialog->close();
+    tcpSocket->abort();
+    tcpSocket->connectToHost(hostCombo->currentText(), portLineEdit->text().toInt());
+}
+
 void SocketViewerWidget::startClient() {
-    QDialog* socketDialog = new QDialog(this);
+    socketDialog = new QDialog(this);
 
-    QLabel* hostLabel = new QLabel(tr("&Server name:"));
-    QLabel* portLabel = new QLabel(tr("S&erver port:"));
-    QComboBox* hostCombo = new QComboBox;
+    QLabel* hostLabel = new QLabel("Server name:");
+    QLabel* portLabel = new QLabel("Server port:");
+    hostCombo = new QComboBox;
     hostCombo->setEditable(true);
-    // find out name of this machine
-    QString name = QHostInfo::localHostName();
-    if (!name.isEmpty()) {
-        hostCombo->addItem(name);
-        QString domain = QHostInfo::localDomainName();
-        if (!domain.isEmpty())
-            hostCombo->addItem(name + QChar('.') + domain);
-    }
-    if (name != QString("localhost"))
-        hostCombo->addItem(QString("localhost"));
+    
+    hostCombo->addItem(QString("127.0.0.1"));
     // find out IP addresses of this machine
-    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-    // add non-localhost addresses
-    for (int i = 0; i < ipAddressesList.size(); ++i) {
-        if (!ipAddressesList.at(i).isLoopback())
-            hostCombo->addItem(ipAddressesList.at(i).toString());
-    }
-    // add localhost addresses
-    for (int i = 0; i < ipAddressesList.size(); ++i) {
-        if (ipAddressesList.at(i).isLoopback())
-            hostCombo->addItem(ipAddressesList.at(i).toString());
-    }
+    //QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
 
-    QLineEdit* portLineEdit = new QLineEdit;
+    portLineEdit = new QLineEdit("1250");
     portLineEdit->setValidator(new QIntValidator(1, 65535, this));
 
     hostLabel->setBuddy(hostCombo);
     portLabel->setBuddy(portLineEdit);
 
-    QPushButton* quitButton = new QPushButton(tr("Quit"));
-    QPushButton* startButton = new QPushButton(tr("Connect"));
+    QPushButton* quitButton = new QPushButton("Quit");
+    QPushButton* startButton = new QPushButton("Connect");
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
     buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
+    buttonBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     tcpSocket = new QTcpSocket(this);
 
     //connect(hostCombo, SIGNAL(editTextChanged(QString)), this, SLOT(enableGetFortuneButton()));
     //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(enableGetFortuneButton()));
-    //connect(startButton, SIGNAL(clicked()), this, SLOT(readSocketLine()));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
+    connect(quitButton, SIGNAL(clicked()), socketDialog, SLOT(close()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(hostLabel, 0, 0);
-    mainLayout->addWidget(hostCombo, 0, 1);
-    mainLayout->addWidget(portLabel, 1, 0);
+    mainLayout->addWidget(hostLabel,    0, 0);
+    mainLayout->addWidget(hostCombo,    0, 1);
+    mainLayout->addWidget(portLabel,    1, 0);
     mainLayout->addWidget(portLineEdit, 1, 1);
-    mainLayout->addWidget(buttonBox, 2, 0, 1, 2);
+    mainLayout->addWidget(buttonBox,    2, 0, 1, 2);
     socketDialog->setLayout(mainLayout);
 
-
+    /*
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
         // Get saved network configuration
@@ -467,17 +490,21 @@ void SocketViewerWidget::startClient() {
         connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
 
         //getFortuneButton->setEnabled(false);
-        //statusLabel->setText(tr("Opening network session."));
+        //statusLabel->setText("Opening network session.");
         networkSession->open();
-    }
+    }*/
     socketDialog->show();
 }
 
 void SocketViewerWidget::stopClient() {
+
 }
 
 void SocketViewerWidget::readSocketLine() {
-
+    QDataStream in(tcpSocket);
+    QString socketLine;
+    in >> socketLine;
+    vector<Vector3d*> pos = readLine(socketLine);
 }
 
 void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) {
@@ -486,21 +513,37 @@ void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) 
             break;
         case QAbstractSocket::HostNotFoundError:
             QMessageBox::information(this, tr("Fortune Client"),
-                                     tr("The host was not found. Please check the "
-                                     "host name and port settings."));
+                                     "The host was not found. Please check the "
+                                     "host name and port settings.");
             break;
         case QAbstractSocket::ConnectionRefusedError:
             QMessageBox::information(this, tr("Fortune Client"),
-                                     tr("The connection was refused by the peer. "
+                                     "The connection was refused by the peer. "
                                      "Make sure the fortune server is running, "
                                      "and check that the host name and port "
-                                     "settings are correct."));
+                                     "settings are correct.");
             break;
         default:
-            QMessageBox::information(this, tr("Fortune Client"),
-                                     tr("The following error occurred: %1.")
-                                     .arg(tcpSocket->errorString()));
+            QMessageBox::information(this, "Fortune Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
     }
-
     //getFortuneButton->setEnabled(true);
+}
+
+void SocketViewerWidget::sessionOpened() {
+    /*
+    // Save the used configuration
+    QNetworkConfiguration config = networkSession->configuration();
+    QString id;
+    if (config.type() == QNetworkConfiguration::UserChoice) id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
+    else id = config.identifier();
+
+    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
+    settings.beginGroup(QLatin1String("QtNetwork"));
+    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
+    settings.endGroup();
+
+    //statusLabel->setText("This examples requires that you run the Fortune Server example as well.");
+
+    //enableGetFortuneButton();
+    */
 }
