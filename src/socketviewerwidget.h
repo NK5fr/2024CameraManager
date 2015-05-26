@@ -26,7 +26,7 @@ using namespace std;
 
 class QTcpSocket;
 class QNetworkSession;
-
+class HostAddressDialog;
 class CoordinatesLabel;
 class WidgetGL;
 
@@ -105,6 +105,7 @@ private:
     QPushButton* showSocketText;
     QPushButton* show3DWidget;
     QPushButton* hideButton;
+    QPushButton* disconnectButton;
 
     /* Table view */
     vector<QGridLayout*> coordinatesLayout;
@@ -129,6 +130,8 @@ private:
     bool clientRunning;
     bool stopped;
 
+    HostAddressDialog* dialog = nullptr;
+
     QSlider* slider;
     QSpinBox* spinBox;
     WidgetGL* widgetGL;
@@ -152,38 +155,28 @@ private:
     SocketViewerWidget* socket;
 };
 
-class SocketClientThread : public QThread {
-    Q_OBJECT
-public:
-    SocketClientThread(const QString& address, quint16 portNr, SocketViewerWidget* socketWidget);
-    void run() Q_DECL_OVERRIDE;
-
-private slots :
-    void readSocketLine();
-    void displayError(QAbstractSocket::SocketError);
-    void socketConnected();
-
-private:
-    SocketViewerWidget* socketWidget = nullptr;
-    QTcpSocket* tcpSocket = nullptr;
-    QHostAddress* hostAddress = nullptr;
-    quint16 portNr;
-
-    void connectToServer(const QHostAddress& address, quint16 portNr);
-};
-
 class HostAddressDialog : public QDialog {
     Q_OBJECT
 public:
     HostAddressDialog(QWidget* parent, SocketViewerWidget*);
 
-private slots:
-    void onTextEdited(const QString&);
+private slots :
     void connectToServer();
+    void readSocketLine();
+    void displayError(QAbstractSocket::SocketError);
+    //void sessionOpened();
+    void socketConnected();
+    void onTextEdited(const QString&);
+    void stopClient();
+
+public slots:
+    void disconnectClient();
 
 private:
-    SocketViewerWidget* socketWidget = nullptr;
+    SocketViewerWidget* socketWidget;
+    QHostAddress hostAddress;
+    QTcpSocket* tcpSocket = nullptr;
     QLineEdit* portLineEdit = nullptr;
     QComboBox* hostCombo = nullptr;
 };
-#endif // HOSTADDRESS_DIALOG_WIDGET_H
+#endif // FILEVIEWERWIDGET_H

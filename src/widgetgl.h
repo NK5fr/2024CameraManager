@@ -1,7 +1,8 @@
 #ifndef WIDGETGL_H
 #define WIDGETGL_H
 
-#include <QtOpenGL/qgl.h>
+#include <QtOpenGL>
+#include <qopenglwidget.h>
 #include <QThread>
 #include <QtCore/qmath.h>
 #include <QMouseEvent>
@@ -19,7 +20,7 @@ using namespace std;
 
 class SocketViewerWidget;
 
-class WidgetGL : public QGLWidget {
+class WidgetGL : public QOpenGLWidget {
     Q_OBJECT
 public:
     WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>>* points, QString calibrationPath);
@@ -42,7 +43,10 @@ public:
     inline void setShowFloorLines(bool onOff) { this->showFloorLines = onOff; }
     inline void setShowOrtho(bool onOff) { 
         this->showOrtho = onOff;
-        initializeGL();
+        makeCurrent();
+        updateProjection(width(), height(), 60);
+        update();
+        doneCurrent();
     }
     
     inline void setCamDistance(double distance) { this->camDistance = distance; }
@@ -81,6 +85,7 @@ private:
     int camViewIndex;
     int lastMouseX = -1;
     int lastMouseY = -1;
+    int numShowedPreceedingPoints;
     double rotX;
     double rotY;
     double camDistance;

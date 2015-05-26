@@ -4,13 +4,14 @@ using namespace std;
 
 static const double PI = 3.1415926535;
 
-WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points, QString calibrationPath) : QGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
+WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points, QString calibrationPath) : QOpenGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
     coordinatesShown = 0;
     calibFile = new CalibrationFile(calibrationPath);
 
     initializingCameras();
     initializeGL();
     
+    numShowedPreceedingPoints = 15;
     showFovCone = true;
     showPreceedingPoints = false;
     showLines = false;
@@ -29,19 +30,20 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points
     setMouseTracking(true);
     grabKeyboard();
     installEventFilter(this);
-    updateGL();
+    update();
 }
 
-WidgetGL::WidgetGL(SocketViewerWidget* socket) : QGLWidget(socket) {
+WidgetGL::WidgetGL(SocketViewerWidget* socket) : QOpenGLWidget(socket), svw(socket) {
     calibFile = nullptr;
     initializeGL();
+    numShowedPreceedingPoints = 30;
     coordinatesShown = 0;
     showFovCone = true;
     showPreceedingPoints = false;
     showLines = false;
     showCameras = false;
     showCoordinateSystem = true;
-    showFloorLines = true;
+    showFloorLines = false;
     showCameraLegs = false;
     showOrtho = false;
     showFromCamera = false; // NOT USED
@@ -54,7 +56,7 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket) : QGLWidget(socket) {
     setMouseTracking(true);
     grabKeyboard();
     installEventFilter(this);
-    updateGL();
+    update();
 }
 
 WidgetGL::~WidgetGL() {
@@ -158,7 +160,6 @@ void WidgetGL::paintGL() {
         }
     //}
     
-    glPointSize(4.0);
     glColor3f(1, 0, 0);
     glScaled(1, 1, 1);
 
@@ -167,7 +168,7 @@ void WidgetGL::paintGL() {
         glColor3f(0.75f, 0.75f, 0.75f);
         for (int point = 0; point < (pointData[0]).size(); point++){
             glBegin(GL_LINE_STRIP);
-            for (int time = 0; time <= coordinatesShown; time++) {
+            for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time <= coordinatesShown; time++) {
                 glVertex3f(GLfloat(pointData[time][point]->x),
                            GLfloat(pointData[time][point]->z),
                            GLfloat(pointData[time][point]->y));
@@ -177,10 +178,12 @@ void WidgetGL::paintGL() {
     }
 
     glColor3f(1, 0, 0);
+    glPointSize(1.5f);
     // Drawing the preceeding points to the selected timeframe
     if (showPreceedingPoints && pointData.size() > 0) {
-        for (int time = 0; time < coordinatesShown; time++) {
-            for (int point = 0; point < (pointData[time]).size(); point++){
+        for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time < coordinatesShown; time++) {
+            for (int point = 0; point < (pointData[time]).size(); point++) {
+                glColor3f(1 - (((double) coordinatesShown - time) / numShowedPreceedingPoints), 0, 0);
                 glBegin(GL_POINTS);
                 glVertex3f(GLfloat(pointData[time][point]->x),
                            GLfloat(pointData[time][point]->z),
@@ -190,6 +193,8 @@ void WidgetGL::paintGL() {
         }
     }
 
+    glColor3f(1, 0, 0);
+    glPointSize(4.0);
     // Drawing the actual points in the selected timeframe
     if (pointData.size() > 0) {
         for (int point = 0; point < (pointData[coordinatesShown]).size(); point++){
@@ -397,7 +402,7 @@ void WidgetGL::resizeGL(int width, int height) {
 
 void WidgetGL::showView(int viewTime) {
     coordinatesShown = viewTime;
-    updateGL();
+    update();
 }
 
 bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
@@ -442,7 +447,7 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
         const double deltaSpeed = 2;
         if (adjustCamDistance) {
             camDistance = max((double) 10, min(camDistance - (eventWheel->delta() * deltaSpeed), (double) 100000));
-            updateGL();
+            update();
             return true;
         }
     }
@@ -469,7 +474,7 @@ void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
         double maxVerticalAngle = PI / 2; // 90 degrees in radians...
         rotX += (lastMouseX - mouseEvent->screenPos().x()) * speed;
         rotY = max(-maxVerticalAngle, min(rotY + ((lastMouseY - mouseEvent->screenPos().y()) * speed), maxVerticalAngle));
-        updateGL();
+        update();
     }
     lastMouseX = mouseEvent->screenPos().x();
     lastMouseY = mouseEvent->screenPos().y();
@@ -485,19 +490,19 @@ void WidgetGL::showXYPlane() {
     if (showFromCamera) return;
     rotX = PI;
     rotY = PI / 2;
-    updateGL();
+    update();
 }
 
 void WidgetGL::showXZPlane() {
     if (showFromCamera) return;
     rotX = PI;
     rotY = 0;
-    updateGL();
+    update();
 }
 
 void WidgetGL::showYZPlane() {
     if (showFromCamera) return;
     rotX = PI / 2;
     rotY = 0;
-    updateGL();
+    update();
 }

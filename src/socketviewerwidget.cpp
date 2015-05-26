@@ -46,6 +46,7 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
     widgetGL = new WidgetGL(this, &pointData, calibrationPath);
 
     init();
+    disconnectButton->hide();
     show3DView();
 
     setWindowTitle(filename);
@@ -59,15 +60,15 @@ SocketViewerWidget::SocketViewerWidget() {
     fileContain->setWindowTitle(filename);
     fileContain->setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
+    rowNumber = 1;
     hideButtonPanel = true;
     widgetGL = new WidgetGL(this);
-    rowNumber = 1;
+    dialog = new HostAddressDialog(this, this);
+    dialog->show();
+    dialog->setFocus();
     init();
     show3DView();
     setWindowTitle("Live from TrackPoint-Server");
-    HostAddressDialog* dialog = new HostAddressDialog(this, this);
-    dialog->show();
-    dialog->setFocus();
 }
 
 SocketViewerWidget::~SocketViewerWidget() {
@@ -77,6 +78,7 @@ void SocketViewerWidget::appendPoints(vector<Vector3d*> pos) {
     slider->setMaximum(rowNumber - 1);
     spinBox->setMaximum(rowNumber - 1);
     rowNumber++;
+    widgetGL->appendPoints(pos);
     valueChanged(coordinatesShown);
     coordinatesShown += 1;
 }
@@ -183,6 +185,7 @@ void SocketViewerWidget::init() {
     showSocketText->setMinimumHeight(50);
     show3DWidget = new QPushButton("Show 3D View");
     show3DWidget->setMinimumHeight(50);
+    disconnectButton = new QPushButton("Disconnect Client");
 
     camDistanceSlider = new QSlider(Qt::Orientation::Horizontal);
     camDistanceSlider->setMaximum(20000);
@@ -237,6 +240,7 @@ void SocketViewerWidget::init() {
     layout->addWidget(buttonPanel);
     layout->addWidget(line);
     layout->addWidget(showSocketText);
+    layout->addWidget(disconnectButton);
 
     hideButtonPanelFunc();
 
@@ -247,6 +251,7 @@ void SocketViewerWidget::init() {
     QVBoxLayout* textLayout = new QVBoxLayout();
     textLayout->addWidget(fileContain);
     textLayout->addWidget(show3DWidget);
+    //textLayout->addWidget(disconnectButton);
     textWidget.setLayout(textLayout);
 
     connect(showPreceedingPoints, SIGNAL(stateChanged(int)), this, SLOT(showPreceedingPointsStateChanged(int)));
@@ -262,6 +267,7 @@ void SocketViewerWidget::init() {
     connect(showXYPlane, SIGNAL(clicked()), this, SLOT(showXYPlaneFunc()));
     connect(showXZPlane, SIGNAL(clicked()), this, SLOT(showXZPlaneFunc()));
     connect(showYZPlane, SIGNAL(clicked()), this, SLOT(showYZPlaneFunc()));
+    if (dialog != nullptr) connect(disconnectButton, SIGNAL(clicked()), dialog, SLOT(disconnectClient()));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hideButtonPanelFunc()));
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
     connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
@@ -350,12 +356,12 @@ void SocketViewerWidget::hideButtonPanelFunc() {
 
 void SocketViewerWidget::showPreceedingPointsStateChanged(int state) {
     widgetGL->setShowPreceedingPoints(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showLinesStateChanged(int state) {
     widgetGL->setShowLines(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showCamerasStateChanged(int state) {
@@ -363,42 +369,42 @@ void SocketViewerWidget::showCamerasStateChanged(int state) {
     showCameraFOV->setEnabled(widgetGL->isShowCameras());
     showCameraLegs->setEnabled(widgetGL->isShowCameras());
     fovConeSizeSlider->setEnabled(widgetGL->isShowFovCone() && state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showCameraLegsStateChanged(int state) {
     widgetGL->setShowCameraLegs(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showCameraFOVStateChanged(int state) {
     widgetGL->setShowFovCone(state == Qt::Checked);
     fovConeSizeSlider->setEnabled(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showCoordinateAxisStateChanged(int state) {
     widgetGL->setShowCoordinateSystem(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showFloorStateChanged(int state) {
     widgetGL->setShowFloorLines(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::showOrthoStateChanged(int state) {
     widgetGL->setShowOrtho(state == Qt::Checked);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 void SocketViewerWidget::camDistanceValueChanged(int value) {
     widgetGL->setCamDistance((double) value);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void SocketViewerWidget::fovConeSizeValueChanged(int value) {
     widgetGL->setFOVConeSize((double) value);
-    widgetGL->updateGL();
+    widgetGL->update();
 }
 
 void HostAddressDialog::onTextEdited(const QString& text) {
@@ -412,51 +418,13 @@ void HostAddressDialog::onTextEdited(const QString& text) {
     }
 }
 
-SocketClientThread::SocketClientThread(const QString& address, quint16 portNr, SocketViewerWidget* socketWidget) : QThread() {
-    this->hostAddress = new QHostAddress(address);
-    this->portNr = portNr;
-    this->socketWidget = socketWidget;
-    this->tcpSocket = new QTcpSocket(this);
-    connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
-    //connectToServer(*hostAddress, portNr);
-}
-
-void SocketClientThread::socketConnected() {
-    QMessageBox::information(socketWidget, "Camera Manager Client",
-                             "A connection was established.");
-}
-
-void SocketClientThread::connectToServer(const QHostAddress& address, quint16 portNr) {
+void HostAddressDialog::connectToServer() {
     tcpSocket->abort();
-    tcpSocket->connectToHost(address, portNr);
+    tcpSocket->connectToHost(hostCombo->currentText(), portLineEdit->text().toInt());
 }
 
-void SocketClientThread::run() {
-    connectToServer(*hostAddress, portNr);
-
-    QTextStream in(tcpSocket);
-    while (tcpSocket->isOpen()) {
-        if (tcpSocket->bytesAvailable() == 0) continue;
-        QByteArray buffer;
-        while (tcpSocket->bytesAvailable() > 0) {
-            buffer += tcpSocket->readAll();
-        }
-        QString socketLine = QString::fromLocal8Bit(buffer);
-        vector<Vector3d*> pos = socketWidget->readLine(socketLine);
-        if (pos.size() > 0) {
-            //socketWidget->getFileContain()->append(socketLine);
-            socketWidget->getFileContain()->moveCursor(QTextCursor::End);
-            socketWidget->getFileContain()->textCursor().insertText(socketLine);
-            socketWidget->getFileContain()->moveCursor(QTextCursor::End);
-            socketWidget->appendPoints(pos);
-
-        } else {
-            socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
-        }
-        emit socketWidget->update();
-    }    
+void HostAddressDialog::disconnectClient() {
+    tcpSocket->close();
 }
 
 HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) : QDialog(parent), socketWidget(svw) {
@@ -473,7 +441,7 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     //portLineEdit->setEchoMode(QLineEdit::Normal);
     //portLineEdit->setValidator(new QIntValidator(1, 65535, this));
 
-    //hostLabel->setBuddy(hostCombo);
+    hostLabel->setBuddy(hostCombo);
     //portLabel->setBuddy(portLineEdit);
 
     QPushButton* quitButton = new QPushButton("Quit");
@@ -486,10 +454,15 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
     buttonBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+    tcpSocket = new QTcpSocket(this);
+
     //connect(hostCombo, SIGNAL(editTextChanged(QString)), this, SLOT(onTextEdited(QString)));
     //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onTextEdited(QString)));
     connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
+    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
+    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(hostLabel,    0, 0);
@@ -500,35 +473,55 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     setLayout(mainLayout);
 }
 
-void HostAddressDialog::connectToServer() {
-    SocketClientThread* socket = new SocketClientThread(hostCombo->currentText(), portLineEdit->text().toInt(), socketWidget);
-    socket->start();
+void HostAddressDialog::stopClient() {
     close();
 }
 
-void SocketClientThread::readSocketLine() {
-    
+void HostAddressDialog::readSocketLine() {
+    QTextStream in(tcpSocket);
+    //qDebug() << "Reading (bytes): " << tcpSocket->bytesAvailable();
+    QByteArray buffer;
+    while (tcpSocket->bytesAvailable() > 0) {
+        buffer += tcpSocket->readAll();
+    }
+    //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
+
+    QString socketLine = QString::fromLocal8Bit(buffer);
+    vector<Vector3d*> pos = socketWidget->readLine(socketLine);
+    if (pos.size() > 0) {
+        socketLine.remove("\n");
+        socketWidget->getFileContain()->append(socketLine);
+        socketWidget->appendPoints(pos);
+        
+    } else {
+        socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
+    }
 }
 
-void SocketClientThread::displayError(QAbstractSocket::SocketError socketError) {
+void HostAddressDialog::displayError(QAbstractSocket::SocketError socketError) {
     switch (socketError) {
         case QAbstractSocket::RemoteHostClosedError:
-            QMessageBox::information(socketWidget, "Camera Manager Client",
+            QMessageBox::information(this, "Camera Manager Client",
                                       "Remote Host Closed.");
             break;
         case QAbstractSocket::HostNotFoundError:
-            QMessageBox::information(socketWidget, "Camera Manager Client",
+            QMessageBox::information(this, "Camera Manager Client",
                                      "The host was not found. Please check the "
                                      "host name and port settings.");
             break;
         case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(socketWidget, "Camera Manager Client",
+            QMessageBox::information(this, "Camera Manager Client",
                                      "The connection was refused by the peer. "
                                      "Make sure the TrackPoint server is running, "
                                      "and check that the host name and port "
                                      "settings are correct.");
             break;
         default:
-            QMessageBox::information(socketWidget, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
+            QMessageBox::information(this, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
     }
+}
+
+void HostAddressDialog::socketConnected() {
+    close();
+    //coordinatesShown = 0;
 }
