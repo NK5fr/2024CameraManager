@@ -33,6 +33,9 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points
 }
 
 WidgetGL::WidgetGL(SocketViewerWidget* socket) : QGLWidget(socket) {
+    calibFile = nullptr;
+    initializeGL();
+    coordinatesShown = 0;
     showFovCone = true;
     showPreceedingPoints = false;
     showLines = false;

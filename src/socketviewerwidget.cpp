@@ -28,16 +28,17 @@ using namespace std;
 
 /* Constructor */
 SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString calibPath)
-    : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), view(0), linesNumber(0) {
+    : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
     //fileContain = new QTextEdit();
     readTextFromFile();
     extractDataFromText();
-    fileContain.setReadOnly(true);
-    fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
-    fileContain.setText(fullText);
-    fileContain.setWindowTitle(filename);
-    fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    fileContain = new QTextEdit();
+    fileContain->setReadOnly(true);
+    fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
+    fileContain->setText(fullText);
+    fileContain->setWindowTitle(filename);
+    fileContain->setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
     hideButtonPanel = true;
 
@@ -48,15 +49,15 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
     show3DView();
 
     setWindowTitle(filename);
-    startClient();
 }
 
 SocketViewerWidget::SocketViewerWidget() {
-    fileContain.setReadOnly(true);
-    fileContain.setContextMenuPolicy(Qt::CustomContextMenu);
-    fileContain.setText(fullText);
-    fileContain.setWindowTitle(filename);
-    fileContain.setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    fileContain = new QTextEdit();
+    fileContain->setReadOnly(true);
+    fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
+    fileContain->setText(fullText);
+    fileContain->setWindowTitle(filename);
+    fileContain->setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
     hideButtonPanel = true;
     widgetGL = new WidgetGL(this);
@@ -64,16 +65,21 @@ SocketViewerWidget::SocketViewerWidget() {
     init();
     show3DView();
     setWindowTitle("Live from TrackPoint-Server");
-    startClient();
+    HostAddressDialog* dialog = new HostAddressDialog(this, this);
+    dialog->show();
+    dialog->setFocus();
+    //startClient();
 }
 
 SocketViewerWidget::~SocketViewerWidget() {
-    tcpSocket->close();
-    delete tcpSocket;
-    delete networkSession;
-    delete portLineEdit;
-    delete hostCombo;
-    delete socketDialog;
+}
+
+void SocketViewerWidget::appendPoints(vector<Vector3d*> pos) {
+    slider->setMaximum(rowNumber - 1);
+    spinBox->setMaximum(rowNumber - 1);
+    rowNumber++;
+    valueChanged(coordinatesShown);
+    coordinatesShown += 1;
 }
 
 void SocketViewerWidget::readTextFromFile() {
@@ -240,7 +246,7 @@ void SocketViewerWidget::init() {
 
 
     QVBoxLayout* textLayout = new QVBoxLayout();
-    textLayout->addWidget(&fileContain);
+    textLayout->addWidget(fileContain);
     textLayout->addWidget(show3DWidget);
     textWidget.setLayout(textLayout);
 
@@ -396,14 +402,23 @@ void SocketViewerWidget::fovConeSizeValueChanged(int value) {
     widgetGL->updateGL();
 }
 
-void SocketViewerWidget::connectToServer() {
+void HostAddressDialog::onTextEdited(const QString& text) {
+    QObject* s = sender();
+    if (s == hostCombo) {
+        QComboBox* comboBox = (QComboBox*) s;
+        comboBox->setItemText(comboBox->currentIndex(), text);
+    } else if (s == portLineEdit) {
+        QLineEdit* lineEdit = (QLineEdit*) s;
+        lineEdit->setText(text);
+    }
+}
+
+void HostAddressDialog::connectToServer() {
     tcpSocket->abort();
     tcpSocket->connectToHost(hostCombo->currentText(), portLineEdit->text().toInt());
 }
 
-void SocketViewerWidget::startClient() {
-    socketDialog = new QDialog(this);
-
+HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) : QDialog(parent), socketWidget(svw) {
     QLabel* hostLabel = new QLabel("Server name:");
     QLabel* portLabel = new QLabel("Server port:");
     hostCombo = new QComboBox;
@@ -414,10 +429,11 @@ void SocketViewerWidget::startClient() {
     //QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
 
     portLineEdit = new QLineEdit("1250");
+    //portLineEdit->setEchoMode(QLineEdit::Normal);
     //portLineEdit->setValidator(new QIntValidator(1, 65535, this));
 
     hostLabel->setBuddy(hostCombo);
-    portLabel->setBuddy(portLineEdit);
+    //portLabel->setBuddy(portLineEdit);
 
     QPushButton* quitButton = new QPushButton("Quit");
     quitButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -431,10 +447,10 @@ void SocketViewerWidget::startClient() {
 
     tcpSocket = new QTcpSocket(this);
 
-    //connect(hostCombo, SIGNAL(editTextChanged(QString)), this, SLOT(enableGetFortuneButton()));
-    //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(enableGetFortuneButton()));
+    //connect(hostCombo, SIGNAL(editTextChanged(QString)), this, SLOT(onTextEdited(QString)));
+    //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onTextEdited(QString)));
     connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
-    connect(quitButton, SIGNAL(clicked()), socketDialog, SLOT(close()));
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
@@ -445,39 +461,14 @@ void SocketViewerWidget::startClient() {
     mainLayout->addWidget(portLabel,    1, 0);
     mainLayout->addWidget(portLineEdit, 1, 1);
     mainLayout->addWidget(buttonBox,    2, 0, 1, 2);
-    socketDialog->setLayout(mainLayout);
-
-    /*
-    QNetworkConfigurationManager manager;
-    if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
-        // Get saved network configuration
-        QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-        settings.beginGroup(QLatin1String("QtNetwork"));
-        const QString id = settings.value(QLatin1String("DefaultNetworkConfiguration")).toString();
-        settings.endGroup();
-
-        // If the saved network configuration is not currently discovered use the system default
-        QNetworkConfiguration config = manager.configurationFromIdentifier(id);
-        if ((config.state() & QNetworkConfiguration::Discovered) !=
-            QNetworkConfiguration::Discovered) {
-            config = manager.defaultConfiguration();
-        }
-
-        networkSession = new QNetworkSession(config, this);
-        connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
-
-        //getFortuneButton->setEnabled(false);
-        //statusLabel->setText("Opening network session.");
-        networkSession->open();
-    }*/
-    socketDialog->show();
+    setLayout(mainLayout);
 }
 
-void SocketViewerWidget::stopClient() {
-
+void HostAddressDialog::stopClient() {
+    close();
 }
 
-void SocketViewerWidget::readSocketLine() {
+void HostAddressDialog::readSocketLine() {
     QTextStream in(tcpSocket);
     //qDebug() << "Reading (bytes): " << tcpSocket->bytesAvailable();
     QByteArray buffer;
@@ -487,22 +478,20 @@ void SocketViewerWidget::readSocketLine() {
     //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
 
     QString socketLine = QString::fromLocal8Bit(buffer);
-    fileContain.append(socketLine);
-    vector<Vector3d*> pos = readLine(socketLine);
+    vector<Vector3d*> pos = socketWidget->readLine(socketLine);
     if (pos.size() > 0) {
-      widgetGL->appendPoints(pos);
-      slider->setMaximum(rowNumber - 1);
-      spinBox->setMaximum(rowNumber - 1);
-      rowNumber++;
-      valueChanged(coordinatesShown);
-      coordinatesShown += 1;
+        socketWidget->getFileContain()->append(socketLine);
+        socketWidget->appendPoints(pos);
+        
+    } else {
+        socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
     }
 }
 
-void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) {
+void HostAddressDialog::displayError(QAbstractSocket::SocketError socketError) {
     switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-          QMessageBox::information(this, "Camera Manager Client",
+        case QAbstractSocket::RemoteHostClosedError:
+            QMessageBox::information(this, "Camera Manager Client",
                                       "Remote Host Closed.");
             break;
         case QAbstractSocket::HostNotFoundError:
@@ -520,29 +509,9 @@ void SocketViewerWidget::displayError(QAbstractSocket::SocketError socketError) 
         default:
             QMessageBox::information(this, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
     }
-    //getFortuneButton->setEnabled(true);
 }
 
-void SocketViewerWidget::socketConnected() {
-  socketDialog->close();
-  coordinatesShown = 0;
-}
-
-void SocketViewerWidget::sessionOpened() {
-    /*
-    // Save the used configuration
-    QNetworkConfiguration config = networkSession->configuration();
-    QString id;
-    if (config.type() == QNetworkConfiguration::UserChoice) id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-    else id = config.identifier();
-
-    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-    settings.beginGroup(QLatin1String("QtNetwork"));
-    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-    settings.endGroup();
-
-    //statusLabel->setText("This examples requires that you run the Fortune Server example as well.");
-
-    //enableGetFortuneButton();
-    */
+void HostAddressDialog::socketConnected() {
+    close();
+    //coordinatesShown = 0;
 }

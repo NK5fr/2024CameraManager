@@ -1,11 +1,14 @@
-#ifndef FILEVIEWERWIDGET_H
-#define FILEVIEWERWIDGET_H
+#ifndef SOCKETVIEWERWIDGET_H
+#define SOCKETVIEWERWIDGET_H
 
 #include <QMdiSubWindow>
 #include <QTextEdit>
+#include <QLineEdit>
+#include <QComboBox>
 #include <QSlider>
 #include <QSpinBox>
 #include <QCheckBox>
+#include <QDialog>
 #include <qpushbutton.h>
 #include <QScrollArea>
 #include <QLabel>
@@ -37,7 +40,13 @@ public:
     ~SocketViewerWidget();
 
     void displayToolTip(CoordinatesLabel *label);
+    void appendPoints(vector<Vector3d*>);
     QSlider *getTimeSlider();
+    vector<Vector3d*> readLine(QString line);
+
+    inline QTextEdit* getFileContain() { return this->fileContain; }
+    inline WidgetGL* getWidgetGL() { return this->widgetGL; }
+
 
 private slots:
     void valueChanged(int);
@@ -59,29 +68,21 @@ private slots:
     void camDistanceValueChanged(int);
     void fovConeSizeValueChanged(int);
 
-    void connectToServer();
-    void readSocketLine();
-    void displayError(QAbstractSocket::SocketError);
-    void sessionOpened();
-    void socketConnected();
-
-
 private:
     void readTextFromFile();
     void extractDataFromText();
     void showTextView();
-    vector<Vector3d*> readLine(QString line);
     void show3DView();
 
     void init();
 
-    int view;
+    //int view;
     QString filename;
     QString fullPath;
     QString tmpPath;
     QString calibrationPath;
     QString fullText;
-    QTextEdit fileContain;
+    QTextEdit* fileContain;
 
     // Sliders
     QSlider* camDistanceSlider;
@@ -128,16 +129,6 @@ private:
     bool clientRunning;
     bool stopped;
 
-    QHostAddress hostAddress;
-    QTcpSocket* tcpSocket = nullptr;
-    QNetworkSession* networkSession = nullptr;
-    QLineEdit* portLineEdit = nullptr;
-    QComboBox* hostCombo = nullptr;
-    QDialog* socketDialog = nullptr;
-
-    void startClient();
-    void stopClient();
-
     QSlider* slider;
     QSpinBox* spinBox;
     WidgetGL* widgetGL;
@@ -147,6 +138,7 @@ private:
 };
 
 class CoordinatesLabel : public QLabel {
+    Q_OBJECT
 public:
     CoordinatesLabel(SocketViewerWidget* wi, QString string) : QLabel(string){
         socket = wi;
@@ -158,5 +150,27 @@ protected:
     }
 private:
     SocketViewerWidget* socket;
+};
+
+class HostAddressDialog : public QDialog {
+    Q_OBJECT
+public:
+    HostAddressDialog(QWidget* parent, SocketViewerWidget*);
+
+private slots :
+    void connectToServer();
+    void readSocketLine();
+    void displayError(QAbstractSocket::SocketError);
+    //void sessionOpened();
+    void socketConnected();
+    void onTextEdited(const QString&);
+    void stopClient();
+
+private:
+    SocketViewerWidget* socketWidget;
+    QHostAddress hostAddress;
+    QTcpSocket* tcpSocket = nullptr;
+    QLineEdit* portLineEdit = nullptr;
+    QComboBox* hostCombo = nullptr;
 };
 #endif // FILEVIEWERWIDGET_H

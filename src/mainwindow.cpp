@@ -117,9 +117,9 @@ MainWindow::~MainWindow() {
         delete cameraManagers[i];
         cameraManagers[i] = nullptr;
     }
-    delete bar;
-    bar = nullptr;
-    delete ui;
+    //delete bar;
+    //bar = nullptr;
+    //delete ui;
 }
 
 /* Adding or removing the MdiSubWindow furnished in parameter according to the add parameter */

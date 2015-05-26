@@ -198,3 +198,6 @@ FakesAssemblies/
 CameraManager/GeneratedFiles/
 CameraManager/x64/
 
+CameraManager/props/defaultCameraSettings.ini
+CameraManager/props/defaultTrackPointSettings.ini
+CameraManager/props/quickfile_camerasettings.ini
