@@ -68,7 +68,6 @@ SocketViewerWidget::SocketViewerWidget() {
     HostAddressDialog* dialog = new HostAddressDialog(this, this);
     dialog->show();
     dialog->setFocus();
-    //startClient();
 }
 
 SocketViewerWidget::~SocketViewerWidget() {
@@ -413,9 +412,51 @@ void HostAddressDialog::onTextEdited(const QString& text) {
     }
 }
 
-void HostAddressDialog::connectToServer() {
+SocketClientThread::SocketClientThread(const QString& address, quint16 portNr, SocketViewerWidget* socketWidget) : QThread() {
+    this->hostAddress = new QHostAddress(address);
+    this->portNr = portNr;
+    this->socketWidget = socketWidget;
+    this->tcpSocket = new QTcpSocket(this);
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
+    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
+    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+    //connectToServer(*hostAddress, portNr);
+}
+
+void SocketClientThread::socketConnected() {
+    QMessageBox::information(socketWidget, "Camera Manager Client",
+                             "A connection was established.");
+}
+
+void SocketClientThread::connectToServer(const QHostAddress& address, quint16 portNr) {
     tcpSocket->abort();
-    tcpSocket->connectToHost(hostCombo->currentText(), portLineEdit->text().toInt());
+    tcpSocket->connectToHost(address, portNr);
+}
+
+void SocketClientThread::run() {
+    connectToServer(*hostAddress, portNr);
+
+    QTextStream in(tcpSocket);
+    while (tcpSocket->isOpen()) {
+        if (tcpSocket->bytesAvailable() == 0) continue;
+        QByteArray buffer;
+        while (tcpSocket->bytesAvailable() > 0) {
+            buffer += tcpSocket->readAll();
+        }
+        QString socketLine = QString::fromLocal8Bit(buffer);
+        vector<Vector3d*> pos = socketWidget->readLine(socketLine);
+        if (pos.size() > 0) {
+            //socketWidget->getFileContain()->append(socketLine);
+            socketWidget->getFileContain()->moveCursor(QTextCursor::End);
+            socketWidget->getFileContain()->textCursor().insertText(socketLine);
+            socketWidget->getFileContain()->moveCursor(QTextCursor::End);
+            socketWidget->appendPoints(pos);
+
+        } else {
+            socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
+        }
+        emit socketWidget->update();
+    }    
 }
 
 HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) : QDialog(parent), socketWidget(svw) {
@@ -432,7 +473,7 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     //portLineEdit->setEchoMode(QLineEdit::Normal);
     //portLineEdit->setValidator(new QIntValidator(1, 65535, this));
 
-    hostLabel->setBuddy(hostCombo);
+    //hostLabel->setBuddy(hostCombo);
     //portLabel->setBuddy(portLineEdit);
 
     QPushButton* quitButton = new QPushButton("Quit");
@@ -445,15 +486,10 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
     buttonBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    tcpSocket = new QTcpSocket(this);
-
     //connect(hostCombo, SIGNAL(editTextChanged(QString)), this, SLOT(onTextEdited(QString)));
     //connect(portLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onTextEdited(QString)));
     connect(startButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(hostLabel,    0, 0);
@@ -464,54 +500,35 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     setLayout(mainLayout);
 }
 
-void HostAddressDialog::stopClient() {
+void HostAddressDialog::connectToServer() {
+    SocketClientThread* socket = new SocketClientThread(hostCombo->currentText(), portLineEdit->text().toInt(), socketWidget);
+    socket->start();
     close();
 }
 
-void HostAddressDialog::readSocketLine() {
-    QTextStream in(tcpSocket);
-    //qDebug() << "Reading (bytes): " << tcpSocket->bytesAvailable();
-    QByteArray buffer;
-    while (tcpSocket->bytesAvailable() > 0) {
-        buffer += tcpSocket->readAll();
-    }
-    //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
-
-    QString socketLine = QString::fromLocal8Bit(buffer);
-    vector<Vector3d*> pos = socketWidget->readLine(socketLine);
-    if (pos.size() > 0) {
-        socketWidget->getFileContain()->append(socketLine);
-        socketWidget->appendPoints(pos);
-        
-    } else {
-        socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
-    }
+void SocketClientThread::readSocketLine() {
+    
 }
 
-void HostAddressDialog::displayError(QAbstractSocket::SocketError socketError) {
+void SocketClientThread::displayError(QAbstractSocket::SocketError socketError) {
     switch (socketError) {
         case QAbstractSocket::RemoteHostClosedError:
-            QMessageBox::information(this, "Camera Manager Client",
+            QMessageBox::information(socketWidget, "Camera Manager Client",
                                       "Remote Host Closed.");
             break;
         case QAbstractSocket::HostNotFoundError:
-            QMessageBox::information(this, "Camera Manager Client",
+            QMessageBox::information(socketWidget, "Camera Manager Client",
                                      "The host was not found. Please check the "
                                      "host name and port settings.");
             break;
         case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(this, "Camera Manager Client",
+            QMessageBox::information(socketWidget, "Camera Manager Client",
                                      "The connection was refused by the peer. "
                                      "Make sure the TrackPoint server is running, "
                                      "and check that the host name and port "
                                      "settings are correct.");
             break;
         default:
-            QMessageBox::information(this, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
+            QMessageBox::information(socketWidget, "Camera Manager Client", QString("The following error occurred: %1.").arg(tcpSocket->errorString()));
     }
-}
-
-void HostAddressDialog::socketConnected() {
-    close();
-    //coordinatesShown = 0;
 }

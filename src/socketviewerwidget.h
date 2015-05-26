@@ -152,25 +152,38 @@ private:
     SocketViewerWidget* socket;
 };
 
+class SocketClientThread : public QThread {
+    Q_OBJECT
+public:
+    SocketClientThread(const QString& address, quint16 portNr, SocketViewerWidget* socketWidget);
+    void run() Q_DECL_OVERRIDE;
+
+private slots :
+    void readSocketLine();
+    void displayError(QAbstractSocket::SocketError);
+    void socketConnected();
+
+private:
+    SocketViewerWidget* socketWidget = nullptr;
+    QTcpSocket* tcpSocket = nullptr;
+    QHostAddress* hostAddress = nullptr;
+    quint16 portNr;
+
+    void connectToServer(const QHostAddress& address, quint16 portNr);
+};
+
 class HostAddressDialog : public QDialog {
     Q_OBJECT
 public:
     HostAddressDialog(QWidget* parent, SocketViewerWidget*);
 
-private slots :
-    void connectToServer();
-    void readSocketLine();
-    void displayError(QAbstractSocket::SocketError);
-    //void sessionOpened();
-    void socketConnected();
+private slots:
     void onTextEdited(const QString&);
-    void stopClient();
+    void connectToServer();
 
 private:
-    SocketViewerWidget* socketWidget;
-    QHostAddress hostAddress;
-    QTcpSocket* tcpSocket = nullptr;
+    SocketViewerWidget* socketWidget = nullptr;
     QLineEdit* portLineEdit = nullptr;
     QComboBox* hostCombo = nullptr;
 };
-#endif // FILEVIEWERWIDGET_H
+#endif // HOSTADDRESS_DIALOG_WIDGET_H
