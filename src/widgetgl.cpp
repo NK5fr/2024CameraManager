@@ -71,6 +71,8 @@ void WidgetGL::initializeGL() {
 void WidgetGL::updateProjection(int width, int height, double fov) {
     if (height == 0) height = 1;
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glViewport((WidgetGL::width() - width), (WidgetGL::height() - height), (WidgetGL::width() - width) + width, (WidgetGL::height() - height) + height);
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
@@ -169,6 +171,7 @@ void WidgetGL::paintGL() {
         for (int point = 0; point < (pointData[0]).size(); point++){
             glBegin(GL_LINE_STRIP);
             for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time <= coordinatesShown; time++) {
+                glColor4f(1, 1, 1, 1 - (((double) coordinatesShown - time) / numShowedPreceedingPoints));
                 glVertex3f(GLfloat(pointData[time][point]->x),
                            GLfloat(pointData[time][point]->z),
                            GLfloat(pointData[time][point]->y));
@@ -183,7 +186,7 @@ void WidgetGL::paintGL() {
     if (showPreceedingPoints && pointData.size() > 0) {
         for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time < coordinatesShown; time++) {
             for (int point = 0; point < (pointData[time]).size(); point++) {
-                glColor3f(1 - (((double) coordinatesShown - time) / numShowedPreceedingPoints), 0, 0);
+                glColor4f(1, 0, 0, 1 - (((double) coordinatesShown - time) / numShowedPreceedingPoints));
                 glBegin(GL_POINTS);
                 glVertex3f(GLfloat(pointData[time][point]->x),
                            GLfloat(pointData[time][point]->z),
@@ -366,7 +369,7 @@ void WidgetGL::paintGL() {
     const float color = 0.50f;
     const double maxLength = 10000;
     const double lengthDivs = 100;
-    glColor3f(color, color, color);
+    glColor4f(1, 1, 1, color);
     const double rotYThreshold = 1 / (180 / PI); // Threshold to determine if camera is edge on the floor, obstructing the coordinate axis
     if (showFloorLines && ((rotY > rotYThreshold || rotY < -rotYThreshold) || !showCoordinateSystem)) {
         for (double x = -(maxLength / 2); x < (maxLength / 2); x += lengthDivs) {

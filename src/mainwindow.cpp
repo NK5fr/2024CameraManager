@@ -393,6 +393,8 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     QString selectedProjectPath = QString(projectsPath + "/" + folderName);
     ui->centralwidget->closeAllSubWindows();
     //TODO change this condition to something that allows more than one name.
+
+    if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) return;
     if (fileName.contains("options")){
         /* If the item is Config File */
         ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
@@ -446,7 +448,7 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
 
         cout << "Foldername: " + folderName.toStdString() << endl; // grethe 19.01.2015
 
-        if (folderName.toLower().contains("trackpoint")) {
+        if (true) {
             /* Check if the project has already been loaded */
             for (int i = 0; i < ui->projectTree->invisibleRootItem()->childCount(); i++){
                 if (ui->projectTree->invisibleRootItem()->child(i)->text(0) == folderName)
@@ -462,13 +464,14 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
             //ui->projectTree->resizeColumnToContents(0);
             /* Expand trackpoint folder, his child named application, and his grandchild named input */
             ui->projectTree->invisibleRootItem()->child(0)->setExpanded(true);  // feiler her på setExpanded - GS 2015-01-19
+            /*
             if (ui->projectTree->invisibleRootItem()->child(0)->child(0) != NULL && ui->projectTree->invisibleRootItem()->child(0)->child(0)->text(0) == "application"){
                 ui->projectTree->invisibleRootItem()->child(0)->child(0)->setExpanded(true);
                 if (ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0) != NULL &&
                     ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->text(0) == "input"){
                     ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->setExpanded(true);
                 }
-            }
+            }*/
         } else {
             QMessageBox::information(this, "Error", "Foldername does not contain the word \"trackpoint\"!");
         }
@@ -512,14 +515,36 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, 
     QTreeWidgetItem *rootItem = new QTreeWidgetItem();
     rootItem->setText(0, tr(name.toUtf8().constData()));
     rootItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
+    rootItem->setData(0, Qt::UserRole, fullPath);
     parent->addChild(rootItem);
 
     for (int i = 0; i < list.size(); i++){
         if (list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {
-            if (list.at(i).isDir())
-                createTreeFolder(rootItem, fullPath, list.at(i).fileName());
-            else
-                if (isProjectSupported(list.at(i).absoluteFilePath())) createTreeItem(rootItem, list.at(i).fileName(), list.at(i).absoluteFilePath());
+            if (list.at(i).isDir()) {
+                QTreeWidgetItem* folderItem = new QTreeWidgetItem();
+                folderItem->setText(0, list.at(i).fileName().toUtf8().constData());
+                folderItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
+                folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
+                rootItem->addChild(folderItem);
+                QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
+                for (int j = 0; j < folderlist.size(); j++) {
+                    if (folderlist.at(j).fileName() != tr(".") && folderlist.at(j).fileName() != tr("..")) {
+                        if (folderlist.at(j).isDir()) {
+                            QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
+                            subFolderItem->setText(0, folderlist.at(j).fileName().toUtf8().constData());
+                            subFolderItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
+                            subFolderItem->setData(0, Qt::UserRole, folderlist.at(j).absoluteFilePath().toUtf8().constData());
+                            folderItem->addChild(subFolderItem);
+                        } else if (folderlist.at(j).isFile()) {
+                            createTreeItem(folderItem, folderlist.at(j).fileName(), folderlist.at(j).absoluteFilePath());
+                        }
+                    }
+                }
+            } else if (list.at(i).isFile()) {
+                if (isProjectSupported(list.at(i).absoluteFilePath())) {
+                    createTreeItem(rootItem, list.at(i).fileName(), list.at(i).absoluteFilePath());
+                }
+            }
         }
     }
     rootItem->sortChildren(0, Qt::AscendingOrder);
@@ -1007,10 +1032,44 @@ void MainWindow::setupTrackPointTab() {
 }
 
 void MainWindow::expandFilePath_ProjectTree(QTreeWidgetItem* item) {
+
+    QString fullPath = item->data(0, Qt::UserRole).value<QString>();
+
+    QFileInfoList list = QDir(fullPath).entryInfoList();
+    for (int i = 0; i < list.size(); i++){
+        if (list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {
+            if (list.at(i).isDir()) {
+                QTreeWidgetItem* folderItem = nullptr;
+                for (int j = 0; j < item->childCount(); j++) {
+                    if (item->child(j)->data(0, Qt::UserRole).value<QString>() == list.at(i).absoluteFilePath()) {
+                        folderItem = item->child(j);
+                        break;
+                    }
+                }
+                if (folderItem == nullptr) break;
+                if (folderItem->childCount() > 0) break;
+                
+                QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
+                for (int j = 0; j < folderlist.size(); j++) {
+                    if (folderlist.at(j).fileName() != tr(".") && folderlist.at(j).fileName() != tr("..")) {
+                        if (folderlist.at(j).isDir()) {
+                            QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
+                            subFolderItem->setText(0, folderlist.at(j).fileName().toUtf8().constData());
+                            subFolderItem->setIcon(0, icons[0]);
+                            subFolderItem->setData(0, Qt::UserRole, folderlist.at(j).absoluteFilePath().toUtf8().constData());
+                            folderItem->addChild(subFolderItem);
+                        } else if (folderlist.at(j).isFile()) {
+                            createTreeItem(folderItem, folderlist.at(j).fileName(), folderlist.at(j).absoluteFilePath());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     ui->projectTree->resizeColumnToContents(0);
     ui->projectTree->resizeColumnToContents(1);
     ui->projectTree->resizeColumnToContents(2);
-    // Load the rest of the files...
 }
 
 void MainWindow::collapsedFilePath_ProjectTree(QTreeWidgetItem* item) {
