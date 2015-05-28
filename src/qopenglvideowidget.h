@@ -4,7 +4,7 @@
 #ifndef QOPENGLVIDEOWIDGET_H
 #define QOPENGLVIDEOWIDGET_H
 
-#include <qwidget.h>
+#include <QtWidgets/qwidget.h>
 #include <QtOpenGL/qgl.h>
 #include <QtCore/qmath.h>
 #include <QThread>

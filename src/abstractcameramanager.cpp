@@ -2,9 +2,9 @@
 
 #include <QtCore>
 #include <QDebug>
-#include <QCheckBox>
-#include <QSlider>
-#include <qpushbutton.h>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/qpushbutton.h>
 #include <algorithm>
 #include <iostream>
 

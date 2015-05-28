@@ -16,7 +16,7 @@ ImageViewerWidget::~ImageViewerWidget() {
 void ImageViewerWidget::setImageFromFile(const QString& filepath) {
     QFile file(filepath);
     if (!file.exists()) {
-        qDebug("File does not exist: %s\n", filepath);
+        qDebug() << "File does not exist: " << filepath;
         return;
     }
 

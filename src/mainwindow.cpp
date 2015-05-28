@@ -1,19 +1,19 @@
-#include <QMenuBar>
-#include <QMenu>
-#include <QWidgetItem>
+#include <QtWidgets/qmenubar.h>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QWidgetItem>
 #include <QStandardItem>
-#include <QAction>
-#include <QMdiArea>
-#include <QMdiSubWindow>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMdiArea>
+#include <QtWidgets/QMdiSubWindow>
 #include <QPoint>
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 #include <QIcon>
 #include <QDebug>
 #include <QDir>
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 #include <QFileInfo>
 #include <QProcess>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include "qprocess.h" //gs
 #include "qdebug.h"   //gs
 
@@ -541,9 +541,10 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, 
                     }
                 }
             } else if (list.at(i).isFile()) {
+                /*
                 if (isProjectSupported(list.at(i).absoluteFilePath())) {
                     createTreeItem(rootItem, list.at(i).fileName(), list.at(i).absoluteFilePath());
-                }
+                }*/
             }
         }
     }
@@ -667,7 +668,8 @@ void MainWindow::loadDefaultCameraProperties_clicked() {
 }
 
 void MainWindow::loadDefaultTrackPointSettings() {
-    loadTrackPointSettingsFromFile(QString(QDir::currentPath() + "/props/defaultTrackPointSettings.ini"));
+    QString path = QDir::currentPath() + "/props/defaultTrackPointSettings.ini";
+    loadTrackPointSettingsFromFile(path);
 }
 
 void MainWindow::on_TrackPointChecked(int state) {

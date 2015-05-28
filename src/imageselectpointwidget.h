@@ -3,12 +3,12 @@
 #ifndef IMAGESELECTPOINTWIDGET_H
 #define IMAGESELECTPOINTWIDGET_H
 
-#include <qwidget.h>
-#include <qgridlayout.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qformlayout.h>
-#include <qtextedit.h>
+#include <QtWidgets/qwidget.h>
+#include <QtWidgets/qgridlayout.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qlineedit.h>
+#include <QtWidgets/qformlayout.h>
+#include <QtWidgets/qtextedit.h>
 
 #include "imagewidget.h"
 

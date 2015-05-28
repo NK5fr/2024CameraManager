@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <iostream>
-#include <FlyCapture2.h>
+#include <include/FlyCapture2.h>
 #include "qvideowidget.h"
 #include "mainwindow.h"
 

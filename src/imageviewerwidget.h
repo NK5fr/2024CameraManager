@@ -1,21 +1,21 @@
 #ifndef IMAGEVIEWERWIDGET_H
 #define IMAGEVIEWERWIDGET_H
 
-#include <QMdiSubWindow>
+#include <QtWidgets/QMdiSubWindow>
 #include <QString>
-#include <QLabel>
+#include <QtWidgets/QLabel>
 #include <QSize>
 #include <QPoint>
-#include <qgridlayout.h>
+#include <QtWidgets/qgridlayout.h>
 #include <qfile.h>
 #include <QImage>
-#include <QToolTip>
+#include <QtWidgets/QToolTip>
 #include <QFile>
 #include <QStringList>
 #include <QWheelEvent>
 #include <qdebug.h>
 #include <QtCore/qmath.h>
-#include <qpushbutton.h>
+#include <QtWidgets/qpushbutton.h>
 
 #include "imagewidget.h"
 #include "imageselectpointwidget.h"

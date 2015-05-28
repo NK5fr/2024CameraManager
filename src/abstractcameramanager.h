@@ -7,11 +7,12 @@
 
 #include <string>
 #include <vector>
+#include <qobject.h>
 #include <QStandardItemModel>
 #include <QStandardItem>
-#include <QMdiArea>
-#include <QMdiSubWindow>
-#include <QTreeWidget>
+#include <QtWidgets/QMdiArea>
+#include <QtWidgets/QMdiSubWindow>
+#include <QtWidgets/QTreeWidget>
 #include <QThread>
 #include <QDebug>
 #include "mainwindow.h"

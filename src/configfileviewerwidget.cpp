@@ -1,20 +1,20 @@
 #include "configfileviewerwidget.h"
-#include <QTextEdit>
-#include <QMenu>
-#include <QAction>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QLabel>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLabel>
 #include <QTextStream>
 #include <QFile>
 #include <QString>
-#include <QLineEdit>
-#include <QSpinBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QSpinBox>
 
 #include <string.h>
 #include "configfilereader.h"
 
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 
 
 #include <iostream>
