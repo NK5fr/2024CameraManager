@@ -1,18 +1,18 @@
 #ifndef CONFIGFILEVIEWERWIDGET_H
 #define CONFIGFILEVIEWERWIDGET_H
 
-#include <QMdiSubWindow>
-#include <QTextEdit>
-#include <QFormLayout>
-#include <QGroupBox>
-#include <QScrollArea>
+#include <QtWidgets/QMdiSubWindow>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QScrollArea>
 
-#include <QComboBox>
-#include <QSpinBox>
-#include <QLabel>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QLabel>
 
-#include <QLineEdit>
-#include <QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 
 
 //In the wizard, it's a field that allows to change paths via a file chooser dialog.

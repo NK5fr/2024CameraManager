@@ -2,8 +2,8 @@
 #define IMAGELABEL_H
 
 #include <QtCore>
-#include <QWidget>
-#include <QLabel>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
 
 class ImageLabel : public QWidget {
     Q_OBJECT
