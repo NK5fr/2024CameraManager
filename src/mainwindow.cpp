@@ -394,7 +394,10 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     ui->centralwidget->closeAllSubWindows();
     //TODO change this condition to something that allows more than one name.
 
-    if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) return;
+    if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) {
+        item->setExpanded(!item->isExpanded());
+        return;
+    }
     if (fileName.contains("options")){
         /* If the item is Config File */
         ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
@@ -417,8 +420,6 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         ImageViewerWidget* ivw = new ImageViewerWidget(selectedProjectPath, fileName);
         ui->centralwidget->addSubWindow(ivw);
         ivw->showMaximized();
-        //ivw->scaleImageToWindow(ui->centralwidget->size());
-        //ivw->showMaximized();
     } else {
         // Open as text-file... (Must create: TextFileViewerWidget-class)
         ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
@@ -1032,9 +1033,7 @@ void MainWindow::setupTrackPointTab() {
 }
 
 void MainWindow::expandFilePath_ProjectTree(QTreeWidgetItem* item) {
-
     QString fullPath = item->data(0, Qt::UserRole).value<QString>();
-
     QFileInfoList list = QDir(fullPath).entryInfoList();
     for (int i = 0; i < list.size(); i++){
         if (list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {

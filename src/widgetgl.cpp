@@ -9,7 +9,7 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points
     calibFile = new CalibrationFile(calibrationPath);
 
     initializingCameras();
-    initializeGL();
+    //initializeGL();
     
     numShowedPreceedingPoints = 15;
     showFovCone = true;
@@ -30,12 +30,12 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points
     setMouseTracking(true);
     grabKeyboard();
     installEventFilter(this);
-    update();
+    //update();
 }
 
 WidgetGL::WidgetGL(SocketViewerWidget* socket) : QOpenGLWidget(socket), svw(socket) {
     calibFile = nullptr;
-    initializeGL();
+    //initializeGL();
     numShowedPreceedingPoints = 30;
     coordinatesShown = 0;
     showFovCone = true;
@@ -56,7 +56,7 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket) : QOpenGLWidget(socket), svw(sock
     setMouseTracking(true);
     grabKeyboard();
     installEventFilter(this);
-    update();
+    //update();
 }
 
 WidgetGL::~WidgetGL() {
@@ -181,7 +181,7 @@ void WidgetGL::paintGL() {
     }
 
     glColor3f(1, 0, 0);
-    glPointSize(1.5f);
+    glPointSize(2.5f);
     // Drawing the preceeding points to the selected timeframe
     if (showPreceedingPoints && pointData.size() > 0) {
         for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time < coordinatesShown; time++) {
@@ -197,7 +197,7 @@ void WidgetGL::paintGL() {
     }
 
     glColor3f(1, 0, 0);
-    glPointSize(4.0);
+    glPointSize(5.0);
     // Drawing the actual points in the selected timeframe
     if (pointData.size() > 0) {
         for (int point = 0; point < (pointData[coordinatesShown]).size(); point++){

@@ -487,14 +487,17 @@ void HostAddressDialog::readSocketLine() {
     //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
 
     QString socketLine = QString::fromLocal8Bit(buffer);
-    vector<Vector3d*> pos = socketWidget->readLine(socketLine);
-    if (pos.size() > 0) {
-        socketLine.remove("\n");
-        socketWidget->getFileContain()->append(socketLine);
-        socketWidget->appendPoints(pos);
-        
-    } else {
-        socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
+    QStringList list = socketLine.split("\n", QString::SkipEmptyParts);
+    for (int i = 0; i < list.size(); i++) {
+        vector<Vector3d*> pos = socketWidget->readLine(list[i]);
+        if (pos.size() > 0) {
+            //list[i].remove("\n");
+            socketWidget->getFileContain()->append(list[i]);
+            socketWidget->appendPoints(pos);
+
+        } else {
+            socketWidget->getFileContain()->append("ERROR: \"" + list[i] + "\"\n");
+        }
     }
 }
 
