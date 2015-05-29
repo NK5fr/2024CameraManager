@@ -77,8 +77,15 @@ SOURCES += \
     src/ui_mainwindow.cpp \
     src/widgetgl.cpp
 
-CONFIG += c++11
-LIBS += -lflycapture -lGLU
+unix {
+    CONFIG += c++11
+    LIBS += -lflycapture -lGLU
+}
 
 RESOURCES += \
     CameraManager/cameramanager.qrc
+
+win32: LIBS += -L$$PWD/lib/ -lFlyCapture2_v100
+
+INCLUDEPATH += $$PWD/include
+DEPENDPATH += $$PWD/include

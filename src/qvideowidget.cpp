@@ -2,7 +2,12 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <iostream>
+#if defined(WIN64) || defined(WIN32)
+#include <FlyCapture2.h>
+#endif
+#if defined(__unix__) || defined(__linux__)
 #include <include/FlyCapture2.h>
+#endif
 #include "qvideowidget.h"
 #include "mainwindow.h"
 

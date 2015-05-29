@@ -201,3 +201,6 @@ CameraManager/x64/
 CameraManager/props/defaultCameraSettings.ini
 CameraManager/props/defaultTrackPointSettings.ini
 CameraManager/props/quickfile_camerasettings.ini
+GeneratedFiles/qrc_cameramanager.cpp
+camera_manager.vcxproj
+camera_manager.vcxproj.filters
