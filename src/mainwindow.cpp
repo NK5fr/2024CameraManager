@@ -528,24 +528,16 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, 
                 folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
                 rootItem->addChild(folderItem);
                 QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
-                for (int j = 0; j < folderlist.size(); j++) {
-                    if (folderlist.at(j).fileName() != tr(".") && folderlist.at(j).fileName() != tr("..")) {
-                        if (folderlist.at(j).isDir()) {
-                            QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                            subFolderItem->setText(0, folderlist.at(j).fileName().toUtf8().constData());
-                            subFolderItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
-                            subFolderItem->setData(0, Qt::UserRole, folderlist.at(j).absoluteFilePath().toUtf8().constData());
-                            folderItem->addChild(subFolderItem);
-                        } else if (folderlist.at(j).isFile()) {
-                            createTreeItem(folderItem, folderlist.at(j).fileName(), folderlist.at(j).absoluteFilePath());
-                        }
-                    }
+                if (folderlist.size() > 0) {
+                    QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
+                    //subFolderItem->setText(0, "<PLACEHOLDER>");
+                    subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
+                    folderItem->addChild(subFolderItem);
                 }
             } else if (list.at(i).isFile()) {
-                /*
                 if (isProjectSupported(list.at(i).absoluteFilePath())) {
                     createTreeItem(rootItem, list.at(i).fileName(), list.at(i).absoluteFilePath());
-                }*/
+                }
             }
         }
     }
@@ -1036,38 +1028,36 @@ void MainWindow::setupTrackPointTab() {
 
 void MainWindow::expandFilePath_ProjectTree(QTreeWidgetItem* item) {
     QString fullPath = item->data(0, Qt::UserRole).value<QString>();
+    if (item->childCount() == 1) {
+        if (item->child(0)->data(0, Qt::UserRole).value<QString>().contains("<PLACEHOLDER>")) {
+            item->removeChild(item->child(0));
+        }
+    } else return;
+
     QFileInfoList list = QDir(fullPath).entryInfoList();
     for (int i = 0; i < list.size(); i++){
         if (list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {
             if (list.at(i).isDir()) {
-                QTreeWidgetItem* folderItem = nullptr;
-                for (int j = 0; j < item->childCount(); j++) {
-                    if (item->child(j)->data(0, Qt::UserRole).value<QString>() == list.at(i).absoluteFilePath()) {
-                        folderItem = item->child(j);
-                        break;
-                    }
+                QTreeWidgetItem* folderItem = new QTreeWidgetItem();
+                folderItem->setText(0, list.at(i).fileName().toUtf8().constData());
+                folderItem->setIcon(0, icons[0]);
+                folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
+                item->addChild(folderItem);
+
+                QDir folder(list.at(i).absoluteFilePath());
+                if (folder.entryInfoList().size() > 0) {
+                    QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
+                    //subFolderItem->setText(0, "<PLACEHOLDER>");
+                    subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
+                    folderItem->addChild(subFolderItem);
                 }
-                if (folderItem == nullptr) break;
-                if (folderItem->childCount() > 0) break;
-                
-                QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
-                for (int j = 0; j < folderlist.size(); j++) {
-                    if (folderlist.at(j).fileName() != tr(".") && folderlist.at(j).fileName() != tr("..")) {
-                        if (folderlist.at(j).isDir()) {
-                            QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                            subFolderItem->setText(0, folderlist.at(j).fileName().toUtf8().constData());
-                            subFolderItem->setIcon(0, icons[0]);
-                            subFolderItem->setData(0, Qt::UserRole, folderlist.at(j).absoluteFilePath().toUtf8().constData());
-                            folderItem->addChild(subFolderItem);
-                        } else if (folderlist.at(j).isFile()) {
-                            createTreeItem(folderItem, folderlist.at(j).fileName(), folderlist.at(j).absoluteFilePath());
-                        }
-                    }
+            } else if (list.at(i).isFile()) {
+                if (isProjectSupported(list.at(i).absoluteFilePath())) {
+                    createTreeItem(item, list.at(i).fileName(), list.at(i).absoluteFilePath());
                 }
             }
         }
     }
-
     ui->projectTree->resizeColumnToContents(0);
     ui->projectTree->resizeColumnToContents(1);
     ui->projectTree->resizeColumnToContents(2);
