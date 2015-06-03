@@ -117,11 +117,11 @@ void FlyCamera::startAutoCapture(){
             delete image;
         }
     }
-    printf("Stopped autoCapture !\n");
+    printf("Stopped autoCapture!\n");
 }
 
 void FlyCamera::stopAutoCapture(){
-    cout << "Stopping autoCapture";
+    printf("Stopping autoCapture\n");
     capturing = false;
     getCamera()->StopCapture();
 }
