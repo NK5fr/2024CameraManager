@@ -4,6 +4,24 @@
 #include <qthread.h>
 #include <algorithm>
 
+#define SIMD_TESTING_PHASE_ONE
+//#define SIMD_TESTING_PHASE_TWO
+
+static inline __m128i
+_mm_cmpgt_epu8(__m128i x, __m128i y) {
+    // Returns 0xFF where x > y:
+    return _mm_andnot_si128(
+        _mm_cmpeq_epi8(x, y),
+        _mm_cmpeq_epi8(_mm_max_epu8(x, y), x)
+        );
+}
+
+static inline __m128i
+_mm_cmplt_epu8(__m128i x, __m128i y) {
+    // Returns 0xFF where x < y:
+    return _mm_cmpgt_epu8(y, x);
+}
+
 struct ImPoint {
     ImPoint() : x(0.0), y(0.0), weight(0.0) {}
     double x;
