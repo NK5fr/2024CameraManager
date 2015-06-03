@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 /* Destructor of MainWindow */
 MainWindow::~MainWindow() {
     detectCameras = false;
-    bar->getRunLiveView()->setChecked(false);
+    on_actionLiveView_toggled(false);
     tdc.wait();
     tup.wait();
     for (int i = 0; i < cameraManagers.size(); i++) {
@@ -628,27 +628,27 @@ void MainWindow::loadDefaultTrackPointSettings_clicked() {
     ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
     ui->thresholdValueEdit->setText(QString::number(trackPointProperty.thresholdValue));
     //delete ui->thresholdValueEdit->validator();
-    //ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
+    ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
     ui->thresholdSlider->setValue(trackPointProperty.thresholdValue);
     ui->thresholdSlider->setRange(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax);
     ui->subwinValueEdit->setText(QString::number(trackPointProperty.subwinValue));
     //delete ui->subwinValueEdit->validator();
-    //ui->subwinValueEdit->setValidator(new QIntValidator(trackPointProperty.subwinMin, trackPointProperty.subwinMax, ui->subwinValueEdit));
+    ui->subwinValueEdit->setValidator(new QIntValidator(trackPointProperty.subwinMin, trackPointProperty.subwinMax, ui->subwinValueEdit));
     ui->subwinSlider->setValue(trackPointProperty.subwinValue);
     ui->subwinSlider->setRange(trackPointProperty.subwinMin, trackPointProperty.subwinMax);
     ui->minPointValueEdit->setText(QString::number(trackPointProperty.minPointValue));
     //delete ui->minPointValueEdit->validator();
-    //ui->minPointValueEdit->setValidator(new QIntValidator(trackPointProperty.minPointMin, trackPointProperty.minPointMax, ui->minPointValueEdit));
+    ui->minPointValueEdit->setValidator(new QIntValidator(trackPointProperty.minPointMin, trackPointProperty.minPointMax, ui->minPointValueEdit));
     ui->minPointSlider->setValue(trackPointProperty.minPointValue);
     ui->minPointSlider->setRange(trackPointProperty.minPointMin, trackPointProperty.minPointMax);
     ui->maxPointValueEdit->setText(QString::number(trackPointProperty.maxPointValue));
     //delete ui->maxPointValueEdit->validator();
-    //ui->maxPointValueEdit->setValidator(new QIntValidator(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax, ui->maxPointValueEdit));
+    ui->maxPointValueEdit->setValidator(new QIntValidator(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax, ui->maxPointValueEdit));
     ui->maxPointSlider->setValue(trackPointProperty.maxPointValue);
     ui->maxPointSlider->setRange(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax);
     ui->minSepValueEdit->setText(QString::number(trackPointProperty.minSepValue));
     //delete ui->minSepValueEdit->validator();
-    //ui->minSepValueEdit->setValidator(new QIntValidator(trackPointProperty.minSepMin, trackPointProperty.minSepMax, ui->minSepValueEdit));
+    ui->minSepValueEdit->setValidator(new QIntValidator(trackPointProperty.minSepMin, trackPointProperty.minSepMax, ui->minSepValueEdit));
     ui->minSepSlider->setValue(trackPointProperty.minSepValue);
     ui->minSepSlider->setRange(trackPointProperty.minSepMin, trackPointProperty.minSepMax);
 }
