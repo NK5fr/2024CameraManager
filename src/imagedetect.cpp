@@ -1,6 +1,7 @@
 ﻿#include "imagedetect.h"
 
 using namespace std;
+using namespace std::chrono;
 
 ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwinsiz, int minPix, int maxPix) {
     this->imageWidth = imageWidth;
@@ -41,14 +42,27 @@ void ImageDetect::setSubwinSize(int subwinsiz) {
 
 void ImageDetect::start() {
     running = true;
+    int runStep = 0;
+    const int checkTimeStep = 50;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
     while (running) {
         if (imarray != nullptr) {
             if (removeBackgroundFirst) {
                 imageRemoveBackground();
                 memcpy(newarray2, newarray, imageWidth * imageHeight);
             }
+            if (runStep % checkTimeStep == 0) {
+                t1 = high_resolution_clock::now();
+            }
             imageDetectPoints();
             removeDuplicatePoints();
+            if (runStep % checkTimeStep == 0) {
+                t2 = high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+                cout << "ImageDetect used: " << duration << " microseconds\n";
+                //printf("ImageDetect used: %.4f ms\n", elapsed_secs * 1000);
+            }
             writingToPoints = true;
             int size = sizeof(ImPoint) * this->points->numpoints;
             int size2 = sizeof(ImPoint) * this->duplRemoved->numpointsnew;
@@ -59,6 +73,7 @@ void ImageDetect::start() {
             writingToPoints = false;
             delete[] imarray;
             imarray = nullptr;
+            runStep++;
         } else {
             QThread::msleep(threadSleepMs);
         }
@@ -349,11 +364,11 @@ void ImageDetect::imageRemoveBackground() {
             __m128i imThreshNum = _mm_set1_epi8((imthresh - 1));
             for (int y = yStart; y < yEnd; ++y) {
                 for (int i = xStart; i < xEnd; i += 16) {
-                    __m128i v = _mm_load_si128((__m128i*) &imarray[(y * imageWidth) + i]);
+                    __m128i v = _mm_load_si128((__m128i*) &imarray[(y * imageWidth) + i]); // Load 16 * 8-bit elements (128-bit)
                     __m128i mask = _mm_andnot_si128(_mm_cmpeq_epi8(v, imThreshNum), _mm_cmpeq_epi8(_mm_max_epu8(v, imThreshNum), v)); // unsigned 'greater-than' comparison
                     //__m128i mask = _mm_cmpgt_epi8(v, imThreshNum); // signed 'greater-than' comparison
                     v = _mm_blendv_epi8(vk0, v, mask);
-                    _mm_store_si128((__m128i*) &newarray[(y * imageWidth) + i], v);
+                    _mm_store_si128((__m128i*) &newarray[(y * imageWidth) + i], v); // Store 16 * 8-bit elements (128-bit)
                 }
             }
 #else

@@ -1,6 +1,8 @@
 #ifndef DETECTPARTICLES
 #define DETECTPARTICLES
 
+#include <chrono>
+#include <iostream>
 #include <qthread.h>
 #include <algorithm>
 
