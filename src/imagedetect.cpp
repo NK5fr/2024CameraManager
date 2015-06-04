@@ -296,7 +296,6 @@ void ImageDetect::imageRemoveBackground() {
 
 #ifdef SIMD_TESTING_PHASE_ONE
     const __m128i vk0 = _mm_set1_epi8(0);       // constant vector of all 0s for use with _mm_unpacklo_epi8/_mm_unpackhi_epi8
-    const __m128i vk1 = _mm_set1_epi16(1);      // constant vector of all 1s for use with _mm_madd_epi16
 #endif
 
     for (int yStart = 0; yStart < imageHeight; yStart += subwinsiz) {
