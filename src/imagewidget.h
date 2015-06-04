@@ -1,10 +1,10 @@
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
-#include <qframe.h>
-#include <qwidget.h>
+#include <QtWidgets/qframe.h>
+#include <QtWidgets/qwidget.h>
 #include <qevent.h>
-#include <qlabel.h>
+#include <QtWidgets/qlabel.h>
 #include <qpainter.h>
 #include <qpoint.h>
 #include <qline.h>

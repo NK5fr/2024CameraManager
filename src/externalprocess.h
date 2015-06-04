@@ -4,7 +4,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <qtextedit.h>
+#include <QtWidgets/qtextedit.h>
 
 /*
     ExternalProcess-class

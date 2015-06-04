@@ -1,18 +1,17 @@
-#include <QTextEdit>
-#include <QMenu>
-#include <QAction>
-#include <QPushButton>
-#include <QLabel>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
 #include <QTextStream>
-#include <QVBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 #include <QFile>
 #include <QString>
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 #include <QFont>
 #include <QtOpenGL/QtOpenGL>
 #include <QtNetwork/qtcpsocket.h>
 #include <QtNetwork/qabstractsocket.h>
-#include <qnetwork.h>
 #include <QtNetwork/qhostinfo.h>
 #include <QtNetwork/qnetworkinterface.h>
 #include <QtNetwork/qnetworkconfiguration.h>
@@ -487,14 +486,17 @@ void HostAddressDialog::readSocketLine() {
     //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
 
     QString socketLine = QString::fromLocal8Bit(buffer);
-    vector<Vector3d*> pos = socketWidget->readLine(socketLine);
-    if (pos.size() > 0) {
-        socketLine.remove("\n");
-        socketWidget->getFileContain()->append(socketLine);
-        socketWidget->appendPoints(pos);
-        
-    } else {
-        socketWidget->getFileContain()->append("ERROR: \"" + socketLine + "\"\n");
+    QStringList list = socketLine.split("\n", QString::SkipEmptyParts);
+    for (int i = 0; i < list.size(); i++) {
+        vector<Vector3d*> pos = socketWidget->readLine(list[i]);
+        if (pos.size() > 0) {
+            //list[i].remove("\n");
+            socketWidget->getFileContain()->append(list[i]);
+            socketWidget->appendPoints(pos);
+
+        } else {
+            socketWidget->getFileContain()->append("ERROR: \"" + list[i] + "\"\n");
+        }
     }
 }
 

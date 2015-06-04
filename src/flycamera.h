@@ -6,9 +6,10 @@
 #include <sstream>
 
 #if defined(WIN64) || defined(WIN32)
-	#include "FlyCapture2.h"
-#elif defined(__unix__)
-	#include "flycapture/FlyCapture2.h"
+    #include <FlyCapture2.h>
+#endif
+#if defined(__unix__) || defined(__linux__)
+    #include <include/FlyCapture2.h>
 #endif
 
 class FlyCamera : public AbstractCamera {

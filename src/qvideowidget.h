@@ -7,8 +7,9 @@
 #ifndef QVIDEOWIDGET_H
 #define QVIDEOWIDGET_H
 
-#include <qwidget.h>
-#include <QtOpenGL>
+#include <QtWidgets/qwidget.h>
+#include <QtOpenGL/QGL>
+#include <QtOpenGL/QtOpenGL>
 #include <QtCore/qmath.h>
 #include <QThread>
 #include <QMutex>

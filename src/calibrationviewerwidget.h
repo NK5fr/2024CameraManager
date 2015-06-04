@@ -1,13 +1,13 @@
 #ifndef CALIBRATIONVIEWERWIDGET_H
 #define CALIBRATIONVIEWERWIDGET_H
 
-#include <QAction>
-#include <QMdiSubWindow>
-#include <QFrame>
-#include <QLabel>
-#include <QScrollArea>
-#include <QTextEdit>
-#include <QGridLayout>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMdiSubWindow>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QGridLayout>
 #include <QMouseEvent>
 #include <QTextCharFormat>
 #include <QRegularExpression>

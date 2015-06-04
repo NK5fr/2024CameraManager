@@ -1,11 +1,11 @@
 #include "calibrationviewerwidget.h"
 
 #include <QFile>
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 #include <QTextStream>
-#include <QMenu>
-#include <QScrollBar>
-#include <QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QLineEdit>
 
 #include <iostream>
 #include <string>

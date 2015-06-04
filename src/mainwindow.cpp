@@ -1,19 +1,19 @@
-#include <QMenuBar>
-#include <QMenu>
-#include <QWidgetItem>
+#include <QtWidgets/qmenubar.h>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QWidgetItem>
 #include <QStandardItem>
-#include <QAction>
-#include <QMdiArea>
-#include <QMdiSubWindow>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMdiArea>
+#include <QtWidgets/QMdiSubWindow>
 #include <QPoint>
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 #include <QIcon>
 #include <QDebug>
 #include <QDir>
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 #include <QFileInfo>
 #include <QProcess>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include "qprocess.h" //gs
 #include "qdebug.h"   //gs
 
@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 /* Destructor of MainWindow */
 MainWindow::~MainWindow() {
     detectCameras = false;
-    bar->getRunLiveView()->setChecked(false);
+    on_actionLiveView_toggled(false);
     tdc.wait();
     tup.wait();
     for (int i = 0; i < cameraManagers.size(); i++) {
@@ -394,7 +394,10 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     ui->centralwidget->closeAllSubWindows();
     //TODO change this condition to something that allows more than one name.
 
-    if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) return;
+    if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) {
+        item->setExpanded(!item->isExpanded());
+        return;
+    }
     if (fileName.contains("options")){
         /* If the item is Config File */
         ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
@@ -417,8 +420,6 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         ImageViewerWidget* ivw = new ImageViewerWidget(selectedProjectPath, fileName);
         ui->centralwidget->addSubWindow(ivw);
         ivw->showMaximized();
-        //ivw->scaleImageToWindow(ui->centralwidget->size());
-        //ivw->showMaximized();
     } else {
         // Open as text-file... (Must create: TextFileViewerWidget-class)
         ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
@@ -527,18 +528,11 @@ void MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, 
                 folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
                 rootItem->addChild(folderItem);
                 QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
-                for (int j = 0; j < folderlist.size(); j++) {
-                    if (folderlist.at(j).fileName() != tr(".") && folderlist.at(j).fileName() != tr("..")) {
-                        if (folderlist.at(j).isDir()) {
-                            QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                            subFolderItem->setText(0, folderlist.at(j).fileName().toUtf8().constData());
-                            subFolderItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
-                            subFolderItem->setData(0, Qt::UserRole, folderlist.at(j).absoluteFilePath().toUtf8().constData());
-                            folderItem->addChild(subFolderItem);
-                        } else if (folderlist.at(j).isFile()) {
-                            createTreeItem(folderItem, folderlist.at(j).fileName(), folderlist.at(j).absoluteFilePath());
-                        }
-                    }
+                if (folderlist.size() > 0) {
+                    QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
+                    //subFolderItem->setText(0, "<PLACEHOLDER>");
+                    subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
+                    folderItem->addChild(subFolderItem);
                 }
             } else if (list.at(i).isFile()) {
                 if (isProjectSupported(list.at(i).absoluteFilePath())) {
@@ -634,27 +628,27 @@ void MainWindow::loadDefaultTrackPointSettings_clicked() {
     ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
     ui->thresholdValueEdit->setText(QString::number(trackPointProperty.thresholdValue));
     //delete ui->thresholdValueEdit->validator();
-    //ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
+    ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
     ui->thresholdSlider->setValue(trackPointProperty.thresholdValue);
     ui->thresholdSlider->setRange(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax);
     ui->subwinValueEdit->setText(QString::number(trackPointProperty.subwinValue));
     //delete ui->subwinValueEdit->validator();
-    //ui->subwinValueEdit->setValidator(new QIntValidator(trackPointProperty.subwinMin, trackPointProperty.subwinMax, ui->subwinValueEdit));
+    ui->subwinValueEdit->setValidator(new QIntValidator(trackPointProperty.subwinMin, trackPointProperty.subwinMax, ui->subwinValueEdit));
     ui->subwinSlider->setValue(trackPointProperty.subwinValue);
     ui->subwinSlider->setRange(trackPointProperty.subwinMin, trackPointProperty.subwinMax);
     ui->minPointValueEdit->setText(QString::number(trackPointProperty.minPointValue));
     //delete ui->minPointValueEdit->validator();
-    //ui->minPointValueEdit->setValidator(new QIntValidator(trackPointProperty.minPointMin, trackPointProperty.minPointMax, ui->minPointValueEdit));
+    ui->minPointValueEdit->setValidator(new QIntValidator(trackPointProperty.minPointMin, trackPointProperty.minPointMax, ui->minPointValueEdit));
     ui->minPointSlider->setValue(trackPointProperty.minPointValue);
     ui->minPointSlider->setRange(trackPointProperty.minPointMin, trackPointProperty.minPointMax);
     ui->maxPointValueEdit->setText(QString::number(trackPointProperty.maxPointValue));
     //delete ui->maxPointValueEdit->validator();
-    //ui->maxPointValueEdit->setValidator(new QIntValidator(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax, ui->maxPointValueEdit));
+    ui->maxPointValueEdit->setValidator(new QIntValidator(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax, ui->maxPointValueEdit));
     ui->maxPointSlider->setValue(trackPointProperty.maxPointValue);
     ui->maxPointSlider->setRange(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax);
     ui->minSepValueEdit->setText(QString::number(trackPointProperty.minSepValue));
     //delete ui->minSepValueEdit->validator();
-    //ui->minSepValueEdit->setValidator(new QIntValidator(trackPointProperty.minSepMin, trackPointProperty.minSepMax, ui->minSepValueEdit));
+    ui->minSepValueEdit->setValidator(new QIntValidator(trackPointProperty.minSepMin, trackPointProperty.minSepMax, ui->minSepValueEdit));
     ui->minSepSlider->setValue(trackPointProperty.minSepValue);
     ui->minSepSlider->setRange(trackPointProperty.minSepMin, trackPointProperty.minSepMax);
 }
@@ -667,7 +661,8 @@ void MainWindow::loadDefaultCameraProperties_clicked() {
 }
 
 void MainWindow::loadDefaultTrackPointSettings() {
-    loadTrackPointSettingsFromFile(QString(QDir::currentPath() + "/props/defaultTrackPointSettings.ini"));
+    QString path = QDir::currentPath() + "/props/defaultTrackPointSettings.ini";
+    loadTrackPointSettingsFromFile(path);
 }
 
 void MainWindow::on_TrackPointChecked(int state) {
@@ -1032,41 +1027,37 @@ void MainWindow::setupTrackPointTab() {
 }
 
 void MainWindow::expandFilePath_ProjectTree(QTreeWidgetItem* item) {
-
     QString fullPath = item->data(0, Qt::UserRole).value<QString>();
+    if (item->childCount() == 1) {
+        if (item->child(0)->data(0, Qt::UserRole).value<QString>().contains("<PLACEHOLDER>")) {
+            item->removeChild(item->child(0));
+        }
+    } else return;
 
     QFileInfoList list = QDir(fullPath).entryInfoList();
     for (int i = 0; i < list.size(); i++){
         if (list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {
             if (list.at(i).isDir()) {
-                QTreeWidgetItem* folderItem = nullptr;
-                for (int j = 0; j < item->childCount(); j++) {
-                    if (item->child(j)->data(0, Qt::UserRole).value<QString>() == list.at(i).absoluteFilePath()) {
-                        folderItem = item->child(j);
-                        break;
-                    }
+                QTreeWidgetItem* folderItem = new QTreeWidgetItem();
+                folderItem->setText(0, list.at(i).fileName().toUtf8().constData());
+                folderItem->setIcon(0, icons[0]);
+                folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
+                item->addChild(folderItem);
+
+                QDir folder(list.at(i).absoluteFilePath());
+                if (folder.entryInfoList().size() > 0) {
+                    QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
+                    //subFolderItem->setText(0, "<PLACEHOLDER>");
+                    subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
+                    folderItem->addChild(subFolderItem);
                 }
-                if (folderItem == nullptr) break;
-                if (folderItem->childCount() > 0) break;
-                
-                QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
-                for (int j = 0; j < folderlist.size(); j++) {
-                    if (folderlist.at(j).fileName() != tr(".") && folderlist.at(j).fileName() != tr("..")) {
-                        if (folderlist.at(j).isDir()) {
-                            QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                            subFolderItem->setText(0, folderlist.at(j).fileName().toUtf8().constData());
-                            subFolderItem->setIcon(0, icons[0]);
-                            subFolderItem->setData(0, Qt::UserRole, folderlist.at(j).absoluteFilePath().toUtf8().constData());
-                            folderItem->addChild(subFolderItem);
-                        } else if (folderlist.at(j).isFile()) {
-                            createTreeItem(folderItem, folderlist.at(j).fileName(), folderlist.at(j).absoluteFilePath());
-                        }
-                    }
+            } else if (list.at(i).isFile()) {
+                if (isProjectSupported(list.at(i).absoluteFilePath())) {
+                    createTreeItem(item, list.at(i).fileName(), list.at(i).absoluteFilePath());
                 }
             }
         }
     }
-
     ui->projectTree->resizeColumnToContents(0);
     ui->projectTree->resizeColumnToContents(1);
     ui->projectTree->resizeColumnToContents(2);

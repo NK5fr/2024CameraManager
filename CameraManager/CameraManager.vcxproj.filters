@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h</Extensions>
     </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -169,9 +165,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="cameramanager.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="cameramanager.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
@@ -207,9 +200,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_cameramanager.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\abstractcamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>

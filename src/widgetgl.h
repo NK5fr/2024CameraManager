@@ -1,12 +1,11 @@
 #ifndef WIDGETGL_H
 #define WIDGETGL_H
 
-#include <QtOpenGL>
-#include <qopenglwidget.h>
+#include <QtOpenGL/QtOpenGL>
 #include <QThread>
 #include <QtCore/qmath.h>
 #include <QMouseEvent>
-#include <QMenu>
+#include <QtWidgets/QMenu>
 
 #include <vector>
 #include <iostream>

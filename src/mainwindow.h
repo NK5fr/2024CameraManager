@@ -6,12 +6,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QFrame>
-#include <QListWidget>
-#include <QLineEdit>
-#include <QLabel>
-#include <QTextEdit>  // gs
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTextEdit>  // gs
 #include <QTimer> // gs
 #include <QProcess> // gs
 #include <qsettings.h> // Lars Aksel
