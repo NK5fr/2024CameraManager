@@ -101,6 +101,7 @@ private slots:
     void on_FilteredImageChecked(int state);
     void on_ShowCoordinateLabelChecked(int state);
     void on_RemoveDuplicatesChecked(int state);
+    void on_ShowMinSepCircleChecked(int state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
     void expandFilePath_ProjectTree(QTreeWidgetItem*);

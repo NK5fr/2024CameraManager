@@ -156,7 +156,7 @@ void QVideoWidget::paintGL() {
             }
             int crossWingSize = (int) (height() / 75);
             if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaled.width() / imageWidth) * trackPointProperty->minSepValue;
-            glLineWidth(2);
+            glLineWidth(1);
             for (int i = 0; i < numPoints; i++) {
                 int w = scaled.width();
                 int h = scaled.height();

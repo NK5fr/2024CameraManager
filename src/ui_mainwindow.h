@@ -61,6 +61,7 @@ public:
     QCheckBox* trackPointEnabled = nullptr;
     QCheckBox* filteredImagePreviewEnabled = nullptr;
     QCheckBox* showCoordinateLabelEnabled = nullptr;
+    QCheckBox* showMinSepCircleEnabled = nullptr;
     QCheckBox* removeDuplicatPointsEnabled = nullptr;
     QLineEdit* thresholdValueEdit = nullptr;
     QLineEdit* subwinValueEdit = nullptr;

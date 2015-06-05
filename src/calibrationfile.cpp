@@ -44,14 +44,39 @@ void CalibrationFile::parseCalibrationData(QString& data) {
     int numLines = dataList.size();
 
     // Grabs camera number, and serialnumber
-    QRegularExpression camLinesRegEx("(?:Cam no\\.\\s+)(\\d+)(?:\\s+has serial no.\\s+)(\\d+)");
-    QRegularExpressionMatch camLineMatch = camLinesRegEx.match(dataList[atLine]);
-    int numCam = 0;
-    while (camLineMatch.hasMatch() && atLine < numLines) {
-        numCam++;
-        camLineMatch = camLinesRegEx.match(dataList[++atLine]);
+    vector<TrackPoint::Camera*> cameras;
+    QRegularExpression camLinesRegEx("\\d+");
+    while (!dataList[atLine].isEmpty()) {
+      QRegularExpressionMatchIterator camLineIter = camLinesRegEx.globalMatch(dataList[atLine]);
+      TrackPoint::Camera* newCam = new TrackPoint::Camera();
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->camNo = match.captured(0).toInt();
+        }
+      }
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->serialNo = match.captured(0).toInt();
+        }
+      }
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->pixelWidth = match.captured(0).toInt();
+        }
+      }
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->pixelHeight = match.captured(0).toInt();
+        }
+      }
+      cameras.push_back(newCam);
+      atLine++;
     }
-    numCameras = numCam;
+    numCameras = cameras.size();
 
     // Find first line where camera combinations are mentioned...
     QRegularExpression combLinesRegEx("([0-9]+_[0-9]+_[0-9]+):\\s+(.+)");
