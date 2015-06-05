@@ -155,6 +155,7 @@ void QVideoWidget::paintGL() {
                 numPoints = imageDetect->getInitNumPoints();
             }
             int crossWingSize = (int) (height() / 75);
+            if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaled.width() / imageWidth) * trackPointProperty->minSepValue;
             glLineWidth(2);
             for (int i = 0; i < numPoints; i++) {
                 int w = scaled.width();
@@ -172,6 +173,22 @@ void QVideoWidget::paintGL() {
                 glVertex2d(xPos, yPos - crossWingSize);
                 glVertex2d(xPos, yPos + crossWingSize);
                 glEnd();
+                glColor3f(1, 1, 1);
+
+                if (trackPointProperty->showMinSepCircle) {
+                    glColor3f(1, 1, 0);
+                    float circleSize = crossWingSize;
+                    const int num_segments = 30;
+                    glBegin(GL_LINE_LOOP);
+                    for (int ii = 0; ii < num_segments; ii++) {
+                        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle 
+                        float x = circleSize * cosf(theta);//calculate the x component 
+                        float y = circleSize * sinf(theta);//calculate the y component 
+                        glVertex2f(x + xPos, y + yPos);//output vertex 
+
+                    }
+                    glEnd();
+                }
                 glColor3f(1, 1, 1);
 
                 if (trackPointProperty->showCoordinates) {
