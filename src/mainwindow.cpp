@@ -626,6 +626,8 @@ void MainWindow::loadDefaultTrackPointSettings_clicked() {
     loadDefaultTrackPointSettings();
     ui->trackPointEnabled->setChecked(trackPointProperty.trackPointPreview);
     ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
+    ui->showCoordinateLabelEnabled->setChecked(trackPointProperty.showCoordinates);
+    ui->showMinSepCircleEnabled->setChecked(trackPointProperty.showMinSepCircle);
     ui->thresholdValueEdit->setText(QString::number(trackPointProperty.thresholdValue));
     //delete ui->thresholdValueEdit->validator();
     ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
@@ -807,6 +809,7 @@ void MainWindow::quickLoadTrackPointSettings() {
         ui->trackPointEnabled->setChecked(trackPointProperty.trackPointPreview);
         ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
         ui->showCoordinateLabelEnabled->setChecked(trackPointProperty.showCoordinates);
+        ui->showMinSepCircleEnabled->setChecked(trackPointProperty.showMinSepCircle);
         ui->removeDuplicatPointsEnabled->setChecked(trackPointProperty.removeDuplicates);
         ui->thresholdValueEdit->setText(QString::number(trackPointProperty.thresholdValue));
         delete ui->thresholdValueEdit->validator();
@@ -843,6 +846,7 @@ void MainWindow::loadTrackPointSettingsFromFile(QString& filepath) {
     prop.trackPointPreview = settings.value("trackpoint_preview").toBool();
     prop.filteredImagePreview = settings.value("filtered_image_preview").toBool();
     prop.showCoordinates = settings.value("show_coordinate_labels").toBool();
+    prop.showMinSepCircle = settings.value("show_minsep_circle").toBool();
     prop.removeDuplicates = settings.value("remove_duplicates").toBool();
     settings.endGroup();
     settings.beginGroup("Threshold");
@@ -884,6 +888,7 @@ void MainWindow::saveTrackPointSettingsToFile(QString& filepath, TrackPointPrope
     settings.setValue("trackpoint_preview", props.trackPointPreview);
     settings.setValue("filtered_image_preview", props.filteredImagePreview);
     settings.setValue("show_coordinate_labels", props.showCoordinates);
+    settings.setValue("show_minsep_circle", props.showMinSepCircle);
     settings.setValue("remove_duplicates", props.removeDuplicates);
     settings.endGroup();
     settings.beginGroup("Threshold");
