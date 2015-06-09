@@ -17,7 +17,6 @@ using namespace FlyCapture2;
 QVideoWidget::QVideoWidget(QWidget *parent) : QOpenGLWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
     setMouseTracking(true);
     imageDetect = nullptr;
-    imgDetThread = nullptr;
     mouseIn = false;
     trackPointProperty = nullptr;
     imgBuffer = nullptr;
@@ -28,11 +27,7 @@ QVideoWidget::QVideoWidget(QWidget *parent) : QOpenGLWidget(parent), lastSize(0,
 }
 
 QVideoWidget::~QVideoWidget() {
-    if (imageDetect != nullptr) {
-        imageDetect->stop();
-        imgDetThread->wait();
-        delete imageDetect;
-    }
+    delete imageDetect;
 }
 
 void QVideoWidget::initializeGL() {
@@ -58,24 +53,8 @@ void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, u
     this->bufferSize = bufferSize;
     if (imageDetect == nullptr) {
         imageDetect = new ImageDetect(imageWidth, imageHeight);
-        imgDetThread = new ImageDetectThread(imageDetect);
-        imgDetThread->start();
-    }
-    if (trackPointProperty != nullptr) {
-        if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
-            
-            imageDetect->setThreshold(trackPointProperty->thresholdValue);
-            imageDetect->setMinPix(trackPointProperty->minPointValue);
-            imageDetect->setMaxPix(trackPointProperty->maxPointValue);
-            imageDetect->setSubwinSize(trackPointProperty->subwinValue);
-            imageDetect->setMinSep(trackPointProperty->minSepValue);
-            if (!imageDetect->isBusy()) {
-                unsigned char* buffer = new unsigned char[bufferSize];
-                memcpy(buffer, imgBuffer, bufferSize);
-                imageDetect->setImage(buffer); // ImageDetect gets ownership of the buffer
-            }
-        }
-        imageDetect->setRemoveBackround(trackPointProperty->filteredImagePreview);
+        //imgDetThread = new ImageDetectThread(imageDetect);
+        //imgDetThread->start();
     }
 
     emit forceUpdate();
@@ -114,12 +93,30 @@ void QVideoWidget::paintGL() {
         texture.createEmptyTexture(imageWidth, imageHeight);
     }
     if (imageDetect != nullptr && trackPointProperty != nullptr) {
+        imageDetect->setThreshold(trackPointProperty->thresholdValue);
+        imageDetect->setMinPix(trackPointProperty->minPointValue);
+        imageDetect->setMaxPix(trackPointProperty->maxPointValue);
+        imageDetect->setSubwinSize(trackPointProperty->subwinValue);
+        imageDetect->setMinSep(trackPointProperty->minSepValue);
+        
+        unsigned char* copyBuffer = new unsigned char[bufferSize];
+        memcpy(copyBuffer, imgBuffer, bufferSize);
+        imageDetect->setImage(copyBuffer);
+
         if (trackPointProperty->filteredImagePreview) {
+            imageDetect->imageRemoveBackground();
             texture.updateTexture(imageDetect->getFilteredImage(), bufferSize);
-        } else texture.updateTexture(imgBuffer, bufferSize);
-    } else {
-        texture.updateTexture(imgBuffer, bufferSize);
-    }
+        } 
+        if (trackPointProperty->trackPointPreview) {
+            imageDetect->imageDetectPoints();
+            if (!trackPointProperty->filteredImagePreview) texture.updateTexture(imgBuffer, bufferSize);
+        }
+        if (!trackPointProperty->trackPointPreview && !trackPointProperty->filteredImagePreview) {
+            texture.updateTexture(imgBuffer, bufferSize);
+        }
+        delete[] copyBuffer;
+        imageDetect->setImage(nullptr);
+    } else texture.updateTexture(imgBuffer, bufferSize);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glClearColor(1, 1, 1, 1);
@@ -142,12 +139,12 @@ void QVideoWidget::paintGL() {
     texture.unbind();
     glDisable(GL_TEXTURE_2D);
 
-
     if (imageDetect != nullptr && trackPointProperty != nullptr) {
         if (trackPointProperty->trackPointPreview) {
             ImPoint* points;
             int numPoints;
             if (trackPointProperty->removeDuplicates) {
+                imageDetect->removeDuplicatePoints();
                 points = imageDetect->getFinalPoints();
                 numPoints = imageDetect->getFinalNumPoints();
             } else {
@@ -156,7 +153,7 @@ void QVideoWidget::paintGL() {
             }
             int crossWingSize = (int) (height() / 75);
             if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaled.width() / imageWidth) * trackPointProperty->minSepValue;
-            glLineWidth(1);
+            glLineWidth(1.5);
             for (int i = 0; i < numPoints; i++) {
                 int w = scaled.width();
                 int h = scaled.height();

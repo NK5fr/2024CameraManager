@@ -11,11 +11,7 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
     this->minpix = minPix;
     this->maxpix = maxPix;
     newarray = new unsigned char[imageWidth * imageHeight];
-    newarray2 = new unsigned char[imageWidth * imageHeight];
-    //imarray = new unsigned char[imageWidth * imageHeight];
     imarray = nullptr;
-    initPoints = new ImPoint[MAX_POINTS];
-    finalPoints = new ImPoint[MAX_POINTS];
     swtab = new SubWin(imageWidth, imageHeight);
     pointDef = new PointDef(imageHeight, MAX_POINTS);
     points = new ImPointsOneCam(MAX_POINTS);
@@ -25,9 +21,6 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
 ImageDetect::~ImageDetect() {
     delete[] newarray;
     delete[] imarray;
-    delete[] newarray2;
-    delete[] initPoints;
-    delete[] finalPoints;
     delete swtab;
     delete pointDef;
     delete points;
@@ -38,54 +31,6 @@ void ImageDetect::setSubwinSize(int subwinsiz) {
     if (this->subwinsiz != subwinsiz) {
         this->subwinsiz = subwinsiz;
     }
-}
-
-void ImageDetect::start() {
-    running = true;
-    int runStep = 0;
-    const int checkTimeStep = 50;
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    while (running) {
-        if (imarray != nullptr) {
-            if (removeBackgroundFirst) {
-                imageRemoveBackground();
-                memcpy(newarray2, newarray, imageWidth * imageHeight);
-            }
-            if (runStep % checkTimeStep == 0) {
-                t1 = high_resolution_clock::now();
-            }
-            imageDetectPoints();
-            removeDuplicatePoints();
-            if (runStep % checkTimeStep == 0) {
-                t2 = high_resolution_clock::now();
-                auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-                cout << "ImageDetect used: " << duration << " microseconds\n";
-                //printf("ImageDetect used: %.4f ms\n", elapsed_secs * 1000);
-            }
-            writingToPoints = true;
-            int size = sizeof(ImPoint) * this->points->numpoints;
-            int size2 = sizeof(ImPoint) * this->duplRemoved->numpointsnew;
-            memcpy(initPoints, this->points->table, sizeof(ImPoint) * this->points->numpoints);
-            memcpy(finalPoints, this->pointDef->newpt, sizeof(ImPoint) * this->duplRemoved->numpointsnew);
-            numPoints = this->points->numpoints;
-            numFinalPoints = this->duplRemoved->numpointsnew;
-            writingToPoints = false;
-            delete[] imarray;
-            imarray = nullptr;
-            runStep++;
-        } else {
-            QThread::msleep(threadSleepMs);
-        }
-    }
-}
-
-void ImageDetect::stop() {
-    running = false;
-}
-
-bool ImageDetect::isBusy() {
-    return (imarray != nullptr);
 }
 
 void ImageDetect::imageDetectPoints() {  // imno for logging

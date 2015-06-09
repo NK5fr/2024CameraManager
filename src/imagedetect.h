@@ -152,9 +152,6 @@ public:
     ImageDetect(int imageWidth, int imageHeight, int imlimit = 0, int subwinsiz = 0, int minPix = 0, int maxPix = 0);
     ~ImageDetect();
 
-    void start();
-    void stop();
-
     void imageDetectPoints();
     void imageRemoveBackground();
     void removeDuplicatePoints();
@@ -165,21 +162,17 @@ public:
     void setMaxPix(int maxpix) { this->maxpix = maxpix; }
     void setMinPix(int minpix) { this->minpix = minpix; }
     void setMinSep(int minSep) { this->minsep = minSep; }
-    void setRemoveBackround(bool remBack) { this->removeBackgroundFirst = remBack; }
-    ImPoint* getInitPoints() { return initPoints; }
-    ImPoint* getFinalPoints() { return finalPoints; }
-    unsigned char* getFilteredImage() { return this->newarray2; }
+    ImPoint* getInitPoints() { return this->points->table; }
+    ImPoint* getFinalPoints() { return this->pointDef->newpt; }
+    unsigned char* getFilteredImage() { return this->newarray; }
     unsigned char* getImage() { return this->imarray; }
-    int getInitNumPoints() { return numPoints; }
-    int getFinalNumPoints() { return numFinalPoints; }
+    int getInitNumPoints() { return this->points->numpoints; }
+    int getFinalNumPoints() { return this->duplRemoved->numpointsnew; }
     int getMaxPix() { return this->maxpix; }
     int getMinPix() { return this->minpix; }
     int getImageWidth() { return this->imageWidth; }
     int getImageHeight() { return this->imageHeight; }
     const int getMaxPoints() { return this->MAX_POINTS; }
-    bool isWritingToPoints() { return writingToPoints; }
-    bool isBusy();
-    bool isRunning() { return running; }
 
 private:
     PointDef* pointDef;
@@ -187,7 +180,6 @@ private:
     SubWin* swtab;
     VectorOneCam* duplRemoved;
     unsigned char* newarray;
-    unsigned char* newarray2;
     unsigned char* imarray;
 
     int minpix = 5;
@@ -196,17 +188,6 @@ private:
     int imlimit;
     int subwinsiz;
     const int MAX_POINTS = 5000;
-
-    bool removeBackgroundFirst = false;
-    bool running = false;
-    bool writingToPoints = false;
-
-    int threadSleepMs = 1;
-
-    int numPoints = 0;
-    int numFinalPoints = 0;
-    ImPoint* initPoints = nullptr;
-    ImPoint* finalPoints = nullptr;
 
     int imageWidth;
     int imageHeight;
@@ -220,17 +201,6 @@ private:
     void imageMaxPixelPosition();
     void setNull(int frax, int tilx, int fray, int tily);
     int maxval();
-};
-
-class ImageDetectThread : public QThread {
-public:
-    ImageDetectThread(ImageDetect* w) : QThread() { imgDet = w; }
-protected:
-    void run() {
-        imgDet->start();
-    }
-private:
-    ImageDetect* imgDet;
 };
 
 #endif
