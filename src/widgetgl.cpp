@@ -272,7 +272,6 @@ void WidgetGL::paintGL() {
                     glVertex3f(-w2, h2, -l);
                     glVertex3f(-w2, -h2, -l);
                     glVertex3f(w2, -h2, -l);
-
                     glEnd();
                     glPopMatrix();
 

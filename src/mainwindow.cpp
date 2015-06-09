@@ -36,6 +36,7 @@
 
 using namespace std;
 
+
 bool Ui::crosshair = false, Ui::crosshairReal = false, Ui::forceHighQuality = false;
 
 /* Constructor of MainWindow*/
@@ -412,9 +413,11 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     } else if (fileName.contains("calibration_summary")){
         /* Calibration file */
         calibrationPath = selectedProjectPath + "/" + fileName;
-        CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
-        ui->centralwidget->addSubWindow(cvw);
-        cvw->showMaximized();
+        //CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
+        CalibrationFile* calibFile = new CalibrationFile(calibrationPath);
+        CalibrationFileWidget* calibWidget = new CalibrationFileWidget(calibFile);
+        ui->centralwidget->addSubWindow(calibWidget);
+        calibWidget->showMaximized();
     } else if (fileName.endsWith(".pgm")){
         /* Grupper image file */
         ImageViewerWidget* ivw = new ImageViewerWidget(selectedProjectPath, fileName);
