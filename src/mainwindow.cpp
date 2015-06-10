@@ -31,6 +31,7 @@
 #include "flycameramanager.h"
 #include "configfileviewerwidget.h"
 #include "socketviewerwidget.h"
+#include "calibrationfilewidget.h"
 #include "calibrationviewerwidget.h"
 #include "imageviewerwidget.h"
 
