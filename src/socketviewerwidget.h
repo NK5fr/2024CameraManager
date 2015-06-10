@@ -67,10 +67,10 @@ private slots:
     void showOrthoStateChanged(int);
     void camDistanceValueChanged(int);
     void fovConeSizeValueChanged(int);
+    void extractDataFromText();
 
 private:
     void readTextFromFile();
-    void extractDataFromText();
     void showTextView();
     void show3DView();
 
