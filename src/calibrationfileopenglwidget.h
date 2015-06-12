@@ -24,7 +24,10 @@ public slots:
 private:
     TrackPoint::CameraCombination* selectedCameraCombination = nullptr;
     CalibrationFile* calibFile = nullptr;
-    QRect bounding;
+    QRectF screenArea;
+    QRectF calibrationCameraArea;
+
+    void updateCameraArea();
 };
 
 #endif
