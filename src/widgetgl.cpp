@@ -468,18 +468,18 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
 void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
     if (mouseEvent->buttons() & Qt::LeftButton && !showFromCamera) {
         if (lastMouseX < 0 || lastMouseY < 0) {
-            lastMouseX = mouseEvent->screenPos().x();
-            lastMouseY = mouseEvent->screenPos().y();
+            lastMouseX = mouseEvent->localPos().x();
+            lastMouseY = mouseEvent->localPos().y();
             return;
         }
         const double speed = 0.005;
         double maxVerticalAngle = PI / 2; // 90 degrees in radians...
-        rotX += (lastMouseX - mouseEvent->screenPos().x()) * speed;
-        rotY = max(-maxVerticalAngle, min(rotY + ((lastMouseY - mouseEvent->screenPos().y()) * speed), maxVerticalAngle));
+        rotX += (lastMouseX - mouseEvent->localPos().x()) * speed;
+        rotY = max(-maxVerticalAngle, min(rotY + ((lastMouseY - mouseEvent->localPos().y()) * speed), maxVerticalAngle));
         update();
     }
-    lastMouseX = mouseEvent->screenPos().x();
-    lastMouseY = mouseEvent->screenPos().y();
+    lastMouseX = mouseEvent->localPos().x();
+    lastMouseY = mouseEvent->localPos().y();
 }
 
 void WidgetGL::clickOnMenu(QAction *action) {
