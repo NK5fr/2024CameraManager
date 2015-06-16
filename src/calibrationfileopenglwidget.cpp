@@ -19,6 +19,7 @@ void CalibrationFileOpenGLWidget::initializeGL() {
 
 void CalibrationFileOpenGLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0 / 255.0, 18.0 / 255.0, 53.0 / 255.0, 1);
     //glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
