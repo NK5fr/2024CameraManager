@@ -18,6 +18,10 @@ struct Orientation {
 namespace TrackPoint {
     //struct 
 
+    enum CalibrationStatus {
+        OK, Warning, Failed
+    };
+
     struct PointInCamera {
         PointInCamera() {
             camNo = -1;
@@ -80,7 +84,7 @@ namespace TrackPoint {
         double mean;
         double max;
         int numFrames;
-        bool valid;
+        CalibrationStatus status;
     };
 }
 

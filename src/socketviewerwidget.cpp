@@ -29,12 +29,12 @@ using namespace std;
 SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString calibPath)
     : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
-    fileContain = new QTextEdit();
+    fileContain = new QPlainTextEdit();
     fileContain->setReadOnly(true);
     fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
     fileContain->setFont(QFont("Courier", 9));
     fileContain->setWindowTitle(filename);
-    fileContain->setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    fileContain->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
     const int tabStop = 16;  // 16 characters
     QFontMetrics metrics(fileContain->font());
     fileContain->setTabStopWidth(tabStop * metrics.width(' '));
@@ -43,13 +43,11 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
 
     coordinatesShown = 0;
     rowNumber = 1;
-    QThread* extractThread = new QThread();
-    connect(extractThread, SIGNAL(started()), this, SLOT(extractDataFromText()));
-    extractThread->start();
     hideButtonPanel = true;
 
     // WidgetGL
     init();
+    extractDataFromText();
     disconnectButton->hide();
     show3DView();
 
@@ -57,12 +55,12 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
 }
 
 SocketViewerWidget::SocketViewerWidget() {
-    fileContain = new QTextEdit();
+    fileContain = new QPlainTextEdit();
     fileContain->setReadOnly(true);
     fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
-    fileContain->setText(fullText);
+    fileContain->insertPlainText(fullText);
     fileContain->setWindowTitle(filename);
-    fileContain->setLineWrapMode(QTextEdit::LineWrapMode::NoWrap);
+    fileContain->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
     rowNumber = 1;
     hideButtonPanel = true;
@@ -110,7 +108,7 @@ vector<Vector3d*> SocketViewerWidget::readLine(QString line) {
 }
 
 void SocketViewerWidget::extractDataFromText() {
-    QStringList lineList = fullText.split("\n");
+    QStringList lineList = fullText.split("\n", QString::SkipEmptyParts);
     linesNumber = lineList.size();
 
     int rowNumberLocal = 0;
@@ -121,10 +119,11 @@ void SocketViewerWidget::extractDataFromText() {
         pointData.push_back(points);
         rowNumberLocal++;
         int grey = 200;
-        fileContain->setTextBackgroundColor(QColor(grey, grey, grey));
-        fileContain->insertPlainText(QString("%1").arg((rowNumberLocal - 1), 6, 10, QChar(' ')) + "  ");
-        fileContain->setTextBackgroundColor(QColor(255, 255, 255));
-        fileContain->insertPlainText("\t" + lineList[rowNumberLocal - 1] + "\n");
+        //fileContain->setTextBackgroundColor(QColor(grey, grey, grey));
+        //fileContain->inser
+        //fileContain->insertPlainText(QString("%1  \t").arg((rowNumberLocal - 1), 6, 10, QChar(' ')));
+        //fileContain->setTextBackgroundColor(QColor(255, 255, 255));
+        fileContain->insertPlainText(QString("%1  \t").arg((rowNumberLocal - 1), 6, 10, QChar(' ')) + lineList[rowNumberLocal - 1] + "\n");
         slider->setMaximum(rowNumber - 1);
         spinBox->setMaximum(rowNumber - 1);
         rowNumber++;
@@ -506,11 +505,11 @@ void HostAddressDialog::readSocketLine() {
         vector<Vector3d*> pos = socketWidget->readLine(list[i]);
         if (pos.size() > 0) {
             //list[i].remove("\n");
-            socketWidget->getFileContain()->append(list[i]);
+            socketWidget->getFileContain()->insertPlainText(list[i]);
             socketWidget->appendPoints(pos);
 
         } else {
-            socketWidget->getFileContain()->append("ERROR: \"" + list[i] + "\"\n");
+            socketWidget->getFileContain()->insertPlainText("ERROR: \"" + list[i] + "\"\n");
         }
     }
 }

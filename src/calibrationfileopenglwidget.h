@@ -13,21 +13,27 @@ class CalibrationFileOpenGLWidget : public QOpenGLWidget {
 public:
     CalibrationFileOpenGLWidget(CalibrationFile* calibFile);
 
+    void setSelectedCamera(int selectedCam);
+    void setSelectedCameraCombination(TrackPoint::CameraCombination* selectedCamComb);
+
 protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
 
 public slots:
-    void setSelectedCameraCombination(TrackPoint::CameraCombination* selectedCamComb);
 
 private:
     TrackPoint::CameraCombination* selectedCameraCombination = nullptr;
+    int selectedCamera = -1;
     CalibrationFile* calibFile = nullptr;
     QRectF screenArea;
     QRectF calibrationCameraArea;
 
-    void updateCameraArea();
+    void createGrid(QRectF area, double gridSize, double alpha);
+    void initCameraArea();
+    void addCameraAreaMargin(double margin);
+    void adjustCameraAreaForCoordinateOrigin(); // Make sure that CameraArea includes the Coordinate Origin...
 };
 
 #endif

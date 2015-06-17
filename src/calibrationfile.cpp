@@ -11,7 +11,7 @@ CalibrationFile::CalibrationFile(QString filePath) : filePath(filePath) {
     calculateFov();
 
     for (int i = 0; i < camCombs.size(); i++) {
-        if (!camCombs[i]->valid) continue; 
+        if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
         //printf("Combination: %u_%u_%u\n", camCombs[i]->camNumbers[0], camCombs[i]->camNumbers[1], camCombs[i]->camNumbers[2]);
         for (int cam = 0; cam < 3; cam++) {
             TrackPoint::Camera* thisCam = camCombs[i]->cameras[cam];
@@ -23,7 +23,7 @@ CalibrationFile::CalibrationFile(QString filePath) : filePath(filePath) {
 
 CalibrationFile::~CalibrationFile() {
     for (int i = 0; i < camCombs.size(); i++) {
-        if (!camCombs[i]->valid) continue;
+        if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
         for (int j = 0; j < 3; j++) {
             delete camCombs[i]->cameras[j];
         }
@@ -78,6 +78,7 @@ void CalibrationFile::parseCalibrationData(QString& data) {
       atLine++;
     }
     numCameras = cameras.size();
+    cams = cameras;
 
     // Find first line where camera combinations are mentioned...
     QRegularExpression combLinesRegEx("([0-9]+_[0-9]+_[0-9]+):\\s+(.+)");
@@ -108,11 +109,11 @@ void CalibrationFile::parseCalibrationData(QString& data) {
             camComb->mean = mean;
             camComb->max = max;
             camComb->numFrames = noFrames;
-            camComb->valid = true;
+            camComb->status = TrackPoint::CalibrationStatus::OK;
         } else {
             // TODO Do handling when 'NO CONVERGENCE' or other...
             //printf("ERROR: Could not parse: %s\n", string.toLocal8Bit().data());
-            camComb->valid = false;
+            camComb->status = TrackPoint::CalibrationStatus::Failed;
         }
         camCombs.push_back(camComb);
         //printf("Camera Combination: \'%s\'\n", combination.toLocal8Bit().data());
@@ -395,7 +396,7 @@ void CalibrationFile::parseCalibrationData(QString& data) {
 
 void CalibrationFile::calculateFov() {
     for (int i = 0; i < camCombs.size(); i++) {
-        if (!camCombs[i]->valid) continue;
+        if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
         for (int cam = 0; cam < 3; cam++) {
             TrackPoint::Camera* thisCam = camCombs[i]->cameras[cam];
             if (thisCam == nullptr) continue;

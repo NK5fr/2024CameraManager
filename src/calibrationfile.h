@@ -28,6 +28,7 @@ public:
     inline int getNumCameras() { return this->numCameras; }
     inline int getNumCombinations() { return this->numCombinations; }
     inline const vector<TrackPoint::CameraCombination*>& getCameraCombinations() { return this->camCombs; }
+    inline const vector<TrackPoint::Camera*>& getCameras() { return this->cams; }
     inline const QString& getFileContains() { return this->fileContain; }
 
 private:
@@ -36,6 +37,7 @@ private:
     int numCameras;
     int numCombinations;
     vector<TrackPoint::CameraCombination*> camCombs;
+    vector<TrackPoint::Camera*> cams;
 
     void readCalibrationFile();
     void parseCalibrationData(QString& data);

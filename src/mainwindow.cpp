@@ -393,7 +393,7 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         folderName = item->text(0) + "/" + folderName;
     }
     QString selectedProjectPath = QString(projectsPath + "/" + folderName);
-    ui->centralwidget->closeAllSubWindows();
+    //ui->centralwidget->closeAllSubWindows();
     //TODO change this condition to something that allows more than one name.
 
     if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) {
@@ -408,7 +408,7 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     } else if (fileName.contains("socket")){
         /* Socket file, with 3D datas */
         SocketViewerWidget* svw = new SocketViewerWidget(selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
-        ui->centralwidget->closeAllSubWindows();
+        //ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
     } else if (fileName.contains("calibration_summary")){

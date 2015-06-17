@@ -5,7 +5,9 @@
 CalibrationFileOpenGLWidget::CalibrationFileOpenGLWidget(CalibrationFile* calibFile) : QOpenGLWidget() {
     //bounding.setLeft(3500);
     this->calibFile = calibFile;
-    updateCameraArea();
+    initCameraArea();
+    adjustCameraAreaForCoordinateOrigin();
+    addCameraAreaMargin(200);
 }
 
 void CalibrationFileOpenGLWidget::initializeGL() {
@@ -18,33 +20,34 @@ void CalibrationFileOpenGLWidget::initializeGL() {
 }
 
 void CalibrationFileOpenGLWidget::paintGL() {
+    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0 / 255.0, 18.0 / 255.0, 53.0 / 255.0, 1);
     //glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
+    createGrid(screenArea, 1000, 0.3f);
+    if (screenArea.width() / width() < 10) createGrid(screenArea, 100, 0.2f);
+
     const double gridSize = 500;
+    glLineWidth(2);
     // X Axis
     glColor3f(1, 0, 0);
     glBegin(GL_LINES);
-    glVertex3f(0, 0, 0);
-    glVertex3f(gridSize, 0, 0);
+    glVertex3f(0, 0, 1);
+    glVertex3f(gridSize, 0, 1);
     glEnd();
 
     // Y Axis
     glColor3f(0, 1, 0);
     glBegin(GL_LINES);
-    glVertex3f(0, 0, 0);
-    glVertex3f(0, gridSize, 0);
+    glVertex3f(0, 0, 1);
+    glVertex3f(0, gridSize, 1);
     glEnd();
-
-    // Z Axis
-    glColor3f(0, 0, 1);
-    glBegin(GL_LINES);
-    glVertex3f(0, 0, 0);
-    glVertex3f(0, 0, gridSize);
-    glEnd();
+    glLineWidth(1);
 
     glColor3f(1, 0, 0);
     glPointSize(4);
@@ -71,6 +74,21 @@ void CalibrationFileOpenGLWidget::paintGL() {
             glEnd();
         }
     }
+    if (selectedCamera >= 0) {
+        glPointSize(8);
+        glColor3f(1, 1, 0);
+        glBegin(GL_POINTS);
+        for (int i = 0; i < camComb.size(); i++) {
+            for (int j = 0; j < 3; j++) {
+                if (camComb[i]->cameras[j] == nullptr) continue;
+                if (selectedCamera == camComb[i]->cameras[j]->camNo) {
+                    TrackPoint::Camera* cam = camComb[i]->cameras[j];
+                    glVertex3d(cam->camPos.x, cam->camPos.y, cam->camPos.z);
+                }
+            }
+        }
+        glEnd();
+    }
 }
 
 void CalibrationFileOpenGLWidget::resizeGL(int w, int h) {
@@ -80,7 +98,9 @@ void CalibrationFileOpenGLWidget::resizeGL(int w, int h) {
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    
+
+    QPointF centerCameraArea = calibrationCameraArea.center();
+
     double screenRatio = ((double) width / height);
     double areaRatio = ((double) abs(calibrationCameraArea.width()) / abs(calibrationCameraArea.height()));
     if (screenRatio > areaRatio) {
@@ -93,9 +113,12 @@ void CalibrationFileOpenGLWidget::resizeGL(int w, int h) {
         screenArea.setRight(calibrationCameraArea.right());
         screenArea.setLeft(calibrationCameraArea.left());
         double t = ((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.top());
-        screenArea.setTop(((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.top()));
-        screenArea.setBottom(-((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.bottom()));
+        screenArea.setTop(((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.height())) * (double) abs(calibrationCameraArea.height()) / 2);
+        screenArea.setBottom(-((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.height())) * (double) abs(calibrationCameraArea.height()) / 2);
     }
+
+    QPointF centerScreenArea = screenArea.center();
+    screenArea.translate((centerCameraArea - centerScreenArea));
     int bottom = screenArea.bottom();
     int top = screenArea.top();
     int left = screenArea.left();
@@ -107,7 +130,11 @@ void CalibrationFileOpenGLWidget::setSelectedCameraCombination(TrackPoint::Camer
     this->selectedCameraCombination = selectedCamComb;
 }
 
-void CalibrationFileOpenGLWidget::updateCameraArea() {
+void CalibrationFileOpenGLWidget::setSelectedCamera(int selectedCam) {
+    this->selectedCamera = selectedCam;
+}
+
+void CalibrationFileOpenGLWidget::initCameraArea() {
     vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
     for (int i = 0; i < camComb.size(); i++) {
         for (int j = 0; j < 3; j++) {
@@ -121,10 +148,50 @@ void CalibrationFileOpenGLWidget::updateCameraArea() {
             }
         }
     }
-    const float margin = 200;
+}
 
+void CalibrationFileOpenGLWidget::addCameraAreaMargin(double margin) {
     calibrationCameraArea.setLeft(calibrationCameraArea.left() - margin);
     calibrationCameraArea.setRight(calibrationCameraArea.right() + margin);
     calibrationCameraArea.setTop(calibrationCameraArea.top() + margin);
     calibrationCameraArea.setBottom(calibrationCameraArea.bottom() - margin);
+}
+
+void CalibrationFileOpenGLWidget::adjustCameraAreaForCoordinateOrigin() {
+    calibrationCameraArea.setLeft(min(calibrationCameraArea.left(), 0.0));
+    calibrationCameraArea.setRight(max(calibrationCameraArea.right(), 0.0));
+    calibrationCameraArea.setTop(max(calibrationCameraArea.top(), 0.0));
+    calibrationCameraArea.setBottom(min(calibrationCameraArea.bottom(), 0.0));
+}
+
+void CalibrationFileOpenGLWidget::createGrid(QRectF area, double gridSize, double alpha) {
+    glColor4f(1, 1, 1, alpha);
+    for (double i = 0; i < abs(area.left()); i += gridSize) {
+        glBegin(GL_LINE_STRIP);
+        glVertex2d(((area.left() > 0) ? 1 : -1) * i, area.top());
+        glVertex2d(((area.left() > 0) ? 1 : -1) * i, area.bottom());
+        glEnd();
+    }
+
+    for (double i = gridSize; i < abs(area.right()); i += gridSize) {
+        glBegin(GL_LINE_STRIP);
+        glVertex2d(((area.right() > 0) ? 1 : -1) * i, area.top());
+        glVertex2d(((area.right() > 0) ? 1 : -1) * i, area.bottom());
+        glEnd();
+    }
+
+    for (double i = 0; i < abs(area.top()); i += gridSize) {
+        glBegin(GL_LINE_STRIP);
+        glVertex2d(area.left(), ((area.top() > 0) ? 1 : -1) * i);
+        glVertex2d(area.right(), ((area.top() > 0) ? 1 : -1) * i);
+        glEnd();
+    }
+
+    for (double i = gridSize; i < abs(area.bottom()); i += gridSize) {
+        glBegin(GL_LINE_STRIP);
+        glVertex2d(area.left(), ((area.bottom() > 0) ? 1 : -1) * i);
+        glVertex2d(area.right(), ((area.bottom() > 0) ? 1 : -1) * i);
+        glEnd();
+    }
+    glColor4f(1, 1, 1, 1);
 }

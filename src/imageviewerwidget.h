@@ -22,6 +22,9 @@
 
 #include <vector>
 #include <iostream>
+#include <qdir.h>
+#include <qfileinfo.h>
+
 
 using namespace std;
 
@@ -44,6 +47,8 @@ private:
     int camerasNb;
     int pointsNb;
     bool correspondingData;
+    int selectedImageInFolder;
+    QFileInfoList imageFiles;
 
     void setImageFromFile(const QString& filepath);
     //void initializingImage(const QString& filepath);
