@@ -31,10 +31,12 @@
 #include "flycameramanager.h"
 #include "configfileviewerwidget.h"
 #include "socketviewerwidget.h"
+#include "calibrationfilewidget.h"
 #include "calibrationviewerwidget.h"
 #include "imageviewerwidget.h"
 
 using namespace std;
+
 
 bool Ui::crosshair = false, Ui::crosshairReal = false, Ui::forceHighQuality = false;
 
@@ -391,7 +393,7 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         folderName = item->text(0) + "/" + folderName;
     }
     QString selectedProjectPath = QString(projectsPath + "/" + folderName);
-    ui->centralwidget->closeAllSubWindows();
+    //ui->centralwidget->closeAllSubWindows();
     //TODO change this condition to something that allows more than one name.
 
     if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) {
@@ -406,15 +408,17 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     } else if (fileName.contains("socket")){
         /* Socket file, with 3D datas */
         SocketViewerWidget* svw = new SocketViewerWidget(selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
-        ui->centralwidget->closeAllSubWindows();
+        //ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
     } else if (fileName.contains("calibration_summary")){
         /* Calibration file */
         calibrationPath = selectedProjectPath + "/" + fileName;
-        CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
-        ui->centralwidget->addSubWindow(cvw);
-        cvw->showMaximized();
+        //CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
+        CalibrationFile* calibFile = new CalibrationFile(calibrationPath);
+        CalibrationFileWidget* calibWidget = new CalibrationFileWidget(calibFile);
+        ui->centralwidget->addSubWindow(calibWidget);
+        calibWidget->showMaximized();
     } else if (fileName.endsWith(".pgm")){
         /* Grupper image file */
         ImageViewerWidget* ivw = new ImageViewerWidget(selectedProjectPath, fileName);
@@ -626,6 +630,8 @@ void MainWindow::loadDefaultTrackPointSettings_clicked() {
     loadDefaultTrackPointSettings();
     ui->trackPointEnabled->setChecked(trackPointProperty.trackPointPreview);
     ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
+    ui->showCoordinateLabelEnabled->setChecked(trackPointProperty.showCoordinates);
+    ui->showMinSepCircleEnabled->setChecked(trackPointProperty.showMinSepCircle);
     ui->thresholdValueEdit->setText(QString::number(trackPointProperty.thresholdValue));
     //delete ui->thresholdValueEdit->validator();
     ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
@@ -683,6 +689,11 @@ void MainWindow::on_ShowCoordinateLabelChecked(int state) {
 void MainWindow::on_RemoveDuplicatesChecked(int state) {
     trackPointProperty.removeDuplicates = (state == Qt::Checked);
     cameraManagers[selectedCameraManager]->updateContainer();
+}
+
+void MainWindow::on_ShowMinSepCircleChecked(int state) {
+  trackPointProperty.showMinSepCircle = (state == Qt::Checked);
+  cameraManagers[selectedCameraManager]->updateContainer();
 }
 
 void MainWindow::on_TrackPointValueChanged() {
@@ -802,6 +813,7 @@ void MainWindow::quickLoadTrackPointSettings() {
         ui->trackPointEnabled->setChecked(trackPointProperty.trackPointPreview);
         ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
         ui->showCoordinateLabelEnabled->setChecked(trackPointProperty.showCoordinates);
+        ui->showMinSepCircleEnabled->setChecked(trackPointProperty.showMinSepCircle);
         ui->removeDuplicatPointsEnabled->setChecked(trackPointProperty.removeDuplicates);
         ui->thresholdValueEdit->setText(QString::number(trackPointProperty.thresholdValue));
         delete ui->thresholdValueEdit->validator();
@@ -838,6 +850,7 @@ void MainWindow::loadTrackPointSettingsFromFile(QString& filepath) {
     prop.trackPointPreview = settings.value("trackpoint_preview").toBool();
     prop.filteredImagePreview = settings.value("filtered_image_preview").toBool();
     prop.showCoordinates = settings.value("show_coordinate_labels").toBool();
+    prop.showMinSepCircle = settings.value("show_minsep_circle").toBool();
     prop.removeDuplicates = settings.value("remove_duplicates").toBool();
     settings.endGroup();
     settings.beginGroup("Threshold");
@@ -879,6 +892,7 @@ void MainWindow::saveTrackPointSettingsToFile(QString& filepath, TrackPointPrope
     settings.setValue("trackpoint_preview", props.trackPointPreview);
     settings.setValue("filtered_image_preview", props.filteredImagePreview);
     settings.setValue("show_coordinate_labels", props.showCoordinates);
+    settings.setValue("show_minsep_circle", props.showMinSepCircle);
     settings.setValue("remove_duplicates", props.removeDuplicates);
     settings.endGroup();
     settings.beginGroup("Threshold");
@@ -944,15 +958,22 @@ void MainWindow::setupTrackPointTab() {
     trackPointLayout->addWidget(ui->removeDuplicatPointsEnabled, 3, 1);
     connect(ui->removeDuplicatPointsEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_RemoveDuplicatesChecked(int)));
 
+    QLabel* showMinSepLabel = new QLabel("Show minimal separation circle:");
+    ui->showMinSepCircleEnabled = new QCheckBox();
+    ui->showMinSepCircleEnabled->setChecked(trackPointProperty.showMinSepCircle);
+    trackPointLayout->addWidget(showMinSepLabel, 4, 0);
+    trackPointLayout->addWidget(ui->showMinSepCircleEnabled, 4, 1);
+    connect(ui->showMinSepCircleEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_ShowMinSepCircleChecked(int)));
+
     QLabel* thresholdLabel = new QLabel(trackPointProperty.thresholdText);
     ui->thresholdValueEdit = new QLineEdit(QString::number(trackPointProperty.thresholdValue));
     ui->thresholdValueEdit->setValidator(new QIntValidator(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax, ui->thresholdValueEdit));
     ui->thresholdSlider = new QSlider(Qt::Horizontal);
     ui->thresholdSlider->setValue(trackPointProperty.thresholdValue);
     ui->thresholdSlider->setRange(trackPointProperty.thresholdMin, trackPointProperty.thresholdMax);
-    trackPointLayout->addWidget(thresholdLabel, 4, 0);
-    trackPointLayout->addWidget(ui->thresholdValueEdit, 4, 1);
-    trackPointLayout->addWidget(ui->thresholdSlider, 4, 2);
+    trackPointLayout->addWidget(thresholdLabel, 5, 0);
+    trackPointLayout->addWidget(ui->thresholdValueEdit, 5, 1);
+    trackPointLayout->addWidget(ui->thresholdSlider, 5, 2);
     connect(ui->thresholdValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
@@ -962,9 +983,9 @@ void MainWindow::setupTrackPointTab() {
     ui->subwinSlider = new QSlider(Qt::Horizontal);
     ui->subwinSlider->setValue(trackPointProperty.subwinValue);
     ui->subwinSlider->setRange(trackPointProperty.subwinMin, trackPointProperty.subwinMax);
-    trackPointLayout->addWidget(subwinLabel, 5, 0);
-    trackPointLayout->addWidget(ui->subwinValueEdit, 5, 1);
-    trackPointLayout->addWidget(ui->subwinSlider, 5, 2);
+    trackPointLayout->addWidget(subwinLabel, 6, 0);
+    trackPointLayout->addWidget(ui->subwinValueEdit, 6, 1);
+    trackPointLayout->addWidget(ui->subwinSlider, 6, 2);
     connect(ui->subwinValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->subwinSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
@@ -975,9 +996,9 @@ void MainWindow::setupTrackPointTab() {
     ui->minPointSlider->setValue(trackPointProperty.minPointValue);
     //ui->minPointSlider->setRange(trackPointProperty.minPointMin, trackPointProperty.minPointMax);
     ui->minPointSlider->setRange(trackPointProperty.minPointMin, min(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
-    trackPointLayout->addWidget(minPointLabel, 6, 0);
-    trackPointLayout->addWidget(ui->minPointValueEdit, 6, 1);
-    trackPointLayout->addWidget(ui->minPointSlider, 6, 2);
+    trackPointLayout->addWidget(minPointLabel, 7, 0);
+    trackPointLayout->addWidget(ui->minPointValueEdit, 7, 1);
+    trackPointLayout->addWidget(ui->minPointSlider, 7, 2);
     connect(ui->minPointValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->minPointSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
 
@@ -988,9 +1009,9 @@ void MainWindow::setupTrackPointTab() {
     ui->maxPointSlider->setValue(trackPointProperty.maxPointValue);
     //ui->maxPointSlider->setRange(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax);
     ui->maxPointSlider->setRange(max(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
-    trackPointLayout->addWidget(maxPointLabel, 7, 0);
-    trackPointLayout->addWidget(ui->maxPointValueEdit, 7, 1);
-    trackPointLayout->addWidget(ui->maxPointSlider, 7, 2);
+    trackPointLayout->addWidget(maxPointLabel, 8, 0);
+    trackPointLayout->addWidget(ui->maxPointValueEdit, 8, 1);
+    trackPointLayout->addWidget(ui->maxPointSlider, 8, 2);
     connect(ui->maxPointValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->maxPointSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
     
@@ -1000,9 +1021,9 @@ void MainWindow::setupTrackPointTab() {
     ui->minSepSlider = new QSlider(Qt::Horizontal);
     ui->minSepSlider->setValue(trackPointProperty.minSepValue);
     ui->minSepSlider->setRange(trackPointProperty.minSepMin, trackPointProperty.minSepMax);
-    trackPointLayout->addWidget(minSepLabel, 8, 0);
-    trackPointLayout->addWidget(ui->minSepValueEdit, 8, 1);
-    trackPointLayout->addWidget(ui->minSepSlider, 8, 2);
+    trackPointLayout->addWidget(minSepLabel, 9, 0);
+    trackPointLayout->addWidget(ui->minSepValueEdit, 9, 1);
+    trackPointLayout->addWidget(ui->minSepSlider, 9, 2);
     connect(ui->minSepValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->minSepSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
     trackPointLayout->setAlignment(Qt::AlignCenter | Qt::AlignTop);

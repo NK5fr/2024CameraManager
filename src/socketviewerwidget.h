@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "socketfilereaderthread.h"
 #include "widgetgl.h"
 
 using namespace std;
@@ -44,9 +45,11 @@ public:
     QSlider *getTimeSlider();
     vector<Vector3d*> readLine(QString line);
 
-    inline QTextEdit* getFileContain() { return this->fileContain; }
+    inline QPlainTextEdit* getFileContain() { return this->fileContain; }
+    inline QSpinBox* getSpinBox() { return this->spinBox; }
     inline WidgetGL* getWidgetGL() { return this->widgetGL; }
-
+    inline vector<vector<Vector3d*>>& getPointData() { return this->pointData; }
+    inline void setLineNumbers(int lineNumbers) { this->linesNumber = lineNumbers; }
 
 private slots:
     void valueChanged(int);
@@ -67,10 +70,10 @@ private slots:
     void showOrthoStateChanged(int);
     void camDistanceValueChanged(int);
     void fovConeSizeValueChanged(int);
+    void extractDataFromText();
 
 private:
     void readTextFromFile();
-    void extractDataFromText();
     void showTextView();
     void show3DView();
 
@@ -82,7 +85,7 @@ private:
     QString tmpPath;
     QString calibrationPath;
     QString fullText;
-    QTextEdit* fileContain;
+    QPlainTextEdit* fileContain;
 
     // Sliders
     QSlider* camDistanceSlider;

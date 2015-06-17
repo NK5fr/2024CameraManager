@@ -53,7 +53,6 @@ protected:
 
 private:
     ImageDetect* imageDetect;
-    ImageDetectThread* imgDetThread;
     TrackPointProperty* trackPointProperty;
     OpenGL::Texture texture;
     QPoint mouse;

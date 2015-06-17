@@ -1,8 +1,26 @@
 #ifndef DETECTPARTICLES
 #define DETECTPARTICLES
 
+#include <chrono>
+#include <iostream>
 #include <qthread.h>
 #include <algorithm>
+
+// Testing av SIMD-instruksjoner - Lars Aksel - 04.06.2015
+#define SIMD_TESTING_128_BIT // Requires SSE3-support
+//#define SIMD_TESTING_256_BIT // Requires AVX2-support, not finished
+
+// Unsigned greater-than comparison 8-bit
+static inline __m128i _mm_cmpgt_epu8(__m128i x, __m128i y) {
+  // Returns 0xFF where x > y:
+  return _mm_andnot_si128(_mm_cmpeq_epi8(x, y), _mm_cmpeq_epi8(_mm_max_epu8(x, y), x));
+}
+
+// Unsigned less-than comparison 8-bit
+static inline __m128i _mm_cmplt_epu8(__m128i x, __m128i y) {
+  // Returns 0xFF where x < y:
+  return _mm_cmpgt_epu8(y, x);
+}
 
 struct ImPoint {
     ImPoint() : x(0.0), y(0.0), weight(0.0) {}
@@ -134,9 +152,6 @@ public:
     ImageDetect(int imageWidth, int imageHeight, int imlimit = 0, int subwinsiz = 0, int minPix = 0, int maxPix = 0);
     ~ImageDetect();
 
-    void start();
-    void stop();
-
     void imageDetectPoints();
     void imageRemoveBackground();
     void removeDuplicatePoints();
@@ -147,21 +162,17 @@ public:
     void setMaxPix(int maxpix) { this->maxpix = maxpix; }
     void setMinPix(int minpix) { this->minpix = minpix; }
     void setMinSep(int minSep) { this->minsep = minSep; }
-    void setRemoveBackround(bool remBack) { this->removeBackgroundFirst = remBack; }
-    ImPoint* getInitPoints() { return initPoints; }
-    ImPoint* getFinalPoints() { return finalPoints; }
-    unsigned char* getFilteredImage() { return this->newarray2; }
+    ImPoint* getInitPoints() { return this->points->table; }
+    ImPoint* getFinalPoints() { return this->pointDef->newpt; }
+    unsigned char* getFilteredImage() { return this->newarray; }
     unsigned char* getImage() { return this->imarray; }
-    int getInitNumPoints() { return numPoints; }
-    int getFinalNumPoints() { return numFinalPoints; }
+    int getInitNumPoints() { return this->points->numpoints; }
+    int getFinalNumPoints() { return this->duplRemoved->numpointsnew; }
     int getMaxPix() { return this->maxpix; }
     int getMinPix() { return this->minpix; }
     int getImageWidth() { return this->imageWidth; }
     int getImageHeight() { return this->imageHeight; }
     const int getMaxPoints() { return this->MAX_POINTS; }
-    bool isWritingToPoints() { return writingToPoints; }
-    bool isBusy();
-    bool isRunning() { return running; }
 
 private:
     PointDef* pointDef;
@@ -169,7 +180,6 @@ private:
     SubWin* swtab;
     VectorOneCam* duplRemoved;
     unsigned char* newarray;
-    unsigned char* newarray2;
     unsigned char* imarray;
 
     int minpix = 5;
@@ -178,17 +188,6 @@ private:
     int imlimit;
     int subwinsiz;
     const int MAX_POINTS = 5000;
-
-    bool removeBackgroundFirst = false;
-    bool running = false;
-    bool writingToPoints = false;
-
-    int threadSleepMs = 1;
-
-    int numPoints = 0;
-    int numFinalPoints = 0;
-    ImPoint* initPoints = nullptr;
-    ImPoint* finalPoints = nullptr;
 
     int imageWidth;
     int imageHeight;
@@ -202,17 +201,6 @@ private:
     void imageMaxPixelPosition();
     void setNull(int frax, int tilx, int fray, int tily);
     int maxval();
-};
-
-class ImageDetectThread : public QThread {
-public:
-    ImageDetectThread(ImageDetect* w) : QThread() { imgDet = w; }
-protected:
-    void run() {
-        imgDet->start();
-    }
-private:
-    ImageDetect* imgDet;
 };
 
 #endif

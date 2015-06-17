@@ -1,6 +1,7 @@
 ﻿#include "imagedetect.h"
 
 using namespace std;
+using namespace std::chrono;
 
 ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwinsiz, int minPix, int maxPix) {
     this->imageWidth = imageWidth;
@@ -10,11 +11,7 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
     this->minpix = minPix;
     this->maxpix = maxPix;
     newarray = new unsigned char[imageWidth * imageHeight];
-    newarray2 = new unsigned char[imageWidth * imageHeight];
-    //imarray = new unsigned char[imageWidth * imageHeight];
     imarray = nullptr;
-    initPoints = new ImPoint[MAX_POINTS];
-    finalPoints = new ImPoint[MAX_POINTS];
     swtab = new SubWin(imageWidth, imageHeight);
     pointDef = new PointDef(imageHeight, MAX_POINTS);
     points = new ImPointsOneCam(MAX_POINTS);
@@ -24,9 +21,6 @@ ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwi
 ImageDetect::~ImageDetect() {
     delete[] newarray;
     delete[] imarray;
-    delete[] newarray2;
-    delete[] initPoints;
-    delete[] finalPoints;
     delete swtab;
     delete pointDef;
     delete points;
@@ -37,40 +31,6 @@ void ImageDetect::setSubwinSize(int subwinsiz) {
     if (this->subwinsiz != subwinsiz) {
         this->subwinsiz = subwinsiz;
     }
-}
-
-void ImageDetect::start() {
-    running = true;
-    while (running) {
-        if (imarray != nullptr) {
-            if (removeBackgroundFirst) {
-                imageRemoveBackground();
-                memcpy(newarray2, newarray, imageWidth * imageHeight);
-            }
-            imageDetectPoints();
-            removeDuplicatePoints();
-            writingToPoints = true;
-            int size = sizeof(ImPoint) * this->points->numpoints;
-            int size2 = sizeof(ImPoint) * this->duplRemoved->numpointsnew;
-            memcpy(initPoints, this->points->table, sizeof(ImPoint) * this->points->numpoints);
-            memcpy(finalPoints, this->pointDef->newpt, sizeof(ImPoint) * this->duplRemoved->numpointsnew);
-            numPoints = this->points->numpoints;
-            numFinalPoints = this->duplRemoved->numpointsnew;
-            writingToPoints = false;
-            delete[] imarray;
-            imarray = nullptr;
-        } else {
-            QThread::msleep(threadSleepMs);
-        }
-    }
-}
-
-void ImageDetect::stop() {
-    running = false;
-}
-
-bool ImageDetect::isBusy() {
-    return (imarray != nullptr);
 }
 
 void ImageDetect::imageDetectPoints() {  // imno for logging
@@ -279,6 +239,11 @@ void ImageDetect::imageRemoveBackground() {
     int subwinavg;
     int subwinsiz2 = subwinsiz * subwinsiz;
 
+#ifdef SIMD_TESTING_128_BIT
+    const __m128i vk0 = _mm_set1_epi8(0);       // constant vector of all 0s for use with _mm_unpacklo_epi8/_mm_unpackhi_epi8
+    const __m128i vk1 = _mm_set1_epi16(1);      // constant vector of all 1s for use with _mm_madd_epi16
+#endif
+
     for (int yStart = 0; yStart < imageHeight; yStart += subwinsiz) {
         //for (int yStart = 0; yStart < imy - subwinsiz; yStart += subwinsiz) { // Lars Aksel - 27.01.2015
         int yEnd = yStart + subwinsiz;
@@ -303,11 +268,48 @@ void ImageDetect::imageRemoveBackground() {
 
                 //long* iterator = (long*) &imarray[yStart][xStart];
 
+#ifdef SIMD_TESTING_128_BIT
+                for (int y = yStart; y < yEnd; ++y) {
+                    __m128i vsum = _mm_set1_epi32(0);
+                    for (int i = xStart; i < xEnd; i += 16) {
+                        __m128i v = _mm_load_si128((const __m128i*) &imarray[(y * imageWidth) + i]);      // load vector of 8 bit values
+                        __m128i vl = _mm_unpacklo_epi8(v, vk0); // unpack to two vectors of 16 bit values
+                        __m128i vh = _mm_unpackhi_epi8(v, vk0);
+                        __m128i wordPacked = _mm_add_epi16(vl, vh);
+                        __m128i wordL = _mm_unpacklo_epi16(wordPacked, vk0);
+                        __m128i wordH = _mm_unpackhi_epi16(wordPacked, vk0);
+                        vsum = _mm_add_epi32(vsum, _mm_add_epi32(wordL, wordH));
+                        //vsum = _mm_add_epi32(vsum, _mm_madd_epi16(vl, vk1));
+                        //vsum = _mm_add_epi32(vsum, _mm_madd_epi16(vh, vk1));
+                    }
+                    /*
+                    unsigned int mySum = vsum.m128i_u32[0];
+                    mySum += vsum.m128i_u32[1];
+                    mySum += vsum.m128i_u32[2];
+                    mySum += vsum.m128i_u32[3];
+                    subwinavg += mySum;
+                    */
+                    subwinavg += vsum.m128i_u32[0];
+                    subwinavg += vsum.m128i_u32[1];
+                    subwinavg += vsum.m128i_u32[2];
+                    subwinavg += vsum.m128i_u32[3];
+                }
+                //vsum = _mm_add_epi32(vsum, _mm_srli_si128(vsum, 8));
+                //vsum = _mm_add_epi32(vsum, _mm_srli_si128(vsum, 4));
+                //subwinavg = _mm_cvtsi128_si32(vsum);
+#elif SIMD_TESTING_256_BIT
+                for (int y = yStart; y < yEnd; ++y) {
+                    for (int i = xStart; i < xEnd; i += 32) {
+                        __m256i v = _mm256_load_si256((const __m256i*) &imarray[(y * imageWidth) + i]);
+                    }
+                }
+#else
                 for (int y = yStart; y < yEnd; ++y) {
                     for (int x = xStart; x < xEnd; ++x) {
                         subwinavg += imarray[(y * imageWidth) + x];
                     }
                 }
+#endif
                 subwinavg /= subwinsiz2;
 
                 // Calculate threshold value (average pixel value in sub-window + an offset)
@@ -322,6 +324,19 @@ void ImageDetect::imageRemoveBackground() {
                 }
             }
 
+#ifdef SIMD_TESTING_128_BIT
+            __m128i imThreshNum = _mm_set1_epi8((imthresh - 1));
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int i = xStart; i < xEnd; i += 16) {
+                    __m128i v = _mm_load_si128((__m128i*) &imarray[(y * imageWidth) + i]); // Load 16 * 8-bit elements (128-bit)
+                    __m128i mask = _mm_andnot_si128(_mm_cmpeq_epi8(v, imThreshNum), _mm_cmpeq_epi8(_mm_max_epu8(v, imThreshNum), v)); // unsigned 'greater-than' comparison
+                    //__m128i mask = _mm_cmpgt_epi8(v, imThreshNum); // signed 'greater-than' comparison
+                    v = _mm_blendv_epi8(vk0, v, mask); // Should be the same as _mm_and_si128(), except slower...
+                    //v = _mm_and_si128(v, mask);
+                    _mm_store_si128((__m128i*) &newarray[(y * imageWidth) + i], v); // Store 16 * 8-bit elements (128-bit)
+                }
+            }
+#else
             for (int y = yStart; y < yEnd; ++y) {
                 for (int x = xStart; x < xEnd; ++x) {
                     if (imarray[(y * imageWidth) + x] >= imthresh) {
@@ -329,6 +344,7 @@ void ImageDetect::imageRemoveBackground() {
                     } else newarray[(y * imageWidth) + x] = 0; // Lars Aksel - 23.01.2015 - Bug fix
                 }
             }
+#endif
         }
     }
 } // ImageRemoveBacground
@@ -345,6 +361,10 @@ void ImageDetect::subwinRemoveBackground() {
     // Purpose: To remove the background in a part of an image
     //          This routine replaces the previous program:
     //             a SPOT subroutine (vin_fjernbakgrunn)
+#ifdef SIMD_TESTING_128_BIT
+    const __m128i vk0 = _mm_set1_epi8(0);       // constant vector of all 0s for use with _mm_unpacklo_epi8/_mm_unpackhi_epi8
+    const __m128i vk1 = _mm_set1_epi16(1);      // constant vector of all 1s for use with _mm_madd_epi16
+#endif
     int imthresh;
     long subwinavg = 0L;
     int subwinsiz2 = subwinsiz * subwinsiz;
@@ -355,9 +375,27 @@ void ImageDetect::subwinRemoveBackground() {
         //Remove subwin background based on average pixel value
         // Calculate average pixel value in sub-window	
         for (int j = 0; j < subwinsiz; j++) {
+#ifdef SIMD_TESTING_128_BIT
+            __m128i vsum = _mm_set1_epi32(0);
+            for (int i = 0; i < subwinsiz; i += 16) {
+                __m128i v = _mm_load_si128((__m128i*) &swtab->sw[(j * imageWidth) + i]);      // load vector of 8 bit values
+                __m128i vl = _mm_unpacklo_epi8(v, vk0); // unpack to two vectors of 16 bit values
+                __m128i vh = _mm_unpackhi_epi8(v, vk0);
+                __m128i wordPacked = _mm_add_epi16(vl, vh);
+                __m128i wordL = _mm_unpacklo_epi16(wordPacked, vk0);
+                __m128i wordH = _mm_unpackhi_epi16(wordPacked, vk0);
+                vsum = _mm_add_epi32(vsum, _mm_add_epi32(wordL, wordH));
+            }
+            unsigned int mySum = vsum.m128i_u32[0];
+            mySum += vsum.m128i_u32[1];
+            mySum += vsum.m128i_u32[2];
+            mySum += vsum.m128i_u32[3];
+            subwinavg += mySum;
+#else
             for (int i = 0; i < subwinsiz; i++) {
                 subwinavg += swtab->sw[(j * imageWidth) + i];
             }
+#endif
         }
         subwinavg /= subwinsiz2;
 
@@ -373,7 +411,21 @@ void ImageDetect::subwinRemoveBackground() {
         }
     }
 
+
+#ifdef SIMD_TESTING_128_BIT
     // --- Set subwin background to black
+    __m128i imThreshNum = _mm_set1_epi8(imthresh);
+    for (int j = 0; j < subwinsiz; j++) {
+        for (int i = 0; i < subwinsiz; i += 16) {
+            __m128i v = _mm_load_si128((__m128i*) &swtab->sw[(j * imageWidth) + i]);
+            __m128i mask = _mm_cmplt_epu8(v, imThreshNum); // unsigned 'greater-than' comparison
+            //__m128i mask = _mm_cmpgt_epi8(imThreshNum, v); // signed 'greater-than' comparison
+            v = _mm_blendv_epi8(v, vk0, mask); // Should be the same as _mm_andnot_si128(), except slower...
+            //v = _mm_andnot_si128(v, mask);
+            _mm_store_si128((__m128i*) &swtab->sw[(j * imageWidth) + i], v);
+        }
+    }
+#else
     for (int j = 0; j < subwinsiz; j++) {
         for (int i = 0; i < subwinsiz; i++){
             if (swtab->sw[(j * imageWidth) + i] < imthresh) {
@@ -381,6 +433,7 @@ void ImageDetect::subwinRemoveBackground() {
             }
         }
     }
+#endif
 } // SubwinRemoveBackground()
 
 ///////////// Image::subwinRead() /////////////////////////////////////////////////////
@@ -406,9 +459,16 @@ void ImageDetect::subwinRead(int ix, int iy, int &ic, int &jc) {
 
     // --- Extract subwindow from image
     for (int j = 0; j < subwinsiz; j++) {
+#ifdef SIMD_TESTING_128_BIT
+        for (int i = 0; i < subwinsiz; i += 16) { // Copies 16 bytes/elements for every loop...
+            __m128i data = _mm_loadu_si128((__m128i*) &imarray[((j1 + j) * imageWidth) + (i1 + i)]);
+            _mm_storeu_si128((__m128i*) &swtab->sw[(j * imageWidth) + i], data);
+        }
+#else 
         for (int i = 0; i < subwinsiz; i++) {
             swtab->sw[(j * imageWidth) + i] = imarray[((j1 + j) * imageWidth) + (i1 + i)];
         }
+#endif
     }
 } // SubwinRead()
 
@@ -446,11 +506,47 @@ bool ImageDetect::imageFindPoint() {
     const int maxLoop = jslutt * imax;
     unsigned char* iter;
 
+#ifdef SIMD_TESTING_PHASE_TWO
+    if ((&newarray[(jstart * imageWidth) + i] - (newarray + maxLoop)) % 16 == 0) {
+        const __m128i vk0 = _mm_set1_epi8(0);
+        for (iter = &newarray[(jstart * imageWidth) + i]; iter < (newarray + maxLoop); iter += 16) {
+            __m128i v = _mm_load_si128((__m128i*) iter);
+            __m128i mask = _mm_andnot_si128(_mm_cmpeq_epi8(v, vk0), _mm_cmpeq_epi8(_mm_max_epu8(v, vk0), v)); // unsigned 'greater-than' comparison
+            //__m128i mask = _mm_cmpgt_epi8(v, vk0); // signed 'greater-than' comparison
+            if (mask.m128i_u64[0] > 0) {
+                for (int i = 0; i < 8; i++) {
+                    if (mask.m128i_u8[i] > 0) {
+                        iter = (iter - 16) + i;
+                        break;
+                    }
+                }
+                break;
+
+            }
+            if (mask.m128i_u64[1] > 0) {
+                for (int i = 8; i < 16; i++) {
+                    if (mask.m128i_u8[i] > 0) {
+                        iter = (iter - 16) + i;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    } else {
+        for (iter = &newarray[(jstart * imageWidth) + i]; iter < newarray + maxLoop; ++iter) {
+            if (*iter > 0) {
+                break;
+            }
+        }
+    }    
+#else
     for (iter = &newarray[(jstart * imageWidth) + i]; iter < newarray + maxLoop; ++iter) {
         if (*iter > 0) {
             break;
         }
     }
+#endif
     if (iter < newarray + maxLoop) {
         int diff = iter - newarray;
         i = (diff % imax);

@@ -11,7 +11,7 @@ CalibrationFile::CalibrationFile(QString filePath) : filePath(filePath) {
     calculateFov();
 
     for (int i = 0; i < camCombs.size(); i++) {
-        if (!camCombs[i]->valid) continue; 
+        if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
         //printf("Combination: %u_%u_%u\n", camCombs[i]->camNumbers[0], camCombs[i]->camNumbers[1], camCombs[i]->camNumbers[2]);
         for (int cam = 0; cam < 3; cam++) {
             TrackPoint::Camera* thisCam = camCombs[i]->cameras[cam];
@@ -23,7 +23,7 @@ CalibrationFile::CalibrationFile(QString filePath) : filePath(filePath) {
 
 CalibrationFile::~CalibrationFile() {
     for (int i = 0; i < camCombs.size(); i++) {
-        if (!camCombs[i]->valid) continue;
+        if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
         for (int j = 0; j < 3; j++) {
             delete camCombs[i]->cameras[j];
         }
@@ -44,14 +44,41 @@ void CalibrationFile::parseCalibrationData(QString& data) {
     int numLines = dataList.size();
 
     // Grabs camera number, and serialnumber
-    QRegularExpression camLinesRegEx("(?:Cam no\\.\\s+)(\\d+)(?:\\s+has serial no.\\s+)(\\d+)");
-    QRegularExpressionMatch camLineMatch = camLinesRegEx.match(dataList[atLine]);
-    int numCam = 0;
-    while (camLineMatch.hasMatch() && atLine < numLines) {
-        numCam++;
-        camLineMatch = camLinesRegEx.match(dataList[++atLine]);
+    vector<TrackPoint::Camera*> cameras;
+    QRegularExpression numberMatchRegEx("-?\\d+\\.?\\d*\\e?-?\\d*");
+    QRegularExpression camLinesRegEx("\\d+");
+    while (!dataList[atLine].isEmpty()) {
+      QRegularExpressionMatchIterator camLineIter = camLinesRegEx.globalMatch(dataList[atLine]);
+      TrackPoint::Camera* newCam = new TrackPoint::Camera();
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->camNo = match.captured(0).toInt();
+        }
+      }
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->serialNo = match.captured(0).toInt();
+        }
+      }
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->pixelWidth = match.captured(0).toInt();
+        }
+      }
+      if (camLineIter.hasNext()) {
+        QRegularExpressionMatch match = camLineIter.next();
+        if (match.hasMatch()) {
+          newCam->pixelHeight = match.captured(0).toInt();
+        }
+      }
+      cameras.push_back(newCam);
+      atLine++;
     }
-    numCameras = numCam;
+    numCameras = cameras.size();
+    cams = cameras;
 
     // Find first line where camera combinations are mentioned...
     QRegularExpression combLinesRegEx("([0-9]+_[0-9]+_[0-9]+):\\s+(.+)");
@@ -82,11 +109,11 @@ void CalibrationFile::parseCalibrationData(QString& data) {
             camComb->mean = mean;
             camComb->max = max;
             camComb->numFrames = noFrames;
-            camComb->valid = (noFrames == 55);
+            camComb->status = TrackPoint::CalibrationStatus::OK;
         } else {
             // TODO Do handling when 'NO CONVERGENCE' or other...
             //printf("ERROR: Could not parse: %s\n", string.toLocal8Bit().data());
-            camComb->valid = false;
+            camComb->status = TrackPoint::CalibrationStatus::Failed;
         }
         camCombs.push_back(camComb);
         //printf("Camera Combination: \'%s\'\n", combination.toLocal8Bit().data());
@@ -100,13 +127,12 @@ void CalibrationFile::parseCalibrationData(QString& data) {
     int numGroupsDone = 0;
     QRegularExpression camGroupRegEx("([0-9]+)_([0-9]+)_([0-9]+)\\.dat");
     QRegularExpression camIdRegEx("(?:Camno\\s+)(\\d+)(?:.+\\s)(\\d+)");
-    QRegularExpression camPosRegEx("(?:\\s+X[0,O]: )(-?\\d+\\.?\\d*)(?:\\s+Y[0,O]: )(-?\\d+\\.?\\d*)(?:\\s+Z[0,O]: )(-?\\d+\\.?\\d*)");
-    QRegularExpression camOrientRegEx("(?:\\s+AL: )(-?\\d+\\.?\\d*)(?:\\s+BE: )(-?\\d+\\.?\\d*)(?:\\s+KA: )(-?\\d+\\.?\\d*)");
-    QRegularExpression camExtra01RegEx("(?:C:\\s*)(\\d+\\.?\\d*)(?:\\s+C\\sstd\\.dev\\.:\\s+)(\\d+\\.?\\d*)");
 
     while (numGroupsDone < camCombs.size() && atLine < numLines - 1) {
         QRegularExpressionMatch camGroupMatch = camGroupRegEx.match(dataList[atLine]);
         while (!camGroupMatch.hasMatch() && atLine < numLines - 1) camGroupMatch = camGroupRegEx.match(dataList[++atLine]);
+        if (atLine >= numLines - 1) break;
+        if (!dataList[++atLine].isEmpty()) continue;
         TrackPoint::CameraCombination* atCamComb = nullptr;
         int cam01 = camGroupMatch.captured(1).toInt();
         int cam02 = camGroupMatch.captured(2).toInt();
@@ -115,7 +141,7 @@ void CalibrationFile::parseCalibrationData(QString& data) {
         // Find correct camera-combination for the found group...
         for (int i = 0; i < camCombs.size(); i++) {
             if (camCombs[i]->camNumbers[0] == cam01 && camCombs[i]->camNumbers[1] == cam02 && camCombs[i]->camNumbers[2] == cam03) {
-                if (!camCombs[i]->valid) break;
+                //if (!camCombs[i]->valid) break;
                 atCamComb = camCombs[i];
             }
         }
@@ -129,25 +155,239 @@ void CalibrationFile::parseCalibrationData(QString& data) {
             QRegularExpressionMatch camIdMatch = camIdRegEx.match(dataList[atLine]);
             while (!camIdMatch.hasMatch() && atLine < numLines - 1) camIdMatch = camIdRegEx.match(dataList[++atLine]);
 
-            QRegularExpressionMatch camPosMatch = camPosRegEx.match(dataList[++atLine]);
-            QRegularExpressionMatch camOrientMatch = camOrientRegEx.match(dataList[++atLine]);
-            atLine += 2;
-            QRegularExpressionMatch camExtra01Match = camExtra01RegEx.match(dataList[atLine]);
+
+            //QRegularExpressionMatch camPosMatch = camPosRegEx.match(dataList[++atLine]);
+            //QRegularExpressionMatch camOrientMatch = camOrientRegEx.match(dataList[++atLine]);
+
             TrackPoint::Camera* cam = new TrackPoint::Camera();
-            cam->camNo = camIdMatch.captured(1).toInt();
-            cam->serialNo = camIdMatch.captured(2).toInt();
+            int camNo = camIdMatch.captured(1).toInt();
+            *cam = *cameras[camNo];
 
-            cam->camPos.x = camPosMatch.captured(1).toDouble();
-            cam->camPos.y = camPosMatch.captured(2).toDouble();
-            cam->camPos.z = camPosMatch.captured(3).toDouble();
+            QRegularExpression numberMatchRegEx("-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?");
+            QRegularExpressionMatchIterator camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            // Camera position...
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->camPos.x;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->camPos.y;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->camPos.z;
+                }
+            }
 
-            cam->orient.alpha = camOrientMatch.captured(1).toDouble();
-            cam->orient.beta = camOrientMatch.captured(2).toDouble();
-            cam->orient.kappa = camOrientMatch.captured(3).toDouble();
+            // Camera orientation...
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->orient.alpha;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->orient.beta;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->orient.kappa;
+                }
+            }
 
-            cam->cameraConstant = camExtra01Match.captured(1).toDouble();
-            cam->cameraConstantStdDev = camExtra01Match.captured(2).toDouble();
+            atLine++; // Skip empty line...
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->cameraConstant;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->cameraConstantStdDev;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->XH;
+                }
+            }
 
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->XHStdDev;
+                }
+            }
+
+            // YH, YH Std. Dev., AF and AF Std. Dev.
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->YH;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->YHStdDev;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->AF;
+                }
+            }
+
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->AFStdDev;
+                }
+            }
+
+            // ORT and ORT Std. Dev.
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->ORT;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->ORTStdDev;
+                }
+            }
+
+            // F1, F1 Std.Dev., F2, F2 Std.Dev
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->F1;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->F1StdDev;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->F2;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->F2StdDev;
+                }
+            }
+
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->F3;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->F3StdDev;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->P1;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->P1StdDev;
+                }
+            }
+
+            camLineIter = numberMatchRegEx.globalMatch(dataList[++atLine]);
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->P2;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                camLineIter.next(); // This match is ignored...
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->P2StdDev;
+                }
+            }
+            if (camLineIter.hasNext()) {
+                QRegularExpressionMatch match = camLineIter.next();
+                if (match.hasMatch()) {
+                    istringstream os(match.captured(0).toStdString());
+                    os >> cam->RO;
+                }
+            }
             atCamComb->cameras[i] = cam;
         }
         numGroupsDone++;
@@ -156,9 +396,10 @@ void CalibrationFile::parseCalibrationData(QString& data) {
 
 void CalibrationFile::calculateFov() {
     for (int i = 0; i < camCombs.size(); i++) {
-        if (!camCombs[i]->valid) continue;
+        if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
         for (int cam = 0; cam < 3; cam++) {
             TrackPoint::Camera* thisCam = camCombs[i]->cameras[cam];
+            if (thisCam == nullptr) continue;
             thisCam->fovWidth = (atan(thisCam->pixelWidth / (2 * thisCam->cameraConstant)) * 2);
             thisCam->fovHeight = (atan(thisCam->pixelHeight / (2 * thisCam->cameraConstant)) * 2);
         }

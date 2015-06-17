@@ -61,6 +61,7 @@ public:
     QCheckBox* trackPointEnabled = nullptr;
     QCheckBox* filteredImagePreviewEnabled = nullptr;
     QCheckBox* showCoordinateLabelEnabled = nullptr;
+    QCheckBox* showMinSepCircleEnabled = nullptr;
     QCheckBox* removeDuplicatPointsEnabled = nullptr;
     QLineEdit* thresholdValueEdit = nullptr;
     QLineEdit* subwinValueEdit = nullptr;
@@ -227,7 +228,7 @@ public:
         cameraSettingsButtonPanel->addWidget(quickLoadCameraProperties, 0, 1);
         loadDefaultCameraProperties = new QPushButton(QString("Load Defaults"));
         cameraSettingsButtonPanel->addWidget(loadDefaultCameraProperties, 1, 0, 1, 2);
-        propertiesWidget->setObjectName(QStringLiteral("loadDefaultCameraProperties"));
+        //propertiesWidget->setObjectName(QStringLiteral("loadDefaultCameraProperties"));
         cameraTabLayout->addLayout(cameraSettingsButtonPanel);
 
         cameraWidget->setLayout(cameraTabLayout);

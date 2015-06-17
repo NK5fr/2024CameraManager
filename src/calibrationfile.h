@@ -2,9 +2,19 @@
 #ifndef CALIBRATION_FILE_H
 #define CALIBRATION_FILE_H
 
+#include <iostream>
+#include <sstream>
 #include <QtCore/QtCore>
+#include <qwidget.h>
+#include <qtreeview.h>
+#include <qtableview.h>
+#include <qlayout.h>
+#include <qopenglwidget.h>
+#include <qtreewidget.h>
+#include <qstandarditemmodel.h>
 #include <vector>
 #include "datastructs.h"
+#include "calibrationfileopenglwidget.h"
 
 using namespace std;
 
@@ -18,6 +28,7 @@ public:
     inline int getNumCameras() { return this->numCameras; }
     inline int getNumCombinations() { return this->numCombinations; }
     inline const vector<TrackPoint::CameraCombination*>& getCameraCombinations() { return this->camCombs; }
+    inline const vector<TrackPoint::Camera*>& getCameras() { return this->cams; }
     inline const QString& getFileContains() { return this->fileContain; }
 
 private:
@@ -26,6 +37,7 @@ private:
     int numCameras;
     int numCombinations;
     vector<TrackPoint::CameraCombination*> camCombs;
+    vector<TrackPoint::Camera*> cams;
 
     void readCalibrationFile();
     void parseCalibrationData(QString& data);

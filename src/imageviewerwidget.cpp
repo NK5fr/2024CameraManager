@@ -7,6 +7,14 @@ ImageViewerWidget::ImageViewerWidget(QString path, QString filename) : path(path
     setImageFromFile(fullPath);
     setWidget(&imageWidget);
     setWindowTitle(filename);
+
+    imageFiles = QDir(path).entryInfoList(QStringList() << "*.pgm", QDir::Filter::Files);
+    for (int i = 0; i < imageFiles.size(); i++) {
+        if (imageFiles[i].fileName() == filename) {
+            selectedImageInFolder = i;
+            break;
+        }
+    }
 }
 
 ImageViewerWidget::~ImageViewerWidget() {
@@ -33,4 +41,7 @@ void ImageViewerWidget::mousePressEvent(QMouseEvent* event) {
 }
 
 void ImageViewerWidget::wheelEvent(QWheelEvent* event) {
+    selectedImageInFolder = max(0, min((event->delta() / 120) + selectedImageInFolder, imageFiles.size() - 1));
+    setImageFromFile(imageFiles[selectedImageInFolder].absoluteFilePath());
+    setWindowTitle(imageFiles[selectedImageInFolder].fileName());
 }

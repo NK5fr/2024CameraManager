@@ -2,6 +2,7 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
+
 struct Vector3d {
     double x;
     double y;
@@ -16,6 +17,10 @@ struct Orientation {
 
 namespace TrackPoint {
     //struct 
+
+    enum CalibrationStatus {
+        OK, Warning, Failed
+    };
 
     struct PointInCamera {
         PointInCamera() {
@@ -79,7 +84,7 @@ namespace TrackPoint {
         double mean;
         double max;
         int numFrames;
-        bool valid;
+        CalibrationStatus status;
     };
 }
 
