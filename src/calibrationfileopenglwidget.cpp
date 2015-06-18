@@ -50,7 +50,9 @@ void CalibrationFileOpenGLWidget::paintGL() {
     glLineWidth(1);
 
     glColor3f(1, 0, 0);
-    glPointSize(4);
+    const double factor = 400;
+    double pointSize = ((double) width() / factor) * ((double) height() / factor);
+    glPointSize(max(1.0, pointSize));
     vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
     for (int i = 0; i < camComb.size(); i++) {
         if (camComb[i]->cameras[0] != nullptr && camComb[i] != selectedCameraCombination) {
@@ -65,7 +67,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
             //QPoint pos(2, yPos);
             //painter.fillRect(pos.x(), pos.y(), 105, 12, Qt::white);
             //painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
-            glPointSize(8);
+            glPointSize(max(1.0, pointSize * 2));
             glColor3f(1, 1, 0);
             glBegin(GL_POINTS);
             for (int j = 0; j < 3; j++) {
@@ -75,7 +77,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
         }
     }
     if (selectedCamera >= 0) {
-        glPointSize(8);
+        glPointSize(max(1.0, pointSize * 2));
         glColor3f(1, 1, 0);
         glBegin(GL_POINTS);
         for (int i = 0; i < camComb.size(); i++) {
