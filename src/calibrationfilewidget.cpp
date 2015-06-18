@@ -93,7 +93,7 @@ void CalibrationFileWidget::initUI() {
     updateCameraTable();
 
     combinationList = new QTreeWidget(this);
-    combinationList->setHeaderLabels(QStringList() << "Combination" << "S0" << "# of frames" << "");
+    combinationList->setHeaderLabels(QStringList() << "Combination" << "S0" << "# of frames");
     combinationList->setSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Expanding);
 
     updateCombinationTable();
@@ -132,13 +132,11 @@ void CalibrationFileWidget::updateCombinationTable() {
         } else {
             item->setBackgroundColor(0, okColor);
         }
-        if (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 1))->text().toDouble()) {
-            item->setBackgroundColor(1, warningColor);
-        } else if (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 2))->text().toDouble()) {
-            item->setBackgroundColor(1, failedColor);
-        } else {
-            item->setBackgroundColor(1, okColor);
-        }
+        bool warningS0 = (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 1))->text().toDouble());
+        bool failedS0 = (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 2))->text().toDouble());
+        if (warningS0) item->setBackgroundColor(1, warningColor);
+        if (failedS0) item->setBackgroundColor(1, failedColor);
+        if (!warningS0 && !failedS0) item->setBackgroundColor(1, okColor);
         if (camComb[i]->numFrames < ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(4), 1))->text().toDouble()) {
             item->setBackgroundColor(2, failedColor);
         } else {
