@@ -7,10 +7,7 @@ static const double PI = 3.1415926535;
 WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points, QString calibrationPath) : QOpenGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
     coordinatesShown = 0;
     calibFile = new CalibrationFile(calibrationPath);
-
     initializingCameras();
-    //initializeGL();
-    
     numShowedPreceedingPoints = 15;
     showFovCone = true;
     showPreceedingPoints = false;
@@ -28,14 +25,11 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points
     camDistance = 4000; 
     coneSize = 500;
     setMouseTracking(true);
-    grabKeyboard();
     installEventFilter(this);
-    //update();
 }
 
 WidgetGL::WidgetGL(SocketViewerWidget* socket) : QOpenGLWidget(socket), svw(socket) {
     calibFile = nullptr;
-    //initializeGL();
     numShowedPreceedingPoints = 30;
     coordinatesShown = 0;
     showFovCone = true;
@@ -54,9 +48,7 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket) : QOpenGLWidget(socket), svw(sock
     camDistance = 4000;
     coneSize = 500;
     setMouseTracking(true);
-    grabKeyboard();
     installEventFilter(this);
-    //update();
 }
 
 WidgetGL::~WidgetGL() {
