@@ -11,7 +11,7 @@
 class CalibrationFileWidget : public QWidget {
     Q_OBJECT
 public:
-    CalibrationFileWidget(CalibrationFile* file);
+    CalibrationFileWidget(QWidget* parent, CalibrationFile* file);
 
     void initUI();
 

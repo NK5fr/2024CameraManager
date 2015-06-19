@@ -332,7 +332,7 @@ void MainWindow::menuBarClicked(QAction* action) {
     else if (action->text() == "Hide ToolBar")
         ui->toolBar->setVisible(!bar->getHideToolBarWidget()->isChecked());
     else if (action->text() == "Connect to Server") {
-        SocketViewerWidget* svw = new SocketViewerWidget();
+        SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget);
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
     }
@@ -407,7 +407,7 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         cfvw->showMaximized();
     } else if (fileName.contains("socket")){
         /* Socket file, with 3D datas */
-        SocketViewerWidget* svw = new SocketViewerWidget(selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
+        SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget, selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
         //ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
@@ -416,7 +416,7 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         calibrationPath = selectedProjectPath + "/" + fileName;
         //CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
         CalibrationFile* calibFile = new CalibrationFile(calibrationPath);
-        CalibrationFileWidget* calibWidget = new CalibrationFileWidget(calibFile);
+        CalibrationFileWidget* calibWidget = new CalibrationFileWidget(ui->centralwidget, calibFile);
         ui->centralwidget->addSubWindow(calibWidget);
         calibWidget->showMaximized();
     } else if (fileName.endsWith(".pgm")){

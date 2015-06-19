@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "socketfilereaderthread.h"
 #include "widgetgl.h"
 
 using namespace std;
@@ -36,8 +35,8 @@ struct Vector3d; // Implemented in datastructs.h
 class SocketViewerWidget : public QMdiSubWindow {
     Q_OBJECT
 public:
-    SocketViewerWidget(QString path, QString nameFile, QString calibPath); // Loading from file
-    SocketViewerWidget(); // Loading from network (Shows dialogbox for IP and Port input)
+    SocketViewerWidget(QWidget* parent, QString path, QString nameFile, QString calibPath); // Loading from file
+    SocketViewerWidget(QWidget* parent); // Loading from network (Shows dialogbox for IP and Port input)
     ~SocketViewerWidget();
 
     void displayToolTip(CoordinatesLabel *label);

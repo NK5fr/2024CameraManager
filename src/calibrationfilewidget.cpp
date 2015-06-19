@@ -1,7 +1,7 @@
 
 #include "calibrationfilewidget.h"
 
-CalibrationFileWidget::CalibrationFileWidget(CalibrationFile* calibFile) : QWidget() {
+CalibrationFileWidget::CalibrationFileWidget(QWidget* parent, CalibrationFile* calibFile) : QWidget(parent) {
     this->calibFile = calibFile;
     failedColor = QColor(255, 0, 0, 150);
     warningColor = QColor(255, 255, 0, 150);
@@ -18,56 +18,56 @@ void CalibrationFileWidget::initUI() {
     leftLayout->addWidget(combinationPreviewWidget);
 
     QVBoxLayout* subLeftLayout = new QVBoxLayout();
-    filterList = new QTreeWidget();
-    filterList->setHeaderLabels(QStringList() << "" << "Warning value" << "Max value");
-    QTreeWidgetItem* s0Filter = new QTreeWidgetItem();
+    filterList = new QTreeWidget(this);
+    filterList->setHeaderLabels(QStringList() << "" << "Warning value" << "Failed value");
+    QTreeWidgetItem* s0Filter = new QTreeWidgetItem(filterList);
     s0Filter->setText(0, "S0");
     filterList->addTopLevelItem(s0Filter);
-    QLineEdit* s0WarningEdit = new QLineEdit("0.13");
+    QLineEdit* s0WarningEdit = new QLineEdit("0.13", this);
     s0WarningEdit->setFrame(false);
     connect(s0WarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
-    QLineEdit* s0FailedEdit = new QLineEdit("10");
+    QLineEdit* s0FailedEdit = new QLineEdit("10", this);
     s0FailedEdit->setFrame(false);
     connect(s0FailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(s0Filter, 1, s0WarningEdit);
     filterList->setItemWidget(s0Filter, 2, s0FailedEdit);
-    QTreeWidgetItem* cStdDevFilter = new QTreeWidgetItem();
+    QTreeWidgetItem* cStdDevFilter = new QTreeWidgetItem(filterList);
     cStdDevFilter->setText(0, "C std. dev.");
     filterList->addTopLevelItem(cStdDevFilter);
-    QLineEdit* cStdDevWarningEdit = new QLineEdit("2");
+    QLineEdit* cStdDevWarningEdit = new QLineEdit("2", this);
     cStdDevWarningEdit->setFrame(false);
     connect(cStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
-    QLineEdit* cStdDevFailedEdit = new QLineEdit("5");
+    QLineEdit* cStdDevFailedEdit = new QLineEdit("5", this);
     cStdDevFailedEdit->setFrame(false);
     connect(cStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(cStdDevFilter, 1, cStdDevWarningEdit);
     filterList->setItemWidget(cStdDevFilter, 2, cStdDevFailedEdit);
-    QTreeWidgetItem* XHStdDevFilter = new QTreeWidgetItem();
+    QTreeWidgetItem* XHStdDevFilter = new QTreeWidgetItem(filterList);
     XHStdDevFilter->setText(0, "XH std. dev.");
     filterList->addTopLevelItem(XHStdDevFilter);
-    QLineEdit* XHStdDevWarningEdit = new QLineEdit("2");
+    QLineEdit* XHStdDevWarningEdit = new QLineEdit("2", this);
     XHStdDevWarningEdit->setFrame(false);
     connect(XHStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
-    QLineEdit* XHStdDevFailedEdit = new QLineEdit("5");
+    QLineEdit* XHStdDevFailedEdit = new QLineEdit("5", this);
     XHStdDevFailedEdit->setFrame(false);
     connect(XHStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(XHStdDevFilter, 1, XHStdDevWarningEdit);
     filterList->setItemWidget(XHStdDevFilter, 2, XHStdDevFailedEdit);
-    QTreeWidgetItem* YHStdDevFilter = new QTreeWidgetItem();
+    QTreeWidgetItem* YHStdDevFilter = new QTreeWidgetItem(filterList);
     YHStdDevFilter->setText(0, "YH std. dev.");
     filterList->addTopLevelItem(YHStdDevFilter);
-    QLineEdit* YHStdDevWarningEdit = new QLineEdit("2");
+    QLineEdit* YHStdDevWarningEdit = new QLineEdit("2", this);
     YHStdDevWarningEdit->setFrame(false);
     connect(YHStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
-    QLineEdit* YHStdDevFailedEdit = new QLineEdit("5");
+    QLineEdit* YHStdDevFailedEdit = new QLineEdit("5", this);
     YHStdDevFailedEdit->setFrame(false);
     connect(YHStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(YHStdDevFilter, 1, YHStdDevWarningEdit);
     filterList->setItemWidget(YHStdDevFilter, 2, YHStdDevFailedEdit);
-    QTreeWidgetItem* noFramesFilter = new QTreeWidgetItem();
+    QTreeWidgetItem* noFramesFilter = new QTreeWidgetItem(filterList);
     noFramesFilter->setText(0, "# of frames");
     filterList->addTopLevelItem(noFramesFilter);
-    QLineEdit* noFramesWarningEdit = new QLineEdit("55");
+    QLineEdit* noFramesWarningEdit = new QLineEdit("55", this);
     noFramesWarningEdit->setFrame(false);
     connect(noFramesWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(noFramesFilter, 1, noFramesWarningEdit);
@@ -184,7 +184,6 @@ void CalibrationFileWidget::updateCameraTable() {
     }
 }
 
-
 void CalibrationFileWidget::updateFiltersCamerasOnly(TrackPoint::CameraCombination* comb) {
     QTreeWidgetItem* invisItem = filterList->invisibleRootItem();
     comb->status = TrackPoint::CalibrationStatus::OK;
@@ -218,42 +217,6 @@ void CalibrationFileWidget::updateFiltersCamerasOnly(TrackPoint::CameraCombinati
         }
     }
 }
-
-/*
-void CalibrationFileWidget::updateFilters() {
-    vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
-    QTreeWidgetItem* invisItem = filterList->invisibleRootItem();
-    for (int i = 0; i < camComb.size(); i++) {
-        TrackPoint::CameraCombination* comb = camComb[i];
-        for (int j = 0; j < 3; j++) {
-            if (comb->cameras[j] != nullptr) {
-                double warningCStd = ((QLineEdit*) filterList->itemWidget(invisItem->child(2), 1))->text().toDouble();
-                double maxCStd = ((QLineEdit*) filterList->itemWidget(invisItem->child(2), 2))->text().toDouble();
-                if (comb->cameras[j]->cameraConstantStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(1), 1))->text().toDouble()) {
-                    comb->status = TrackPoint::CalibrationStatus::Warning;
-                }
-                if (comb->cameras[j]->cameraConstantStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(1), 2))->text().toDouble()) {
-                    comb->status = TrackPoint::CalibrationStatus::Failed;
-                    break;
-                }
-                if (comb->cameras[j]->XHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(2), 1))->text().toDouble()) {
-                    comb->status = TrackPoint::CalibrationStatus::Warning;
-                }
-                if (comb->cameras[j]->XHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(2), 2))->text().toDouble()) {
-                    comb->status = TrackPoint::CalibrationStatus::Failed;
-                    break;
-                }
-                if (comb->cameras[j]->YHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(3), 1))->text().toDouble()) {
-                    comb->status = TrackPoint::CalibrationStatus::Warning;
-                }
-                if (comb->cameras[j]->YHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(3), 2))->text().toDouble()) {
-                    comb->status = TrackPoint::CalibrationStatus::Failed;
-                    break;
-                }
-            }
-        }
-    }
-}*/
 
 void CalibrationFileWidget::cameraClicked(QTreeWidgetItem* item, int column) {
     combinationPreviewWidget->setSelectedCamera(item->text(0).toInt());

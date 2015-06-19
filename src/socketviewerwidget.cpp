@@ -26,8 +26,8 @@
 using namespace std;
 
 /* Constructor */
-SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString calibPath)
-    : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0) {
+SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString filename, QString calibPath)
+    : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0), QMdiSubWindow(parent) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
     fileContain = new QPlainTextEdit();
     fileContain->setReadOnly(true);
@@ -50,16 +50,15 @@ SocketViewerWidget::SocketViewerWidget(QString path, QString filename, QString c
     extractDataFromText();
     disconnectButton->hide();
     show3DView();
-
     setWindowTitle(filename);
 }
 
-SocketViewerWidget::SocketViewerWidget() {
+SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) {
     fileContain = new QPlainTextEdit();
     fileContain->setReadOnly(true);
     fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
     fileContain->insertPlainText(fullText);
-    fileContain->setWindowTitle(filename);
+    //fileContain->setWindowTitle(filename);
     fileContain->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
     rowNumber = 1;

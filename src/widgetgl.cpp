@@ -333,6 +333,9 @@ void WidgetGL::paintGL() {
     glLineWidth(1);
     if (showCoordinateSystem) {
         const double gridSize = 1000;
+        const double coneRadius = 50;
+        const double coneHeight = 100;
+        const int coneDivisions = 10;
         // X Axis
         glColor3f(1, 0, 0);
         glBegin(GL_LINES);
@@ -485,7 +488,7 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
 
         }
     }
-    return false;
+    return QOpenGLWidget::eventFilter(obj, event);
 }
 
 void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
