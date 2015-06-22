@@ -97,11 +97,8 @@ void CalibrationFileOpenGLWidget::paintGL() {
 
     vector<TrackPoint::Camera*> cams = calibFile->getCameras();
     const float cameraAreaMargin = 100; // 10 cm
-    float screenFactorAbs = abs((float) width() / screenArea.width());
     float screenFactorX = (float) width() / screenArea.width();
     float screenFactorY = (float) height() / screenArea.height();
-    int centerOffsetX = (screenArea.center().x() * screenFactorX);
-    int centerOffsetY = (screenArea.center().y() * screenFactorY);
     int leftBottomOffsetX = screenArea.left() * screenFactorX;
     int leftBottomOffsetY = screenArea.top() * screenFactorY;
     for (int i = 0; i < cams.size(); i++) {
