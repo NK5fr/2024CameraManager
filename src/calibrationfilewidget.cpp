@@ -17,6 +17,7 @@ void CalibrationFileWidget::initUI() {
     combinationPreviewWidget = new CalibrationFileOpenGLWidget(calibFile);
     leftLayout->addWidget(combinationPreviewWidget);
 
+    const bool filterOnTextChanged = false;
     QVBoxLayout* subLeftLayout = new QVBoxLayout();
     filterList = new QTreeWidget(this);
     filterList->setHeaderLabels(QStringList() << "" << "Warning value" << "Failed value");
@@ -25,10 +26,12 @@ void CalibrationFileWidget::initUI() {
     filterList->addTopLevelItem(s0Filter);
     QLineEdit* s0WarningEdit = new QLineEdit("0.13", this);
     s0WarningEdit->setFrame(false);
-    connect(s0WarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(s0WarningEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(s0WarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     QLineEdit* s0FailedEdit = new QLineEdit("10", this);
     s0FailedEdit->setFrame(false);
-    connect(s0FailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(s0FailedEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(s0FailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(s0Filter, 1, s0WarningEdit);
     filterList->setItemWidget(s0Filter, 2, s0FailedEdit);
     QTreeWidgetItem* cStdDevFilter = new QTreeWidgetItem(filterList);
@@ -36,10 +39,12 @@ void CalibrationFileWidget::initUI() {
     filterList->addTopLevelItem(cStdDevFilter);
     QLineEdit* cStdDevWarningEdit = new QLineEdit("2", this);
     cStdDevWarningEdit->setFrame(false);
-    connect(cStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(cStdDevWarningEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(cStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     QLineEdit* cStdDevFailedEdit = new QLineEdit("5", this);
     cStdDevFailedEdit->setFrame(false);
-    connect(cStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(cStdDevFailedEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(cStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(cStdDevFilter, 1, cStdDevWarningEdit);
     filterList->setItemWidget(cStdDevFilter, 2, cStdDevFailedEdit);
     QTreeWidgetItem* XHStdDevFilter = new QTreeWidgetItem(filterList);
@@ -47,10 +52,12 @@ void CalibrationFileWidget::initUI() {
     filterList->addTopLevelItem(XHStdDevFilter);
     QLineEdit* XHStdDevWarningEdit = new QLineEdit("2", this);
     XHStdDevWarningEdit->setFrame(false);
-    connect(XHStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(XHStdDevWarningEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(XHStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     QLineEdit* XHStdDevFailedEdit = new QLineEdit("5", this);
     XHStdDevFailedEdit->setFrame(false);
-    connect(XHStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(XHStdDevFailedEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(XHStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(XHStdDevFilter, 1, XHStdDevWarningEdit);
     filterList->setItemWidget(XHStdDevFilter, 2, XHStdDevFailedEdit);
     QTreeWidgetItem* YHStdDevFilter = new QTreeWidgetItem(filterList);
@@ -58,10 +65,12 @@ void CalibrationFileWidget::initUI() {
     filterList->addTopLevelItem(YHStdDevFilter);
     QLineEdit* YHStdDevWarningEdit = new QLineEdit("2", this);
     YHStdDevWarningEdit->setFrame(false);
-    connect(YHStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(YHStdDevWarningEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(YHStdDevWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     QLineEdit* YHStdDevFailedEdit = new QLineEdit("5", this);
     YHStdDevFailedEdit->setFrame(false);
-    connect(YHStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(YHStdDevFailedEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(YHStdDevFailedEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(YHStdDevFilter, 1, YHStdDevWarningEdit);
     filterList->setItemWidget(YHStdDevFilter, 2, YHStdDevFailedEdit);
     QTreeWidgetItem* noFramesFilter = new QTreeWidgetItem(filterList);
@@ -69,7 +78,8 @@ void CalibrationFileWidget::initUI() {
     filterList->addTopLevelItem(noFramesFilter);
     QLineEdit* noFramesWarningEdit = new QLineEdit("55", this);
     noFramesWarningEdit->setFrame(false);
-    connect(noFramesWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
+    if (filterOnTextChanged) connect(noFramesWarningEdit, SIGNAL(textChanged(const QString&)), this, SLOT(filtersChanged()));
+    else connect(noFramesWarningEdit, SIGNAL(returnPressed()), this, SLOT(filtersChanged()));
     filterList->setItemWidget(noFramesFilter, 1, noFramesWarningEdit);
     filterList->setSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
     subLeftLayout->addWidget(filterList);
@@ -93,7 +103,8 @@ void CalibrationFileWidget::initUI() {
     updateCameraTable();
 
     combinationList = new QTreeWidget(this);
-    combinationList->setHeaderLabels(QStringList() << "Combination" << "S0" << "# of frames");
+    combinationList->setHeaderLabels(QStringList() << "Combination" << "S0" << "# frames");
+    combinationList->setColumnCount(3);
     combinationList->setSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Expanding);
 
     updateCombinationTable();

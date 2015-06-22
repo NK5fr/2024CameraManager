@@ -47,6 +47,7 @@ public:
     inline QPlainTextEdit* getFileContain() { return this->fileContain; }
     inline QSpinBox* getSpinBox() { return this->spinBox; }
     inline WidgetGL* getWidgetGL() { return this->widgetGL; }
+    inline int getRowNumber() { return this->rowNumber; }
     inline vector<vector<Vector3d*>>& getPointData() { return this->pointData; }
     inline void setLineNumbers(int lineNumbers) { this->linesNumber = lineNumbers; }
 

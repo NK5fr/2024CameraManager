@@ -145,7 +145,7 @@ public:
 
         CamerasWidget_2 = new QDockWidget(MainWindow);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
-        CamerasWidget_2->setMinimumSize(QSize(500, 0));
+        CamerasWidget_2->setMinimumSize(QSize(200, 0));
         CamerasWidget_2->setBaseSize(QSize(750, 0));
         CamerasWidget_2->setContextMenuPolicy(Qt::DefaultContextMenu);
         CamerasWidget_2->setAcceptDrops(false);

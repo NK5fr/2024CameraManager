@@ -58,6 +58,10 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) 
     fileContain->setReadOnly(true);
     fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
     fileContain->insertPlainText(fullText);
+    fileContain->setFont(QFont("Courier", 9));
+    const int tabStop = 16;  // 16 characters
+    QFontMetrics metrics(fileContain->font());
+    fileContain->setTabStopWidth(tabStop * metrics.width(' '));
     //fileContain->setWindowTitle(filename);
     fileContain->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
@@ -504,7 +508,7 @@ void HostAddressDialog::readSocketLine() {
         vector<Vector3d*> pos = socketWidget->readLine(list[i]);
         if (pos.size() > 0) {
             //list[i].remove("\n");
-            socketWidget->getFileContain()->insertPlainText(list[i]);
+            socketWidget->getFileContain()->insertPlainText(QString("%1  \t").arg((socketWidget->getRowNumber() - 1), 6, 10, QChar(' ')) + list[i] + "\n");
             socketWidget->appendPoints(pos);
 
         } else {

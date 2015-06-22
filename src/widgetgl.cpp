@@ -360,66 +360,107 @@ void WidgetGL::paintGL() {
 
     // Drawing the floor with a grid in grey
     glLineWidth(1);
-    const float color = 0.4f;
+    const float color = 0.2f;
+    const float colorMeter = 0.4f;
     const double maxLength = 20000;
     const double lengthDivs = 100;
     glColor4f(1, 1, 1, color);
-    const bool isFadingColorFloorEdge = true;
+    const bool isFadingColorFloorEdge = false;
+    const bool isGridByMeter = true;
     const double rotYThreshold = 1 / (180 / PI); // Threshold to determine if camera is edge on the floor, obstructing the coordinate axis
     if (showFloorLines && ((rotY > rotYThreshold || rotY < -rotYThreshold) || !showCoordinateSystem)) {
-        glBegin(GL_LINE_STRIP);
-        if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-        glVertex3d(0, maxLength / 2, 0);
-        if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color);
-        glVertex3d(0, 0, 0);
-        if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-        glVertex3d(0, -(maxLength / 2), 0);
-        glEnd();
-        glBegin(GL_LINE_STRIP);
-        if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-        glVertex3d(maxLength / 2, 0, 0);
-        if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color);
-        glVertex3d(0, 0, 0);
-        if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-        glVertex3d(-(maxLength / 2), 0, 0);
-        glEnd();
+        
+        if (isGridByMeter) {
+            glBegin(GL_LINE_STRIP);
+            glColor4f(1, 1, 1, colorMeter);
+            glVertex3d(0, maxLength / 2, 0);
+            glVertex3d(0, -(maxLength / 2), 0);
+            glEnd();
+            glBegin(GL_LINE_STRIP);
+            glColor4f(1, 1, 1, colorMeter);
+            glVertex3d(maxLength / 2, 0, 0);
+            glVertex3d(-(maxLength / 2), 0, 0);
+            glEnd();
+        } else {
+            glBegin(GL_LINE_STRIP);
+            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+            glVertex3d(0, maxLength / 2, 0);
+            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color);
+            glVertex3d(0, 0, 0);
+            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+            glVertex3d(0, -(maxLength / 2), 0);
+            glEnd();
+            glBegin(GL_LINE_STRIP);
+            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+            glVertex3d(maxLength / 2, 0, 0);
+            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color);
+            glVertex3d(0, 0, 0);
+            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+            glVertex3d(-(maxLength / 2), 0, 0);
+            glEnd();
+        }
         for (int i = 1; i < ((int) (maxLength / 2) / lengthDivs); i++) {
-            glBegin(GL_LINE_STRIP);
-            double temp = (1 - (i / ((maxLength / 2) / lengthDivs)));
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(i * lengthDivs, maxLength / 2, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
-            glVertex3d(i * lengthDivs, 0, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(i * lengthDivs, -(maxLength / 2), 0);
-            glEnd();
+            if (!isFadingColorFloorEdge) glColor4f(1, 1, 1, color);
+            if (((int) (i * lengthDivs) % 1000 != 0)) {
+                glBegin(GL_LINE_STRIP);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(i * lengthDivs, maxLength / 2, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
+                glVertex3d(i * lengthDivs, 0, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(i * lengthDivs, -(maxLength / 2), 0);
+                glEnd();
 
-            glBegin(GL_LINE_STRIP);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(-i * lengthDivs, maxLength / 2, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
-            glVertex3d(-i * lengthDivs, 0, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(-i * lengthDivs, -(maxLength / 2), 0);
-            glEnd();
+                glBegin(GL_LINE_STRIP);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(-i * lengthDivs, maxLength / 2, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
+                glVertex3d(-i * lengthDivs, 0, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(-i * lengthDivs, -(maxLength / 2), 0);
+                glEnd();
 
-            glBegin(GL_LINE_STRIP);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(maxLength / 2, i * lengthDivs, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
-            glVertex3d(0, i * lengthDivs, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(-(maxLength / 2), i * lengthDivs, 0);
-            glEnd();
+                glBegin(GL_LINE_STRIP);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(maxLength / 2, i * lengthDivs, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
+                glVertex3d(0, i * lengthDivs, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(-(maxLength / 2), i * lengthDivs, 0);
+                glEnd();
 
-            glBegin(GL_LINE_STRIP);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(maxLength / 2, -i * lengthDivs, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
-            glVertex3d(0, -i * lengthDivs, 0);
-            if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
-            glVertex3d(-(maxLength / 2), -i * lengthDivs, 0);
-            glEnd();
+                glBegin(GL_LINE_STRIP);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(maxLength / 2, -i * lengthDivs, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, color * (1 - (i / ((maxLength / 2) / lengthDivs))));
+                glVertex3d(0, -i * lengthDivs, 0);
+                if (isFadingColorFloorEdge) glColor4f(1, 1, 1, 0);
+                glVertex3d(-(maxLength / 2), -i * lengthDivs, 0);
+                glEnd();
+            }
+
+            if (isGridByMeter && ((int) (i * lengthDivs) % 1000 == 0)) {
+                glColor4f(1, 1, 1, colorMeter);
+                glBegin(GL_LINE_STRIP);
+                glVertex3d(i * lengthDivs, maxLength / 2, 0);
+                glVertex3d(i * lengthDivs, -(maxLength / 2), 0);
+                glEnd();
+
+                glBegin(GL_LINE_STRIP);
+                glVertex3d(-i * lengthDivs, maxLength / 2, 0);
+                glVertex3d(-i * lengthDivs, -(maxLength / 2), 0);
+                glEnd();
+
+                glBegin(GL_LINE_STRIP);
+                glVertex3d(maxLength / 2, i * lengthDivs, 0);
+                glVertex3d(-(maxLength / 2), i * lengthDivs, 0);
+                glEnd();
+
+                glBegin(GL_LINE_STRIP);
+                glVertex3d(maxLength / 2, -i * lengthDivs, 0);
+                glVertex3d(-(maxLength / 2), -i * lengthDivs, 0);
+                glEnd();
+            }
         }
     }
 }
