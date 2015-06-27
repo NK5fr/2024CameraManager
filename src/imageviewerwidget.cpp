@@ -31,7 +31,8 @@ void ImageViewerWidget::setImageFromFile(const QString& filepath) {
     QPixmap image;
     bool loaded = image.load(filepath);
     if (loaded) {
-        imageWidget.getImageWidget()->setImage(image); 
+        imageWidget.getImageWidget()->setImage(image);
+        imageWidget.update();
     } else {
         qDebug("Image could not be loaded...\n");
     }
@@ -41,7 +42,10 @@ void ImageViewerWidget::mousePressEvent(QMouseEvent* event) {
 }
 
 void ImageViewerWidget::wheelEvent(QWheelEvent* event) {
-    selectedImageInFolder = max(0, min((event->delta() / 120) + selectedImageInFolder, imageFiles.size() - 1));
-    setImageFromFile(imageFiles[selectedImageInFolder].absoluteFilePath());
-    setWindowTitle(imageFiles[selectedImageInFolder].fileName());
+    int tempSelectedImageInFolder = max(0, min((event->delta() / 120) + selectedImageInFolder, imageFiles.size() - 1));
+    if (tempSelectedImageInFolder != selectedImageInFolder) {
+        selectedImageInFolder = tempSelectedImageInFolder;
+        setImageFromFile(imageFiles[selectedImageInFolder].absoluteFilePath());
+        setWindowTitle(imageFiles[selectedImageInFolder].fileName());
+    }
 }
