@@ -468,7 +468,7 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
             ui->projectTree->sortByColumn(3, Qt::AscendingOrder); // Sort by filetype...
             //ui->projectTree->resizeColumnToContents(0);
             /* Expand trackpoint folder, his child named application, and his grandchild named input */
-            ui->projectTree->invisibleRootItem()->child(0)->setExpanded(true);  // feiler her på setExpanded - GS 2015-01-19
+            //ui->projectTree->invisibleRootItem()->child(0)->setExpanded(true);  // feiler her på setExpanded - GS 2015-01-19
             /*
             if (ui->projectTree->invisibleRootItem()->child(0)->child(0) != NULL && ui->projectTree->invisibleRootItem()->child(0)->child(0)->text(0) == "application"){
                 ui->projectTree->invisibleRootItem()->child(0)->child(0)->setExpanded(true);

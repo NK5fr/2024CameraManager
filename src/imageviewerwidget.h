@@ -34,7 +34,7 @@ public:
     ~ImageViewerWidget();
 
 protected:
-    void mousePressEvent(QMouseEvent* mouseEvent);
+    //void mousePressEvent(QMouseEvent* mouseEvent);
     void wheelEvent(QWheelEvent* event);
 
 private:

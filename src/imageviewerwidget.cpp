@@ -38,8 +38,9 @@ void ImageViewerWidget::setImageFromFile(const QString& filepath) {
     }
 }
 
+/*
 void ImageViewerWidget::mousePressEvent(QMouseEvent* event) {
-}
+}*/
 
 void ImageViewerWidget::wheelEvent(QWheelEvent* event) {
     int tempSelectedImageInFolder = max(0, min((event->delta() / 120) + selectedImageInFolder, imageFiles.size() - 1));
