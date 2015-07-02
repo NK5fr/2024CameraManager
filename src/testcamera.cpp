@@ -1,9 +1,5 @@
+
 #include "testcamera.h"
-#include <QPainter>
-#include <QDebug>
-#include <QThread>
-#include <stdlib.h>
-//#include "sleeper.h"
 
 TestCamera::TestCamera(std::string n)
     : AbstractCamera(), n(n), capturing(false), framerate(5), brightness(128), hue(120), crop(400) {

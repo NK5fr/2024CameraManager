@@ -9,6 +9,10 @@
 
 #include <string>
 #include <QImage>
+#include <QPainter>
+#include <QDebug>
+#include <QThread>
+#include <stdlib.h>
 #include "abstractcamera.h"
 
 using namespace CameraManager;

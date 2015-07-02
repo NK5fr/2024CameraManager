@@ -177,7 +177,10 @@ void CalibrationFileWidget::updateCameraTable() {
         int warning = 0;
         int failed = 0;
         for (int j = 0; j < camComb.size(); j++) {
-            if (cams[i]->camNo != camComb[j]->camNumbers[0] && cams[i]->camNo != camComb[j]->camNumbers[1] && cams[i]->camNo != camComb[j]->camNumbers[2]) continue;
+            if (cams[i]->camNo != camComb[j]->camNumbers[0] && cams[i]->camNo != camComb[j]->camNumbers[1] && cams[i]->camNo != camComb[j]->camNumbers[2]) {
+                failed++;
+                continue;
+            }
             if (camComb[j]->status == TrackPoint::OK) {
                 ok++;
             } else if (camComb[j]->status == TrackPoint::Warning) {
@@ -190,7 +193,7 @@ void CalibrationFileWidget::updateCameraTable() {
         item->setText(0, QString::number(cams[i]->camNo));
         item->setText(1, QString::number(ok));
         item->setText(2, QString::number(warning));
-        item->setText(3, QString::number(failed));
+        item->setText(3, QString::number(failed) + "/" + QString::number(camComb.size()));
         cameraTable->addTopLevelItem(item);
     }
 }

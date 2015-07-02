@@ -40,15 +40,15 @@ namespace OpenGL {
         inline void bind() { glBindTexture(GL_TEXTURE_2D, textureId); };
         inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); };
 
-        inline GLuint getTextureId() { return this->textureId; }
-        inline GLuint getTextureWidth() { return this->textureWidth; }
-        inline GLuint getTextureHeight() { return this->textureHeight; }
+        inline GLuint getTextureId() const { return this->textureId; }
+        inline GLuint getTextureWidth() const { return this->textureWidth; }
+        inline GLuint getTextureHeight() const { return this->textureHeight; }
         inline TextureFilter getTextureMagFilter() { return this->textureMagFilter; }
         inline TextureFilter getTextureMinFilter() { return this->textureMinFilter; }
         inline TextureWrap getTextureWrap() { return this->textureWrap; }
         inline PixelFormat getPixelFormat() { return this->pixelFormat; }
         inline DataBuffer* getImageBuffer() { return &this->imageBuffer; }
-        inline unsigned int getTextureSize() { return this->imageBuffer.getUsedBuffer(); }
+        inline unsigned int getTextureSize() const { return this->imageBuffer.getUsedBuffer(); }
 
     private:
         GLuint textureId;

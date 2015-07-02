@@ -1,47 +1,25 @@
-#include <QDebug>
-#include <QPainter>
-#include <QMouseEvent>
-#include <iostream>
-#if defined(WIN64) || defined(WIN32)
-#include <FlyCapture2.h>
-#endif
-#if defined(__unix__) || defined(__linux__)
-#include <include/FlyCapture2.h>
-#endif
-#include "qvideowidget.h"
-#include "mainwindow.h"
 
-using namespace std;
-using namespace FlyCapture2;
+#include "imageopenglwidget.h"
 
-QVideoWidget::QVideoWidget(QWidget *parent) : QOpenGLWidget(parent), lastSize(0, 0), active(this->windowState() & Qt::WindowActive), mouseIn(underMouse()) {
-    setMouseTracking(true);
+ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidget* parent) : QOpenGLWidget(parent) {
+    trackPointProperty = trackPointProps;
     imageDetect = nullptr;
     mouseIn = false;
-    trackPointProperty = nullptr;
     imgBuffer = nullptr;
     bufferSize = 0;
     imageWidth = 0;
     imageHeight = 0;
-    connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
+    numImageGroupsX = 3;
+    numImageGroupsY = 2;
 }
 
-QVideoWidget::~QVideoWidget() {
-    delete imageDetect;
-}
-
-void QVideoWidget::initializeGL() {
+void ImageOpenGLWidget::initializeGL() {
     initializeOpenGLFunctions();
     glClearColor(1.0, 1.0, 1.0, 1.0);
     updateView();
 }
 
-void QVideoWidget::receiveUpdate(){
-    //trick to pass the update to the main thread...
-    update();
-}
-
-void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
+void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
         if (this->imgBuffer != nullptr) delete[] this->imgBuffer;
@@ -53,14 +31,10 @@ void QVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, u
     this->bufferSize = bufferSize;
     if (imageDetect == nullptr) {
         imageDetect = new ImageDetect(imageWidth, imageHeight);
-        //imgDetThread = new ImageDetectThread(imageDetect);
-        //imgDetThread->start();
     }
-
-    emit forceUpdate();
 }
 
-void QVideoWidget::updateView() {
+void ImageOpenGLWidget::updateView() {
     //glEnable(GL_TEXTURE_2D);
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -75,20 +49,22 @@ void QVideoWidget::updateView() {
     glMatrixMode(GL_MODELVIEW);
 
     if (((float) width / height) > ((float) imageWidth / imageHeight)) {
-        scaled.setHeight(height);
-        scaled.setWidth(((float) imageWidth / imageHeight) * height);
-        scaled.setTop(0);
-        scaled.setLeft((width - (((float) imageWidth / imageHeight) * height)) / 2);
+        scaledImageArea.setHeight(height);
+        scaledImageArea.setWidth(((float) imageWidth / imageHeight) * height);
+        scaledImageArea.setTop(0);
+        scaledImageArea.setLeft((width - (((float) imageWidth / imageHeight) * height)) / 2);
     } else {
-        scaled.setHeight(((float) imageHeight / imageWidth) * width);
-        scaled.setWidth(width);
-        scaled.setTop((height - (((float) imageHeight / imageWidth) * width)) / 2);
-        scaled.setLeft(0);
+        scaledImageArea.setHeight(((float) imageHeight / imageWidth) * width);
+        scaledImageArea.setWidth(width);
+        scaledImageArea.setTop((height - (((float) imageHeight / imageWidth) * width)) / 2);
+        scaledImageArea.setLeft(0);
     }
 }
 
-void QVideoWidget::paintGL() {
+void ImageOpenGLWidget::paintGL() {
     updateView();
+    int subImageWidth = imageWidth / numImageGroupsX;
+    int subImageHeight = imageHeight / numImageGroupsY;
     if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
         texture.createEmptyTexture(imageWidth, imageHeight);
     }
@@ -98,7 +74,7 @@ void QVideoWidget::paintGL() {
         imageDetect->setMaxPix(trackPointProperty->maxPointValue);
         imageDetect->setSubwinSize(trackPointProperty->subwinValue);
         imageDetect->setMinSep(trackPointProperty->minSepValue);
-        
+
         if (trackPointProperty->filteredImagePreview || trackPointProperty->trackPointPreview) {
             unsigned char* copyBuffer = new unsigned char[bufferSize];
             memcpy(copyBuffer, imgBuffer, bufferSize);
@@ -108,7 +84,7 @@ void QVideoWidget::paintGL() {
         if (trackPointProperty->filteredImagePreview) {
             imageDetect->imageRemoveBackground();
             texture.updateTexture(imageDetect->getFilteredImage(), bufferSize);
-        } 
+        }
         if (trackPointProperty->trackPointPreview) {
             imageDetect->imageDetectPoints();
             if (!trackPointProperty->filteredImagePreview) texture.updateTexture(imgBuffer, bufferSize);
@@ -127,16 +103,16 @@ void QVideoWidget::paintGL() {
 
     glEnable(GL_TEXTURE_2D);
     texture.bind();
-    glTranslated(scaled.left(), scaled.top(), 0);
+    glTranslated(scaledImageArea.left(), scaledImageArea.top(), 0);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex2d(0, 0);
     glTexCoord2f(1.0f, 0.0f);
-    glVertex2d(scaled.width(), 0);
+    glVertex2d(scaledImageArea.width(), 0);
     glTexCoord2f(1.0f, 1.0f);
-    glVertex2d(scaled.width(), scaled.height());
+    glVertex2d(scaledImageArea.width(), scaledImageArea.height());
     glTexCoord2f(0.0f, 1.0f);
-    glVertex2d(0, scaled.height());
+    glVertex2d(0, scaledImageArea.height());
     glEnd();
     texture.unbind();
     glDisable(GL_TEXTURE_2D);
@@ -154,13 +130,13 @@ void QVideoWidget::paintGL() {
                 numPoints = imageDetect->getInitNumPoints();
             }
             int crossWingSize = (int) (height() / 75);
-            if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaled.width() / imageWidth) * trackPointProperty->minSepValue;
+            if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaledImageArea.width() / imageWidth) * trackPointProperty->minSepValue;
             glLineWidth(1.5);
             for (int i = 0; i < numPoints; i++) {
-                int w = scaled.width();
-                int h = scaled.height();
-                double xPos = ((double) points[i].x * ((double) scaled.width() / imageWidth));
-                double yPos = ((double) points[i].y * ((double) scaled.height() / imageHeight));
+                int w = scaledImageArea.width();
+                int h = scaledImageArea.height();
+                double xPos = ((double) points[i].x * ((double) scaledImageArea.width() / imageWidth));
+                double yPos = ((double) points[i].y * ((double) scaledImageArea.height() / imageHeight));
 
                 glColor3f(1, 0, 0);
                 glBegin(GL_LINES);
@@ -192,53 +168,25 @@ void QVideoWidget::paintGL() {
 
                 if (trackPointProperty->showCoordinates) {
                     QPainter painter(this);
-                    QPoint pos = scaled.topLeft() + QPoint(xPos, yPos);
+                    QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
                     painter.fillRect(pos.x(), pos.y(), 105, 12, Qt::white);
-                    painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
+                    painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(fmod(points[i].x, subImageWidth), 'f', 2) + " ,Y: " + QString::number(fmod(points[i].y, subImageHeight), 'f', 2));
                 }
             }
         }
     }
 }
 
-void QVideoWidget::resizeGL(int width, int height) {
-    //updateView();
-}
-
-void QVideoWidget::resizeEvent(QResizeEvent* event) {
-    QOpenGLWidget::resizeEvent(event);
-}
-
-void QVideoWidget::showEvent(QShowEvent* event) {
-    QOpenGLWidget::showEvent(event);
-    //updateView();
-}
-
-void QVideoWidget::enterEvent(QEvent *) {
+void ImageOpenGLWidget::enterEvent(QEvent *) {
     mouseIn = true;
 }
 
-void QVideoWidget::leaveEvent(QEvent *) {
-    if(!Ui::crosshair) return;
+void ImageOpenGLWidget::leaveEvent(QEvent *) {
     mouseIn = false;
     update();
 }
 
-void QVideoWidget::mouseMoveEvent ( QMouseEvent * event ){
-    if(!Ui::crosshair) return;
+void ImageOpenGLWidget::mouseMoveEvent(QMouseEvent * event) {
     mouse = event->pos();
     update();
-}
-
-void QVideoWidget::mouseDoubleClickEvent(QMouseEvent* event) {
-    if (isMaximized()) showNormal();
-    else showMaximized();
-}
-
-void QVideoWidget::changedState(Qt::WindowStates, Qt::WindowStates newState){
-    active = newState & Qt::WindowActive;
-}
-
-void QVideoWidget::activateCrosshair(bool state){
-    //setMouseTracking(state);
 }

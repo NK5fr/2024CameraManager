@@ -8,14 +8,20 @@
 
 #include <vector>
 #include <string>
-#include "abstractcamera.h"
+#include <QtCore>
 #include "abstractcameramanager.h"
+//#include "abstractcamera.h"
+#include "testcamera.h"
 
 /**
  * TestCameraManager
  * \brief to test ui without real cameras.
  */
+
+class AbstractCameraManager;
+
 class TestCameraManager : public AbstractCameraManager {
+    //Q_OBJECT
     public:
         TestCameraManager();
         virtual void detectNewCameras(std::vector<AbstractCamera*> *newCameras);

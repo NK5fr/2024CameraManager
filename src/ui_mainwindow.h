@@ -144,6 +144,7 @@ public:
         MainWindow->setStatusBar(statusbar);
 
         CamerasWidget_2 = new QDockWidget(MainWindow);
+        //CamerasWidget_2->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Expanding);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
         CamerasWidget_2->setMinimumSize(QSize(200, 0));
         CamerasWidget_2->setBaseSize(QSize(750, 0));

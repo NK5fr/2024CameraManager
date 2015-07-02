@@ -204,3 +204,4 @@ CameraManager/props/quickfile_camerasettings.ini
 GeneratedFiles/qrc_cameramanager.cpp
 camera_manager.vcxproj
 camera_manager.vcxproj.filters
+CameraManager/props/quickfile_trackpoint.ini

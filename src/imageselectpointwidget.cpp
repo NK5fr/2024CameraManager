@@ -9,9 +9,9 @@ ImageSelectPointWidget::ImageSelectPointWidget() {
     backButton.setEnabled(false);
     nextButton.setText("Next");
     nextButton.setMinimumSize(10, 40);
-    subImageResolutionX.setText(QString::number(imageWidget.getNumImagesWidth()));
+    //subImageResolutionX.setText(QString::number(imageWidget.getNumImagesWidth()));
     //subImageResolutionX.setMaximumWidth(100);
-    subImageResolutionY.setText(QString::number(imageWidget.getNumImagesHeight()));
+    //subImageResolutionY.setText(QString::number(imageWidget.getNumImagesHeight()));
     //subImageResolutionY.setMaximumWidth(100);
     acceptSubImageResolution.setText("Accept");
     //imageWidget.hint
@@ -54,14 +54,14 @@ void ImageSelectPointWidget::nextClicked() {
     pointNr++;
     if (pointNr > pointMax) pointMax++;
     backButton.setEnabled(true);
-    imageWidget.nextPointSeries();
+    //imageWidget.nextPointSeries();
     updateDisplay();
 }
 
 void ImageSelectPointWidget::backClicked() {
     pointNr--;
     if (pointNr == 0) backButton.setEnabled(false);
-    imageWidget.backPointSeries();
+    //imageWidget.backPointSeries();
     updateDisplay();
 }
 
@@ -77,6 +77,7 @@ void ImageSelectPointWidget::updateDisplay() {
 }
 
 QString ImageSelectPointWidget::getPointsInFormattedString() {
+    /*
     std::vector<std::vector<TrackPoint::PointInCamera*>> points = imageWidget.getPoints();
     QString res;
     int pMax = 0;
@@ -101,6 +102,7 @@ QString ImageSelectPointWidget::getPointsInFormattedString() {
             if (!points[pointGroupNr][pNr]->isUsed) continue;
             res.append(QString::number(points[pointGroupNr][pNr]->pointX) + " " + QString::number(points[pointGroupNr][pNr]->pointY) + "\n");
         }
-    }
-    return res;
+    }*/
+    //return res;
+    return QString();
 }

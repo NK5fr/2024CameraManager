@@ -15,9 +15,9 @@ public:
     void zeroBuffer();
     void releaseBuffer();
 
-    inline unsigned int getUsedBuffer() { return used; }
-    inline unsigned int getCapacity() { return capacity; }
-    inline unsigned char* getDataBuffer() { return dataBuffer; }
+    inline unsigned int getUsedBuffer() const { return used; }
+    inline unsigned int getCapacity() const { return capacity; }
+    inline unsigned char* getDataBuffer() const { return dataBuffer; }
 
 private:
     unsigned char* dataBuffer = nullptr;

@@ -1,12 +1,5 @@
-#include "abstractcameramanager.h"
 
-#include <QtCore>
-#include <QDebug>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/qpushbutton.h>
-#include <algorithm>
-#include <iostream>
+#include "abstractcameramanager.h"
 
 using namespace CameraManager;
 using namespace std;
@@ -14,8 +7,6 @@ using namespace std;
 Q_DECLARE_METATYPE(AbstractCamera *)
 Q_DECLARE_METATYPE(QVideoWidget *)
 Q_DECLARE_METATYPE(CameraManager::CameraProperty *)
-
-using namespace CameraManager;
 
 AbstractCameraManager::AbstractCameraManager(bool empty) : liveView(false), cameraTree() , newCameraList(), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
     updateProps = true;
@@ -175,7 +166,7 @@ void setPropToSettings(QSettings& settings, CameraProperty& prop) {
 
 // Lars Aksel - Load default values from default-file
 void AbstractCameraManager::loadPropertiesDefaults() {
-    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
+    QString settingsFile = QString(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_DEFAULT_FILE);
     std::vector<CameraProperty> prop = std::vector<CameraProperty>();
     //std::vector<CameraProperty> prop;
     loadPropertiesFromFile(settingsFile, prop);
@@ -183,7 +174,7 @@ void AbstractCameraManager::loadPropertiesDefaults() {
 }
 
 void AbstractCameraManager::loadPropertiesDefaultsInit() {
-    QString settingsFile = QString(QDir::currentPath() + "/props/defaultCameraSettings.ini");
+    QString settingsFile = QString(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_DEFAULT_FILE);
     //std::vector<CameraProperty> prop = std::vector<CameraProperty>();
     std::vector<CameraProperty> prop;
     loadPropertiesFromFile(settingsFile, prop);

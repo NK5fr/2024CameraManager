@@ -1,10 +1,5 @@
+
 #include "flycameramanager.h"
-#include "flycamera.h"
-#include <sstream>
-#include <QImage>
-#include <QProcess>
-#include <qsettings.h>
-#include <qdir.h>
 
 using namespace std;
 

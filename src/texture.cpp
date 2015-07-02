@@ -76,7 +76,7 @@ bool Texture::updateTexture(unsigned char* buffer, unsigned int bufferSize) {
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, textureWidth, textureHeight, textureFormat, GL_UNSIGNED_BYTE, buffer);
     //glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, textureWidth, textureHeight, 0, textureFormat, GL_UNSIGNED_BYTE, buffer);
-    //imageBuffer.copyIntoBuffer(buffer, bufferSize);
+    imageBuffer.copyIntoBuffer(buffer, bufferSize);
     return true;
 }
 

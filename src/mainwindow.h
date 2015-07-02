@@ -146,7 +146,7 @@ private:
 
     /** CREATING FOLDER AND FILE ITEMS **/
     void createTreeItem(QTreeWidgetItem *parent, QString name, QString filepath);
-    void createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
+    QTreeWidgetItem* createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
 
     MenuBar *bar;
     Ui::MainWindow *ui;

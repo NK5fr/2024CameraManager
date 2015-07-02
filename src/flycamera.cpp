@@ -107,9 +107,21 @@ Image* FlyCamera::captureImage() {
 }
 
 void FlyCamera::startAutoCapture(){
+    Error err;
     capturing = true;
+
+    bool isAlreadyConnected = cam.IsConnected();
+    if (!isAlreadyConnected) {
+        err = cam.Connect(&guid);
+        if (err != PGRERROR_OK) {
+            err.PrintErrorTrace();
+        }
+    }
     printf("Starting autoCapture\n");
-    getCamera()->StartCapture();
+    err = cam.StartCapture();
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
     while(capturing){
         Image* image = captureImage();
         if (image != nullptr) {
@@ -117,7 +129,17 @@ void FlyCamera::startAutoCapture(){
             delete image;
         }
     }
+    err = cam.StopCapture();
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
     printf("Stopped autoCapture!\n");
+    if (!isAlreadyConnected) {
+        err = cam.Disconnect();
+        if (err != PGRERROR_OK) {
+            err.PrintErrorTrace();
+        }
+    }
 }
 
 void FlyCamera::stopAutoCapture(){
@@ -132,14 +154,35 @@ unsigned char* FlyCamera::retrieveImage(unsigned int* bufferSize, unsigned int* 
     //printf("Images begin to be retrieved\n");
     TriggerMode triggerMode;
     TriggerMode oldTrigger;
+    Error err;
 
-    cam.GetTriggerMode(&oldTrigger);
-    cam.GetTriggerMode(&triggerMode);
+    bool isAlreadyConnected = cam.IsConnected();
+    if (!isAlreadyConnected) {
+        err = cam.Connect(&guid);
+        if (err != PGRERROR_OK) {
+            err.PrintErrorTrace();
+        }
+    }
+    
+    err = cam.GetTriggerMode(&oldTrigger);
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
+    err = cam.GetTriggerMode(&triggerMode);
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
     triggerMode.onOff = false;
-    cam.SetTriggerMode(&triggerMode);
+    err = cam.SetTriggerMode(&triggerMode);
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
 
     //printf("Retrieving images...\n");
-    cam.StartCapture();
+    err = cam.StartCapture();
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
 
     //printf("Retrieving 1...\n");
     Image* image = captureImage();
@@ -151,11 +194,23 @@ unsigned char* FlyCamera::retrieveImage(unsigned int* bufferSize, unsigned int* 
     memcpy(imageBuffer, image->GetData(), image->GetDataSize());
     delete image;
     //printf("Retrieving 2...\n");
-    cam.SetTriggerMode(&oldTrigger);
+    err = cam.SetTriggerMode(&oldTrigger);
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
 
     //printf("Retrieving 3...\n");
-    cam.StopCapture();
+    err = cam.StopCapture();
+    if (err != PGRERROR_OK) {
+        err.PrintErrorTrace();
+    }
 
+    if (!isAlreadyConnected) {
+        err = cam.Disconnect();
+        if (err != PGRERROR_OK) {
+            err.PrintErrorTrace();
+        }
+    }    
     //printf("Images retrieved\n");
     capturing = false;
     return imageBuffer;

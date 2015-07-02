@@ -13,6 +13,7 @@
 #include "datastructs.h"
 
 class ImageWidget : public QLabel {
+    Q_OBJECT
 public:
     ImageWidget();
     ~ImageWidget();

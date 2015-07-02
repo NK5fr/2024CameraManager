@@ -10,6 +10,7 @@
 #include <QtWidgets/qformlayout.h>
 #include <QtWidgets/qtextedit.h>
 
+#include "imageopenglwidget.h"
 #include "imagewidget.h"
 
 class ImageSelectPointWidget : public QWidget {
@@ -17,7 +18,7 @@ class ImageSelectPointWidget : public QWidget {
 public:
     ImageSelectPointWidget();
 
-    inline ImageWidget* getImageWidget() { return &imageWidget; }
+    inline ImageOpenGLWidget* getImageWidget() { return &imageWidget; }
 
 private slots:
     void nextClicked();
@@ -32,7 +33,8 @@ private:
     QPushButton nextButton;
     QPushButton backButton;
     QPushButton acceptSubImageResolution;
-    ImageWidget imageWidget;
+    ImageOpenGLWidget imageWidget;
+    //ImageWidget imageWidget;
     int pointNr;
     int pointMax;
 

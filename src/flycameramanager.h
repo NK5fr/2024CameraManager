@@ -1,12 +1,20 @@
 #ifndef FLYCAMERAMANAGER_H
 #define FLYCAMERAMANAGER_H
 
-#include "flycamera.h"
+#include <sstream>
+#include <QtCore>
+#include <QImage>
+#include <QProcess>
+#include <qsettings.h>
+#include <qdir.h>
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
-#include "abstractcamera.h"
 #include "abstractcameramanager.h"
+//#include "abstractcamera.h"
+#include "flycamera.h"
+
+class AbstractCameraManager;
 
 using namespace FlyCapture2;
 
@@ -15,6 +23,7 @@ using namespace FlyCapture2;
  */
 
 class FlyCameraManager : public AbstractCameraManager {
+   Q_OBJECT
 public:
     FlyCameraManager();
     ~FlyCameraManager();

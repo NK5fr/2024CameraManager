@@ -19,6 +19,7 @@
 
 #include "imagewidget.h"
 #include "imageselectpointwidget.h"
+#include "constants.h"
 
 #include <vector>
 #include <iostream>
@@ -30,7 +31,7 @@ using namespace std;
 
 class ImageViewerWidget : public QMdiSubWindow {
 public:
-    ImageViewerWidget(QString path, QString filename);
+    ImageViewerWidget(QString path, QString filename, TrackPointProperty* trackPoint = nullptr);
     ~ImageViewerWidget();
 
 protected:
@@ -49,6 +50,7 @@ private:
     bool correspondingData;
     int selectedImageInFolder;
     QFileInfoList imageFiles;
+    vector<QPixmap*> images;
 
     void setImageFromFile(const QString& filepath);
     //void initializingImage(const QString& filepath);

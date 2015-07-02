@@ -1,20 +1,17 @@
 #include "testcameramanager.h"
-#include "testcamera.h"
 
-TestCameraManager::TestCameraManager()
-    : AbstractCameraManager(), foundCameras() {
-    for(int i=1; i<=10; i++)
-
+TestCameraManager::TestCameraManager() : AbstractCameraManager(), foundCameras() {
+    for (int i = 1; i <= 10; i++) {
         foundCameras.push_back(new TestCamera(
             QString("Camera%1").arg(i)
-                #ifdef _MSC_VER
-                .toLocal8Bit().constData()
-                #else
-                .toStdString()
-                #endif
-        ));
-
-
+#ifdef _MSC_VER
+            .toLocal8Bit().constData()
+#else
+            .toStdString()
+#endif
+            ));
+    }
+        
     std::vector<CameraProperty> props = std::vector<CameraProperty>();
     props.push_back(CameraProperty(CameraManager::BRIGHTNESS, QString("Brightness"), 0, 255, 0, false));
     props.push_back(CameraProperty(CameraManager::HUE, QString("Hue"), 0, 255, 0, false));

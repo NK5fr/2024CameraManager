@@ -18,12 +18,12 @@ ImageWidget::~ImageWidget() {
 }
 
 void ImageWidget::resizeEvent(QResizeEvent* resizeEvent) {
-    //QLabel::resizeEvent(resizeEvent);
+    QWidget::resizeEvent(resizeEvent);
     imageWidgetSize = resizeEvent->size();
 }
 
 void ImageWidget::paintEvent(QPaintEvent* event) {
-    //QLabel::paintEvent(event);
+    QWidget::paintEvent(event);
     QPainter painter(this);
     QFont font(painter.font());
     font.setPixelSize(15);

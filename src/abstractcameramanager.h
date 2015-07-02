@@ -10,19 +10,27 @@
 #include <qobject.h>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QThread>
+#include <QDebug>
+#include <QtCore>
 #include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QTreeWidget>
-#include <QThread>
-#include <QDebug>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/qpushbutton.h>
+#include <algorithm>
+#include <iostream>
+
 #include "mainwindow.h"
 #include "qvideowidget.h"
-#include "abstractcamera.h"
 #include "cameraproperty.h"
-
-using namespace CameraManager;
+#include "abstractcamera.h"
+#include "constants.h"
 
 class MainWindow;
+
+using namespace CameraManager;
 
 enum MyRoles {
     CameraGroupRole = Qt::UserRole + 1,
@@ -33,8 +41,7 @@ enum MyRoles {
  * AbstractCameraManager
  * \brief Class that need to be subclassed for each camera API. It is used to list and display Cameras, properties and liveview.
  */
-class AbstractCameraManager : public QObject
-{
+class AbstractCameraManager : public QObject {
     Q_OBJECT
     public:
         // Pure virtual -> to implement

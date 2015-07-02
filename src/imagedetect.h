@@ -6,9 +6,7 @@
 #include <qthread.h>
 #include <algorithm>
 
-// Testing av SIMD-instruksjoner - Lars Aksel - 04.06.2015
-#define SIMD_TESTING_128_BIT // Requires SSE3-support
-//#define SIMD_TESTING_256_BIT // Requires AVX2-support, not finished
+#include "constants.h"
 
 // Unsigned greater-than comparison 8-bit
 static inline __m128i _mm_cmpgt_epu8(__m128i x, __m128i y) {
