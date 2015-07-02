@@ -24,6 +24,7 @@ ImageSelectPointWidget::ImageSelectPointWidget() {
     widget->addWidget(&imageWidget);
     widget->setAlignment(Qt::AlignCenter);
     layout.addLayout(widget);
+    /*
     display.setReadOnly(true);
     display.setAlignment(Qt::AlignCenter);
     //display.setFixedWidth(50);
@@ -43,6 +44,7 @@ ImageSelectPointWidget::ImageSelectPointWidget() {
     gridLayout->addWidget(&subImageResolutionY, 1, 1);
     //layout.addLayout(gridLayout);
     layout.addWidget(&acceptSubImageResolution);
+    */
     setLayout(&layout);
 
     connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
