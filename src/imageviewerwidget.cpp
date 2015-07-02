@@ -42,7 +42,7 @@ void ImageViewerWidget::setImageFromFile(const QString& filepath) {
     char* imageData = nullptr;
     unsigned int imageSize = 0;
     for (int i = 0; i < blob.size(); i++) {
-        if (data[i] == '\n') {
+        if (data[i] == '\n' && element < 4) {
             QString label(tempBuffer);
             if (element == 0) {
                 if (!label.contains("P5")) return;
