@@ -46,7 +46,7 @@ namespace TrackPoint {
 
     struct Camera {
         int camNo;
-        int serialNo;
+        unsigned int serialNo;
         int pixelWidth = 1280;
         int pixelHeight = 1024;
         double fovWidth = 0;    // In radians
@@ -85,6 +85,7 @@ namespace TrackPoint {
         double max;
         int numFrames;
         CalibrationStatus status;
+        QString textStatus;
     };
 }
 

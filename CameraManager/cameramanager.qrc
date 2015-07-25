@@ -24,5 +24,6 @@
           <file alias="img">img/img.png</file>
           <file alias="exe">img/exe.png</file>
           <file alias="config">img/config.png</file>
+          <file alias="remove_window">img/remove_windows.png</file>
     </qresource>
 </RCC>

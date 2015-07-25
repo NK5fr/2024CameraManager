@@ -7,8 +7,15 @@ CalibrationFile::CalibrationFile(QString filePath) : filePath(filePath) {
     numCameras = 0;
     numCombinations = 0;
     readCalibrationFile();
-    parseCalibrationData(fileContain);
+    failed = !parseCalibrationData(fileContain);
+    if (failed) return;
+    QFileInfo file(filePath);
+    fileName = file.fileName();
     calculateFov();
+
+    textEdit.setFont(QFont("Courier", 9));
+    textEdit.setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
+    textEdit.setPlainText(fileContain);
 
     for (int i = 0; i < camCombs.size(); i++) {
         if (!camCombs[i]->status == TrackPoint::CalibrationStatus::OK) continue;
@@ -38,7 +45,7 @@ void CalibrationFile::readCalibrationFile() {
     myFile.close();
 }
 
-void CalibrationFile::parseCalibrationData(QString& data) {
+bool CalibrationFile::parseCalibrationData(QString& data) {
     int atLine = 0;
     QStringList dataList = data.split("\n");
     int numLines = dataList.size();
@@ -59,7 +66,7 @@ void CalibrationFile::parseCalibrationData(QString& data) {
       if (camLineIter.hasNext()) {
         QRegularExpressionMatch match = camLineIter.next();
         if (match.hasMatch()) {
-          newCam->serialNo = match.captured(0).toInt();
+            newCam->serialNo = match.captured(0).toUInt();
         }
       }
       if (camLineIter.hasNext()) {
@@ -113,6 +120,14 @@ void CalibrationFile::parseCalibrationData(QString& data) {
         } else {
             // TODO Do handling when 'NO CONVERGENCE' or other...
             //printf("ERROR: Could not parse: %s\n", string.toLocal8Bit().data());
+            if (dataList[atLine].contains("NaN")) camComb->textStatus = "NaN";
+            if (dataList[atLine].contains("CONVERGENCE")) camComb->textStatus = "No Conv.";
+            if (dataList[atLine].contains("Prep")) camComb->textStatus = "Prep. failed";
+            camComb->s0 = 0;
+            camComb->numFrames = 0;
+            camComb->cameras[0] = nullptr;
+            camComb->cameras[1] = nullptr;
+            camComb->cameras[2] = nullptr;
             camComb->status = TrackPoint::CalibrationStatus::Failed;
         }
         camCombs.push_back(camComb);
@@ -161,6 +176,7 @@ void CalibrationFile::parseCalibrationData(QString& data) {
 
             TrackPoint::Camera* cam = new TrackPoint::Camera();
             int camNo = camIdMatch.captured(1).toInt();
+            if (camNo >= numCameras) return false;
             *cam = *cameras[camNo];
 
             QRegularExpression numberMatchRegEx("-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?");
@@ -392,6 +408,7 @@ void CalibrationFile::parseCalibrationData(QString& data) {
         }
         numGroupsDone++;
     }
+    return true;
 }
 
 void CalibrationFile::calculateFov() {

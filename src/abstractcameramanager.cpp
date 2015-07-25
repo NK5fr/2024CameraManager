@@ -510,6 +510,8 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
 
         QSlider* slider = new QSlider(Qt::Horizontal);
         QLineEdit* writeValueBox = new QLineEdit(property.formatValue());
+        const int boxWidth = 50;
+        writeValueBox->setFixedWidth(boxWidth);
         writeValueBox->setProperty("TreeWidgetSlider", QVariant::fromValue(reinterpret_cast<quintptr>(slider)));
         writeValueBox->setProperty("CameraProperty", QVariant::fromValue(reinterpret_cast<quintptr>(&property)));
         writeValueBox->setProperty("TreeWidgetItem", QVariant::fromValue(reinterpret_cast<quintptr>(it)));
@@ -523,6 +525,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
 
 
         QLineEdit* readValueBox = new QLineEdit(property.formatValue());
+        readValueBox->setFixedWidth(boxWidth);
         readValueBox->setFrame(false);
         readValueBox->setReadOnly(true);
         propertiesList.setItemWidget(it, Ui::PropertyReadValue, readValueBox);

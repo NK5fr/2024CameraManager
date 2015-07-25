@@ -71,6 +71,7 @@ private slots:
     void on_actionCrosshair_toggled(bool arg1);
     void on_actionCrosshairReal_toggled(bool arg1);
     void on_actionMosaic_triggered();
+    void on_actionRemoveWindows_triggered();
     void on_actionHighQuality_toggled(bool arg1);
 
     /** MENU BAR **/

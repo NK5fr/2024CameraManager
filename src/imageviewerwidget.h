@@ -30,6 +30,7 @@
 using namespace std;
 
 class ImageViewerWidget : public QMdiSubWindow {
+    Q_OBJECT
 public:
     ImageViewerWidget(QString path, QString filename, TrackPointProperty* trackPoint = nullptr);
     ~ImageViewerWidget();
@@ -38,23 +39,28 @@ protected:
     //void mousePressEvent(QMouseEvent* mouseEvent);
     void wheelEvent(QWheelEvent* event);
 
+private slots:
+    void imageFileSliderChanged(int value);
+
 private:
+    QFileInfoList imageFiles;
     QString filename;
     QString path;
     QString fullPath;
     QPoint point;
+    QSlider imageFileSlider;
     vector<vector<QPoint>> points;
     ImageSelectPointWidget imageWidget;
     int camerasNb;
     int pointsNb;
-    bool correspondingData;
     int selectedImageInFolder;
-    QFileInfoList imageFiles;
-    vector<QPixmap*> images;
+    bool correspondingData;
 
     void setImageFromFile(const QString& filepath);
     //void initializingImage(const QString& filepath);
     //void initializingPoints();
+
+    char* unpackPGMFile(const QString& filepath, int64_t* bufferSize, int64_t* imageWidth, int64_t* imageHeight);
 };
 
 #endif // IMAGEVIEWERWIDGET_H

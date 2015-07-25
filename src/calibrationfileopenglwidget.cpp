@@ -3,7 +3,7 @@
 #include "calibrationfileopenglwidget.h"
 
 CalibrationFileOpenGLWidget::CalibrationFileOpenGLWidget(CalibrationFile* calibFile) : QOpenGLWidget() {
-    //bounding.setLeft(3500);
+    setMouseTracking(true);
     this->calibFile = calibFile;
     initCameraArea();
     adjustCameraAreaForCoordinateOrigin();
@@ -28,13 +28,25 @@ void CalibrationFileOpenGLWidget::paintGL() {
     //glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
     
     const QColor meterGridColor(255, 255, 255, 75);
     const QColor decimeterGridColor(255, 255, 255, 50);
     createCoordinateGrid(screenArea, 1000, meterGridColor);
     /*if (screenArea.width() / width() < 10)*/ createCoordinateGrid(screenArea, 100, decimeterGridColor);
 
-    const double gridSize = 500;
+    updateMouseOverCameraArea();
+    if (mouseOverCameraArea >= 0) {
+        glColor4f(1, 1, 0, 1);
+        glBegin(GL_POLYGON);
+        glVertex3d(cameraArea[mouseOverCameraArea].left() - cameraAreaMargin, cameraArea[mouseOverCameraArea].bottom() - cameraAreaMargin, 1);
+        glVertex3d(cameraArea[mouseOverCameraArea].right() + cameraAreaMargin, cameraArea[mouseOverCameraArea].bottom() - cameraAreaMargin, 1);
+        glVertex3d(cameraArea[mouseOverCameraArea].right() + cameraAreaMargin, cameraArea[mouseOverCameraArea].top() + cameraAreaMargin, 1);
+        glVertex3d(cameraArea[mouseOverCameraArea].left() - cameraAreaMargin, cameraArea[mouseOverCameraArea].top() + cameraAreaMargin, 1);
+        glEnd();
+    }
+
+
     glLineWidth(2);
     // X Axis
     glColor3f(1, 0, 0);
@@ -52,7 +64,6 @@ void CalibrationFileOpenGLWidget::paintGL() {
     glLineWidth(1);
 
     glColor3f(1, 0, 0);
-    const double factor = 400;
     double pointSize = 5;
     glPointSize(max(1.0, pointSize));
     vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
@@ -96,7 +107,6 @@ void CalibrationFileOpenGLWidget::paintGL() {
 
 
     vector<TrackPoint::Camera*> cams = calibFile->getCameras();
-    const float cameraAreaMargin = 100; // 10 cm
     float screenFactorX = (float) width() / screenArea.width();
     float screenFactorY = (float) height() / screenArea.height();
     int leftBottomOffsetX = screenArea.left() * screenFactorX;
@@ -133,14 +143,14 @@ void CalibrationFileOpenGLWidget::resizeGL(int w, int h) {
     double areaRatio = ((double) abs(calibrationCameraArea.width()) / abs(calibrationCameraArea.height()));
     if (screenRatio > areaRatio) {
         screenArea.setRight(((double) ((width * abs(calibrationCameraArea.height())) / height) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.width()) / 2);
-        double t = ((double) ((width * abs(calibrationCameraArea.height())) / height) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.width()) / 2;
+        //double t = ((double) ((width * abs(calibrationCameraArea.height())) / height) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.width()) / 2;
         screenArea.setLeft(-((double) ((width * abs(calibrationCameraArea.height())) / height) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.width()) / 2);
         screenArea.setTop(calibrationCameraArea.top());
         screenArea.setBottom(calibrationCameraArea.bottom());
     } else {
         screenArea.setRight(calibrationCameraArea.right());
         screenArea.setLeft(calibrationCameraArea.left());
-        double t = ((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.top());
+        //double t = ((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.width())) * (double) abs(calibrationCameraArea.top());
         screenArea.setTop(((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.height())) * (double) abs(calibrationCameraArea.height()) / 2);
         screenArea.setBottom(-((double) ((height * abs(calibrationCameraArea.width())) / width) / abs(calibrationCameraArea.height())) * (double) abs(calibrationCameraArea.height()) / 2);
     }
@@ -238,3 +248,44 @@ void CalibrationFileOpenGLWidget::createCoordinateGrid(QRectF area, double gridS
     }
     glColor4f(1, 1, 1, 1);
 }
+
+void CalibrationFileOpenGLWidget::updateMouseOverCameraArea() {
+    if (!mouseInside) {
+        mouseOverCameraArea = -1;
+        return;
+    }
+    for (int i = 0; i < cameraArea.size(); i++) {
+        QRectF rect = cameraArea[i];
+        if (rect.left() - cameraAreaMargin < mouseOpenGLPos.x() && rect.right() + cameraAreaMargin > mouseOpenGLPos.x() && rect.top() + cameraAreaMargin > mouseOpenGLPos.y() && rect.bottom() - cameraAreaMargin < mouseOpenGLPos.y()) {
+            mouseOverCameraArea = i;
+            return;
+        }
+    }
+    mouseOverCameraArea = -1;
+}
+
+void CalibrationFileOpenGLWidget::enterEvent(QEvent* event) {
+    mouseInside = true;
+}
+
+void CalibrationFileOpenGLWidget::leaveEvent(QEvent* event) {
+    mouseInside = false;
+}
+
+void CalibrationFileOpenGLWidget::mouseMoveEvent(QMouseEvent* event) {
+    mousePos = event->localPos();
+
+    mouseOpenGLPos.setX(mousePos.x() * abs(screenArea.width() / width()) + screenArea.left());
+    //mouseOpenGLPos.setX(mouseOpenGLPos.x() + (screenArea.bottom() / (screenArea.width() / width())));
+    mouseOpenGLPos.setY(mousePos.y() * (screenArea.height() / height()) + screenArea.top());
+    //mouseOpenGLPos.setY(mouseOpenGLPos.y() + (screenArea.left() / (screenArea.height() / height())));
+    update();
+}
+
+void CalibrationFileOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
+    if (mouseOverCameraArea >= 0) {
+
+    }
+    // Do something...
+}
+

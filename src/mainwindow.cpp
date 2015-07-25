@@ -101,10 +101,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->quickSaveCameraProperties, SIGNAL(clicked()), this, SLOT(quickSaveCameraSettings()));
     connect(ui->quickLoadCameraProperties, SIGNAL(clicked()), this, SLOT(quickLoadCameraSettings()));
 
+
     /* Title */
     setWindowTitle("Qt Camera Manager");
 
     /* Thread to detect automatically new cameras*/
+    //connect(&tdc, SIGNAL(resizeCameraTree()), this, SLOT(resizeColumnsCameraTree()));
+    ui->cameraTree->setColumnWidth(0, 60);
+    ui->cameraTree->setColumnWidth(1, 70);
+
     tdc.start();
 
     setFocusPolicy(Qt::TabFocus);
@@ -176,6 +181,10 @@ void MainWindow::on_actionUpdateImages_triggered() {
 /* Clic on mosaic button */
 void MainWindow::on_actionMosaic_triggered() {
     ui->centralwidget->tileSubWindows();
+}
+
+void MainWindow::on_actionRemoveWindows_triggered() {
+    ui->centralwidget->closeAllSubWindows();
 }
 
 /* Clic on ActionCrossHair button */
@@ -302,36 +311,33 @@ void MainWindow::menuBarClicked(QAction* action) {
         if (!tup.isRunning())
             tup.start();
 
-    } else if (action->text() == "Update Image")
+    } else if (action->text() == "Update Image") {
         on_actionUpdateImages_triggered();
-
-    else if (action->text() == "Camera Autodetection"){
+    } else if (action->text() == "Camera Autodetection") {
         detectCameras = bar->getCameraAutoDetection()->isChecked();
-        if (detectCameras)
+        if (detectCameras) {
             tdc.start();
-
+        }
     } else if (action->text() == "Activate Coordinates"){
         bool b = bar->getActivateCoordinates()->isChecked();
         ui->actionCrosshair->setChecked(b);
         on_actionCrosshair_toggled(b);
-
     } else if (action->text() == "Integer Coordinates"){
         bool b = bar->getIntegerCoordinates()->isChecked();
         ui->actionCrosshairReal->setChecked(b);
         on_actionCrosshairReal_toggled(b);
 
-    } else if (action->text() == "Mosaic View")
+    } else if (action->text() == "Mosaic View") {
         on_actionMosaic_triggered();
-
-    else if (action->text() == "High Quality"){
+    } else if (action->text() == "Remove Windows") {
+        on_actionRemoveWindows_triggered();
+    } else if (action->text() == "High Quality"){
         bool b = bar->getHighQuality()->isChecked();
         ui->actionHighQuality->setChecked(b);
         on_actionHighQuality_toggled(b);
-
-    } else if (action->text() == "Hide Left Menu")
+    } else if (action->text() == "Hide Left Menu") {
         ui->CamerasWidget_2->setVisible(!bar->getHideCameraWidget()->isChecked());
-
-    else if (action->text() == "Hide ToolBar")
+    } else if (action->text() == "Hide ToolBar")
         ui->toolBar->setVisible(!bar->getHideToolBarWidget()->isChecked());
     else if (action->text() == "Connect to Server") {
         SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget);
@@ -361,9 +367,8 @@ void MainWindow::menuBarClicked(QAction* action) {
 void MainWindow::startCameraDetection() {
     while (detectCameras){
         ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
-        //printf("Searching for new cameras...\n");
-        QThread::msleep(100);
-        //ui->cameraTree->header()->resizeSections(QHeaderView::ResizeToContents);
+        //emit resizeColumnsCameraTree();
+        QThread::msleep(200);
     }
 }
 
@@ -410,7 +415,6 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
     } else if (fileName.contains("socket")){
         // Socket file, with 3D datas
         SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget, selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
-        //ui->centralwidget->closeAllSubWindows();
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
     } else if (fileName.contains("calibration_summary")){
@@ -419,8 +423,12 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         //CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
         CalibrationFile* calibFile = new CalibrationFile(calibrationPath);
         CalibrationFileWidget* calibWidget = new CalibrationFileWidget(ui->centralwidget, calibFile);
-        ui->centralwidget->addSubWindow(calibWidget);
-        calibWidget->showMaximized();
+        if (!calibWidget->isValid()) {
+            delete calibWidget;
+        } else {
+            ui->centralwidget->addSubWindow(calibWidget);
+            calibWidget->showMaximized();
+        }
     } else if (fileName.endsWith(".pgm")){
         // Grupper image file
         ImageViewerWidget* ivw = new ImageViewerWidget(selectedProjectPath, fileName, &trackPointProperty);
@@ -472,17 +480,6 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
             //ui->projectTree->resizeColumnToContents(0);
 
             folderItem->setExpanded(true);
-
-            /* Expand trackpoint folder, his child named application, and his grandchild named input */
-            //ui->projectTree->invisibleRootItem()->child(0)->setExpanded(true);  // feiler her på setExpanded - GS 2015-01-19
-            /*
-            if (ui->projectTree->invisibleRootItem()->child(0)->child(0) != NULL && ui->projectTree->invisibleRootItem()->child(0)->child(0)->text(0) == "application"){
-                ui->projectTree->invisibleRootItem()->child(0)->child(0)->setExpanded(true);
-                if (ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0) != NULL &&
-                    ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->text(0) == "input"){
-                    ui->projectTree->invisibleRootItem()->child(0)->child(0)->child(0)->setExpanded(true);
-                }
-            }*/
         } else {
             QMessageBox::information(this, "Error", "Foldername does not contain the word \"trackpoint\"!");
         }
@@ -1141,3 +1138,11 @@ void MainWindow::collapsedFilePath_ProjectTree(QTreeWidgetItem* item) {
     ui->projectTree->resizeColumnToContents(1);
     ui->projectTree->resizeColumnToContents(0);*/
 }
+
+/*
+void MainWindow::resizeColumnsCameraTree() {
+    ui->cameraTree->resizeColumnToContents(0);
+    ui->cameraTree->resizeColumnToContents(1);
+    ui->cameraTree->resizeColumnToContents(2);
+}*/
+
