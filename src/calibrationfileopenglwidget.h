@@ -21,7 +21,9 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
+    bool eventFilter(QObject *obj, QEvent *event);
     void mouseMoveEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
@@ -33,14 +35,16 @@ private:
     TrackPoint::CameraCombination* selectedCameraCombination = nullptr;
     int selectedCamera = -1;
     int mouseOverCameraArea = -1;
+    int enteredCameraArea = -1;
     CalibrationFile* calibFile = nullptr;
     QRectF screenArea;
     QRectF calibrationCameraArea;
     QPointF mousePos;
     QPointF mouseOpenGLPos;
     bool mouseInside = false;
+    bool enteredCameraWindow = false;
 
-    const float cameraAreaMargin = 100; // 10 cm
+    const float cameraAreaMargin = 50; // 5 cm
     const double gridSize = 500;
 
     void createCoordinateGrid(QRectF area, double gridSize, const QColor& color);
@@ -48,6 +52,7 @@ private:
     void addCameraAreaMargin(double margin);
     void adjustCameraAreaForCoordinateOrigin(); // Make sure that CameraArea includes the Coordinate Origin...
     void updateMouseOverCameraArea();
+    void keepAspectRatio(QRectF& topWindowRect, QRectF windowRect, int screenwidth, int screenheight, double margin = 0);
 };
 
 #endif
