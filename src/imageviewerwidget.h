@@ -1,3 +1,7 @@
+
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef IMAGEVIEWERWIDGET_H
 #define IMAGEVIEWERWIDGET_H
 

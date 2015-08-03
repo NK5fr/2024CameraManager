@@ -1,4 +1,7 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef EXTERNAL_PROCESS_H
 #define EXTERNAL_PROCESS_H
 

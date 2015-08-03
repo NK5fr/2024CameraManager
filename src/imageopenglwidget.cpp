@@ -13,6 +13,10 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     numImageGroupsY = 2;
 }
 
+ImageOpenGLWidget::~ImageOpenGLWidget() {
+    delete imageDetect;
+}
+
 void ImageOpenGLWidget::initializeGL() {
     initializeOpenGLFunctions();
     glClearColor(1.0, 1.0, 1.0, 1.0);

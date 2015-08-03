@@ -1,4 +1,7 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 

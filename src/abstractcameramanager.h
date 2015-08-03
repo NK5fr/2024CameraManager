@@ -23,7 +23,7 @@
 #include <iostream>
 
 #include "mainwindow.h"
-#include "qvideowidget.h"
+#include "videoopenglwidget.h"
 #include "cameraproperty.h"
 #include "abstractcamera.h"
 #include "constants.h"
@@ -160,7 +160,7 @@ class AbstractCameraManager : public QObject {
                 : camera(c), treeItem(i), window(new QMdiSubWindow()) {
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->setWindowFlags(Qt::Tool);
-                QVideoWidget* videoWidget = new QVideoWidget();
+                VideoOpenGLWidget* videoWidget = new VideoOpenGLWidget();
                 videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 window->setWidget(videoWidget);
                 window->resize(400, 300);

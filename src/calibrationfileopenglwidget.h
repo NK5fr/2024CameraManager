@@ -1,6 +1,9 @@
 
-#ifndef CALIBRATIONFILE_OPENGLWIDGET_H
-#define CALIBRATIONFILE_OPENGLWIDGET_H
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
+#ifndef CALIBRATIONFILE_OPENGL_WIDGET_H
+#define CALIBRATIONFILE_OPENGL_WIDGET_H
 
 #include <qopenglwidget.h>
 #include <qpainter.h>
@@ -55,4 +58,4 @@ private:
     void keepAspectRatio(QRectF& topWindowRect, QRectF windowRect, int screenwidth, int screenheight, double margin = 0);
 };
 
-#endif
+#endif // CALIBRATIONFILE_OPENGL_WIDGET_H

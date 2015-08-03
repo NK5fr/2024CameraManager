@@ -1,4 +1,7 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef CALIBRATIONFILE_WIDGET_H
 #define CALIBRATIONFILE_WIDGET_H
 

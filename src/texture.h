@@ -1,4 +1,7 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef TEXTURE_H
 #define TEXTURE_H
 

@@ -5,7 +5,7 @@ using namespace CameraManager;
 using namespace std;
 
 Q_DECLARE_METATYPE(AbstractCamera *)
-Q_DECLARE_METATYPE(QVideoWidget *)
+Q_DECLARE_METATYPE(VideoOpenGLWidget *)
 Q_DECLARE_METATYPE(CameraManager::CameraProperty *)
 
 AbstractCameraManager::AbstractCameraManager(bool empty) : liveView(false), cameraTree() , newCameraList(), propertiesList(), selectedItem(NULL), selectedCamera(NULL), folderIcon(":/icons/folder"), activeCameras(), cameraProperties() {
@@ -42,14 +42,14 @@ QTreeWidget *AbstractCameraManager::getPropertiesWidget(){
 void AbstractCameraManager::updateImages(){
     for(int i=activeCameras.size()-1; i>=0; i--){
         activeCameraEntry& camEntry = activeCameras.at(i);
-        QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(camEntry.window->widget());
+        VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(camEntry.window->widget());
         unsigned char* imgBuffer = nullptr;
         unsigned int bufferSize = 0;
         unsigned int imageWidth = 0;
         unsigned int imageHeight = 0;
         imgBuffer = camEntry.camera->retrieveImage(&bufferSize, &imageWidth, &imageHeight);
         if (imgBuffer != nullptr) {
-            videoWidget->setImage(imgBuffer, bufferSize, imageWidth, imageHeight);
+            videoWidget->updateImage(imgBuffer, bufferSize, imageWidth, imageHeight);
         }
     }
 }
@@ -252,7 +252,7 @@ void AbstractCameraManager::activateLiveView(bool active){
     if (active) {
         for(int i=activeCameras.size()-1; i>=0; i--){
             activeCameraEntry& camEntry = activeCameras.at(i);
-            QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(camEntry.window->widget());
+            VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(camEntry.window->widget());
             camEntry.camera->startCapture(videoWidget);
         }
     } else {
@@ -372,11 +372,11 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             connect(entry.window, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
             entry.window->setWindowTitle(camera->getString().c_str());
             mainWindow->modifySubWindow(entry.window, true);
-            QVideoWidget* videoWidget = qobject_cast<QVideoWidget*>(entry.window->widget());
+            VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(entry.window->widget());
             camera->setVideoContainer(videoWidget);
             activeCameras.push_back(entry);
-            connect(mainWindow, SIGNAL(activateCrosshair(bool)), qobject_cast<QVideoWidget*>(entry.window->widget()), SLOT(activateCrosshair(bool)));
-            if(liveView) entry.camera->startCapture(qobject_cast<QVideoWidget *>(entry.window->widget()));
+            connect(mainWindow, SIGNAL(activateCrosshair(bool)), qobject_cast<VideoOpenGLWidget*>(entry.window->widget()), SLOT(activateCrosshair(bool)));
+            if(liveView) entry.camera->startCapture(qobject_cast<VideoOpenGLWidget *>(entry.window->widget()));
         }
     }
 }

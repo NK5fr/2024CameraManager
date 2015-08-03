@@ -13,11 +13,6 @@ CalibrationFileOpenGLWidget::CalibrationFileOpenGLWidget(CalibrationFile* calibF
 
 void CalibrationFileOpenGLWidget::initializeGL() {
     resizeGL(width(), height());
-    /*glViewport(0, 0, width(), height());
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-bounding.left() * ((double) width() / height()), bounding.left() * ((double) width() / height()), -bounding.left(), bounding.left(), -1000000, 1000000);
-    */
 }
 
 void CalibrationFileOpenGLWidget::paintGL() {
@@ -39,15 +34,15 @@ void CalibrationFileOpenGLWidget::paintGL() {
         createCoordinateGrid(screenArea, 1000, meterGridColor);
         QString scaleString = "meter";
         const int probedPixelWidth = 100; // Check if different scales are visible within this pixelWidth
-        if (abs((screenArea.width() / width()) * probedPixelWidth) < 1000) { // if pixelwidth corresponds to a width of over 1000 mm
+        if (abs((screenArea.width() / width()) * probedPixelWidth) < 1000) { // if pixelwidth corresponds to a width of less than 1000 mm
             createCoordinateGrid(screenArea, 100, decimeterGridColor);
             scaleString = "decimeter";
         }
-        if (abs((screenArea.width() / width()) * probedPixelWidth) < 100) { // if pixelwidth corresponds to a width of over 100 mm
+        if (abs((screenArea.width() / width()) * probedPixelWidth) < 100) { // if pixelwidth corresponds to a width of less than 100 mm
             createCoordinateGrid(screenArea, 10, centimeterGridColor);
             scaleString = "centimeter";
         }
-        if (abs((screenArea.width() / width()) * probedPixelWidth) < 10) { // if pixelwidth corresponds to a width of over 10 mm
+        if (abs((screenArea.width() / width()) * probedPixelWidth) < 10) { // if pixelwidth corresponds to a width of less than 10 mm
             createCoordinateGrid(screenArea, 1, millimeterGridColor);
             scaleString = "millimeter";
         }
@@ -103,10 +98,6 @@ void CalibrationFileOpenGLWidget::paintGL() {
     }
     if (selectedCameraCombination != nullptr) {
         if (selectedCameraCombination->cameras[0] != nullptr) {
-            //QPainter painter(this);
-            //QPoint pos(2, yPos);
-            //painter.fillRect(pos.x(), pos.y(), 105, 12, Qt::white);
-            //painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
             glPointSize(max(1.0, pointSize * 2));
             glColor3f(1, 1, 0);
             glBegin(GL_POINTS);
@@ -133,16 +124,8 @@ void CalibrationFileOpenGLWidget::paintGL() {
     }
 
     vector<TrackPoint::Camera*> cams = calibFile->getCameras();
-    float screenFactorX = 0;
-    float screenFactorY = 0;
-    //if ((float) width() / screenArea.width() < 1 && (float) height() / screenArea.height() < 1) {
-        screenFactorX = (float) width() / screenArea.width();
-        screenFactorY = (float) height() / screenArea.height();
-    //} else {
-    //    screenFactorX = (float) screenArea.width() / width();
-    //    screenFactorY = (float) screenArea.height() / height();
-    //}   
-
+    float screenFactorX = screenFactorX = (float) width() / screenArea.width();
+    float screenFactorY = screenFactorY = (float) height() / screenArea.height();
     int leftBottomOffsetX = screenArea.left() * screenFactorX;
     int leftBottomOffsetY = screenArea.top() * screenFactorY;
     for (int i = 0; i < cams.size(); i++) {
@@ -162,15 +145,18 @@ void CalibrationFileOpenGLWidget::paintGL() {
         painter.drawText(pos + QPoint(3, 10), QString::number(i));
     }
     if (enteredCameraWindow) {
+        QPainter painter(this);
+        QPointF pos = QPointF(((cameraArea[enteredCameraArea].left() - cameraAreaMargin) * screenFactorX) - leftBottomOffsetX, ((cameraArea[enteredCameraArea].top() + cameraAreaMargin) * screenFactorY) - leftBottomOffsetY);
+        painter.fillRect(pos.x(), pos.y(), 12, 13, Qt::white);
+        painter.drawText(pos + QPoint(3, 10), QString::number(enteredCameraArea));
         for (int i = 0; i < camComb.size(); i++) {
             for (int j = 0; j < 3; j++) {
                 if (camComb[i]->cameras[j] == nullptr) continue;
                 //if (j != mouseOverCameraArea) continue;
-                QPainter painter(this);
                 float camX = camComb[i]->cameras[j]->camPos.x * screenFactorX;
                 float camY = camComb[i]->cameras[j]->camPos.y * screenFactorY;
                 //QPointF pos = QPointF(camX, camY);
-                QPointF pos = QPointF(camX - leftBottomOffsetX, camY - leftBottomOffsetY);
+                pos = QPointF(camX - leftBottomOffsetX, camY - leftBottomOffsetY);
                 painter.fillRect(pos.x(), pos.y(), 36, 13, Qt::white);
                 painter.drawText(pos + QPoint(3, 10), QString::number(camComb[i]->camNumbers[0]) + "_" + QString::number(camComb[i]->camNumbers[1]) + "_" + QString::number(camComb[i]->camNumbers[2]));
             }
@@ -297,21 +283,20 @@ void CalibrationFileOpenGLWidget::updateMouseOverCameraArea() {
 }
 
 void CalibrationFileOpenGLWidget::keepAspectRatio(QRectF& topWindowRect, QRectF windowRect, int width, int height, double margin) {
-    QPointF centerCameraArea = windowRect.center();
-
     double screenRatio = ((double) width / height);
-    double areaRatio = ((double) abs(windowRect.width()) / abs(windowRect.height()));
+    double areaRatio = ((double) (abs(windowRect.width()) + (margin * 2.0)) / (abs(windowRect.height()) + (margin * 2.0)));
     if (screenRatio > areaRatio) {
-        topWindowRect.setRight(((double) ((width * abs(windowRect.height())) / height) / abs(windowRect.width())) * (double) abs(windowRect.width()) / 2 + (margin * screenRatio));
         topWindowRect.setLeft(-((double) ((width * abs(windowRect.height())) / height) / abs(windowRect.width())) * (double) abs(windowRect.width()) / 2 - (margin * screenRatio));
+        topWindowRect.setRight(((double) ((width * abs(windowRect.height())) / height) / abs(windowRect.width())) * (double) abs(windowRect.width()) / 2 + (margin * screenRatio));
         topWindowRect.setTop(windowRect.top() + margin);
         topWindowRect.setBottom(windowRect.bottom() - margin);
     } else {
-        topWindowRect.setRight(windowRect.right() + margin);
         topWindowRect.setLeft(windowRect.left() - margin);
+        topWindowRect.setRight(windowRect.right() + margin);
         topWindowRect.setTop(((double) ((height * abs(windowRect.width())) / width) / abs(windowRect.height())) * (double) abs(windowRect.height()) / 2 + (margin * ((double) height / width)));
         topWindowRect.setBottom(-((double) ((height * abs(windowRect.width())) / width) / abs(windowRect.height())) * (double) abs(windowRect.height()) / 2 - (margin * ((double) height / width)));
     }
+    QPointF centerCameraArea = windowRect.center();
     QPointF centerScreenArea = topWindowRect.center();
     topWindowRect.translate((centerCameraArea - centerScreenArea));
 }
@@ -354,7 +339,6 @@ void CalibrationFileOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
 bool CalibrationFileOpenGLWidget::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        //qDebug() << "key " << keyEvent->key() << "from" << obj;
         if (keyEvent->key() == Qt::Key_Escape) {
             enteredCameraArea = -1;
             mouseOverCameraArea = -1;
