@@ -9,8 +9,12 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     bufferSize = 0;
     imageWidth = 0;
     imageHeight = 0;
+    enableSubImages = false;
+    showMouseOverCoordinateLabel = true;
+    showMouseCross = false;
     numImageGroupsX = 3;
     numImageGroupsY = 2;
+    setMouseTracking(true);
 }
 
 ImageOpenGLWidget::~ImageOpenGLWidget() {
@@ -104,6 +108,7 @@ void ImageOpenGLWidget::paintGL() {
     //glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glLineWidth(1);
 
     glEnable(GL_TEXTURE_2D);
     texture.bind();
@@ -120,6 +125,39 @@ void ImageOpenGLWidget::paintGL() {
     glEnd();
     texture.unbind();
     glDisable(GL_TEXTURE_2D);
+
+    if (showMouseCross && mouseIn) {
+        float crossWingSize = (width() / scaledImageArea.width()) * 100;
+        QPoint mPos = mousePos - scaledImageArea.topLeft();
+        glColor4f(1, 0, 0, 1);
+        glBegin(GL_LINES);
+        glVertex3d(mPos.x() + (crossWingSize / 2), mPos.y(), 0);
+        glVertex3d(mPos.x() - (crossWingSize / 2), mPos.y(), 0);
+        glEnd();
+
+        glBegin(GL_LINES);
+        glVertex3d(mPos.x(), mPos.y() + (crossWingSize / 2), 0);
+        glVertex3d(mPos.x(), mPos.y() - (crossWingSize / 2), 0);
+        glEnd();
+        glColor4f(1, 1, 1, 1);
+    }
+
+    if (enableSubImages) {
+        glColor4f(1, 1, 0, 1);
+        for (int xSubImgLine = 1; xSubImgLine < numImageGroupsX; xSubImgLine++) {
+            glBegin(GL_LINES);
+            glVertex3d(xSubImgLine * (scaledImageArea.width() / numImageGroupsX), 0, 0);
+            glVertex3d(xSubImgLine * (scaledImageArea.width() / numImageGroupsX), scaledImageArea.height(), 0);
+            glEnd();
+        }
+        for (int ySubImgLine = 1; ySubImgLine < numImageGroupsY; ySubImgLine++) {
+            glBegin(GL_LINES);
+            glVertex3d(0, ySubImgLine * (scaledImageArea.height() / numImageGroupsY), 0);
+            glVertex3d(scaledImageArea.width(), ySubImgLine * (scaledImageArea.height() / numImageGroupsY), 0);
+            glEnd();
+        }
+        glColor4f(1, 1, 1, 1);
+    }
 
     if (imageDetect != nullptr && trackPointProperty != nullptr) {
         if (trackPointProperty->trackPointPreview) {
@@ -160,10 +198,10 @@ void ImageOpenGLWidget::paintGL() {
                     const int num_segments = 30;
                     glBegin(GL_LINE_LOOP);
                     for (int ii = 0; ii < num_segments; ii++) {
-                        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle 
-                        float x = circleSize * cosf(theta);//calculate the x component 
-                        float y = circleSize * sinf(theta);//calculate the y component 
-                        glVertex2f(x + xPos, y + yPos);//output vertex 
+                        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);
+                        float x = circleSize * cosf(theta);
+                        float y = circleSize * sinf(theta);
+                        glVertex2f(x + xPos, y + yPos);
 
                     }
                     glEnd();
@@ -173,10 +211,25 @@ void ImageOpenGLWidget::paintGL() {
                 if (trackPointProperty->showCoordinates) {
                     QPainter painter(this);
                     QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
-                    painter.fillRect(pos.x(), pos.y(), 105, 12, Qt::white);
-                    painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(fmod(points[i].x, subImageWidth), 'f', 2) + " ,Y: " + QString::number(fmod(points[i].y, subImageHeight), 'f', 2));
+                    painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
+                    if (enableSubImages) {
+                        painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(fmod(points[i].x, subImageWidth), 'f', 2) + " ,Y: " + QString::number(fmod(points[i].y, subImageHeight), 'f', 2));
+                    } else {
+                        painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
+                    }
                 }
             }
+        }
+    }
+
+    if (showMouseOverCoordinateLabel) {
+        QPainter painter(this);
+        QPoint pos = scaledImageArea.topLeft();
+        painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
+        if (enableSubImages && subImageWidth > 0 && subImageHeight > 0) {
+            painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(mousePosInImage.x() % subImageWidth) + " ,Y: " + QString::number(mousePosInImage.y() % subImageHeight));
+        } else {
+            painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(mousePosInImage.x()) + " ,Y: " + QString::number(mousePosInImage.y()));
         }
     }
 }
@@ -191,6 +244,11 @@ void ImageOpenGLWidget::leaveEvent(QEvent *) {
 }
 
 void ImageOpenGLWidget::mouseMoveEvent(QMouseEvent * event) {
-    mouse = event->pos();
+    mousePos = event->pos();
+    
+    mousePosInImage = mousePos - scaledImageArea.topLeft();
+    mousePosInImage.setX(mousePosInImage.x() * ((double) imageWidth / scaledImageArea.width()));
+    mousePosInImage.setY(mousePosInImage.y() * ((double) imageHeight / scaledImageArea.height()));
+    
     update();
 }

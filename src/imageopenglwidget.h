@@ -23,14 +23,22 @@ public:
 
     void setTrackPointProperty(TrackPointProperty* trackPoint) { this->trackPointProperty = trackPoint; }
     virtual void updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
+    void setNumSubImagesX(unsigned int numSubImagesX) { this->numImageGroupsX = numSubImagesX; }
+    void setNumSubImagesY(unsigned int numSubImagesY) { this->numImageGroupsY = numSubImagesY; }
+    void setEnableSubImage(bool enableSubImage) { this->enableSubImages = enableSubImage; }
+
     const OpenGL::Texture* getTexture() { return &this->texture; }
+    unsigned int getNumSubImagesX() { return this->numImageGroupsX; }
+    unsigned int getNumSubImagesY() { return this->numImageGroupsY; }
+    bool isEnableSubImage() { return this->enableSubImages; }
 
 protected:
     QRect scaledImageArea;
     ImageDetect* imageDetect;
     TrackPointProperty* trackPointProperty;
     OpenGL::Texture texture;
-    QPoint mouse;
+    QPoint mousePos;
+    QPoint mousePosInImage;
     unsigned char* imgBuffer;
     unsigned int bufferSize;
     unsigned int imageWidth;
@@ -44,6 +52,10 @@ protected:
     void leaveEvent(QEvent*);
 
 private:
+    bool enableSubImages;
+    //bool showSubImageGrid;
+    bool showMouseOverCoordinateLabel;
+    bool showMouseCross;
     unsigned int numImageGroupsX;
     unsigned int numImageGroupsY;
 
