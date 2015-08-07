@@ -5,7 +5,6 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
-
 struct Vector3d {
     double x;
     double y;
