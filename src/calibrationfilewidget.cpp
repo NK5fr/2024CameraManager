@@ -1,12 +1,24 @@
 
 #include "calibrationfilewidget.h"
 
-CalibrationFileWidget::CalibrationFileWidget(QWidget* parent, CalibrationFile* calibFile) : QWidget(parent) {
+CalibrationFileWidget::CalibrationFileWidget(QWidget* parent, CalibrationFile* calibFile) : QMdiSubWindow(parent) {
     this->calibFile = calibFile;
+    if (calibFile->isFailed()) {
+        QMessageBox msgBox;
+        msgBox.setText("Calibration-file not parseable.");
+        msgBox.setInformativeText("Could not find camera combinations, or some other error!");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+        valid = false;
+        return;
+    }
+    setWindowTitle(calibFile->getFileName());
     failedColor = QColor(255, 0, 0, 150);
     warningColor = QColor(255, 255, 0, 150);
     okColor = QColor(0, 255, 0, 150);
     initUI();
+    setWidget(visualizeWidget);
+    valid = true;
 }
 
 void CalibrationFileWidget::initUI() {
@@ -96,7 +108,7 @@ void CalibrationFileWidget::initUI() {
     subPreviewWindowLayout->addLayout(subLeftLayout);
 
     cameraTable = new QTreeWidget(this);
-    cameraTable->setHeaderLabels(QStringList() << "Cam No." << "OK Combs." << "Warning Combs." << "Failed Combs.");
+    cameraTable->setHeaderLabels(QStringList() << "Cam No." << "Serial Nr." << "OK Combs." << "Warning Combs." << "Failed Combs.");
     subPreviewWindowLayout->addWidget(cameraTable);
     leftLayout->addLayout(subPreviewWindowLayout);
 
@@ -113,12 +125,32 @@ void CalibrationFileWidget::initUI() {
     leftLayout->setStretchFactor(filterList, 1);
     leftLayout->setStretchFactor(cameraTable, 1);
 
+    const int fixedHeight = 50;
+    showVisualizeButton = new QPushButton("Show Visualization");
+    showVisualizeButton->setFixedHeight(fixedHeight);
+    showTextButton = new QPushButton("Show Text");
+    showTextButton->setFixedHeight(fixedHeight);
+
     mainLayout->addLayout(leftLayout);
     mainLayout->addWidget(combinationList);
-    setLayout(mainLayout);
+    QVBoxLayout* vMainLayout = new QVBoxLayout();
+    vMainLayout->addLayout(mainLayout);
+    vMainLayout->addWidget(showTextButton);
+
+    visualizeWidget = new QWidget();
+    visualizeWidget->setLayout(vMainLayout);
+
+    QVBoxLayout* textLayout = new QVBoxLayout();
+    textLayout->addWidget(calibFile->getTextEdit());
+    textLayout->addWidget(showVisualizeButton);
+
+    textWidget = new QWidget();
+    textWidget->setLayout(textLayout);
 
     combinationPreviewWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
 
+    connect(showVisualizeButton, SIGNAL(clicked()), this, SLOT(showVisualizeClicked()));
+    connect(showTextButton, SIGNAL(clicked()), this, SLOT(showTextClicked()));
     connect(combinationList, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(combinationClicked(QTreeWidgetItem*, int)));
     connect(cameraTable, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(cameraClicked(QTreeWidgetItem*, int)));
     connect(combinationList, SIGNAL(itemSelectionChanged()), this, SLOT(combinationSelectionChanged()));
@@ -132,7 +164,11 @@ void CalibrationFileWidget::updateCombinationTable() {
         QString combination = QString::number(camComb[i]->camNumbers[0]) + "_" + QString::number(camComb[i]->camNumbers[1]) + "_" + QString::number(camComb[i]->camNumbers[2]);
         QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setText(0, combination);
-        item->setText(1, QString::number(camComb[i]->s0));
+        if (camComb[i]->textStatus.isEmpty()) {
+            item->setText(1, QString::number(camComb[i]->s0));
+        } else {
+            item->setText(1, camComb[i]->textStatus);
+        }
         item->setText(2, QString::number(camComb[i]->numFrames));
         item->setData(0, Qt::UserRole, QVariant::fromValue((quintptr) camComb[i]));
         updateFiltersCamerasOnly(camComb[i]);
@@ -146,8 +182,8 @@ void CalibrationFileWidget::updateCombinationTable() {
         bool warningS0 = (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 1))->text().toDouble());
         bool failedS0 = (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 2))->text().toDouble());
         if (warningS0) item->setBackgroundColor(1, warningColor);
-        if (failedS0) item->setBackgroundColor(1, failedColor);
-        if (!warningS0 && !failedS0) item->setBackgroundColor(1, okColor);
+        if (failedS0 || !camComb[i]->textStatus.isEmpty()) item->setBackgroundColor(1, failedColor);
+        else if (!warningS0 && !failedS0) item->setBackgroundColor(1, okColor);
         if (camComb[i]->numFrames < ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(4), 1))->text().toDouble()) {
             item->setBackgroundColor(2, failedColor);
         } else {
@@ -191,11 +227,14 @@ void CalibrationFileWidget::updateCameraTable() {
         }
         QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setText(0, QString::number(cams[i]->camNo));
-        item->setText(1, QString::number(ok));
-        item->setText(2, QString::number(warning));
-        item->setText(3, QString::number(failed) + "/" + QString::number(camComb.size()));
+        item->setText(1, QString::number(cams[i]->serialNo));
+        item->setText(2, QString::number(ok));
+        item->setText(3, QString::number(warning));
+        item->setText(4, QString::number(failed) + "/" + QString::number(camComb.size()));
         cameraTable->addTopLevelItem(item);
     }
+    cameraTable->resizeColumnToContents(0);
+    cameraTable->resizeColumnToContents(1);
 }
 
 void CalibrationFileWidget::updateFiltersCamerasOnly(TrackPoint::CameraCombination* comb) {
@@ -361,4 +400,12 @@ void CalibrationFileWidget::updateCameraCombinationTable(TrackPoint::CameraCombi
     selectedCombinationTable->resizeColumnToContents(1);
     selectedCombinationTable->resizeColumnToContents(2);
     selectedCombinationTable->resizeColumnToContents(3);
+}
+
+void CalibrationFileWidget::showTextClicked() {
+    setWidget(textWidget);
+}
+
+void CalibrationFileWidget::showVisualizeClicked() {
+    setWidget(visualizeWidget);
 }

@@ -11,8 +11,7 @@
 #include <QThread>
 #include <QDebug>
 #include "cameraproperty.h"
-#include "qvideowidget.h"
-
+#include "videoopenglwidget.h"
 
 /**
  * AbstractCamera
@@ -68,14 +67,14 @@ public:
 
     /**
         * @brief start liveview capture from manager
-        * @param videoWidget QvideoWidget that will receive the frames
+        * @param videoWidget VideoOpenGLWidget that will receive the frames
         */
-    void startCapture(QVideoWidget* videoWidget);
+    void startCapture(VideoOpenGLWidget* videoWidget);
 
     // Lars Aksel - 05.02.2015
     bool isCapturing() { return this->capturing; }
-    QVideoWidget* getVideoContainer() { return this->container; }
-    void setVideoContainer(QVideoWidget* videoWidget) { this->container = videoWidget; }
+    VideoOpenGLWidget* getVideoContainer() { return this->container; }
+    void setVideoContainer(VideoOpenGLWidget* videoWidget) { this->container = videoWidget; }
 
 protected:
     AbstractCamera();
@@ -93,7 +92,7 @@ private:
     QString customName;
     QString serial;
     QString model;
-    QVideoWidget* container;
+    VideoOpenGLWidget* container;
     class CaptureThread : public QThread {
         public :
             CaptureThread(AbstractCamera* cam) : QThread() { c = cam; }

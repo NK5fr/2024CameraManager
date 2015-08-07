@@ -1,4 +1,7 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef DATA_BUFFER_H
 #define DATA_BUFFER_H
 

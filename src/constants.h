@@ -1,4 +1,7 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
@@ -7,7 +10,7 @@
 using namespace std;
 
 // Testing av SIMD-instruksjoner - Lars Aksel - 04.06.2015
-#define SIMD_TESTING_128_BIT // Requires SSE3-support
+#define SIMD_TESTING_128_BIT // Requires SSE3-support, maybe SSSE3 and/or SSE4
 //#define SIMD_TESTING_256_BIT // Requires AVX2-support, not finished
 
 #if defined(SIMD_TESTING_128_BIT)

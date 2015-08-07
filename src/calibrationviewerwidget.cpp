@@ -6,6 +6,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
 
 #include <iostream>
 #include <string>
@@ -17,6 +18,7 @@ using namespace std;
 CalibrationViewerWidget::CalibrationViewerWidget(QString path, QString name) {
     fullPath = path + "/" + name;
     calibrationFile = new CalibrationFile(path);
+
     // Creating QTextEdit, which need to be known to save file latter if asked
     fileContain = new CalibrationEdit(this);
     format = fileContain->textCursor().charFormat();

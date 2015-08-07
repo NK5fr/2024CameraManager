@@ -25,7 +25,7 @@
 
 using namespace std;
 
-/* Constructor */
+// Reading from file...
 SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString filename, QString calibPath)
     : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0), QMdiSubWindow(parent) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
@@ -53,6 +53,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString fi
     setWindowTitle(filename);
 }
 
+// Reading from network...
 SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) {
     fileContain = new QPlainTextEdit();
     fileContain->setReadOnly(true);
@@ -95,7 +96,7 @@ void SocketViewerWidget::readTextFromFile() {
     myFile.close();
 }
 
-vector<Vector3d*> SocketViewerWidget::readLine(QString line) {
+vector<Vector3d*> SocketViewerWidget::readLine(QString& line) {
     QRegularExpression coordsRegEx("(-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?)(?:\\s*)(-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?)(?:\\s*)(-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?)");
     QRegularExpressionMatchIterator i = coordsRegEx.globalMatch(line);
     vector<Vector3d*> vectors;
@@ -510,7 +511,6 @@ void HostAddressDialog::readSocketLine() {
             //list[i].remove("\n");
             socketWidget->getFileContain()->insertPlainText(QString("%1  \t").arg((socketWidget->getRowNumber() - 1), 6, 10, QChar(' ')) + list[i] + "\n");
             socketWidget->appendPoints(pos);
-
         } else {
             socketWidget->getFileContain()->insertPlainText("ERROR: \"" + list[i] + "\"\n");
         }
@@ -542,5 +542,4 @@ void HostAddressDialog::displayError(QAbstractSocket::SocketError socketError) {
 
 void HostAddressDialog::socketConnected() {
     close();
-    //coordinatesShown = 0;
 }

@@ -1,3 +1,7 @@
+
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef TRACKPOINT_PROPERTY_H
 #define TRACKPOINT_PROPERTY_H
 

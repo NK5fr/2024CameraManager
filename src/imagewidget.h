@@ -1,3 +1,7 @@
+
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
@@ -42,7 +46,6 @@ private:
     QPointF mousePos;
     QSize imageWidgetSize;
     QSize subImageSize;
-    int pointSeriesNr;
     std::vector<std::vector<TrackPoint::PointInCamera*>> points;
     double imagePosX;
     double imagePosY;
@@ -50,13 +53,14 @@ private:
     double scaledSubImageSizeY;
     int scaledImageWidth;
     int scaledImageHeight;
-    int startX;
-    int startY;
     int numImagesHeight;
     int numImagesWidth;
-    bool mouseInside;
-    bool showMagnified;
+    int pointSeriesNr;
+    int startX;
+    int startY;
     bool subImagesEnabled;
+    bool showMagnified;
+    bool mouseInside;
 };
 
 #endif

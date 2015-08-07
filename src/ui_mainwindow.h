@@ -33,6 +33,7 @@ QT_BEGIN_NAMESPACE
 
 class Ui_MainWindow {
 public:
+    QAction *actionRemoveWindows;
     QAction *actionMosaic;
     QAction *actionUpdateImages;
     QAction *actionLiveView;
@@ -76,7 +77,7 @@ public:
 
     void setupUi(QMainWindow *MainWindow) {
         if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1185, 664);
+        MainWindow->resize(1700, 750);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -84,6 +85,11 @@ public:
         MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         MainWindow->setDockOptions(QMainWindow::AnimatedDocks);
+        actionRemoveWindows = new QAction(MainWindow);
+        actionRemoveWindows->setObjectName(QStringLiteral("actionRemoveWindows"));
+        QIcon iconRemWin;
+        iconRemWin.addFile(QStringLiteral(":/icons/remove_window"), QSize(), QIcon::Normal, QIcon::Off);
+        actionRemoveWindows->setIcon(iconRemWin);
         actionMosaic = new QAction(MainWindow);
         actionMosaic->setObjectName(QStringLiteral("actionMosaic"));
         QIcon icon;
@@ -146,8 +152,8 @@ public:
         CamerasWidget_2 = new QDockWidget(MainWindow);
         //CamerasWidget_2->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Expanding);
         CamerasWidget_2->setObjectName(QStringLiteral("CamerasWidget_2"));
-        CamerasWidget_2->setMinimumSize(QSize(200, 0));
-        CamerasWidget_2->setBaseSize(QSize(750, 0));
+        CamerasWidget_2->setMinimumSize(QSize(450, 0));
+        //CamerasWidget_2->setBaseSize(QSize(400, 0));
         CamerasWidget_2->setContextMenuPolicy(Qt::DefaultContextMenu);
         CamerasWidget_2->setAcceptDrops(false);
         CamerasWidget_2->setAutoFillBackground(false);
@@ -250,6 +256,7 @@ public:
         toolBar->addAction(actionCrosshairReal);
         toolBar->addSeparator();
         toolBar->addAction(actionMosaic);
+        toolBar->addAction(actionRemoveWindows);
         toolBar->addAction(actionHighQuality);
 
         retranslateUi(MainWindow);
@@ -263,7 +270,8 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         actionMosaic->setText(QApplication::translate("MainWindow", "Mosaic", 0));
 #ifndef QT_NO_TOOLTIP
-        actionMosaic->setToolTip(QApplication::translate("MainWindow", "Make a mosaic with camera views", 0));
+        actionMosaic->setToolTip(QApplication::translate("MainWindow", "Make a mosaic with the sub-windows", 0));
+        actionRemoveWindows->setToolTip(QApplication::translate("MainWindow", "Remove all sub-windows", 0));
 #endif // QT_NO_TOOLTIP
         actionUpdateImages->setText(QApplication::translate("MainWindow", "UpdateImages (Space)", 0));
         actionUpdateImages->setShortcut(QApplication::translate("MainWindow", "Space", 0));

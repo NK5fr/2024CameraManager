@@ -1,3 +1,7 @@
+
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef WIDGETGL_H
 #define WIDGETGL_H
 

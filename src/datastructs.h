@@ -1,7 +1,9 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
-
 
 struct Vector3d {
     double x;
@@ -46,7 +48,7 @@ namespace TrackPoint {
 
     struct Camera {
         int camNo;
-        int serialNo;
+        unsigned int serialNo;
         int pixelWidth = 1280;
         int pixelHeight = 1024;
         double fovWidth = 0;    // In radians
@@ -85,6 +87,7 @@ namespace TrackPoint {
         double max;
         int numFrames;
         CalibrationStatus status;
+        QString textStatus;
     };
 }
 

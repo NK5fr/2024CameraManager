@@ -1,3 +1,7 @@
+
+// Adapted by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
+
 #ifndef DETECTPARTICLES
 #define DETECTPARTICLES
 

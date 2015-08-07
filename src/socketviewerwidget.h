@@ -42,7 +42,7 @@ public:
     void displayToolTip(CoordinatesLabel *label);
     void appendPoints(vector<Vector3d*>);
     QSlider *getTimeSlider();
-    vector<Vector3d*> readLine(QString line);
+    vector<Vector3d*> readLine(QString& line);
 
     inline QPlainTextEdit* getFileContain() { return this->fileContain; }
     inline QSpinBox* getSpinBox() { return this->spinBox; }
@@ -181,5 +181,6 @@ private:
     QTcpSocket* tcpSocket = nullptr;
     QLineEdit* portLineEdit = nullptr;
     QComboBox* hostCombo = nullptr;
+    bool success = false;
 };
 #endif // FILEVIEWERWIDGET_H

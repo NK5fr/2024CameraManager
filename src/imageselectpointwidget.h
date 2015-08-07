@@ -1,4 +1,6 @@
 
+// Written by: Lars Aksel Tveråmo
+// 3D Motion Technologies AS
 
 #ifndef IMAGESELECTPOINTWIDGET_H
 #define IMAGESELECTPOINTWIDGET_H

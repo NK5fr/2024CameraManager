@@ -18,9 +18,9 @@ bool AbstractCamera::equalsTo(AbstractCamera* c){
     return this == c;
 }
 
-void AbstractCamera::startCapture(QVideoWidget* videoWidget){
+void AbstractCamera::startCapture(VideoOpenGLWidget* videoWidget){
     if(videoWidget == NULL){
-        //qDebug() << "[ERROR] startCapture(QVideoWidget): videoWidget is NULL";
+        //qDebug() << "[ERROR] startCapture(VideoOpenGLWidget): videoWidget is NULL";
         //cout << "---------------------------------------" << endl << "Erreur" << endl;
         return;
     }
@@ -29,5 +29,5 @@ void AbstractCamera::startCapture(QVideoWidget* videoWidget){
 }
 
 void AbstractCamera::sendFrame(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    container->setImage(imgBuffer, bufferSize, imageWidth, imageHeight);
+    container->updateImage(imgBuffer, bufferSize, imageWidth, imageHeight);
 }
