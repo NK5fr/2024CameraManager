@@ -272,7 +272,7 @@ void ImageDetect::imageRemoveBackground() {
                 for (int y = yStart; y < yEnd; ++y) {
                     __m128i vsum = _mm_set1_epi32(0);
                     for (int i = xStart; i < xEnd; i += 16) {
-                        __m128i v = _mm_load_si128((const __m128i*) &imarray[(y * imageWidth) + i]);      // load vector of 8 bit values
+                        __m128i v = _mm_loadu_si128((const __m128i*) &imarray[(y * imageWidth) + i]);      // load vector of 8 bit values
                         __m128i vl = _mm_unpacklo_epi8(v, vk0); // unpack to two vectors of 16 bit values
                         __m128i vh = _mm_unpackhi_epi8(v, vk0);
                         __m128i wordPacked = _mm_add_epi16(vl, vh);
@@ -328,12 +328,12 @@ void ImageDetect::imageRemoveBackground() {
             __m128i imThreshNum = _mm_set1_epi8((imthresh - 1));
             for (int y = yStart; y < yEnd; ++y) {
                 for (int i = xStart; i < xEnd; i += 16) {
-                    __m128i v = _mm_load_si128((__m128i*) &imarray[(y * imageWidth) + i]); // Load 16 * 8-bit elements (128-bit)
+                    __m128i v = _mm_loadu_si128((__m128i*) &imarray[(y * imageWidth) + i]); // Load 16 * 8-bit elements (128-bit)
                     __m128i mask = _mm_andnot_si128(_mm_cmpeq_epi8(v, imThreshNum), _mm_cmpeq_epi8(_mm_max_epu8(v, imThreshNum), v)); // unsigned 'greater-than' comparison
                     //__m128i mask = _mm_cmpgt_epi8(v, imThreshNum); // signed 'greater-than' comparison
                     v = _mm_blendv_epi8(vk0, v, mask); // Should be the same as _mm_and_si128(), except slower...
                     //v = _mm_and_si128(v, mask);
-                    _mm_store_si128((__m128i*) &newarray[(y * imageWidth) + i], v); // Store 16 * 8-bit elements (128-bit)
+                    _mm_storeu_si128((__m128i*) &newarray[(y * imageWidth) + i], v); // Store 16 * 8-bit elements (128-bit)
                 }
             }
 #else
@@ -378,7 +378,7 @@ void ImageDetect::subwinRemoveBackground() {
 #ifdef SIMD_TESTING_128_BIT
             __m128i vsum = _mm_set1_epi32(0);
             for (int i = 0; i < subwinsiz; i += 16) {
-                __m128i v = _mm_load_si128((__m128i*) &swtab->sw[(j * imageWidth) + i]);      // load vector of 8 bit values
+                __m128i v = _mm_loadu_si128((__m128i*) &swtab->sw[(j * imageWidth) + i]);      // load vector of 8 bit values
                 __m128i vl = _mm_unpacklo_epi8(v, vk0); // unpack to two vectors of 16 bit values
                 __m128i vh = _mm_unpackhi_epi8(v, vk0);
                 __m128i wordPacked = _mm_add_epi16(vl, vh);
@@ -417,12 +417,12 @@ void ImageDetect::subwinRemoveBackground() {
     __m128i imThreshNum = _mm_set1_epi8(imthresh);
     for (int j = 0; j < subwinsiz; j++) {
         for (int i = 0; i < subwinsiz; i += 16) {
-            __m128i v = _mm_load_si128((__m128i*) &swtab->sw[(j * imageWidth) + i]);
+            __m128i v = _mm_loadu_si128((__m128i*) &swtab->sw[(j * imageWidth) + i]);
             __m128i mask = _mm_cmplt_epu8(v, imThreshNum); // unsigned 'greater-than' comparison
             //__m128i mask = _mm_cmpgt_epi8(imThreshNum, v); // signed 'greater-than' comparison
             v = _mm_blendv_epi8(v, vk0, mask); // Should be the same as _mm_andnot_si128(), except slower...
             //v = _mm_andnot_si128(v, mask);
-            _mm_store_si128((__m128i*) &swtab->sw[(j * imageWidth) + i], v);
+            _mm_storeu_si128((__m128i*) &swtab->sw[(j * imageWidth) + i], v);
         }
     }
 #else
@@ -510,7 +510,7 @@ bool ImageDetect::imageFindPoint() {
     if ((&newarray[(jstart * imageWidth) + i] - (newarray + maxLoop)) % 16 == 0) {
         const __m128i vk0 = _mm_set1_epi8(0);
         for (iter = &newarray[(jstart * imageWidth) + i]; iter < (newarray + maxLoop); iter += 16) {
-            __m128i v = _mm_load_si128((__m128i*) iter);
+            __m128i v = _mm_loadu_si128((__m128i*) iter);
             __m128i mask = _mm_andnot_si128(_mm_cmpeq_epi8(v, vk0), _mm_cmpeq_epi8(_mm_max_epu8(v, vk0), v)); // unsigned 'greater-than' comparison
             //__m128i mask = _mm_cmpgt_epi8(v, vk0); // signed 'greater-than' comparison
             if (mask.m128i_u64[0] > 0) {
