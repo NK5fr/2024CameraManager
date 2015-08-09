@@ -27,7 +27,7 @@ ImageViewerWidget::ImageViewerWidget(QString path, QString filename, TrackPointP
             break;
         }
     }
-
+    imageFileSlider.setSliderPosition(selectedImageInFolder);
     connect(&imageFileSlider, SIGNAL(valueChanged(int)), this, SLOT(imageFileSliderChanged(int)));
 }
 
