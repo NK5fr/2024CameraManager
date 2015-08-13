@@ -22,7 +22,6 @@
 #include <QtWidgets/qpushbutton.h>
 
 #include "imageopenglwidget.h"
-#include "imagewidget.h"
 #include "constants.h"
 
 #include <vector>
