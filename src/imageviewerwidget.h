@@ -21,8 +21,8 @@
 #include <QtCore/qmath.h>
 #include <QtWidgets/qpushbutton.h>
 
+#include "imageopenglwidget.h"
 #include "imagewidget.h"
-#include "imageselectpointwidget.h"
 #include "constants.h"
 
 #include <vector>
@@ -45,8 +45,14 @@ protected:
 
 private slots:
     void imageFileSliderChanged(int value);
+    void enableSubRegionsStateChanged(int);
+    void numSubRegionsXChanged(int);
+    void numSubRegionsYChanged(int);
+    void zoomFactorChanged(const QString&);
+    void zoomAreaSizeChanged(const QString&);
 
 private:
+    ImageOpenGLWidget imageWidget;
     QFileInfoList imageFiles;
     QString filename;
     QString path;
@@ -54,17 +60,39 @@ private:
     QPoint point;
     QSlider imageFileSlider;
     vector<vector<QPoint>> points;
-    ImageSelectPointWidget imageWidget;
+    
+    // "Sub-Region" GUI-elements
+    QPushButton toggleHideSubRegionOptions;
+    QCheckBox enableSubRegions;
+    QSpinBox numSubRegionsX;
+    QSpinBox numSubRegionsY;
+    QLineEdit subRegionSizeX;
+    QLineEdit subRegionSizeY;
+    bool hideSubRegionOptions;
+    
+    // "Create Point-Series" GUI-elements
+    bool hideCreatePointSeriesOptions;
+
+    // "Create Bounding-Elements" GUI-elements
+    QRadioButton createBoxes;
+    QRadioButton createSpheres;
+
+
+    // "Zoom Options" GUI-elements
+    QComboBox zoomFactorComboBox;
+    QComboBox zoomAreaSizeComboBox;
+
     int camerasNb;
     int pointsNb;
     int selectedImageInFolder;
     bool correspondingData;
 
-    void setImageFromFile(const QString& filepath);
-    //void initializingImage(const QString& filepath);
-    //void initializingPoints();
 
-    char* unpackPGMFile(const QString& filepath, int64_t* bufferSize, int64_t* imageWidth, int64_t* imageHeight);
+    void setImageFromFile(const QString& filepath);
+    void updateSubRegionSize();
+    void initGUI();
+
+    char* unpackPGMFile(const QString& filepath, int64_t* const bufferSize, int64_t* const imageWidth, int64_t* const imageHeight);
 };
 
 #endif // IMAGEVIEWERWIDGET_H

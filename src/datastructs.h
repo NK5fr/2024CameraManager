@@ -5,6 +5,11 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
+struct Vector2d {
+    double x;
+    double y;
+};
+
 struct Vector3d {
     double x;
     double y;
@@ -16,6 +21,12 @@ struct Orientation {
     double beta;    // Orientation around Y-axis
     double kappa;   // Orientation around Z-axis
 };
+
+struct CircleF {
+    Vector3d pos;
+    double radius;
+};
+
 
 namespace TrackPoint {
     //struct 

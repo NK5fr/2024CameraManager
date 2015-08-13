@@ -8,7 +8,7 @@ Texture::Texture() {
     textureHeight = 0;
     textureMagFilter = TextureFilter::NEAREST;
     textureMinFilter = TextureFilter::NEAREST;
-    textureWrap = TextureWrap::CLAMP_TO_EDGE;
+    textureWrap = TextureWrap::CLAMP_TO_BORDER;
     pixelFormat = PixelFormat::RGBA;
 }
 
