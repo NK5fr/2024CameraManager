@@ -175,8 +175,10 @@ void ImageViewerWidget::initGUI() {
     zoomingOptionsLayout->setAlignment(Qt::AlignTop);
     zoomingOptionsLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
 
-    zoomFactorComboBox.addItems(QStringList() << "2" << "4" << "8" << "16");
+    zoomFactorComboBox.addItems(QStringList() << "1" << "2" << "4" << "8" << "16" << "32" << "64");
+    zoomFactorComboBox.setCurrentIndex(zoomFactorComboBox.findData(QString::number(imageWidget.getZoomFactor(), 'f', 0), Qt::DisplayRole));
     zoomAreaSizeComboBox.addItems(QStringList() << "100" << "200" << "250" << "300");
+    zoomAreaSizeComboBox.setCurrentIndex(zoomAreaSizeComboBox.findData(QString::number(imageWidget.getZoomAreaSize(), 'f', 0), Qt::DisplayRole));
 
     QHBoxLayout* optionsLayout = new QHBoxLayout();
     optionsLayout->addLayout(imageSubRegionsLayout);

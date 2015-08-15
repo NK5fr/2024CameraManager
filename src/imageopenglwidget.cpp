@@ -360,10 +360,8 @@ void ImageOpenGLWidget::paintGL() {
             }
             int crossWingSize = (int) (height() / 75);
             if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaledImageArea.width() / imageWidth) * trackPointProperty->minSepValue;
-            glLineWidth(1.5);
+            glLineWidth(1);
             for (int i = 0; i < numPoints; i++) {
-                int w = scaledImageArea.width();
-                int h = scaledImageArea.height();
                 double xPos = ((double) points[i].x * ((double) scaledImageArea.width() / imageWidth));
                 double yPos = ((double) points[i].y * ((double) scaledImageArea.height() / imageHeight));
 
@@ -395,7 +393,7 @@ void ImageOpenGLWidget::paintGL() {
                 }
                 glColor3f(1, 1, 1);
 
-                if (trackPointProperty->showCoordinates) {
+                if (trackPointProperty->showCoordinates && !leftMouseButtonDown) {
                     QPainter painter(this);
                     QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
                     painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
@@ -406,6 +404,7 @@ void ImageOpenGLWidget::paintGL() {
                     }
                 }
             }
+            glLineWidth(1);
         }
     }
 
@@ -429,14 +428,14 @@ void ImageOpenGLWidget::paintGL() {
             glPushMatrix();
             glEnable(GL_TEXTURE_2D);
             texture.bind();
+            if ((mPos.x() + scaledImageArea.left()) + zoomSize > width()) mPos.setX(mPos.x() - zoomSize);
+            if ((mPos.y() + scaledImageArea.top()) + zoomSize > height()) mPos.setY(mPos.y() - zoomSize);
             glTranslated(mPos.x(), mPos.y(), 0);
-            if ((mPos.x() + scaledImageArea.left()) + zoomSize > width()) glTranslated(-zoomSize, 0, 0);
-            if ((mPos.y() + scaledImageArea.top()) + zoomSize > height()) glTranslated(0, -zoomSize, 0);
 
             double texCoordX = (double) mousePosInImage.x() / imageWidth;
             double texCoordY = (double) mousePosInImage.y() / imageHeight;
-            double texSizeX = zoomSize / (imageWidth * 2 * zoomFactor);
-            double texSizeY = zoomSize / (imageHeight * 2 * zoomFactor);
+            double texSizeX = (zoomSize * ((double) imageWidth / scaledImageArea.width())) / (imageWidth * zoomFactor * 2);
+            double texSizeY = (zoomSize * ((double) imageHeight / scaledImageArea.height())) / (imageHeight * zoomFactor * 2);
             glBegin(GL_QUADS);
             glTexCoord2f(texCoordX - texSizeX, texCoordY - texSizeY);
             glVertex2d(0, 0);
@@ -449,7 +448,7 @@ void ImageOpenGLWidget::paintGL() {
             glEnd();
             texture.unbind();
             glDisable(GL_TEXTURE_2D);
-
+            
             glColor4f(1, 0, 0, 1);
             glBegin(GL_LINE_LOOP);
             glVertex2d(0, 0);
@@ -467,6 +466,63 @@ void ImageOpenGLWidget::paintGL() {
             glVertex2d(zoomSize, zoomSize / 2);
             glEnd();
             glColor4f(1, 1, 1, 1);
+
+            if (imageDetect != nullptr && trackPointProperty != nullptr) {
+                if (trackPointProperty->trackPointPreview) {
+                    ImPoint* points;
+                    int numPoints;
+                    if (trackPointProperty->removeDuplicates) {
+                        imageDetect->removeDuplicatePoints();
+                        points = imageDetect->getFinalPoints();
+                        numPoints = imageDetect->getFinalNumPoints();
+                    } else {
+                        points = imageDetect->getInitPoints();
+                        numPoints = imageDetect->getInitNumPoints();
+                    }
+                    int crossWingSize = 20;
+                    if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaledImageArea.width() / imageWidth) * trackPointProperty->minSepValue;
+                    double scaleWidth = ((double) scaledImageArea.width() / imageWidth);
+                    double scaleHeight = ((double) scaledImageArea.height() / imageHeight);
+                    double zoomHalfSizeInImageX = (zoomSize * ((double) imageWidth / scaledImageArea.width())) / (2 * zoomFactor);
+                    double zoomHalfSizeInImageY = (zoomSize * ((double) imageHeight / scaledImageArea.height())) / (2 * zoomFactor);
+                    for (int i = 0; i < numPoints; i++) {
+                        if (points[i].x > mousePosInImage.x() + zoomHalfSizeInImageX || points[i].x < mousePosInImage.x() - zoomHalfSizeInImageX) continue;
+                        if (points[i].y > mousePosInImage.y() + zoomHalfSizeInImageY || points[i].y < mousePosInImage.y() - zoomHalfSizeInImageY) continue;
+
+                        double diffX = points[i].x - mousePosInImage.x(); // Image-coordinates
+                        double diffY = points[i].y - mousePosInImage.y(); // Image-coordinates
+                        double diffXZoomArea = (diffX * scaleWidth * zoomFactor); // Screen-coordinates
+                        double diffYZoomArea = (diffY * scaleHeight * zoomFactor); // Screen-coordinates
+                        double adjustX = ((mPos.x() + scaledImageArea.left()) + zoomSize > width()) ? -zoomSize : zoomSize;
+                        double adjustY = ((mPos.y() + scaledImageArea.top()) + zoomSize > height()) ? -zoomSize : zoomSize;
+                        double xPos = (adjustX / 2) + diffXZoomArea; // Screen-coordinates
+                        double yPos = (adjustY / 2) + diffYZoomArea; // Screen-coordinates
+
+                        glColor3f(1, 0, 0);
+                        glBegin(GL_LINES);
+                        glVertex2d(xPos - crossWingSize, yPos);
+                        glVertex2d(xPos + crossWingSize, yPos);
+                        glEnd();
+
+                        glBegin(GL_LINES);
+                        glVertex2d(xPos, yPos - crossWingSize);
+                        glVertex2d(xPos, yPos + crossWingSize);
+                        glEnd();
+                        glColor3f(1, 1, 1);
+
+                        if (trackPointProperty->showCoordinates) {
+                            QPainter painter(this);
+                            QPoint pos = scaledImageArea.topLeft() + QPoint(xPos + mPos.x(), yPos + mPos.y());
+                            painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
+                            if (enableSubImages) {
+                                painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(fmod(points[i].x, subImageWidth), 'f', 2) + " ,Y: " + QString::number(fmod(points[i].y, subImageHeight), 'f', 2));
+                            } else {
+                                painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(points[i].x, 'f', 2) + " ,Y: " + QString::number(points[i].y, 'f', 2));
+                            }
+                        }
+                    }
+                }
+            }
             glPopMatrix();
         }
     }
@@ -476,9 +532,9 @@ void ImageOpenGLWidget::paintGL() {
         QPoint pos = scaledImageArea.topLeft();
         painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
         if (enableSubImages && subImageWidth > 0 && subImageHeight > 0) {
-            painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(std::fmod(mousePosInImage.x(), subImageWidth), 'f', 0) + " ,Y: " + QString::number(std::fmod(mousePosInImage.y(), subImageHeight), 'f', 0));
+            painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(std::fmod(mousePosInImage.x(), subImageWidth), 'f', 2) + " ,Y: " + QString::number(std::fmod(mousePosInImage.y(), subImageHeight), 'f', 2));
         } else {
-            painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(mousePosInImage.x(), 'f', 0) + " ,Y: " + QString::number(mousePosInImage.y(), 'f', 0));
+            painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(mousePosInImage.x(), 'f', 2) + " ,Y: " + QString::number(mousePosInImage.y(), 'f', 2));
         }
     }
 }
@@ -518,6 +574,7 @@ void ImageOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
         showZoomArea = false;
         QPoint globalPos = mapToGlobal(QPoint(mousePos.x(), mousePos.y()));
         QCursor::setPos(globalPos.x(), globalPos.y());
+        update();
         return;
     }
     if (event->button() == Qt::MouseButton::RightButton) {
@@ -527,12 +584,11 @@ void ImageOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
 }
 
 void ImageOpenGLWidget::mouseMoveEvent(QMouseEvent * event) {
-    QOpenGLWidget::mouseMoveEvent(event);
     int dx = event->x() - actualMousePos.x();
     int dy = event->y() - actualMousePos.y();
     actualMousePos = event->pos();
     if (showZoomArea) {
-        double sensitivity = zoomFactor * 8;
+        double sensitivity = zoomFactor * 2;
         mousePos.setX(mousePos.x() + ((double) dx) / sensitivity);
         mousePos.setY(mousePos.y() + ((double) dy) / sensitivity);
     } else {
@@ -547,6 +603,7 @@ void ImageOpenGLWidget::mouseMoveEvent(QMouseEvent * event) {
     }
 
     checkBoundingAreas();
+    QOpenGLWidget::mouseMoveEvent(event);
     update();
 }
 

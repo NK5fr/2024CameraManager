@@ -35,6 +35,8 @@ public:
     unsigned int getNumSubImagesY() { return this->numImageGroupsY; }
     unsigned int getImageWidth() { return this->imageWidth; }
     unsigned int getImageHeight() { return this->imageHeight; }
+    double getZoomFactor() { return this->zoomFactor; }
+    double getZoomAreaSize() { return this->zoomSize; }
     bool isEnableSubImage() { return this->enableSubImages; }
 
 protected:
