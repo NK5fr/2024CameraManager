@@ -77,14 +77,14 @@ private:
     //bool rightMouseButtonDown = false;
 
     // Code for bounding-area, look in ImageOpenGLWidget-constructor for more information
-    int selectedBoundingCircle = -1;
-    bool selectedBoundingCircleEdge = false; // If edge is selected
-    int selectedBoundingBox = -1;
-    int selectedBoundingBoxCorner = -1; // 0-topLeft, 1-topRight, 2-bottomLeft, 3-bottomRight
     QPointF selectedBoundingAreaMouseRelative;
     double boundingCircleEdgeThreshold = 2; // In pixels
     double boundingBoxCornerThreshold = 10; // In pixels
     double mouseDragThreshold = 5; // Not used
+    int selectedBoundingCircle = -1;
+    int selectedBoundingBox = -1;
+    int selectedBoundingBoxCorner = -1; // 0-topLeft, 1-topRight, 2-bottomLeft, 3-bottomRight
+    bool selectedBoundingCircleEdge = false; // If edge is selected
   
     bool showZoomArea = false; // Drawing of zoom-area at cursor, controlled by holding left mouse-button
     double zoomFactor = 4.0; // Zooming-factor, 
