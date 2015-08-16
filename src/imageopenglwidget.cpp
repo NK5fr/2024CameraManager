@@ -12,9 +12,15 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     enableSubImages = true;
     showMouseOverCoordinateLabel = true;
     showMouseCross = true;
-    showBoundingAreas = true;
+    showBoundingAreas = false;
     numImageGroupsX = 3;
     numImageGroupsY = 2;
+    setMouseTracking(true);
+
+    // Test-code for boxes and circles, used for drawing masking-areas etc.
+    // Maybe about 70-80 % finished bounding area management code.
+    // This bounding area imformation can be sent to TrackPoint-software for removing unwanted points.
+    // 16. aug. 2015
     /*
     QRectF* box = new QRectF(QPointF(200, 700), QSizeF(300, 100));
     boundingBoxes.push_back(box);
@@ -24,8 +30,8 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     s->pos.y = 600;
     s->radius = 200;
     boundingCircles.push_back(s);
+    showBoundingAreas = true;
     */
-    setMouseTracking(true);
 }
 
 ImageOpenGLWidget::~ImageOpenGLWidget() {
@@ -85,6 +91,10 @@ void ImageOpenGLWidget::paintGL() {
     updateView();
     int subImageWidth = imageWidth / numImageGroupsX;
     int subImageHeight = imageHeight / numImageGroupsY;
+    double imageToScreenCoordX = ((double) scaledImageArea.width() / imageWidth);
+    double imageToScreenCoordY = ((double) scaledImageArea.height() / imageHeight);
+    double screenToImageCoordX = ((double) imageWidth / scaledImageArea.width());
+    double screenToImageCoordY = ((double) imageHeight / scaledImageArea.height());
     if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
         texture.createEmptyTexture(imageWidth, imageHeight);
     }
@@ -158,11 +168,11 @@ void ImageOpenGLWidget::paintGL() {
     if (showBoundingAreas) {
         for (int i = 0; i < boundingCircles.size(); i++) {
             CircleF* mySphere = boundingCircles[i];
-            float circleSize = mySphere->radius * ((double) scaledImageArea.width() / imageWidth);
+            float circleSize = mySphere->radius * imageToScreenCoordX;
             const int num_segments = 30;
 
-            double xPos = (mySphere->pos.x * ((double) scaledImageArea.width() / imageWidth));
-            double yPos = (mySphere->pos.y * ((double) scaledImageArea.height() / imageHeight));
+            double xPos = (mySphere->pos.x * imageToScreenCoordX);
+            double yPos = (mySphere->pos.y * imageToScreenCoordY);
 
             glPushMatrix();
             glTranslated(xPos, yPos, 0);
@@ -227,34 +237,34 @@ void ImageOpenGLWidget::paintGL() {
 
             glColor4f(0, 1, 0, 0.3f);
             glBegin(GL_POLYGON);
-            glVertex3d(myBox->topLeft().x() * ((double) scaledImageArea.width() / imageWidth), 
-                       myBox->topLeft().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->topLeft().x() * imageToScreenCoordX, 
+                       myBox->topLeft().y() * imageToScreenCoordY,
                        0);
-            glVertex3d(myBox->topRight().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->topRight().y() * ((double) scaledImageArea.width() / imageWidth), 
+            glVertex3d(myBox->topRight().x() * imageToScreenCoordX,
+                       myBox->topRight().y() * imageToScreenCoordY,
                        0);
-            glVertex3d(myBox->bottomRight().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->bottomRight().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->bottomRight().x() * imageToScreenCoordX,
+                       myBox->bottomRight().y() * imageToScreenCoordY,
                        0);
-            glVertex3d(myBox->bottomLeft().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->bottomLeft().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->bottomLeft().x() * imageToScreenCoordX,
+                       myBox->bottomLeft().y() * imageToScreenCoordY,
                        0);
             glEnd();
 
 
             glColor4f(0, 1, 0, 1);
             glBegin(GL_LINE_LOOP);
-            glVertex3d(myBox->topLeft().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->topLeft().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->topLeft().x() * imageToScreenCoordX,
+                       myBox->topLeft().y() * imageToScreenCoordY,
                        0);
-            glVertex3d(myBox->topRight().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->topRight().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->topRight().x() * imageToScreenCoordX,
+                       myBox->topRight().y() * imageToScreenCoordY,
                        0);
-            glVertex3d(myBox->bottomRight().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->bottomRight().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->bottomRight().x() * imageToScreenCoordX,
+                       myBox->bottomRight().y() * imageToScreenCoordY,
                        0);
-            glVertex3d(myBox->bottomLeft().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->bottomLeft().y() * ((double) scaledImageArea.width() / imageWidth),
+            glVertex3d(myBox->bottomLeft().x() * imageToScreenCoordX,
+                       myBox->bottomLeft().y() * imageToScreenCoordY,
                        0);
             glEnd();
 
@@ -263,68 +273,68 @@ void ImageOpenGLWidget::paintGL() {
             if (selectedBoundingBoxCorner == 0) cornerBoxSize *= 2;
             QPointF corner = myBox->topLeft();
             glBegin(GL_LINE_LOOP);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
             glEnd();
             if (selectedBoundingBoxCorner == 0) cornerBoxSize /= 2;
             if (selectedBoundingBoxCorner == 1) cornerBoxSize *= 2;
             corner = myBox->topRight();
             glBegin(GL_LINE_LOOP);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
             glEnd();
             if (selectedBoundingBoxCorner == 1) cornerBoxSize /= 2;
             if (selectedBoundingBoxCorner == 2) cornerBoxSize *= 2;
             corner = myBox->bottomLeft();
             glBegin(GL_LINE_LOOP);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
             glEnd();
             if (selectedBoundingBoxCorner == 2) cornerBoxSize /= 2;
             if (selectedBoundingBoxCorner == 3) cornerBoxSize *= 2;
             corner = myBox->bottomRight();
             glBegin(GL_LINE_LOOP);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX + cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY - cornerBoxSize,
                        0);
-            glVertex3d(corner.x() * ((double) scaledImageArea.width() / imageWidth) - cornerBoxSize,
-                       corner.y() * ((double) scaledImageArea.width() / imageWidth) + cornerBoxSize,
+            glVertex3d(corner.x() * imageToScreenCoordX - cornerBoxSize,
+                       corner.y() * imageToScreenCoordY + cornerBoxSize,
                        0);
             glEnd();
             if (selectedBoundingBoxCorner == 3) cornerBoxSize /= 2;
@@ -332,16 +342,16 @@ void ImageOpenGLWidget::paintGL() {
             glLineWidth(1);
             glColor4f(0, 1, 0, 0.5f);
             glBegin(GL_LINES);
-            glVertex2f(myBox->topLeft().x() * ((double) scaledImageArea.width() / imageWidth) + (myBox->width() * ((double) scaledImageArea.width() / imageWidth) / 2),
-                       myBox->topLeft().y() * ((double) scaledImageArea.width() / imageWidth));
-            glVertex2f(myBox->topLeft().x() * ((double) scaledImageArea.width() / imageWidth) + (myBox->width() * ((double) scaledImageArea.width() / imageWidth) / 2),
-                       myBox->bottomLeft().y() * ((double) scaledImageArea.width() / imageWidth));
+            glVertex2f(myBox->topLeft().x() * imageToScreenCoordX + (myBox->width() * imageToScreenCoordX / 2),
+                       myBox->topLeft().y() * imageToScreenCoordY);
+            glVertex2f(myBox->topLeft().x() * imageToScreenCoordX + (myBox->width() * imageToScreenCoordX / 2),
+                       myBox->bottomLeft().y() * imageToScreenCoordY);
             glEnd();
             glBegin(GL_LINES);
-            glVertex2f(myBox->topLeft().x() * ((double) scaledImageArea.width() / imageWidth),
-                       myBox->topLeft().y() * ((double) scaledImageArea.width() / imageWidth) + (myBox->height() * ((double) scaledImageArea.width() / imageWidth) / 2));
-            glVertex2f(myBox->topRight().x() * ((double) scaledImageArea.width() / imageWidth), 
-                       myBox->topLeft().y() * ((double) scaledImageArea.width() / imageWidth) + (myBox->height() * ((double) scaledImageArea.width() / imageWidth) / 2));
+            glVertex2f(myBox->topLeft().x() * imageToScreenCoordX,
+                       myBox->topLeft().y() * imageToScreenCoordY + (myBox->height() * imageToScreenCoordY / 2));
+            glVertex2f(myBox->topRight().x() * imageToScreenCoordX, 
+                       myBox->topLeft().y() * imageToScreenCoordY + (myBox->height() * imageToScreenCoordY / 2));
             glEnd();
         }
     }
@@ -359,11 +369,11 @@ void ImageOpenGLWidget::paintGL() {
                 numPoints = imageDetect->getInitNumPoints();
             }
             int crossWingSize = (int) (height() / 75);
-            if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaledImageArea.width() / imageWidth) * trackPointProperty->minSepValue;
+            if (trackPointProperty->showMinSepCircle) crossWingSize = imageToScreenCoordX * trackPointProperty->minSepValue;
             glLineWidth(1);
             for (int i = 0; i < numPoints; i++) {
-                double xPos = ((double) points[i].x * ((double) scaledImageArea.width() / imageWidth));
-                double yPos = ((double) points[i].y * ((double) scaledImageArea.height() / imageHeight));
+                double xPos = ((double) points[i].x * imageToScreenCoordX);
+                double yPos = ((double) points[i].y * imageToScreenCoordY);
 
                 glColor3f(1, 0, 0);
                 glBegin(GL_LINES);
@@ -423,7 +433,6 @@ void ImageOpenGLWidget::paintGL() {
         glEnd();
         glColor4f(1, 1, 1, 1);
 
-
         if (showZoomArea) {
             glPushMatrix();
             glEnable(GL_TEXTURE_2D);
@@ -434,8 +443,8 @@ void ImageOpenGLWidget::paintGL() {
 
             double texCoordX = (double) mousePosInImage.x() / imageWidth;
             double texCoordY = (double) mousePosInImage.y() / imageHeight;
-            double texSizeX = (zoomSize * ((double) imageWidth / scaledImageArea.width())) / (imageWidth * zoomFactor * 2);
-            double texSizeY = (zoomSize * ((double) imageHeight / scaledImageArea.height())) / (imageHeight * zoomFactor * 2);
+            double texSizeX = (zoomSize * screenToImageCoordX) / (imageWidth * zoomFactor * 2);
+            double texSizeY = (zoomSize * screenToImageCoordY) / (imageHeight * zoomFactor * 2);
             glBegin(GL_QUADS);
             glTexCoord2f(texCoordX - texSizeX, texCoordY - texSizeY);
             glVertex2d(0, 0);
@@ -480,21 +489,21 @@ void ImageOpenGLWidget::paintGL() {
                         numPoints = imageDetect->getInitNumPoints();
                     }
                     int crossWingSize = 20;
-                    if (trackPointProperty->showMinSepCircle) crossWingSize = ((double) scaledImageArea.width() / imageWidth) * trackPointProperty->minSepValue;
-                    double scaleWidth = ((double) scaledImageArea.width() / imageWidth);
-                    double scaleHeight = ((double) scaledImageArea.height() / imageHeight);
-                    double zoomHalfSizeInImageX = (zoomSize * ((double) imageWidth / scaledImageArea.width())) / (2 * zoomFactor);
-                    double zoomHalfSizeInImageY = (zoomSize * ((double) imageHeight / scaledImageArea.height())) / (2 * zoomFactor);
+                    if (trackPointProperty->showMinSepCircle) crossWingSize = imageToScreenCoordX * trackPointProperty->minSepValue;
+                    double scaleWidth = imageToScreenCoordX;
+                    double scaleHeight = imageToScreenCoordY;
+                    double zoomHalfSizeInImageX = (zoomSize * screenToImageCoordX) / (2 * zoomFactor);
+                    double zoomHalfSizeInImageY = (zoomSize * screenToImageCoordY) / (2 * zoomFactor);
+                    double adjustX = ((mPos.x() + scaledImageArea.left()) + zoomSize > width()) ? -zoomSize : zoomSize;
+                    double adjustY = ((mPos.y() + scaledImageArea.top()) + zoomSize > height()) ? -zoomSize : zoomSize;
                     for (int i = 0; i < numPoints; i++) {
                         if (points[i].x > mousePosInImage.x() + zoomHalfSizeInImageX || points[i].x < mousePosInImage.x() - zoomHalfSizeInImageX) continue;
                         if (points[i].y > mousePosInImage.y() + zoomHalfSizeInImageY || points[i].y < mousePosInImage.y() - zoomHalfSizeInImageY) continue;
 
                         double diffX = points[i].x - mousePosInImage.x(); // Image-coordinates
                         double diffY = points[i].y - mousePosInImage.y(); // Image-coordinates
-                        double diffXZoomArea = (diffX * scaleWidth * zoomFactor); // Screen-coordinates
-                        double diffYZoomArea = (diffY * scaleHeight * zoomFactor); // Screen-coordinates
-                        double adjustX = ((mPos.x() + scaledImageArea.left()) + zoomSize > width()) ? -zoomSize : zoomSize;
-                        double adjustY = ((mPos.y() + scaledImageArea.top()) + zoomSize > height()) ? -zoomSize : zoomSize;
+                        double diffXZoomArea = (diffX * imageToScreenCoordX * zoomFactor); // Screen-coordinates
+                        double diffYZoomArea = (diffY * imageToScreenCoordY * zoomFactor); // Screen-coordinates
                         double xPos = (adjustX / 2) + diffXZoomArea; // Screen-coordinates
                         double yPos = (adjustY / 2) + diffYZoomArea; // Screen-coordinates
 
@@ -608,10 +617,6 @@ void ImageOpenGLWidget::mouseMoveEvent(QMouseEvent * event) {
 }
 
 void ImageOpenGLWidget::dragBoundingArea() {
-    for (int i = 0; i < boundingCircles.size(); i++) {
-        QPoint relPos;
-    }
-
     if (selectedBoundingCircle >= 0) {
         QPointF circlePos = QPointF(boundingCircles[selectedBoundingCircle]->pos.x, boundingCircles[selectedBoundingCircle]->pos.y);
         if (!selectedBoundingCircleEdge) {
