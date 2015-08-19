@@ -60,11 +60,15 @@ protected:
     unsigned int imageHeight;
     unsigned int numImageGroupsX;
     unsigned int numImageGroupsY;
+    double zoomFactor = 16.0;
+    double zoomSize = 300.0;
     bool mouseIn;
     bool enableSubImages;
     bool showMouseOverCoordinateLabel;
     bool showMouseCross;
     bool showBoundingAreas;
+    bool showPointSeries = true;
+    bool showZoomArea = false; // Drawing of zoom-area at cursor, controlled by holding left mouse-button
 
     void initializeGL();
     void paintGL();
@@ -103,13 +107,8 @@ private:
     double selectedPointThreshold = 3;
     double pointCrossWingSize = 1;
     int selectedPoint = -1;
-    bool showPointSeries = true;
     bool showPointSeriesString = false;
     bool singlePointsOnly = false; // how many points per sub-region of image
-  
-    bool showZoomArea = false; // Drawing of zoom-area at cursor, controlled by holding left mouse-button
-    double zoomFactor = 16.0; // Zooming-factor, 
-    double zoomSize = 300.0; // Size of zooming-area
 
     void dragBoundingArea();
     void removeBoundingArea(QPointF& mousePos);
