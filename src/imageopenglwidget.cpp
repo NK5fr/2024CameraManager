@@ -18,8 +18,8 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     setMouseTracking(true);
 
     // Test-code for boxes and circles, used for drawing masking-areas etc.
-    // Maybe about 70-80 % finished bounding area management code.
-    // This bounding area imformation can be sent to TrackPoint-software for removing unwanted points.
+    // Maybe about 70-80 % finished bounding-area management code.
+    // This bounding-area imformation can be sent to TrackPoint-software for removing unwanted points.
     // 16. aug. 2015
     /*
     QRectF* box = new QRectF(QPointF(200, 700), QSizeF(300, 100));
@@ -91,10 +91,10 @@ void ImageOpenGLWidget::paintGL() {
     updateView();
     int subImageWidth = imageWidth / numImageGroupsX;
     int subImageHeight = imageHeight / numImageGroupsY;
-    double imageToScreenCoordX = ((double) scaledImageArea.width() / imageWidth);
-    double imageToScreenCoordY = ((double) scaledImageArea.height() / imageHeight);
-    double screenToImageCoordX = ((double) imageWidth / scaledImageArea.width());
-    double screenToImageCoordY = ((double) imageHeight / scaledImageArea.height());
+    imageToScreenCoordX = ((double) scaledImageArea.width() / imageWidth);
+    imageToScreenCoordY = ((double) scaledImageArea.height() / imageHeight);
+    screenToImageCoordX = ((double) imageWidth / scaledImageArea.width());
+    screenToImageCoordY = ((double) imageHeight / scaledImageArea.height());
     if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
         texture.createEmptyTexture(imageWidth, imageHeight);
     }
@@ -403,7 +403,7 @@ void ImageOpenGLWidget::paintGL() {
                 }
                 glColor3f(1, 1, 1);
 
-                if (trackPointProperty->showCoordinates && !leftMouseButtonDown) {
+                if (trackPointProperty->showCoordinates && !showZoomArea) {
                     QPainter painter(this);
                     QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
                     painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
@@ -416,6 +416,58 @@ void ImageOpenGLWidget::paintGL() {
             }
             glLineWidth(1);
         }
+    }
+
+    if (showPointSeries) {
+        double crossWingSize = ((double) height() / 30);
+        double diffFromCross = selectedPointThreshold;
+        pointCrossWingSize = crossWingSize;
+        glColor3f(0, 1, 0);
+        if (selectedPoint >= 0) {
+            double xPos = pointSeries[selectedPoint]->pointX * imageToScreenCoordY; // Screen-coordinates
+            double yPos = pointSeries[selectedPoint]->pointY * imageToScreenCoordY; // Screen-coordinates
+
+            glBegin(GL_LINE_LOOP);
+            glVertex2d(xPos - crossWingSize - diffFromCross, yPos - diffFromCross);
+            glVertex2d(xPos - crossWingSize - diffFromCross, yPos + diffFromCross);
+            glVertex2d(xPos - diffFromCross, yPos + diffFromCross);
+            glVertex2d(xPos - diffFromCross, yPos + crossWingSize + diffFromCross);
+            glVertex2d(xPos + diffFromCross, yPos + crossWingSize + diffFromCross);
+            glVertex2d(xPos + diffFromCross, yPos + diffFromCross);
+            glVertex2d(xPos + crossWingSize + diffFromCross, yPos + diffFromCross);
+            glVertex2d(xPos + crossWingSize + diffFromCross, yPos - diffFromCross);
+            glVertex2d(xPos + diffFromCross, yPos - diffFromCross);
+            glVertex2d(xPos + diffFromCross, yPos - crossWingSize - diffFromCross);
+            glVertex2d(xPos - diffFromCross, yPos - crossWingSize - diffFromCross);
+            glVertex2d(xPos - diffFromCross, yPos - diffFromCross);
+            glEnd();
+        }
+        //glLineWidth(2);
+        for (int i = 0; i < pointSeries.size(); i++) {
+            glColor3f(0, 1, 0);
+            double xPos = pointSeries[i]->pointX * imageToScreenCoordY; // Screen-coordinates
+            double yPos = pointSeries[i]->pointY * imageToScreenCoordY; // Screen-coordinates
+
+            glBegin(GL_LINES);
+            glVertex2d(xPos - crossWingSize, yPos);
+            glVertex2d(xPos + crossWingSize, yPos);
+            glEnd();
+
+            glBegin(GL_LINES);
+            glVertex2d(xPos, yPos - crossWingSize);
+            glVertex2d(xPos, yPos + crossWingSize);
+            glEnd();
+            if (showPointSeriesString) {
+                QString s = pointSeries[i]->string;
+                QPainter painter(this);
+                painter.setFont(QFont("Courier"));
+                QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
+                painter.fillRect(pos.x(), pos.y(), 10 * s.size(), 12, Qt::white); 
+                painter.drawText(pos + QPoint(2, 10), s);
+            }
+        }
+        glColor3f(1, 1, 1);
+        //glLineWidth(1);
     }
 
     if (showMouseCross && mouseIn) {
@@ -574,11 +626,48 @@ void ImageOpenGLWidget::mousePressEvent(QMouseEvent* event) {
         mouseDragStart.setY(mouseDragStart.y() * ((double) imageHeight / scaledImageArea.height()));
         update();
     }
+    if (event->button() == Qt::MouseButton::RightButton) {
+        if (selectedPoint < 0) showZoomArea = true;
+        update();
+    }
 }
 
 void ImageOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
     QOpenGLWidget::mouseReleaseEvent(event);
     if (event->button() == Qt::MouseButton::LeftButton) {
+        if (showPointSeries) {
+            if (!singlePointsOnly) {
+                TrackPoint::PointInCamera* newPoint = new TrackPoint::PointInCamera(mousePosInImage.x(), mousePosInImage.y());
+                if (showPointSeriesString) {
+                    newPoint->string = createPointLabelDialog();
+                }
+                pointSeries.push_back(newPoint);
+                checkPointSeries();
+                if (selectedPoint >= 0) selectedPoint = getClosestPoint(mousePosInImage);
+            } else {
+                int mouseSubRegionX = (int) mousePosInImage.x() / (imageWidth / ((enableSubImages) ? numImageGroupsX : 1));
+                int mouseSubRegionY = (int) mousePosInImage.y() / (imageHeight / ((enableSubImages) ? numImageGroupsY : 1));
+                bool found = false;
+                for (int i = 0; i < pointSeries.size(); i++) {
+                    int pointSubRegionX = (int) pointSeries[i]->pointX / (imageWidth / ((enableSubImages) ? numImageGroupsX : 1));
+                    int pointSubRegionY = (int) pointSeries[i]->pointY / (imageHeight / ((enableSubImages) ? numImageGroupsY : 1));
+                    if (mouseSubRegionX == pointSubRegionX && mouseSubRegionY == pointSubRegionY) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    TrackPoint::PointInCamera* newPoint = new TrackPoint::PointInCamera(mousePosInImage.x(), mousePosInImage.y());
+                    if (showPointSeriesString) {
+                        newPoint->string = createPointLabelDialog();
+                    }
+                    pointSeries.push_back(newPoint);
+                    checkPointSeries();
+                    if (selectedPoint >= 0) selectedPoint = getClosestPoint(mousePosInImage);
+                }
+            }
+        }
+
         leftMouseButtonDown = false;
         showZoomArea = false;
         QPoint globalPos = mapToGlobal(QPoint(mousePos.x(), mousePos.y()));
@@ -587,6 +676,16 @@ void ImageOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
         return;
     }
     if (event->button() == Qt::MouseButton::RightButton) {
+        if (selectedPoint >= 0 && !showZoomArea) {
+            pointSeries.erase(pointSeries.begin() + selectedPoint);
+            checkPointSeries();
+            if (selectedPoint >= 0) selectedPoint = getClosestPoint(mousePosInImage);
+        }
+        if (showZoomArea) {
+            showZoomArea = false;
+            QPoint globalPos = mapToGlobal(QPoint(mousePos.x(), mousePos.y()));
+            QCursor::setPos(globalPos.x(), globalPos.y());
+        }
         removeBoundingArea(QPointF(mousePosInImage.x(), mousePosInImage.y()));
         update();
     }
@@ -610,7 +709,8 @@ void ImageOpenGLWidget::mouseMoveEvent(QMouseEvent * event) {
     if (leftMouseButtonDown) {
         dragBoundingArea();
     }
-
+    checkPointSeries();
+    if (selectedPoint >= 0) selectedPoint = getClosestPoint(mousePosInImage);
     checkBoundingAreas();
     QOpenGLWidget::mouseMoveEvent(event);
     update();
@@ -717,5 +817,51 @@ void ImageOpenGLWidget::checkBoundingAreas() {
             selectedBoundingBox = i;
         } else selectedBoundingBox = -1;
     }
-
 }
+
+void ImageOpenGLWidget::checkPointSeries() {
+    QPointF mPos = mousePos - scaledImageArea.topLeft();
+    for (int i = 0; i < pointSeries.size(); i++) {
+        TrackPoint::PointInCamera* point = pointSeries[i];
+        double xPos = point->pointX * imageToScreenCoordX;
+        double yPos = point->pointY * imageToScreenCoordY;
+        bool insideXLine = false;
+       
+        if (mPos.x() < xPos + selectedPointThreshold && mPos.x() > xPos - selectedPointThreshold) {
+            if (mPos.y() < yPos + pointCrossWingSize + selectedPointThreshold && mPos.y() > yPos - pointCrossWingSize - selectedPointThreshold) {
+                selectedPoint = i;
+                return;
+            }
+        }
+
+        if (mPos.y() < yPos + selectedPointThreshold && mPos.y() > yPos - selectedPointThreshold) {
+            if (mPos.x() < xPos + pointCrossWingSize + selectedPointThreshold && mPos.x() > xPos - pointCrossWingSize - selectedPointThreshold) {
+                selectedPoint = i;
+                return;
+            }
+        }
+    }
+    selectedPoint = -1;
+}
+
+int ImageOpenGLWidget::getClosestPoint(const QPointF& pos) {
+    double dist = 1e10;
+    int index;
+    for (int i = 0; i < pointSeries.size(); i++) {
+        QPointF pointPos(pointSeries[i]->pointX, pointSeries[i]->pointY);
+        pointPos -= pos;
+        double newDist = std::sqrt(std::pow(pointPos.x(), 2) + std::pow(pointPos.y(), 2));
+        if (newDist < dist) {
+            dist = newDist;
+            index = i;
+        }
+    }
+    return index;
+}
+
+QString ImageOpenGLWidget::createPointLabelDialog() {
+    QString res = QInputDialog::getText(this, "Create Point Label", "Write label for this point:");
+    lastPointString = res;
+    return res;
+}
+

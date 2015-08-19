@@ -86,6 +86,98 @@ void ImageViewerWidget::zoomAreaSizeChanged(const QString& text) {
     imageWidget.setZoomAreaSize(text.toDouble());
 }
 
+void ImageViewerWidget::enablePointStateChanged(int val) {
+    imageWidget.setShowPointSeries(val == Qt::CheckState::Checked);
+    update();
+}
+
+void ImageViewerWidget::customPointStringStateChanged(int val) {
+    imageWidget.setShowPointSeriesLabel(val == Qt::CheckState::Checked);
+    update();
+}
+
+void ImageViewerWidget::singlePointClicked() {
+    imageWidget.setSinglePointSeries(true);
+    update();
+}
+
+void ImageViewerWidget::multiplePointClicked() {
+    imageWidget.setSinglePointSeries(false);
+    update();
+}
+
+void ImageViewerWidget::createPointFileClicked() {
+    PointFileCreatorDialog* pfcd = new PointFileCreatorDialog(this);
+    pfcd->exec(); // blocking function
+    PointFileInfo fileInfo = pfcd->getFileInfo();
+    QString fileContain;
+    if (fileInfo.filePath.isEmpty()) return;
+    double subWidth = (imageWidget.getImageWidth() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesX() : 1));
+    double subHeight = (imageWidget.getImageHeight() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesY() : 1));
+    if (fileInfo.allPointsInOneImageFirst) {
+        vector<TrackPoint::PointInCamera*> newP;
+        const vector<TrackPoint::PointInCamera*>& p = imageWidget.getPointSeries();
+        for (int i = 0; i < ((imageWidget.isEnableSubImage()) ? (imageWidget.getNumSubImagesX() * imageWidget.getNumSubImagesY()) : 1); i++) {
+            for (int j = 0; j < p.size(); j++) {
+                int pointSubRegionX = (int) p[j]->pointX / (imageWidget.getImageWidth() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesX() : 1));
+                int pointSubRegionY = (int) p[j]->pointY / (imageWidget.getImageHeight() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesY() : 1));
+                int camIndex = (pointSubRegionY * imageWidget.getNumSubImagesX()) + pointSubRegionX;
+                if (camIndex == i) {
+                    p[j]->camNo = camIndex;
+                    newP.push_back(p[j]);
+                }
+            }
+        }
+        for (int i = 0; i < newP.size(); i++) {
+            double xPos = ((imageWidget.isEnableSubImage()) ? std::fmod(newP[i]->pointX, (double) imageWidget.getImageWidth() / imageWidget.getNumSubImagesX()) : newP[i]->pointX);
+            double yPos = ((imageWidget.isEnableSubImage()) ? std::fmod(newP[i]->pointY, (double) imageWidget.getImageHeight() / imageWidget.getNumSubImagesY()) : newP[i]->pointY);
+            if (imageWidget.isEnableShowPointSeriesLabel()) {
+                fileContain.append(newP[i]->string + " ");
+            }
+            fileContain.append(QString::number(xPos, 'f', 0) + " " + QString::number(yPos, 'f', 0) + "\r\n");
+        }
+    } else {
+        vector<TrackPoint::PointInCamera*> newP;
+        const vector<TrackPoint::PointInCamera*>& p = imageWidget.getPointSeries();
+        bool* taken = new bool[p.size()];
+        for (int i = 0; i < p.size(); i++) {
+            taken[i] = false;
+        }
+        for (int i = 0; i < p.size(); i++) {
+            for (int j = 0; j < ((imageWidget.isEnableSubImage()) ? (imageWidget.getNumSubImagesX() * imageWidget.getNumSubImagesY()) : 1); j++) {
+                for (int k = 0; k < p.size(); k++) {
+                    if (taken[k]) continue;
+                    int pointSubRegionX = (int) p[k]->pointX / (imageWidget.getImageWidth() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesX() : 1));
+                    int pointSubRegionY = (int) p[k]->pointY / (imageWidget.getImageHeight() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesY() : 1));
+                    int camIndex = (pointSubRegionY * imageWidget.getNumSubImagesX()) + pointSubRegionX;
+                    if (camIndex == j) {
+                        p[k]->camNo = camIndex;
+                        newP.push_back(p[k]);
+                        taken[k] = true;
+                        i++;
+                        break;
+                    }
+                }
+            }
+        }
+        delete[] taken;
+
+        for (int i = 0; i < newP.size(); i++) {
+            double xPos = ((imageWidget.isEnableSubImage()) ? std::fmod(newP[i]->pointX, (double) imageWidget.getImageWidth() / imageWidget.getNumSubImagesX()) : newP[i]->pointX);
+            double yPos = ((imageWidget.isEnableSubImage()) ? std::fmod(newP[i]->pointY, (double) imageWidget.getImageHeight() / imageWidget.getNumSubImagesY()) : newP[i]->pointY);
+            if (imageWidget.isEnableShowPointSeriesLabel()) {
+                fileContain.append(newP[i]->string + " ");
+            }
+            fileContain.append(QString::number(xPos, 'f', 0) + " " + QString::number(yPos, 'f', 0) + "\r\n");
+        }
+    }
+    QFile file(fileInfo.filePath);
+    file.open(QIODevice::WriteOnly);
+    QTextStream outstream(&file);
+    outstream << fileContain;
+    file.close();
+}
+
 char* ImageViewerWidget::unpackPGMFile(const QString& filepath, int64_t* const bufferSize, int64_t* const imageWidth, int64_t* const imageHeight) {
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly)) return nullptr;
@@ -175,13 +267,33 @@ void ImageViewerWidget::initGUI() {
     zoomingOptionsLayout->setAlignment(Qt::AlignTop);
     zoomingOptionsLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
 
-    zoomFactorComboBox.addItems(QStringList() << "1" << "2" << "4" << "8" << "16" << "32" << "64");
+    zoomFactorComboBox.addItems(QStringList() << "1" << "2" << "4" << "8" << "16" << "32" << "64" << "128");
     zoomFactorComboBox.setCurrentIndex(zoomFactorComboBox.findData(QString::number(imageWidget.getZoomFactor(), 'f', 0), Qt::DisplayRole));
-    zoomAreaSizeComboBox.addItems(QStringList() << "100" << "200" << "250" << "300");
+    zoomAreaSizeComboBox.addItems(QStringList() << "100" << "200" << "250" << "300" << "400");
     zoomAreaSizeComboBox.setCurrentIndex(zoomAreaSizeComboBox.findData(QString::number(imageWidget.getZoomAreaSize(), 'f', 0), Qt::DisplayRole));
+
+    QGridLayout* pointSeriesLayout = new QGridLayout();
+    pointSeriesLayout->addWidget(new QLabel("Enable Points"), 0, 0);
+    pointSeriesLayout->addWidget(&enablePointSeries, 0, 1);
+    pointSeriesLayout->addWidget(new QLabel("Custom Point-String"), 1, 0);
+    pointSeriesLayout->addWidget(&enablePointStringLabel, 1, 1);
+    pointSeriesLayout->addWidget(new QLabel("Single Point"), 2, 0);
+    pointSeriesLayout->addWidget(&singlePointSeries, 2, 1);
+    pointSeriesLayout->addWidget(new QLabel("Multiple Points"), 3, 0);
+    pointSeriesLayout->addWidget(&multiplePointSeries, 3, 1);
+    pointSeriesLayout->addWidget(&createPointFile, 4, 0, 1, 2);
+    pointSeriesLayout->setAlignment(Qt::AlignTop);
+    pointSeriesLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
+
+    enablePointSeries.setChecked(imageWidget.isEnableShowPointSeries());
+    enablePointStringLabel.setChecked(imageWidget.isEnableShowPointSeriesLabel());
+    singlePointSeries.setChecked(imageWidget.isSinglePointSeries());
+    multiplePointSeries.setChecked(!imageWidget.isSinglePointSeries());
+    createPointFile.setText("Create Point-file");
 
     QHBoxLayout* optionsLayout = new QHBoxLayout();
     optionsLayout->addLayout(imageSubRegionsLayout);
+    optionsLayout->addLayout(pointSeriesLayout);
     optionsLayout->addLayout(zoomingOptionsLayout);
 
     imageWidget.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -206,4 +318,68 @@ void ImageViewerWidget::initGUI() {
     connect(&imageFileSlider, SIGNAL(valueChanged(int)), this, SLOT(imageFileSliderChanged(int)));
     connect(&zoomFactorComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(zoomFactorChanged(const QString&)));
     connect(&zoomAreaSizeComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(zoomAreaSizeChanged(const QString&)));
+    connect(&enablePointSeries, SIGNAL(stateChanged(int)), this, SLOT(enablePointStateChanged(int)));
+    connect(&enablePointStringLabel, SIGNAL(stateChanged(int)), this, SLOT(customPointStringStateChanged(int)));
+    connect(&singlePointSeries, SIGNAL(clicked()), this, SLOT(singlePointClicked()));
+    connect(&multiplePointSeries, SIGNAL(clicked()), this, SLOT(multiplePointClicked()));
+    connect(&createPointFile, SIGNAL(clicked()), this, SLOT(createPointFileClicked()));
+}
+
+PointFileCreatorDialog::PointFileCreatorDialog(QWidget* parent) : QDialog(parent) {
+    QVBoxLayout* mainLayout = new QVBoxLayout();
+    QHBoxLayout* fileLayout = new QHBoxLayout();
+    fileLayout->addWidget(new QLabel("Filepath:"));
+    fileLayout->addWidget(&filePath);
+    fileLayout->addWidget(&filePathUpdate);
+    QGridLayout* gridLayout = new QGridLayout();
+    gridLayout->addWidget(&allPointsPerImageFirst, 0, 0);
+    gridLayout->addWidget(new QLabel("All points in one image first."), 0, 1);
+    gridLayout->addWidget(&onePointPerImageFirst, 1, 0);
+    gridLayout->addWidget(new QLabel("One point in all images first."), 1, 1);
+    gridLayout->addWidget(&sortByString, 2, 0);
+    gridLayout->addWidget(new QLabel("Sort by String. (Not implemented!)"), 2, 1);
+    gridLayout->setAlignment(Qt::AlignLeft);
+    gridLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(&okButton);
+    buttonLayout->addWidget(&closeButton);
+    mainLayout->addLayout(fileLayout);
+    mainLayout->addLayout(gridLayout);
+    mainLayout->addLayout(buttonLayout);
+    setLayout(mainLayout);
+
+    filePathUpdate.setText("...");
+    okButton.setText("OK");
+    closeButton.setText("Close");
+    allPointsPerImageFirst.setChecked(fileInfo.allPointsInOneImageFirst);
+    onePointPerImageFirst.setChecked(!fileInfo.allPointsInOneImageFirst);
+    sortByString.setChecked(fileInfo.sortByString);
+
+    connect(&filePathUpdate, SIGNAL(clicked()), this, SLOT(filePathUpdateClicked()));
+    connect(&okButton, SIGNAL(clicked()), this, SLOT(okButtonClicked()));
+    connect(&closeButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(&allPointsPerImageFirst, SIGNAL(clicked), this, SLOT(allPointsPerImageChecked()));
+    connect(&onePointPerImageFirst, SIGNAL(clicked()), this, SLOT(onePointForAllImagesChecked()));
+    connect(&filePath, SIGNAL(textChanged(const QString&)), this, SLOT(filePathChanged(const QString&)));
+}
+
+void PointFileCreatorDialog::allPointsPerImageChecked() {
+    fileInfo.allPointsInOneImageFirst = true;
+}
+
+void PointFileCreatorDialog::onePointForAllImagesChecked() {
+    fileInfo.allPointsInOneImageFirst = false;
+}
+
+void PointFileCreatorDialog::okButtonClicked() {
+    close();
+}
+
+void PointFileCreatorDialog::filePathUpdateClicked() {
+    fileInfo.filePath = QFileDialog::getSaveFileName(this);
+    filePath.setText(fileInfo.filePath);
+}
+
+void PointFileCreatorDialog::filePathChanged(const QString& text) {
+    fileInfo.filePath = text;
 }

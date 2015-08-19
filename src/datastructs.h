@@ -27,6 +27,11 @@ struct CircleF {
     double radius;
 };
 
+struct PointFileInfo {
+    QString filePath;
+    bool allPointsInOneImageFirst = true;
+    bool sortByString = false;
+};
 
 namespace TrackPoint {
     //struct 
@@ -43,7 +48,7 @@ namespace TrackPoint {
             isUsed = true;
             isInitialized = false;
         }
-        PointInCamera(int x, int y, int camNo) {
+        PointInCamera(double x, double y, int camNo = -1) {
             pointX = x;
             pointY = y;
             this->camNo = camNo;
@@ -51,8 +56,9 @@ namespace TrackPoint {
             isInitialized = true;
         }
         int camNo;
-        int pointX;
-        int pointY;
+        double pointX;
+        double pointY;
+        QString string;
         bool isUsed;
         bool isInitialized;
     };

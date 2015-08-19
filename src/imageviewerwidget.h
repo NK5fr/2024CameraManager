@@ -49,6 +49,11 @@ private slots:
     void numSubRegionsYChanged(int);
     void zoomFactorChanged(const QString&);
     void zoomAreaSizeChanged(const QString&);
+    void enablePointStateChanged(int);
+    void customPointStringStateChanged(int);
+    void singlePointClicked();
+    void multiplePointClicked();
+    void createPointFileClicked();
 
 private:
     ImageOpenGLWidget imageWidget;
@@ -67,15 +72,13 @@ private:
     QSpinBox numSubRegionsY;
     QLineEdit subRegionSizeX;
     QLineEdit subRegionSizeY;
-    bool hideSubRegionOptions;
     
     // "Create Point-Series" GUI-elements
-    bool hideCreatePointSeriesOptions;
-
-    // "Create Bounding-Elements" GUI-elements
-    QRadioButton createBoxes;
-    QRadioButton createSpheres;
-
+    QCheckBox enablePointSeries;
+    QCheckBox enablePointStringLabel;
+    QRadioButton singlePointSeries;
+    QRadioButton multiplePointSeries;
+    QPushButton createPointFile;
 
     // "Zoom Options" GUI-elements
     QComboBox zoomFactorComboBox;
@@ -86,12 +89,36 @@ private:
     int selectedImageInFolder;
     bool correspondingData;
 
-
     void setImageFromFile(const QString& filepath);
     void updateSubRegionSize();
     void initGUI();
 
     char* unpackPGMFile(const QString& filepath, int64_t* const bufferSize, int64_t* const imageWidth, int64_t* const imageHeight);
+};
+
+class PointFileCreatorDialog : public QDialog {
+    Q_OBJECT
+public:
+    PointFileCreatorDialog(QWidget* parent = nullptr);
+    
+    const PointFileInfo& getFileInfo() { return this->fileInfo; }
+
+private slots:
+    void okButtonClicked();
+    void filePathUpdateClicked();
+    void allPointsPerImageChecked();
+    void onePointForAllImagesChecked();
+    void filePathChanged(const QString&);
+
+private:
+    PointFileInfo fileInfo;
+    QLineEdit filePath;
+    QRadioButton allPointsPerImageFirst;
+    QRadioButton onePointPerImageFirst;
+    QCheckBox sortByString;
+    QPushButton filePathUpdate;
+    QPushButton okButton;
+    QPushButton closeButton;
 };
 
 #endif // IMAGEVIEWERWIDGET_H

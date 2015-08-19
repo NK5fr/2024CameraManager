@@ -29,6 +29,9 @@ public:
     void setEnableSubImage(bool enableSubImage) { this->enableSubImages = enableSubImage; }
     void setZoomAreaSize(double zoomSize) { this->zoomSize = zoomSize; }
     void setZoomFactor(double zoomFactor) { this->zoomFactor = zoomFactor; }
+    void setShowPointSeries(bool showPointSeries) { this->showPointSeries = showPointSeries; }
+    void setShowPointSeriesLabel(bool showPointSeriesLabel) { this->showPointSeriesString = showPointSeriesLabel; }
+    void setSinglePointSeries(bool singlePointSeries) { this->singlePointsOnly = singlePointSeries; }
 
     const OpenGL::Texture* getTexture() { return &this->texture; }
     unsigned int getNumSubImagesX() { return this->numImageGroupsX; }
@@ -38,6 +41,10 @@ public:
     double getZoomFactor() { return this->zoomFactor; }
     double getZoomAreaSize() { return this->zoomSize; }
     bool isEnableSubImage() { return this->enableSubImages; }
+    bool isEnableShowPointSeries() { return this->showPointSeries; }
+    bool isEnableShowPointSeriesLabel() { return this->showPointSeriesString; }
+    bool isSinglePointSeries() { return this->singlePointsOnly; }
+    const vector<TrackPoint::PointInCamera*>& getPointSeries() { return this->pointSeries; }
 
 protected:
     QRect scaledImageArea;
@@ -72,6 +79,11 @@ private:
     vector<QRectF*> boundingBoxes;
     bool newImageReady;
 
+    double imageToScreenCoordX;
+    double imageToScreenCoordY;
+    double screenToImageCoordX;
+    double screenToImageCoordY;
+
     QPointF mouseDragStart;
     bool leftMouseButtonDown = false;
     //bool rightMouseButtonDown = false;
@@ -81,19 +93,31 @@ private:
     double boundingCircleEdgeThreshold = 2; // In pixels
     double boundingBoxCornerThreshold = 10; // In pixels
     double mouseDragThreshold = 5; // Not used
-    int selectedBoundingCircle = -1;
-    int selectedBoundingBox = -1;
+    int selectedBoundingCircle = -1; // index in 'boundingCircles'
+    int selectedBoundingBox = -1; // index in 'boundingBoxes'
     int selectedBoundingBoxCorner = -1; // 0-topLeft, 1-topRight, 2-bottomLeft, 3-bottomRight
     bool selectedBoundingCircleEdge = false; // If edge is selected
+
+    vector<TrackPoint::PointInCamera*> pointSeries;
+    QString lastPointString;
+    double selectedPointThreshold = 3;
+    double pointCrossWingSize = 1;
+    int selectedPoint = -1;
+    bool showPointSeries = true;
+    bool showPointSeriesString = false;
+    bool singlePointsOnly = false; // how many points per sub-region of image
   
     bool showZoomArea = false; // Drawing of zoom-area at cursor, controlled by holding left mouse-button
-    double zoomFactor = 4.0; // Zooming-factor, 
-    double zoomSize = 200.0; // Size of zooming-area
+    double zoomFactor = 16.0; // Zooming-factor, 
+    double zoomSize = 300.0; // Size of zooming-area
 
     void dragBoundingArea();
     void removeBoundingArea(QPointF& mousePos);
     void checkBoundingAreas();
+    void checkPointSeries(); // Check for mouse over point
+    int getClosestPoint(const QPointF& pos);
     void updateView();
+    QString createPointLabelDialog();
 };
 
 #endif
