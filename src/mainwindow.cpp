@@ -344,16 +344,22 @@ void MainWindow::menuBarClicked(QAction* action) {
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
     }
-    else if (action->text() == "Run Trackpoint"){
-        QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
-        QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", trackPointPath, "(*.exe)");
+    else if (action->text() == "Run Trackpoint") {
+        QString trackPointExecutable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
+        //QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
+        // Code for traversing from working-directory to executable-directory
+        QDir workPathProper(QFileInfo(trackPointExecutable).absoluteDir());
+
+        if (!workPathProper.cd(TRACKPOINT_BINARY_TO_PROJECT)) { // If changing directory fails go to: 'constants.h'
+            QMessageBox::information(this, "ERROR", "Could not traverse to working-directory: \'" + workPathProper.absolutePath() + "'\nGo to file: " + QString(__FILE__) + ", line-number: " + QString::number(__LINE__), QMessageBox::Ok);
+            return;
+        }
 
         trackPointProcess = new ExternalProcess();
         //trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);
-        trackPointProcess->setWorkingDirectory(trackPointPath);
+        trackPointProcess->setWorkingDirectory(workPathProper.absolutePath());
         //trackPointProcess->start("tracert www.google.com");
-        trackPointProcess->start(executable);
-        //ui->centralwidget->closeAllSubWindows();
+        trackPointProcess->start(QFileInfo(trackPointExecutable).absoluteFilePath());
         ui->centralwidget->addSubWindow(trackPointProcess->getTextEdit());
         trackPointProcess->getTextEdit()->showMaximized();
     }

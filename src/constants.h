@@ -22,7 +22,9 @@ const int SIMD_NUM_ELEMENTS = 1;
 #endif
 
 // Paths... (Not used yet)
-const QString TRACKPOINT_BINARY_TO_PROJECT = "../";
+const QString TRACKPOINT_EXECUTABLE_NAME = "TrackPoint_VS13_Proj_PG_GPU.exe";
+const QString TRACKPOINT_WORKING_DIRECORY = "TrackPoint_VS13_Proj_PG_GPU";
+const QString TRACKPOINT_BINARY_TO_PROJECT = "../../" + TRACKPOINT_WORKING_DIRECORY;
 const QString TRACKPOINT_OPTIONS_FILE = "OptionsOO.txt";
 const QString TRACKPOINT_INPUT_DIR = TRACKPOINT_BINARY_TO_PROJECT + "input";
 const QString TRACKPOINT_OUTPUT_DIR = TRACKPOINT_BINARY_TO_PROJECT + "output";
