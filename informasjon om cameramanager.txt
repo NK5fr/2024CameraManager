@@ -1,0 +1,21 @@
+
+Bildevisning fra fil: "ImageOpenGLWidget"
+Videovisning fra kamera: "VideoOpenGLWidget"
+Socketvisning: "SocketViewerWidget"
+OpenGL-bit av socketvisning: "WidgetGL"
+Kalibreringsvisning: "CalibrationFileOpenGLWidget"
+Innlesning av kalibreringsfil: "CalibrationFile"
+
+TrackPoint-implementasjonen i CameraManager: "ImageDetect"
+
+
+Generelle 'structs': 'datastructs.h'
+Konstanter:: 'constants.h'
+
+
+Uferdig kode for opptegning av bokser of sirkler i vinduer ligger i "ImageOpenGLWidget"-klassen
+Se utkommentert eksempel-kode i konstruktør til ImageOpenGLWidget-klassen.
+
+Mvh.
+Lars Aksel Tveråmo @ 3D Motion Technologies
+20. Aug. 2015
