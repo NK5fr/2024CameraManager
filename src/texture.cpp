@@ -16,7 +16,7 @@ Texture::~Texture() {
     glDeleteTextures(1, &textureId);
 }
 
-/*
+/* // Uses FreeImage-library
 bool Texture::loadTextureFromFile(const char* filepath, PixelFormat pixelFormat) {
     glBindTexture(GL_TEXTURE_2D, textureId);
     this->pixelFormat = pixelFormat;

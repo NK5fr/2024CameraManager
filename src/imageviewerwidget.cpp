@@ -154,7 +154,7 @@ void ImageViewerWidget::createPointFileClicked() {
                         p[k]->camNo = camIndex;
                         newP.push_back(p[k]);
                         taken[k] = true;
-                        i++;
+                        //i++;
                         break;
                     }
                 }
