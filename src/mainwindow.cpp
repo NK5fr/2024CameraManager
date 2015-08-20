@@ -498,15 +498,15 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
 
 // Lars Aksel - 10.03.2015 - Filter for "project-supported" files
 bool isProjectSupported(QString& path) {
-    return true;
+    return true; // All files are visible
     if (path.endsWith(".exe", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".pgm", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".dat", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".txt", Qt::CaseInsensitive)) return true;
     if (path.contains("socket", Qt::CaseInsensitive) && path.endsWith(".dat", Qt::CaseInsensitive)) return true;
-    //if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
-    //if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
-    //if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
+    if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
     return false;
 }
 

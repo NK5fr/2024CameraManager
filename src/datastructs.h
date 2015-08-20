@@ -23,7 +23,7 @@ struct Orientation {
 };
 
 struct CircleF {
-    Vector3d pos;
+    Vector2d pos;
     double radius;
 };
 
@@ -34,8 +34,6 @@ struct PointFileInfo {
 };
 
 namespace TrackPoint {
-    //struct 
-
     enum CalibrationStatus {
         OK, Warning, Failed
     };
