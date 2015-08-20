@@ -345,12 +345,12 @@ void MainWindow::menuBarClicked(QAction* action) {
         svw->showMaximized();
     }
     else if (action->text() == "Run Trackpoint"){
-        //QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
-        QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", "/", "(*.exe)");
+        QString trackPointPath = QFileDialog::getExistingDirectory(this, "Trackpoint folder", "/");
+        QString executable = QFileDialog::getOpenFileName(this, "Launch the trackpoint exe", trackPointPath, "(*.exe)");
 
         trackPointProcess = new ExternalProcess();
         //trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);
-        //trackPointProcess->setWorkingDirectory(trackPointPath);
+        trackPointProcess->setWorkingDirectory(trackPointPath);
         //trackPointProcess->start("tracert www.google.com");
         trackPointProcess->start(executable);
         //ui->centralwidget->closeAllSubWindows();
@@ -376,7 +376,6 @@ void MainWindow::startCameraDetection() {
 void MainWindow::startUpdateProperties() {
     while (bar->getRunLiveView()->isChecked()){
         //printf("Updating properties...\n");
-        
         cameraManagers.at(selectedCameraManager)->updateProperties();
         //QThread::
         QThread::msleep(250);

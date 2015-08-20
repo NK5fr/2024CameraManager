@@ -14,7 +14,7 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     showMouseCross = true;
     showBoundingAreas = false;
     numImageGroupsX = 3;
-    numImageGroupsY = 2;
+    numImageGroupsY = 3;
     setMouseTracking(true);
 
     // Test-code for boxes and circles, used for drawing masking-areas etc.

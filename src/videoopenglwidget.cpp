@@ -6,9 +6,12 @@ VideoOpenGLWidget::VideoOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     enableSubImages = false;
     showMouseOverCoordinateLabel = true;
     showMouseCross = true;
-    showBoundingAreas = false;
+    //showBoundingAreas = false;
     numImageGroupsX = 1;
     numImageGroupsY = 1;
+    showPointSeries = false; 
+    zoomFactor = 16.0;
+    zoomSize = 300.0;
 }
 
 void VideoOpenGLWidget::receiveUpdate() {
