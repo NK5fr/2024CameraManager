@@ -166,7 +166,7 @@ void setPropToSettings(QSettings& settings, CameraProperty& prop) {
 
 // Lars Aksel - Load default values from default-file
 void AbstractCameraManager::loadPropertiesDefaults() {
-    QString settingsFile = QString(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_DEFAULT_FILE);
+    QString settingsFile = QString(QDir::currentPath() + "/,,/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_DEFAULT_FILE);
     std::vector<CameraProperty> prop = std::vector<CameraProperty>();
     //std::vector<CameraProperty> prop;
     loadPropertiesFromFile(settingsFile, prop);

@@ -686,7 +686,7 @@ void ImageOpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
             QPoint globalPos = mapToGlobal(QPoint(mousePos.x(), mousePos.y()));
             QCursor::setPos(globalPos.x(), globalPos.y());
         }
-        removeBoundingArea(QPointF(mousePosInImage.x(), mousePosInImage.y()));
+        //removeBoundingArea(QPointF(mousePosInImage.x(), mousePosInImage.y())); //tomas 10-12-2015
         update();
     }
 }

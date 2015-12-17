@@ -8,6 +8,7 @@ HEADERS += \
     src/cameraproperty.h \
     src/configfilereader.h \
     src/configfileviewerwidget.h \
+    src/constants.h \
     src/databuffer.h \
     src/datastructs.h \
     src/emptycameramanager.h \
@@ -16,13 +17,10 @@ HEADERS += \
     src/flycameramanager.h \
     src/imagedetect.h \
     src/imagelabel.h \
-    src/imageselectpointwidget.h \
     src/imageviewerwidget.h \
-    src/imagewidget.h \
     src/mainwindow.h \
     src/menubar.h \
     src/qopenglvideowidget.h \
-    src/qvideowidget.h \
     src/settings.h \
     src/socketviewerwidget.h \
     src/testcamera.h \
@@ -45,7 +43,14 @@ HEADERS += \
     include/ImageStatistics.h \
     include/PGRDirectShow.h \
     include/TopologyNode.h \
-    include/Utilities.h
+    include/Utilities.h \
+    src/calibrationfileopenglwidget.h \
+    src/calibrationfilewidget.h \
+    src/imageopenglwidget.h \
+    src/threads.h \
+    src/videoopenglwidget.h
+
+
 
 SOURCES += \
     src/abstractcamera.cpp \
@@ -62,20 +67,21 @@ SOURCES += \
     src/flycameramanager.cpp \
     src/imagedetect.cpp \
     src/imagelabel.cpp \
-    src/imageselectpointwidget.cpp \
     src/imageviewerwidget.cpp \
-    src/imagewidget.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/menubar.cpp \
     src/qopenglvideowidget.cpp \
-    src/qvideowidget.cpp \
     src/socketviewerwidget.cpp \
     src/testcamera.cpp \
     src/testcameramanager.cpp \
     src/texture.cpp \
     src/ui_mainwindow.cpp \
-    src/widgetgl.cpp
+    src/widgetgl.cpp \
+    src/calibrationfileopenglwidget.cpp \
+    src/calibrationfilewidget.cpp \
+    src/imageopenglwidget.cpp \
+    src/videoopenglwidget.cpp
 
 unix {
     CONFIG += c++11

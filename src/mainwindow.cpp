@@ -417,7 +417,7 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
-    } else if (fileName.contains("socket")){
+    } else if (fileName.contains("comb_traj")){
         // Socket file, with 3D datas
         SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget, selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
         ui->centralwidget->addSubWindow(svw);
@@ -502,13 +502,13 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
 }
 
 // Lars Aksel - 10.03.2015 - Filter for "project-supported" files
-bool isProjectSupported(QString& path) {
+bool isProjectSupported(const QString& path) {
     return true; // All files are visible
     if (path.endsWith(".exe", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".pgm", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".dat", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".txt", Qt::CaseInsensitive)) return true;
-    if (path.contains("socket", Qt::CaseInsensitive) && path.endsWith(".dat", Qt::CaseInsensitive)) return true;
+    if (path.contains("comb_traj", Qt::CaseInsensitive) && path.endsWith(".dat", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
     if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
@@ -548,7 +548,8 @@ QTreeWidgetItem* MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QSt
                     folderItem->addChild(subFolderItem);
                 }
             } else if (list.at(i).isFile()) {
-                if (isProjectSupported(list.at(i).absoluteFilePath())) {
+                //if (isProjectSupported(list.at(i).absoluteFilePath())) { //tomas 10-12-2015
+                if (isProjectSupported(list.at(i).absolutePath())) {
                     createTreeItem(rootItem, list.at(i).fileName(), list.at(i).absoluteFilePath());
                 }
             }
@@ -596,7 +597,7 @@ FileInfo::FileType getFileType(QFileInfo file) {
     if (filename.contains("calibration_summary", Qt::CaseInsensitive)) return FileInfo::FileType::CalibrationFile;
     if (filename.contains("option", Qt::CaseInsensitive) && filename.endsWith(".txt")) return FileInfo::FileType::ConfigurationFile;
     if (filename.endsWith(".pgm", Qt::CaseInsensitive)) return FileInfo::FileType::ImageFile;
-    if (filename.contains("socket", Qt::CaseInsensitive)) return FileInfo::FileType::SocketFile;
+    if (filename.contains("comb_traj", Qt::CaseInsensitive)) return FileInfo::FileType::SocketFile;
     else return FileInfo::FileType::TextFile;
 }
 
@@ -604,7 +605,7 @@ void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name, QString p
     QTreeWidgetItem *childItem = new QTreeWidgetItem();
     childItem->setText(0, name);
     int iconptr = 7; // :/icons/file
-    if (name.contains("socket")) {
+    if (name.contains("comb_traj")) {
         iconptr = 1; // :/icons/coordinates
     } else if (name.contains("option") && name.endsWith(".txt")) {
         iconptr = 2; // :/icons/config

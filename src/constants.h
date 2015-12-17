@@ -10,7 +10,7 @@
 using namespace std;
 
 // Testing av SIMD-instruksjoner - Lars Aksel - 04.06.2015
-#define SIMD_TESTING_128_BIT // Requires SSE3-support, maybe SSSE3 and/or SSE4
+//#define SIMD_TESTING_128_BIT // Requires SSE3-support, maybe SSSE3 and/or SSE4
 //#define SIMD_TESTING_256_BIT // Requires AVX2-support, not finished
 
 #if defined(SIMD_TESTING_128_BIT)
@@ -32,7 +32,7 @@ const QString TRACKPOINT_CALIBRATION_DIR = TRACKPOINT_INPUT_DIR;
 const QString TRACKPOINT_SOCKET_DIR = TRACKPOINT_OUTPUT_DIR;
 
 // Paths... (Is used!)
-const QString PROPERTY_PATH = "props";
+const QString PROPERTY_PATH = "CameraManager/props";
 const QString CAMERA_PROPERTY_DEFAULT_FILE = "defaultCameraSettings.ini";
 const QString CAMERA_PROPERTY_QUICK_FILE = "quickfile_camerasettings.ini";
 const QString TRACKPOINT_PROPERTY_DEFAULT_FILE = "defaultTrackPointSettings.ini";

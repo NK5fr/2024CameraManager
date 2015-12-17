@@ -44,7 +44,7 @@ protected:
 
 private:
     ImageDetect* imageDetect;
-    ImageDetectThread* imgDetThread;
+    //ImageDetectThread* imgDetThread; //tomas 10-12-2015 => gir feil i kompilering
     TrackPointProperty* trackPointProperty;
     OpenGL::Texture texture;
     unsigned char* imgBuffer;
