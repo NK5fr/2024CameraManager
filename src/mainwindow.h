@@ -88,6 +88,7 @@ private slots:
     void on_ProjectTree_customContextMenuRequested(const QPoint &);
     void menuProjectAction_triggered(QAction *);
     void on_ProjectTree_doubleClicked(const QModelIndex &index);
+    void on_ProjectTree_clicked(const QModelIndex &index);
 
     /** TO BE DELETED **/
     /*void on_Detect_clicked();*/
@@ -148,6 +149,7 @@ private:
     /** CREATING FOLDER AND FILE ITEMS **/
     void createTreeItem(QTreeWidgetItem *parent, QString name, QString filepath);
     QTreeWidgetItem* createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
+    QTreeWidgetItem* updateTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
 
     MenuBar *bar;
     Ui::MainWindow *ui;
@@ -164,6 +166,7 @@ private:
 
     QString projectsPath;
     QString calibrationPath;
+    bool isProjectLoaded = false;
 
     QLabel *label;
     std::vector<QString> ConfigFilesPaths;
