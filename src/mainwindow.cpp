@@ -93,8 +93,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
-    connect(ui->projectTree, SIGNAL(itemExpanded(QTreeWidgetItem*)), this, SLOT(expandFilePath_ProjectTree(QTreeWidgetItem*)));
-    connect(ui->projectTree, SIGNAL(itemCollapsed(QTreeWidgetItem*)), this, SLOT(collapsedFilePath_ProjectTree(QTreeWidgetItem*)));
+
+    //tomas
+    connect(ui->projectTree, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(projectTree_customContextMenuRequested(QPoint) ));
+    connect(ui->projectTree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(projectTree_doubleClicked(QModelIndex)));
 
     // Lars Aksel - 05.02.2015
     connect(ui->loadDefaultCameraProperties, SIGNAL(clicked()), this, SLOT(loadDefaultCameraProperties_clicked()));
@@ -393,57 +395,29 @@ void MainWindow::startUpdateProperties() {
 /** PROJECT TREE AND ASSIMILATED METHODS */
 ///////////////////////////////////////////
 
-void MainWindow::on_ProjectTree_clicked(const QModelIndex &index) {
-    QTreeWidgetItem *item = ui->projectTree->selectedItems().at(0);
-    if (item->child(0) != NULL) return;
-    QString fileName = item->text(0);
-
-    //show menu if comb_traj file - not needed as possible directly in 3d view
-//    if (fileName.contains("comb_traj")){
-//        QMenu *menu = new QMenu();
-//        menu->addAction("View as 3D");
-//        menu->addAction("View as text");
-//        menu->popup(cursor().pos());
-//        connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
-//    }
-}
+//not implemented
+void MainWindow::projectTree_clicked(const QModelIndex &index) {}
 
 //Action for Double clicking on one of the Project Tree's Item
-void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
-    QTreeWidgetItem *item = ui->projectTree->selectedItems().at(0);
-    if (item->child(0) != NULL) return;
+void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
+    //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");
 
-    QString fileName = item->text(0);
-    item = item->parent();
-    QString folderName = item->text(0);
-    while (item->parent() != NULL){
-        item = item->parent();
-        folderName = item->text(0) + "/" + folderName;
-    }
+    QFileSystemModel *model = (QFileSystemModel*)ui->projectTree->model();
+    QString filePath = model->filePath(index);
+    QString fileName = model->fileName(index);
 
-    QString selectedProjectPath = QString(projectsPath + "/" + folderName);
-    //ui->centralwidget->closeAllSubWindows();
-    //TODO change this condition to something that allows more than one name.
-
-    if (QFileInfo(selectedProjectPath + "/" + fileName).isDir()) {
-        item->setExpanded(!item->isExpanded());
-        return;
-    }
     if (fileName.contains("options")){
         // If the item is Config File
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(filePath);
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
     } else if (fileName.contains("comb_traj")){
         // Socket file, with 3D datas
-        SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget, selectedProjectPath, fileName.toUtf8().constData(), calibrationPath);
+        SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget, projectsPath + "/output" , fileName, calibrationPath);
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
-    } else if (fileName.contains("calibration_summary")){
-        // Calibration file
-        calibrationPath = selectedProjectPath + "/" + fileName;
-        //CalibrationViewerWidget* cvw = new CalibrationViewerWidget(selectedProjectPath, fileName.toUtf8().constData());
-        CalibrationFile* calibFile = new CalibrationFile(calibrationPath);
+    } else if (fileName.contains("calibration_summary")){       
+        CalibrationFile* calibFile = new CalibrationFile(filePath);
         CalibrationFileWidget* calibWidget = new CalibrationFileWidget(ui->centralwidget, calibFile);
         if (!calibWidget->isValid()) {
             delete calibWidget;
@@ -453,12 +427,12 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
         }
     } else if (fileName.endsWith(".pgm")){
         // Grupper image file
-        ImageViewerWidget* ivw = new ImageViewerWidget(selectedProjectPath, fileName, &trackPointProperty);
+        ImageViewerWidget* ivw = new ImageViewerWidget(projectsPath, fileName, &trackPointProperty);
         ui->centralwidget->addSubWindow(ivw);
         ivw->showMaximized();
     } else {
         // Open as text-file... (Must create: TextFileViewerWidget-class)
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(selectedProjectPath + "/" + fileName);
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(filePath);//projectsPath + "/" + fileName
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
     }
@@ -466,312 +440,71 @@ void MainWindow::on_ProjectTree_doubleClicked(const QModelIndex &index) {
 
 /* Action for Right clicking on the project Tree zone
  * Will pop-up a menu listing all actions available */
-//void MainWindow::on_ProjectTree_customContextMenuRequested(const QPoint &pos) {
-//    /* Creating a menu with allowed actions */
-//    QMenu *menu = new QMenu();
-//    menu->addAction("Load project");
-//    menu->addAction("Close project");
-//    menu->popup(cursor().pos());
-//    connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
-//}
-
-/* Action for Right clicking on the project Tree zone
- * Will pop-up a menu listing all actions available */
-void MainWindow::on_ProjectTree_customContextMenuRequested(const QPoint &pos) {
-
-    //tomas 21-12-2015
-//    QTreeWidgetItem *item = ui->projectTree->itemAt(pos);
-//    if (item){
-//        QString fileName = item->text(0);
-//        if (fileName.contains("comb_traj")){
-
-//            /* Creating a menu with allowed actions */
-//            QMenu *menu = new QMenu();
-//            menu->addAction("View as text");
-//            menu->addAction("View as 3D");
-//            menu->popup(cursor().pos());
-//            connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
-//            return;
-//        }
-//    }
-    // tomas end
+void MainWindow::projectTree_customContextMenuRequested(const QPoint &pos) {
 
     /* Creating a menu with allowed actions */
     QMenu *menu = new QMenu();
     menu->addAction("Load project");
     menu->addAction("Close project");
-    menu->addAction("Reload project");
     menu->popup(cursor().pos());
     connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
 }
 
-/*List of all actions made on items in the ProjectTree Menu after having right clicked the project tree (customContextMenuRequested method)*/
-void MainWindow::menuProjectAction_triggered(QAction *action) {
+// Tomas Holt 10.02.2016
+//check if folder contains project subfolders ie. output,input,images
+bool isOkProjectFolderPath(const QString& folderPath){
+    if (folderPath.isNull()) return false;
 
+    QDir dir(folderPath);
+    QStringList fileList = dir.entryList();
+    bool hasInputFolder =  false;
+    bool hasOutputFolder = false;
+    bool hasImagesFolder = false;
+
+    foreach(QString item, fileList ){
+        if (item.contains("input")) hasInputFolder = true;
+        if (item.contains("output")) hasOutputFolder = true;
+        if (item.contains("images")) hasImagesFolder = true;
+    }
+    return hasInputFolder && hasOutputFolder && hasImagesFolder;
+}
+
+/* Tomas 10.02.2016
+ * List of all actions made on items in the ProjectTree Menu after having right clicked the project tree (customContextMenuRequested method)*/
+void MainWindow::menuProjectAction_triggered(QAction *action) {
     QString menuText = action->text();
 
-    //Action on directory or load new directory
-    //close project also on reload project
-    if (menuText == "Close project" || menuText == "Reload project") {
-        //if (ui->projectTree->selectedItems().size() == 0) return; // No selected items...
-//        QTreeWidgetItem *item = ui->projectTree->selectedItems().at(0);
-//        if (item != NULL && ui->projectTree->indexOfTopLevelItem(item) != -1 && item->text(0) != QString("Config File")){
-          //ui->projectTree->invisibleRootItem()->removeChild(item);
-          ui->projectTree->clear();
-          cout << "Removed" << endl;
-//        }
 
-        if (menuText == "Close project"){
-            isProjectLoaded = false;
-            return;//don't reload!
+    if (menuText == "Load project"){
+        QFileSystemModel *model = new QFileSystemModel;
+
+        QString selectedFolderPath = QFileDialog::getExistingDirectory(this, "Open the trackpoint folder", "/", QFileDialog::ShowDirsOnly); // grethe 2015.01.22, snu slashen
+        bool okFolder =  isOkProjectFolderPath(selectedFolderPath);
+
+        if (!okFolder){
+           QMessageBox::information(this, "Error opening project", "Not valid project folder");
+           return;
         }
-    }
 
-    QString folderPath = nullptr;
-    if (menuText == "Reload project"){
-        folderPath = projectsPath; //projectsPath = old projectsPath
-    }
+        /*projectsPath = "/home/tomash/kode/fou/_TrackPoint_SEPT_2015/TrackPoint_SEPT_2015";//for testing
+        calibrationPath = "/home/tomash/kode/fou/_TrackPoint_SEPT_2015/TrackPoint_SEPT_2015/input";*/
 
-    if (menuText == "Load project" && isProjectLoaded){
-        QMessageBox::information(this, "Cannot open", "A project is already open!");
-        return;
-    }else if (menuText == "Load project"){
-        folderPath = QFileDialog::getExistingDirectory(this, "Open the trackpoint folder", "/", QFileDialog::ShowDirsOnly); // grethe 2015.01.22, snu slashen
-        if (folderPath.isNull()) return;
-        projectsPath = QFileInfo(folderPath).absoluteFilePath();
+        projectsPath    = selectedFolderPath;//update our projectsPath
+        calibrationPath = projectsPath + "/input";
+
         isProjectLoaded = true;
-        //  QString folderName = folderPath.split("\\").at(folderPath.split("\\").size()-1);
+        model->setRootPath("/");//folderPath -> no use -shows all of file system anyway but must be set
+        ui->projectTree->setModel(model);
+        model->sort(0,Qt::AscendingOrder);//has to be down after setModel to take effect
+        ui->projectTree->hideColumn(2);//hide file type
+        //ui->projectTree->header()->setResizeContentsPrecision(-1);//show all of filenames in view!
+        //ui->projectTree->resizeColumnToContents(0);//does not work
+        ui->projectTree->setColumnWidth(0,300);//hardcoding not so good!
+        ui->projectTree->setRootIndex(model->index(projectsPath));//tree will show project folder
+
+    }else if (menuText == "Close project"){
+        ui->projectTree->setModel(nullptr);
     }
-
-    QString folderName = folderPath.split("/").at(folderPath.split("/").size() - 1);  // grethe 2015.01.22, snu slashen
-    cout << "Foldername: " + folderName.toStdString() << endl; // grethe 19.01.2015
-
-//    if (true) {
-        /* Check if the project has already been loaded */
-//        for (int i = 0; i < ui->projectTree->invisibleRootItem()->childCount(); i++){
-//            if (ui->projectTree->invisibleRootItem()->child(i)->text(0) == folderName)
-//                return;
-//        }
-
-        /* Removing the '/' followed by the folder name for having only the path and not the name */
-        QString projectPath = folderPath.mid(0, folderPath.lastIndexOf("/")); // grethe 2015.01.22, snu slashen
-        cout << "Loading..\n" << endl;
-
-        calibrationPath = QString(); // Temporary fix...
-
-        QTreeWidgetItem* folderItem = nullptr;
-
-        /*if (menuText == "Load project")*/
-        folderItem =  createTreeFolder(ui->projectTree->invisibleRootItem(), projectPath, folderName);
-        //else if (menuText == "Reload project")  folderItem =  updateTreeFolder(ui->projectTree->invisibleRootItem(), projectPath, folderName);
-        ui->projectTree->sortByColumn(3, Qt::AscendingOrder); // Sort by filetype...
-        //ui->projectTree->resizeColumnToContents(0);
-
-        folderItem->setExpanded(true);
-
-        return;
-
-//    }else {
-//        QMessageBox::information(this, "Error", "Foldername does not contain the word \"trackpoint\"!");
-//    }
-}
-
-// Lars Aksel - 10.03.2015 - Filter for "project-supported" files
-bool isProjectSupported(const QString& path) {
-    return true; // EVERY DIRECTORY IS SUPPORTED //tomas comment
-    if (path.endsWith(".exe", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".pgm", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".dat", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".txt", Qt::CaseInsensitive)) return true;
-    if (path.contains("comb_traj", Qt::CaseInsensitive) && path.endsWith(".dat", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".log", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".trj", Qt::CaseInsensitive)) return true;
-    if (path.endsWith(".match", Qt::CaseInsensitive)) return true;
-    return false;
-}
-
-QTreeWidgetItem* MainWindow::createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name) {
-    /* Creating path and opening DIR */
-    QString fullPath = QString(path + "/" + name);  // grethe 2015-01-22, fjerner \\ og setter inn / istd
-    //QString fullPath = QString(path);   // path og name er lik - fjerner derfor name .. GS 2015-01-2015
-
-
-    QDir myFile(fullPath);
-    if (!myFile.exists()){ return nullptr; }
-    QFileInfoList fileList = myFile.entryInfoList();
-
-    /* Creating the projectItem, reading the files contained by the project, and adding them into the projectItem */
-    QTreeWidgetItem *rootItem = new QTreeWidgetItem();
-    rootItem->setText(0, tr(name.toUtf8().constData()));
-    rootItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
-    rootItem->setData(0, Qt::UserRole, fullPath);
-    parent->addChild(rootItem);
-
-    for (int i = 0; i < fileList.size(); i++){
-        if (fileList.at(i).fileName() != tr(".") && fileList.at(i).fileName() != tr("..")) {
-            if (fileList.at(i).isDir()) {
-                QTreeWidgetItem* folderItem = new QTreeWidgetItem();
-                folderItem->setText(0, fileList.at(i).fileName().toUtf8().constData());
-                folderItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
-                folderItem->setData(0, Qt::UserRole, fileList.at(i).absoluteFilePath().toUtf8().constData());
-                rootItem->addChild(folderItem);
-                QFileInfoList folderlist = QDir(fileList.at(i).absoluteFilePath()).entryInfoList();
-                if (folderlist.size() > 0) {
-                    QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                    //subFolderItem->setText(0, "<PLACEHOLDER>");
-                    subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
-                    folderItem->addChild(subFolderItem);
-                }
-            } else if (fileList.at(i).isFile()) {
-                //if (isProjectSupported(list.at(i).absoluteFilePath())) { //tomas 10-12-2015
-                if (isProjectSupported(fileList.at(i).absolutePath())) {
-                    createTreeItem(rootItem, fileList.at(i).fileName(), fileList.at(i).absoluteFilePath());
-                }
-            }
-        }
-    }
-    rootItem->sortChildren(0, Qt::AscendingOrder);
-    return rootItem;
-}
-
-QTreeWidgetItem* MainWindow::updateTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name) {
-    /* Creating path and opening DIR */
-    QString fullPath = QString(path + "/" + name);  // grethe 2015-01-22, fjerner \\ og setter inn / istd
-    //QString fullPath = QString(path);   // path og name er lik - fjerner derfor name .. GS 2015-01-2015
-
-    //ui->projectTree->invisibleRootItem()->children();
-
-    QDir myFile(fullPath);
-    if (!myFile.exists()){ return nullptr; }
-    QFileInfoList list = myFile.entryInfoList();
-
-    /* Creating the projectItem, reading the files contained by the project, and adding them into the projectItem */
-    //QTreeWidgetItem *rootItem = new QTreeWidgetItem();
-
-    /*
-    rootItem->setText(0, tr(name.toUtf8().constData()));
-    rootItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
-    rootItem->setData(0, Qt::UserRole, fullPath);
-    parent->addChild(rootItem);*/
-
-    QTreeWidgetItem *rootItem = ui->projectTree->invisibleRootItem()->child(0);//our root item, only one exists
-    for (int i = 0; i < list.size(); i++){
-        QTreeWidgetItem *item = rootItem->child(i);
-
-        if (list.at(i).fileName() == tr(".") || list.at(i).fileName() == tr("..")) {//skip, don't count
-            list.removeAt(i);//don't want those directories
-            i--;
-            continue;
-        }
-
-        if (list.at(i).isDir()) {
-                QString strItem = item->data(0,Qt::UserRole).toString();
-                QString strFile = list.at(i).absoluteFilePath();
-
-                if (item->data(0,Qt::UserRole) == list.at(i).absoluteFilePath()){
-                    i--;
-                    continue;
-                }else{ //new directory
-                    QTreeWidgetItem* folderItem = new QTreeWidgetItem();
-                    folderItem->setText(0, list.at(i).fileName().toUtf8().constData());
-                    folderItem->setIcon(0, icons[0]);   // G: kan her bruke icon fra cameramanager.qrc.
-                    folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
-                    rootItem->addChild(folderItem);
-                    QFileInfoList folderlist = QDir(list.at(i).absoluteFilePath()).entryInfoList();
-                    if (folderlist.size() > 0) { //adding dummy subfolder => fill when expanded
-                        QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                        //subFolderItem->setText(0, "<PLACEHOLDER>");
-                        subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
-                        folderItem->addChild(subFolderItem);
-                    }
-                }
-          }else if (item->data(0,Qt::UserRole) != list.at(i).fileName()) {
-             createTreeItem(rootItem, list.at(i).fileName(), list.at(i).absoluteFilePath());
-
-         }
-    }
-    rootItem->sortChildren(0, Qt::AscendingOrder);
-    return rootItem;
-}
-
-QString getHumanReadableFileSize(qint64 fileSize) {
-    qint64 B = 1;
-    qint64 kB = 1024 * B;
-    qint64 MB = 1024 * kB;
-    qint64 GB = 1024 * MB;
-    qint64 TB = 1024 * GB;
-    QString res;
-    if (fileSize > TB) {
-        res = QString::number((double) fileSize / TB, 'f', 2) + " TB";
-    } else if (fileSize > GB) {
-        res = QString::number((double) fileSize / GB, 'f', 2) + " GB";
-    } else if (fileSize > MB) {
-        res = QString::number((double) fileSize / MB, 'f', 2) + " MB";
-    } else if (fileSize > kB) {
-        res = QString::number((double) fileSize / kB, 'f', 2) + " kB";
-    } else {
-        res = QString::number(fileSize) + " byte";
-    }
-    return res;
-}
-
-QString getFileTypeString(FileInfo::FileType fileType) {
-    if (fileType == FileInfo::FileType::CalibrationFile) return QString("Calibration");
-    if (fileType == FileInfo::FileType::ConfigurationFile) return QString("Configuration");
-    if (fileType == FileInfo::FileType::Executable) return QString("Executable");
-    if (fileType == FileInfo::FileType::Folder) return QString("Folder");
-    if (fileType == FileInfo::FileType::ImageFile) return QString("Image");
-    if (fileType == FileInfo::FileType::SocketFile) return QString("Socket");
-    else return QString("Text");
-}
-
-FileInfo::FileType getFileType(QFileInfo file) {
-    QString filename = file.fileName();
-    if (file.isDir()) return FileInfo::FileType::Folder;
-    if (filename.endsWith(".exe", Qt::CaseInsensitive)) return FileInfo::FileType::Executable;
-    if (filename.contains("calibration_summary", Qt::CaseInsensitive)) return FileInfo::FileType::CalibrationFile;
-    if (filename.contains("option", Qt::CaseInsensitive) && filename.endsWith(".txt")) return FileInfo::FileType::ConfigurationFile;
-    if (filename.endsWith(".pgm", Qt::CaseInsensitive)) return FileInfo::FileType::ImageFile;
-    if (filename.contains("comb_traj", Qt::CaseInsensitive)) return FileInfo::FileType::SocketFile;
-    else return FileInfo::FileType::TextFile;
-}
-
-void MainWindow::createTreeItem(QTreeWidgetItem *parent, QString name, QString path) {
-    QTreeWidgetItem *childItem = new QTreeWidgetItem();
-    childItem->setText(0, name);
-
-    int iconptr = 7; // :/icons/file
-    if (name.contains("comb_traj")) {
-        iconptr = 1; // :/icons/coordinates
-    } else if (name.contains("option") && name.endsWith(".txt")) {
-        iconptr = 2; // :/icons/config
-    } else if (name.contains("calibration_summary", Qt::CaseInsensitive)){
-        iconptr = 3; // :/icons/camera
-        if (calibrationPath.isEmpty()) {
-            QTreeWidgetItem *item = parent;
-            calibrationPath = name;
-            while (item != NULL){
-                calibrationPath = item->text(0) + "/" + calibrationPath;
-                item = item->parent();
-            }
-            calibrationPath = projectsPath + "/" + calibrationPath;
-        }
-    } else if (name.endsWith(".exe")) {
-        iconptr = 4; // :/icons/exe
-    } else if (parent->text(0) == "output" && name.endsWith(".dat")) {
-        iconptr = 5; // :/icons/2d
-    } else if (name.endsWith(".pgm")) {
-        iconptr = 6; // :/icons/img
-    }
-    childItem->setIcon(0, icons[iconptr]);
-    QFileInfo fileInfo(path);
-    QString fileSizeText = getHumanReadableFileSize(fileInfo.size());
-
-    childItem->setText(1, fileSizeText);
-    childItem->setText(2, fileInfo.lastModified().toString("yyyy.MM.dd hh:mm:ss"));
-    childItem->setText(3, getFileTypeString(getFileType(fileInfo)));
-    //childItem->setData(0,0,path); //shows path => overrides setText(0)
-    parent->addChild(childItem);
 }
 
 void MainWindow::loadDefaultTrackPointSettings_clicked() {
@@ -1236,50 +969,6 @@ void MainWindow::setupTrackPointTab() {
     vBoxLayout->addLayout(buttonGridLayout);
 
     ui->trackPointWidget->setLayout(vBoxLayout);
-}
-
-void MainWindow::expandFilePath_ProjectTree(QTreeWidgetItem* item) {
-    QString fullPath = item->data(0, Qt::UserRole).value<QString>();
-    if (item->childCount() == 1) {
-        if (item->child(0)->data(0, Qt::UserRole).value<QString>().contains("<PLACEHOLDER>")) {
-            item->removeChild(item->child(0));
-        } else return;
-    } else return;
-
-    QFileInfoList list = QDir(fullPath).entryInfoList();
-    for (int i = 0; i < list.size(); i++){
-        if (list.at(i).fileName() != tr(".") && list.at(i).fileName() != tr("..")) {
-            if (list.at(i).isDir()) {
-                QTreeWidgetItem* folderItem = new QTreeWidgetItem();
-                folderItem->setText(0, list.at(i).fileName().toUtf8().constData());
-                folderItem->setIcon(0, icons[0]);
-                folderItem->setData(0, Qt::UserRole, list.at(i).absoluteFilePath().toUtf8().constData());
-                item->addChild(folderItem);
-
-                QDir folder(list.at(i).absoluteFilePath());
-                if (folder.entryInfoList().size() > 0) {
-                    QTreeWidgetItem* subFolderItem = new QTreeWidgetItem();
-                    //subFolderItem->setText(0, "<PLACEHOLDER>");
-                    subFolderItem->setData(0, Qt::UserRole, "<PLACEHOLDER>");
-                    folderItem->addChild(subFolderItem);
-                }
-            } else if (list.at(i).isFile()) {
-                if (isProjectSupported(list.at(i).absoluteFilePath())) {
-                    createTreeItem(item, list.at(i).fileName(), list.at(i).absoluteFilePath());
-                }
-            }
-        }
-    }
-    ui->projectTree->resizeColumnToContents(2);
-    ui->projectTree->resizeColumnToContents(1);
-    ui->projectTree->resizeColumnToContents(0);
-}
-
-void MainWindow::collapsedFilePath_ProjectTree(QTreeWidgetItem* item) {
-    /*
-    ui->projectTree->resizeColumnToContents(2);
-    ui->projectTree->resizeColumnToContents(1);
-    ui->projectTree->resizeColumnToContents(0);*/
 }
 
 /*

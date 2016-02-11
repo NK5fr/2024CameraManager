@@ -85,10 +85,10 @@ private slots:
     void on_SelectCameras_currentIndexChanged(int index);
 
     /** PROJECT TREE **/
-    void on_ProjectTree_customContextMenuRequested(const QPoint &);
+    void projectTree_customContextMenuRequested(const QPoint &);
+    void projectTree_doubleClicked(const QModelIndex &index);
+    void projectTree_clicked(const QModelIndex &index);
     void menuProjectAction_triggered(QAction *);
-    void on_ProjectTree_doubleClicked(const QModelIndex &index);
-    void on_ProjectTree_clicked(const QModelIndex &index);
 
     /** TO BE DELETED **/
     /*void on_Detect_clicked();*/
@@ -106,8 +106,6 @@ private slots:
     void on_ShowMinSepCircleChecked(int state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
-    void expandFilePath_ProjectTree(QTreeWidgetItem*);
-    void collapsedFilePath_ProjectTree(QTreeWidgetItem*);
 
     // Lars Aksel - Loading/Saving Camera Properties
     void quickLoadCameraSettings();
@@ -147,9 +145,9 @@ private:
     TrackPointProperty trackPointProperty; // Lars Aksel
 
     /** CREATING FOLDER AND FILE ITEMS **/
-    void createTreeItem(QTreeWidgetItem *parent, QString name, QString filepath);
-    QTreeWidgetItem* createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
-    QTreeWidgetItem* updateTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
+    //void createTreeItem(QTreeWidgetItem *parent, QString name, QString filepath);
+    //QTreeWidgetItem* createTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
+    //QTreeWidgetItem* updateTreeFolder(QTreeWidgetItem *parent, const QString& path, const QString& name);
 
     MenuBar *bar;
     Ui::MainWindow *ui;

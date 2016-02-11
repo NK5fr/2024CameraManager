@@ -50,7 +50,7 @@ public:
     QWidget *projectsWidget;
     QWidget *cameraWidget;
     QWidget* trackPointWidget;
-    QTreeWidget *projectTree;
+    QTreeView *projectTree;
     QComboBox* selectCameraManager;
     QWidget *propertiesWidget;
     QVBoxLayout *propertiesContainer;
@@ -178,18 +178,16 @@ public:
         projectsWidget->setObjectName(QStringLiteral("projects"));
         
         // Project Tree in Projects tab
-        projectTree = new QTreeWidget(projectsWidget);
-        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
-        __qtreewidgetitem->setText(0, QStringLiteral("1"));
-        projectTree->setHeaderItem(__qtreewidgetitem);
-        projectTree->setObjectName(QStringLiteral("ProjectTree"));
+        projectTree = new QTreeView(projectsWidget);
         projectTree->setContextMenuPolicy(Qt::CustomContextMenu);
+
         QStringList ColumnNames;
         ColumnNames << "Filename" << "Filesize" << "Last modified" << "Filetype";
-        projectTree->setHeaderLabels(ColumnNames);
+        //projectTree->setHeaderLabels(ColumnNames);
         //projectTree->setHeaderHidden(true);
         projectTree->setSortingEnabled(true);
-        projectTree->setColumnCount(4);
+
+        //projectTree->setColumnCount(4);
         projectTree->setColumnWidth(0, 200);
         projectTabLayout->addWidget(projectTree);
 

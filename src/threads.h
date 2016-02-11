@@ -26,7 +26,7 @@ protected:
         while (running){
             cameraTree->setExpanded(cameraManagers->at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
             //emit w->resizeColumnsCameraTree();
-            QThread::msleep(200);
+            QThread::msleep(2000);
         }
     }
 signals:

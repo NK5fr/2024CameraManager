@@ -29,6 +29,7 @@ using namespace std;
 SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString filename, QString calibPath)
     : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0), QMdiSubWindow(parent) {
     /* Creating QTextEdit, which need to be known to save file later if asked */
+
     fileContain = new QPlainTextEdit();
     fileContain->setReadOnly(true);
     fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -51,6 +52,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString fi
     disconnectButton->hide();
     show3DView();
     setWindowTitle(filename);
+    cout << "PATH ******************* " << path.toStdString() << " filname: " << filename.toStdString() << " calibPath: " << calibPath.toStdString();
 }
 
 // Reading from network...
