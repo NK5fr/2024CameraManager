@@ -402,7 +402,7 @@ void MainWindow::projectTree_clicked(const QModelIndex &index) {}
 void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
     //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");
 
-    QFileSystemModel *model = (QFileSystemModel*)ui->projectTree->model();
+    QFileSystemModel *model = dynamic_cast<QFileSystemModel*>(ui->projectTree->model());
     QString filePath = model->filePath(index);
     QString fileName = model->fileName(index);
 
@@ -427,7 +427,8 @@ void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
         }
     } else if (fileName.endsWith(".pgm")){
         // Grupper image file
-        ImageViewerWidget* ivw = new ImageViewerWidget(projectsPath, fileName, &trackPointProperty);
+        QString folderPath = model->filePath(index.parent());
+        ImageViewerWidget* ivw = new ImageViewerWidget(folderPath, fileName, &trackPointProperty);
         ui->centralwidget->addSubWindow(ivw);
         ivw->showMaximized();
     } else {
@@ -465,6 +466,7 @@ bool isOkProjectFolderPath(const QString& folderPath){
         if (item.contains("input")) hasInputFolder = true;
         if (item.contains("output")) hasOutputFolder = true;
         if (item.contains("images")) hasImagesFolder = true;
+        if (item.contains("cal_run")) return true; //open anyway
     }
     return hasInputFolder && hasOutputFolder && hasImagesFolder;
 }
