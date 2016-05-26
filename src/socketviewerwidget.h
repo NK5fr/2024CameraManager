@@ -20,6 +20,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <QtOpenGL/QtOpenGL>
+#include <QPlainTextEdit>
+
 #include "widgetgl.h"
 
 using namespace std;
