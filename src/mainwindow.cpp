@@ -402,13 +402,16 @@ void MainWindow::projectTree_clicked(const QModelIndex &index) {}
 void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
     //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");
 
+    //if (model->isDir(index)) return;//nothing to do
+
     QFileSystemModel *model = dynamic_cast<QFileSystemModel*>(ui->projectTree->model());
     QString filePath = model->filePath(index);
-    QString fileName = model->fileName(index);
+    QString dirPath  = model->filePath(index.parent());
+    QString fileName = model->fileName(index);   
 
     if (fileName.contains("options")){
         // If the item is Config File
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(filePath);
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(dirPath);
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
     } else if (fileName.contains("comb_traj")){
@@ -427,13 +430,12 @@ void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
         }
     } else if (fileName.endsWith(".pgm")){
         // Grupper image file
-        QString folderPath = model->filePath(index.parent());
-        ImageViewerWidget* ivw = new ImageViewerWidget(folderPath, fileName, &trackPointProperty);
+        ImageViewerWidget* ivw = new ImageViewerWidget(filePath, fileName, &trackPointProperty);
         ui->centralwidget->addSubWindow(ivw);
         ivw->showMaximized();
     } else {
         // Open as text-file... (Must create: TextFileViewerWidget-class)
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(filePath);//projectsPath + "/" + fileName
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(dirPath);
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
     }

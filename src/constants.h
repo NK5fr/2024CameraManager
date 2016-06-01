@@ -37,6 +37,7 @@ const QString CAMERA_PROPERTY_DEFAULT_FILE = "defaultCameraSettings.ini";
 const QString CAMERA_PROPERTY_QUICK_FILE = "quickfile_camerasettings.ini";
 const QString TRACKPOINT_PROPERTY_DEFAULT_FILE = "defaultTrackPointSettings.ini";
 const QString TRACKPOINT_PROPERTY_QUICK_FILE = "quickfile_trackpoint.ini";
+const QString CALIBRATION_PARAMETERLIST_FILE = PROPERTY_PATH + "/parameterList.txt";
 
 
 #endif // CONSTANTS_H
