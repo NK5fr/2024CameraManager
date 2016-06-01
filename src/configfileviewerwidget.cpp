@@ -21,11 +21,11 @@
 using namespace std;
 
 /* Constructor */
-ConfigFileViewerWidget::ConfigFileViewerWidget(QString path) : textEditable(true), view(0){
+ConfigFileViewerWidget::ConfigFileViewerWidget(QString filePath) : textEditable(true), view(0){
   setWindowTitle("Configuration File");
 
   loadAllParameters = false;
-  this->path = path;
+  this->path = filePath;
 
   //tabs initialization
   tabs = new QTabWidget();
@@ -177,9 +177,9 @@ void ConfigFileViewerWidget::preventFileEditing() {
 void ConfigFileViewerWidget::changeView() {
   /* Checking view ID and file type to display the right view of the file */
   //view = 1 -> text view
-  if (view == 0) {
+  if (view == 1) {
     showWizardView();
-    view = 1;
+    view = 0;
     //view = 0 -> wizard view
   }
   else {
@@ -385,6 +385,7 @@ void ConfigFileViewerWidget::createTextEditor() {
   fileContain->setContextMenuPolicy(Qt::CustomContextMenu);
   /* Opening file */
   QFile myFile(path);
+  //QFile myFile("/home/tomash/kode/fou/_TrackPoint_SEPT_2015/TrackPoint_SEPT_2015/input/options.txt");
   if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text))	{ return; }
   QString line;
   /* Adding lines to the QTextEdit component */

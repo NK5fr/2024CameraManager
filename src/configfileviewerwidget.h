@@ -44,7 +44,7 @@ private:
 class ConfigFileViewerWidget : public QMdiSubWindow{
     Q_OBJECT
 public:
-    ConfigFileViewerWidget(QString path);
+    ConfigFileViewerWidget(QString filePath);
 
 private slots:
     void onRightClic();

@@ -400,18 +400,18 @@ void MainWindow::projectTree_clicked(const QModelIndex &index) {}
 
 //Action for Double clicking on one of the Project Tree's Item
 void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
-    //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");
-
-    //if (model->isDir(index)) return;//nothing to do
-
+    //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");   
     QFileSystemModel *model = dynamic_cast<QFileSystemModel*>(ui->projectTree->model());
+
+    if (model->isDir(index)) return;//nothing to do
+
     QString filePath = model->filePath(index);
     QString dirPath  = model->filePath(index.parent());
     QString fileName = model->fileName(index);   
 
     if (fileName.contains("options")){
         // If the item is Config File
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(dirPath);
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(filePath);
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
     } else if (fileName.contains("comb_traj")){
@@ -435,7 +435,7 @@ void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
         ivw->showMaximized();
     } else {
         // Open as text-file... (Must create: TextFileViewerWidget-class)
-        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(dirPath);
+        ConfigFileViewerWidget *cfvw = new ConfigFileViewerWidget(filePath);
         ui->centralwidget->addSubWindow(cfvw);
         cfvw->showMaximized();
     }
