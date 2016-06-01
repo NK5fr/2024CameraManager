@@ -45,7 +45,7 @@ ConfigFileViewerWidget::ConfigFileViewerWidget(QString path) : textEditable(true
 
   //TTODO: Check if this really works correctly.
   //Explanation: By calling changeView, it may change twice the current tab, reverting to the old state. It didn't do in the test, but for code safety, it would be best to change this
-  connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(changeView()));
+   connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(changeView()));
 }
 
 
@@ -177,9 +177,9 @@ void ConfigFileViewerWidget::preventFileEditing() {
 void ConfigFileViewerWidget::changeView() {
   /* Checking view ID and file type to display the right view of the file */
   //view = 1 -> text view
-  if (view == 1) {
+  if (view == 0) {
     showWizardView();
-    view = 0;
+    view = 1;
     //view = 0 -> wizard view
   }
   else {
@@ -249,7 +249,7 @@ void ConfigFileViewerWidget::createWizard() {
   QString strParam;
   /*Opening the files: the config file, and the list of parameters "parameterList.txt"*/
   ConfigFileReader *cfgreader = new ConfigFileReader(path);
-  QFile parameterList("parameterList.txt");
+  QFile parameterList(QDir::currentPath() + "/" + CALIBRATION_PARAMETERLIST_FILE);
   if (!parameterList.open(QIODevice::ReadOnly | QIODevice::Text)) return;
   /*Catching parameters and putting them into the lists*/
   QString line;

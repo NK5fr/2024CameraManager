@@ -14,6 +14,8 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 
+#include "constants.h"
+
 
 //In the wizard, it's a field that allows to change paths via a file chooser dialog.
 class pathEditBox : public QWidget {
