@@ -27,13 +27,15 @@ ConfigFileViewerWidget::ConfigFileViewerWidget(QString filePath) : textEditable(
   loadAllParameters = false;
   this->path = filePath;
 
+  if (path.contains("option")) isTextViewOnly = false; //use wizard view also
+  else isTextViewOnly = true;
+
   //tabs initialization
   tabs = new QTabWidget();
   /* Creating QTextEdit, which need to be known to save file latter if asked */
   createTextEditor();
   /* And creating the wizard widget, that will allow to change principal values*/
-  createWizard();
-
+  if (!isTextViewOnly) createWizard();//only for option files
 
   setWidget(tabs);
 
@@ -64,18 +66,23 @@ void ConfigFileViewerWidget::onRightClic(){
   save = new QAction(tr("Save"), menu);
   save->setEnabled(textEditable);
 
-  menu->addAction("Change view");
-  menu->addSeparator();
-  menu->addAction(fileEdition);
-  if (view == 0) {
-    if (loadAllParameters == false) {
-      menu->addAction("Display all parameters");
-    }
-    else {
-      menu->addAction("Display important parameters only");
-    }
+
+  if (!isTextViewOnly){
+    menu->addAction("Change view");
+    menu->addSeparator();
   }
-  menu->addSeparator();
+  menu->addAction(fileEdition);
+  if (!isTextViewOnly){
+    if (view == 0) {
+        if (loadAllParameters == false) {
+            menu->addAction("Display all parameters");
+        }
+        else {
+            menu->addAction("Display important parameters only");
+        }
+    }
+    menu->addSeparator();
+  }
   menu->addAction(save);
 
   menu->popup(cursor().pos());
@@ -374,8 +381,7 @@ void ConfigFileViewerWidget::createWizard() {
   connect(saveButton, SIGNAL(clicked()), this, SLOT(saveFile()));
   wizard->addRow(saveButton, emptyLabel);
 
-  connect(wizardWrapper, SIGNAL(customContextMenuRequested(QPoint)),
-    this, SLOT(onRightClic()));
+  connect(wizardWrapper, SIGNAL(customContextMenuRequested(QPoint)),this, SLOT(onRightClic()));
   tabs->addTab(wizardScrollArea, "wizard");
   delete cfgreader;
 }
@@ -396,8 +402,7 @@ void ConfigFileViewerWidget::createTextEditor() {
   myFile.close();
 
   tabs->addTab(fileContain, "raw text");
-  connect(fileContain, SIGNAL(customContextMenuRequested(QPoint)),
-    this, SLOT(onRightClic()));
+  connect(fileContain, SIGNAL(customContextMenuRequested(QPoint)),this, SLOT(onRightClic()));
 }
 
 //Save the wizard parameters

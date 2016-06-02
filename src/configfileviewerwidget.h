@@ -97,6 +97,7 @@ private:
 	//Others
 	QString path;
     bool textEditable;
+    bool isTextViewOnly;
 	int view;
 	QFrame *frame;
 
