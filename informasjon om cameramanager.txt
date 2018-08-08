@@ -1,4 +1,4 @@
-CameraManager-mappa må under build-katalogen for at appen skal finne filene.
+CameraManager-mappa må under build/stående/kjørende-katalogen for at appen skal finne filene ved kjøring.
 
 Bildevisning fra fil: "ImageOpenGLWidget"
 Videovisning fra kamera: "VideoOpenGLWidget"

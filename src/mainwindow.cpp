@@ -430,7 +430,7 @@ void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
         }
     } else if (fileName.endsWith(".pgm")){
         // Grupper image file
-        ImageViewerWidget* ivw = new ImageViewerWidget(filePath, fileName, &trackPointProperty);
+        ImageViewerWidget* ivw = new ImageViewerWidget(dirPath, fileName, &trackPointProperty);
         ui->centralwidget->addSubWindow(ivw);
         ivw->showMaximized();
     } else {
