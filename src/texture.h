@@ -6,8 +6,14 @@
 #define TEXTURE_H
 
 //#include <FreeImage.h>
-#include <QtOpenGL/qgl.h>
+#include <QtOpenGL>
 #include "databuffer.h"
+
+//#include <QtOpenGL/qgl.h>
+
+//RAJOUT HUGO
+#include <iostream>
+#include <sstream>
 
 namespace OpenGL {
     enum PixelFormat {

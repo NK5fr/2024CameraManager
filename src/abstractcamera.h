@@ -1,4 +1,4 @@
-/**
+﻿/**
  * \file abstractcamera.h
  * \author Virgile Wozny
  */
@@ -12,12 +12,21 @@
 #include <QDebug>
 #include "cameraproperty.h"
 #include "videoopenglwidget.h"
+//RAJOUT HUGO
+#include "include/Spinnaker/Spinnaker.h"
+#include "include/Spinnaker/SpinGenApi/SpinnakerGenApi.h"
+#include"spincameraproperty.h"
+using namespace Spinnaker;
+using namespace Spinnaker::GenApi;
+using namespace Spinnaker::GenICam;
 
 /**
  * AbstractCamera
  * \brief Class that need to be subclassed for each camera API. It is used to exchange CameraProperty between the application and the API, to lauch auto capture and receive frames.
  */
-class AbstractCamera {
+class AbstractCamera : public QObject {
+    Q_OBJECT
+
 public:
     virtual ~AbstractCamera();
     /**
@@ -27,10 +36,17 @@ public:
     virtual void setProperty(CameraManager::CameraProperty* p) = 0;
 
     /**
+        * @brief (Pure virtual) set the camera according to the spinnaker sdk property
+        * @param p property to set
+        */
+    virtual void setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) = 0;
+
+
+    /**
         * @brief (Pure virtual) get the value of that property for that camera
         * @param p property to update
         */
-    virtual void getProperty(CameraManager::CameraProperty* p) = 0;
+   // virtual void getProperty(CameraManager::CameraProperty* p) = 0;
 
     /**
         * @brief compare 2 cameras
@@ -76,6 +92,10 @@ public:
     VideoOpenGLWidget* getVideoContainer() { return this->container; }
     void setVideoContainer(VideoOpenGLWidget* videoWidget) { this->container = videoWidget; }
 
+
+
+
+
 protected:
     AbstractCamera();
 
@@ -83,10 +103,12 @@ protected:
         * @brief sendFrame send a new QImage for the view
         * @param img QImage grabbed from the camera
         */
-    void sendFrame(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
+    void sendFrame(void* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
 
     // Lars Aksel - 30.01.2015
     bool capturing;
+
+
 
 private:
     QString customName;
@@ -97,13 +119,14 @@ private:
         public :
             CaptureThread(AbstractCamera* cam) : QThread() { c = cam; }
             void run(){
-                /*qDebug() << "Thread Started";*/
+                qDebug() << "Thread Started";
                 c->startAutoCapture();
             }
         private:
             AbstractCamera* c;
     };
     CaptureThread thread;
+
 };
 
 #endif // ABSTRACTCAMERA_H

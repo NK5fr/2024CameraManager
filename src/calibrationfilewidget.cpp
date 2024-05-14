@@ -173,21 +173,21 @@ void CalibrationFileWidget::updateCombinationTable() {
         item->setData(0, Qt::UserRole, QVariant::fromValue((quintptr) camComb[i]));
         updateFiltersCamerasOnly(camComb[i]);
         if (camComb[i]->status == TrackPoint::CalibrationStatus::Warning) {
-            item->setBackgroundColor(0, warningColor);
+            item->setBackground(0, warningColor);
         } else if (camComb[i]->status == TrackPoint::CalibrationStatus::Failed) {
-            item->setBackgroundColor(0, failedColor);
+            item->setBackground(0, failedColor);
         } else {
-            item->setBackgroundColor(0, okColor);
+            item->setBackground(0, okColor);
         }
         bool warningS0 = (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 1))->text().toDouble());
         bool failedS0 = (camComb[i]->s0 > ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(0), 2))->text().toDouble());
-        if (warningS0) item->setBackgroundColor(1, warningColor);
-        if (failedS0 || !camComb[i]->textStatus.isEmpty()) item->setBackgroundColor(1, failedColor);
-        else if (!warningS0 && !failedS0) item->setBackgroundColor(1, okColor);
+        if (warningS0) item->setBackground(1, warningColor);
+        if (failedS0 || !camComb[i]->textStatus.isEmpty()) item->setBackground(1, failedColor);
+        else if (!warningS0 && !failedS0) item->setBackground(1, okColor);
         if (camComb[i]->numFrames < ((QLineEdit*) filterList->itemWidget(filterList->invisibleRootItem()->child(4), 1))->text().toDouble()) {
-            item->setBackgroundColor(2, failedColor);
+            item->setBackground(2, failedColor);
         } else {
-            item->setBackgroundColor(2, okColor);
+            item->setBackground(2, okColor);
         }
         combinationList->addTopLevelItem(item);
     }
@@ -334,10 +334,10 @@ void CalibrationFileWidget::updateCameraCombinationTable(TrackPoint::CameraCombi
     for (int i = 0; i < 3; i++) {
         cameraStdDevItem->setText(i + 1, QString::number(camComb->cameras[i]->cameraConstantStdDev));
         if (camComb->cameras[i]->cameraConstantStdDev >((QLineEdit*) filterList->itemWidget(invisItem->child(1), 1))->text().toDouble()) {
-            cameraStdDevItem->setBackgroundColor(i + 1, warningColor);
+            cameraStdDevItem->setBackground(i + 1, warningColor);
         }
         if (camComb->cameras[i]->cameraConstantStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(1), 2))->text().toDouble()) {
-            cameraStdDevItem->setBackgroundColor(i + 1, failedColor);
+            cameraStdDevItem->setBackground(i + 1, failedColor);
         }
     }
     selectedCombinationTable->addTopLevelItem(cameraStdDevItem);
@@ -347,10 +347,10 @@ void CalibrationFileWidget::updateCameraCombinationTable(TrackPoint::CameraCombi
     for (int i = 0; i < 3; i++) {
         xhStdDevItem->setText(i + 1, QString::number(camComb->cameras[i]->XHStdDev));
         if (camComb->cameras[i]->XHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(2), 1))->text().toDouble()) {
-            xhStdDevItem->setBackgroundColor(i + 1, warningColor);
+            xhStdDevItem->setBackground(i + 1, warningColor);
         }
         if (camComb->cameras[i]->XHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(2), 2))->text().toDouble()) {
-            xhStdDevItem->setBackgroundColor(i + 1, failedColor);
+            xhStdDevItem->setBackground(i + 1, failedColor);
         }
     }
     selectedCombinationTable->addTopLevelItem(xhStdDevItem);
@@ -360,10 +360,10 @@ void CalibrationFileWidget::updateCameraCombinationTable(TrackPoint::CameraCombi
     for (int i = 0; i < 3; i++) {
         yhStdDevItem->setText(i + 1, QString::number(camComb->cameras[i]->YHStdDev));
         if (camComb->cameras[i]->YHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(3), 1))->text().toDouble()) {
-            yhStdDevItem->setBackgroundColor(i + 1, warningColor);
+            yhStdDevItem->setBackground(i + 1, warningColor);
         }
         if (camComb->cameras[i]->YHStdDev > ((QLineEdit*) filterList->itemWidget(invisItem->child(3), 2))->text().toDouble()) {
-            yhStdDevItem->setBackgroundColor(i + 1, failedColor);
+            yhStdDevItem->setBackground(i + 1, failedColor);
         }
     }
     selectedCombinationTable->addTopLevelItem(yhStdDevItem);

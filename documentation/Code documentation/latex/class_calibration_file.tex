@@ -1,0 +1,148 @@
+\hypertarget{class_calibration_file}{}\section{Calibration\+File Class Reference}
+\label{class_calibration_file}\index{CalibrationFile@{CalibrationFile}}
+
+
+{\ttfamily \#include $<$calibrationfile.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_calibration_file_a349ad2ceece7060f0c98dd4f9a95fd5a}{Calibration\+File}} (Q\+String file\+Path)
+\item 
+\mbox{\hyperlink{class_calibration_file_a136f431f543f20bf2b015c85ad7d0017}{$\sim$\+Calibration\+File}} ()
+\item 
+int \mbox{\hyperlink{class_calibration_file_ad5a0e31f58137b5742093686f41c945a}{get\+Num\+Cameras}} ()
+\item 
+int \mbox{\hyperlink{class_calibration_file_ab710e524319fd492a8a136ba5b9666db}{get\+Num\+Combinations}} ()
+\item 
+const vector$<$ \mbox{\hyperlink{struct_track_point_1_1_camera_combination}{Track\+Point\+::\+Camera\+Combination}} $\ast$ $>$ \& \mbox{\hyperlink{class_calibration_file_a061c91faf45b5d26d920e789b6208867}{get\+Camera\+Combinations}} ()
+\item 
+const vector$<$ \mbox{\hyperlink{struct_track_point_1_1_camera}{Track\+Point\+::\+Camera}} $\ast$ $>$ \& \mbox{\hyperlink{class_calibration_file_a58b7c9c270a2fe4148c61e2127194e8c}{get\+Cameras}} ()
+\item 
+const Q\+String \& \mbox{\hyperlink{class_calibration_file_a2b079fb7799837ff11c24f7463dc69b8}{get\+File\+Contains}} ()
+\item 
+const Q\+String \& \mbox{\hyperlink{class_calibration_file_a38a25f3a13cb12e0347a8dca5ab52e47}{get\+File\+Name}} ()
+\item 
+Q\+Plain\+Text\+Edit $\ast$ \mbox{\hyperlink{class_calibration_file_aa49c09c9493c85e00cebc47da8f56789}{get\+Text\+Edit}} ()
+\item 
+bool \mbox{\hyperlink{class_calibration_file_a68687a65fa7be1763c6f22ed6142faad}{is\+Failed}} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 27 of file calibrationfile.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_calibration_file_a349ad2ceece7060f0c98dd4f9a95fd5a}\label{class_calibration_file_a349ad2ceece7060f0c98dd4f9a95fd5a}} 
+\index{CalibrationFile@{CalibrationFile}!CalibrationFile@{CalibrationFile}}
+\index{CalibrationFile@{CalibrationFile}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{CalibrationFile()}{CalibrationFile()}}
+{\footnotesize\ttfamily Calibration\+File\+::\+Calibration\+File (\begin{DoxyParamCaption}\item[{Q\+String}]{file\+Path }\end{DoxyParamCaption})}
+
+
+
+Definition at line 6 of file calibrationfile.\+cpp.
+
+\mbox{\Hypertarget{class_calibration_file_a136f431f543f20bf2b015c85ad7d0017}\label{class_calibration_file_a136f431f543f20bf2b015c85ad7d0017}} 
+\index{CalibrationFile@{CalibrationFile}!````~CalibrationFile@{$\sim$CalibrationFile}}
+\index{````~CalibrationFile@{$\sim$CalibrationFile}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{$\sim$CalibrationFile()}{~CalibrationFile()}}
+{\footnotesize\ttfamily Calibration\+File\+::$\sim$\+Calibration\+File (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 31 of file calibrationfile.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_calibration_file_a061c91faf45b5d26d920e789b6208867}\label{class_calibration_file_a061c91faf45b5d26d920e789b6208867}} 
+\index{CalibrationFile@{CalibrationFile}!getCameraCombinations@{getCameraCombinations}}
+\index{getCameraCombinations@{getCameraCombinations}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getCameraCombinations()}{getCameraCombinations()}}
+{\footnotesize\ttfamily const vector$<$\mbox{\hyperlink{struct_track_point_1_1_camera_combination}{Track\+Point\+::\+Camera\+Combination}}$\ast$$>$\& Calibration\+File\+::get\+Camera\+Combinations (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 34 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_a58b7c9c270a2fe4148c61e2127194e8c}\label{class_calibration_file_a58b7c9c270a2fe4148c61e2127194e8c}} 
+\index{CalibrationFile@{CalibrationFile}!getCameras@{getCameras}}
+\index{getCameras@{getCameras}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getCameras()}{getCameras()}}
+{\footnotesize\ttfamily const vector$<$\mbox{\hyperlink{struct_track_point_1_1_camera}{Track\+Point\+::\+Camera}}$\ast$$>$\& Calibration\+File\+::get\+Cameras (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 35 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_a2b079fb7799837ff11c24f7463dc69b8}\label{class_calibration_file_a2b079fb7799837ff11c24f7463dc69b8}} 
+\index{CalibrationFile@{CalibrationFile}!getFileContains@{getFileContains}}
+\index{getFileContains@{getFileContains}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getFileContains()}{getFileContains()}}
+{\footnotesize\ttfamily const Q\+String\& Calibration\+File\+::get\+File\+Contains (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 36 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_a38a25f3a13cb12e0347a8dca5ab52e47}\label{class_calibration_file_a38a25f3a13cb12e0347a8dca5ab52e47}} 
+\index{CalibrationFile@{CalibrationFile}!getFileName@{getFileName}}
+\index{getFileName@{getFileName}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getFileName()}{getFileName()}}
+{\footnotesize\ttfamily const Q\+String\& Calibration\+File\+::get\+File\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 37 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_ad5a0e31f58137b5742093686f41c945a}\label{class_calibration_file_ad5a0e31f58137b5742093686f41c945a}} 
+\index{CalibrationFile@{CalibrationFile}!getNumCameras@{getNumCameras}}
+\index{getNumCameras@{getNumCameras}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getNumCameras()}{getNumCameras()}}
+{\footnotesize\ttfamily int Calibration\+File\+::get\+Num\+Cameras (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 32 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_ab710e524319fd492a8a136ba5b9666db}\label{class_calibration_file_ab710e524319fd492a8a136ba5b9666db}} 
+\index{CalibrationFile@{CalibrationFile}!getNumCombinations@{getNumCombinations}}
+\index{getNumCombinations@{getNumCombinations}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getNumCombinations()}{getNumCombinations()}}
+{\footnotesize\ttfamily int Calibration\+File\+::get\+Num\+Combinations (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 33 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_aa49c09c9493c85e00cebc47da8f56789}\label{class_calibration_file_aa49c09c9493c85e00cebc47da8f56789}} 
+\index{CalibrationFile@{CalibrationFile}!getTextEdit@{getTextEdit}}
+\index{getTextEdit@{getTextEdit}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{getTextEdit()}{getTextEdit()}}
+{\footnotesize\ttfamily Q\+Plain\+Text\+Edit$\ast$ Calibration\+File\+::get\+Text\+Edit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 38 of file calibrationfile.\+h.
+
+\mbox{\Hypertarget{class_calibration_file_a68687a65fa7be1763c6f22ed6142faad}\label{class_calibration_file_a68687a65fa7be1763c6f22ed6142faad}} 
+\index{CalibrationFile@{CalibrationFile}!isFailed@{isFailed}}
+\index{isFailed@{isFailed}!CalibrationFile@{CalibrationFile}}
+\subsubsection{\texorpdfstring{isFailed()}{isFailed()}}
+{\footnotesize\ttfamily bool Calibration\+File\+::is\+Failed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 39 of file calibrationfile.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{calibrationfile_8h}{calibrationfile.\+h}}\item 
+src/\mbox{\hyperlink{calibrationfile_8cpp}{calibrationfile.\+cpp}}\end{DoxyCompactItemize}

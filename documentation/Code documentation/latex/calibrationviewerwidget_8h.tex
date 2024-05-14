@@ -1,0 +1,75 @@
+\hypertarget{calibrationviewerwidget_8h}{}\section{src/calibrationviewerwidget.h File Reference}
+\label{calibrationviewerwidget_8h}\index{src/calibrationviewerwidget.h@{src/calibrationviewerwidget.h}}
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Action$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Mdi\+Sub\+Window$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Frame$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Label$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Scroll\+Area$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Text\+Edit$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Grid\+Layout$>$}\newline
+{\ttfamily \#include $<$Q\+Mouse\+Event$>$}\newline
+{\ttfamily \#include $<$Q\+Text\+Char\+Format$>$}\newline
+{\ttfamily \#include $<$Q\+Regular\+Expression$>$}\newline
+{\ttfamily \#include $<$Q\+Hash$>$}\newline
+{\ttfamily \#include $<$qdebug.\+h$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include \char`\"{}calibrationfile.\+h\char`\"{}}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_calibration_viewer_widget}{Calibration\+Viewer\+Widget}}
+\item 
+class \mbox{\hyperlink{class_calibration_edit}{Calibration\+Edit}}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688c}{Calibration}} \{ \newline
+\mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca1f506c828f4945d6b5a7bf71445f7d54}{Failed}} = 0, 
+\mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688cacea3f7b239b0a0fcb8b75a4e180cb963}{Hide\+By\+Fail}} = 1, 
+\mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca0f1963fe7c6ff199b79a94e32376f699}{Useless}} = 2, 
+\mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688cae14a963d3e37e134ae9d9dfa0d470fc6}{Hide\+By\+Calcul}} = 3, 
+\newline
+\mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca5ecbcf0afce98b042f35ec71ba03fa4b}{Normal}} = 4, 
+\mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca60733e364a5777c127b529f133620612}{Selected}} = 5
+ \}
+\end{DoxyCompactItemize}
+
+
+\subsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688c}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688c}} 
+\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!Calibration@{Calibration}}
+\index{Calibration@{Calibration}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}
+\subsubsection{\texorpdfstring{Calibration}{Calibration}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688c}{Calibration}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Failed@{Failed}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!Failed@{Failed}}}\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca1f506c828f4945d6b5a7bf71445f7d54}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca1f506c828f4945d6b5a7bf71445f7d54}} 
+Failed&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HideByFail@{HideByFail}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!HideByFail@{HideByFail}}}\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688cacea3f7b239b0a0fcb8b75a4e180cb963}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688cacea3f7b239b0a0fcb8b75a4e180cb963}} 
+Hide\+By\+Fail&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Useless@{Useless}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!Useless@{Useless}}}\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca0f1963fe7c6ff199b79a94e32376f699}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca0f1963fe7c6ff199b79a94e32376f699}} 
+Useless&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HideByCalcul@{HideByCalcul}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!HideByCalcul@{HideByCalcul}}}\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688cae14a963d3e37e134ae9d9dfa0d470fc6}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688cae14a963d3e37e134ae9d9dfa0d470fc6}} 
+Hide\+By\+Calcul&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Normal@{Normal}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!Normal@{Normal}}}\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca5ecbcf0afce98b042f35ec71ba03fa4b}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca5ecbcf0afce98b042f35ec71ba03fa4b}} 
+Normal&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Selected@{Selected}!calibrationviewerwidget.h@{calibrationviewerwidget.h}}\index{calibrationviewerwidget.h@{calibrationviewerwidget.h}!Selected@{Selected}}}\mbox{\Hypertarget{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca60733e364a5777c127b529f133620612}\label{calibrationviewerwidget_8h_af2fd5236b76386ebd8fef010db06688ca60733e364a5777c127b529f133620612}} 
+Selected&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 32 of file calibrationviewerwidget.\+h.
+

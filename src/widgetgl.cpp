@@ -503,7 +503,7 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
     }
     if (event->type() == QEvent::Wheel){
         QWheelEvent *eventWheel = (QWheelEvent *) event;
-        int num = (eventWheel->delta() / 120);
+        int num = (eventWheel->angleDelta().y() / 120);
         /* No key Pressed, then change view */
         if (keyPressed == 0) {
             if (coordinatesShown + num >= 0 && coordinatesShown + num < pointData.size()) {
@@ -515,7 +515,7 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
         }
         const double deltaSpeed = 2;
         if (adjustCamDistance) {
-            camDistance = max((double) 10, min(camDistance - (eventWheel->delta() * deltaSpeed), (double) 100000));
+            camDistance = max((double) 10, min(camDistance - (eventWheel->angleDelta().y() * deltaSpeed), (double) 100000));
             update();
             return true;
         }

@@ -1,0 +1,256 @@
+\hypertarget{class_camera_manager_spin_1_1_spin_camera_property}{}\section{Camera\+Manager\+Spin\+::Spin\+Camera\+Property Class Reference}
+\label{class_camera_manager_spin_1_1_spin_camera_property}\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+
+
+memorize one property (value and auto mode) that will be exchanged between the manager end the cameras  
+
+
+
+
+{\ttfamily \#include $<$spincameraproperty.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a46d9125c8eb6dce1ac771d5804790381}{Spin\+Camera\+Property}} (\mbox{\hyperlink{namespace_camera_manager_spin_ab89e54b93aaaec5c9a411f5b6aadde0c}{Property\+Type}} type, Q\+String name, double min, double max, int decimals=0, bool can\+Auto=false, bool is\+Auto=true, bool on\+Off=true, double value=0)
+\begin{DoxyCompactList}\small\item\em Contructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_camera_manager_spin_ab89e54b93aaaec5c9a411f5b6aadde0c}{Property\+Type}} \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_ae83737f2fcade776b902e1275ebf0193}{get\+Type}} ()
+\item 
+void \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a0d694945022e5a01f42cfb5f9180aba3}{set\+Auto}} (bool a)
+\item 
+bool \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a985c2037105c514595ec67b5356b2a88}{get\+Auto}} ()
+\item 
+bool \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_ac9caec91860d8348124f7280eaee5190}{get\+Can\+Auto}} ()
+\item 
+bool \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a30ae3678770e596ce81776e9ec5402bd}{get\+On\+Off}} ()
+\item 
+void \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a020df5010ed0b2480f4dcd89985aa4ad}{set\+Value}} (float value)
+\item 
+double \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a85ee3bf2a6937d74319407265aa46d55}{get\+Value}} ()
+\item 
+double \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a01eedaa25704bb991f89eef585aa6ba5}{get\+Decimals}} ()
+\item 
+void \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_ae9db4d79cdfc7ecc2c44dcb9d4b4e796}{set\+Value\+From\+Slider}} (int value)
+\item 
+int \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_ac3596199ee0af23eb01cb3d2613932a3}{get\+Value\+To\+Slider}} ()
+\item 
+int \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a3ec56e93dc2b15a87795a8985277f632}{get\+Min\+To\+Slider}} ()
+\item 
+int \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_abc6c87f936566293bcb0c8535aec2f0d}{get\+Max\+To\+S\+Lider}} ()
+\item 
+double \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a22774e095a9628a0948e438afd48e6e4}{get\+Min}} ()
+\item 
+double \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a28e89c1d0bcb77c3439142a0766f87ab}{get\+Max}} ()
+\item 
+Q\+String \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_aacaa4011b97b0d623b307a0b881bd945}{get\+Name}} ()
+\item 
+Q\+String \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property_a2034f93f6c6bb58b8deacf2ae79dda22}{format\+Value}} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+memorize one property (value and auto mode) that will be exchanged between the manager end the cameras 
+
+\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Spin\+Camera\+Property}} 
+
+Definition at line 27 of file spincameraproperty.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a46d9125c8eb6dce1ac771d5804790381}\label{class_camera_manager_spin_1_1_spin_camera_property_a46d9125c8eb6dce1ac771d5804790381}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!SpinCameraProperty@{SpinCameraProperty}}
+\index{SpinCameraProperty@{SpinCameraProperty}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{SpinCameraProperty()}{SpinCameraProperty()}}
+{\footnotesize\ttfamily Spin\+Camera\+Property\+::\+Spin\+Camera\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_camera_manager_spin_ab89e54b93aaaec5c9a411f5b6aadde0c}{Camera\+Manager\+Spin\+::\+Property\+Type}}}]{type,  }\item[{Q\+String}]{name,  }\item[{double}]{min,  }\item[{double}]{max,  }\item[{int}]{decimals = {\ttfamily 0},  }\item[{bool}]{can\+Auto = {\ttfamily false},  }\item[{bool}]{is\+Auto = {\ttfamily true},  }\item[{bool}]{on\+Off = {\ttfamily true},  }\item[{double}]{value = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+Contructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & type of the property \\
+\hline
+{\em min} & minimum value for that property \\
+\hline
+{\em max} & maximum value for that property \\
+\hline
+{\em decimals} & number of decimal for that property (used for the slider) \\
+\hline
+{\em can\+Auto} & true if that property can be set to auto (will desactivate the slider) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 6 of file spincameraproperty.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a2034f93f6c6bb58b8deacf2ae79dda22}\label{class_camera_manager_spin_1_1_spin_camera_property_a2034f93f6c6bb58b8deacf2ae79dda22}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!formatValue@{formatValue}}
+\index{formatValue@{formatValue}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{formatValue()}{formatValue()}}
+{\footnotesize\ttfamily Q\+String Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::format\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 56 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a985c2037105c514595ec67b5356b2a88}\label{class_camera_manager_spin_1_1_spin_camera_property_a985c2037105c514595ec67b5356b2a88}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getAuto@{getAuto}}
+\index{getAuto@{getAuto}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getAuto()}{getAuto()}}
+{\footnotesize\ttfamily bool Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Auto (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 42 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_ac9caec91860d8348124f7280eaee5190}\label{class_camera_manager_spin_1_1_spin_camera_property_ac9caec91860d8348124f7280eaee5190}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getCanAuto@{getCanAuto}}
+\index{getCanAuto@{getCanAuto}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getCanAuto()}{getCanAuto()}}
+{\footnotesize\ttfamily bool Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Can\+Auto (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 43 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a01eedaa25704bb991f89eef585aa6ba5}\label{class_camera_manager_spin_1_1_spin_camera_property_a01eedaa25704bb991f89eef585aa6ba5}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getDecimals@{getDecimals}}
+\index{getDecimals@{getDecimals}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getDecimals()}{getDecimals()}}
+{\footnotesize\ttfamily double Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Decimals (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 47 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a28e89c1d0bcb77c3439142a0766f87ab}\label{class_camera_manager_spin_1_1_spin_camera_property_a28e89c1d0bcb77c3439142a0766f87ab}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getMax@{getMax}}
+\index{getMax@{getMax}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getMax()}{getMax()}}
+{\footnotesize\ttfamily double Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Max (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 54 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_abc6c87f936566293bcb0c8535aec2f0d}\label{class_camera_manager_spin_1_1_spin_camera_property_abc6c87f936566293bcb0c8535aec2f0d}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getMaxToSLider@{getMaxToSLider}}
+\index{getMaxToSLider@{getMaxToSLider}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getMaxToSLider()}{getMaxToSLider()}}
+{\footnotesize\ttfamily int Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Max\+To\+S\+Lider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 52 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a22774e095a9628a0948e438afd48e6e4}\label{class_camera_manager_spin_1_1_spin_camera_property_a22774e095a9628a0948e438afd48e6e4}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getMin@{getMin}}
+\index{getMin@{getMin}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getMin()}{getMin()}}
+{\footnotesize\ttfamily double Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Min (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 53 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a3ec56e93dc2b15a87795a8985277f632}\label{class_camera_manager_spin_1_1_spin_camera_property_a3ec56e93dc2b15a87795a8985277f632}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getMinToSlider@{getMinToSlider}}
+\index{getMinToSlider@{getMinToSlider}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getMinToSlider()}{getMinToSlider()}}
+{\footnotesize\ttfamily int Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Min\+To\+Slider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 51 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_aacaa4011b97b0d623b307a0b881bd945}\label{class_camera_manager_spin_1_1_spin_camera_property_aacaa4011b97b0d623b307a0b881bd945}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getName@{getName}}
+\index{getName@{getName}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily Q\+String Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 55 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a30ae3678770e596ce81776e9ec5402bd}\label{class_camera_manager_spin_1_1_spin_camera_property_a30ae3678770e596ce81776e9ec5402bd}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getOnOff@{getOnOff}}
+\index{getOnOff@{getOnOff}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getOnOff()}{getOnOff()}}
+{\footnotesize\ttfamily bool Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+On\+Off (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 44 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_ae83737f2fcade776b902e1275ebf0193}\label{class_camera_manager_spin_1_1_spin_camera_property_ae83737f2fcade776b902e1275ebf0193}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getType@{getType}}
+\index{getType@{getType}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getType()}{getType()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_camera_manager_spin_ab89e54b93aaaec5c9a411f5b6aadde0c}{Property\+Type}} Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 40 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a85ee3bf2a6937d74319407265aa46d55}\label{class_camera_manager_spin_1_1_spin_camera_property_a85ee3bf2a6937d74319407265aa46d55}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getValue@{getValue}}
+\index{getValue@{getValue}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}}
+{\footnotesize\ttfamily double Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 46 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_ac3596199ee0af23eb01cb3d2613932a3}\label{class_camera_manager_spin_1_1_spin_camera_property_ac3596199ee0af23eb01cb3d2613932a3}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!getValueToSlider@{getValueToSlider}}
+\index{getValueToSlider@{getValueToSlider}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{getValueToSlider()}{getValueToSlider()}}
+{\footnotesize\ttfamily int Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::get\+Value\+To\+Slider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 50 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a0d694945022e5a01f42cfb5f9180aba3}\label{class_camera_manager_spin_1_1_spin_camera_property_a0d694945022e5a01f42cfb5f9180aba3}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!setAuto@{setAuto}}
+\index{setAuto@{setAuto}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{setAuto()}{setAuto()}}
+{\footnotesize\ttfamily void Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::set\+Auto (\begin{DoxyParamCaption}\item[{bool}]{a }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 41 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_a020df5010ed0b2480f4dcd89985aa4ad}\label{class_camera_manager_spin_1_1_spin_camera_property_a020df5010ed0b2480f4dcd89985aa4ad}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!setValue@{setValue}}
+\index{setValue@{setValue}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{setValue()}{setValue()}}
+{\footnotesize\ttfamily void Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::set\+Value (\begin{DoxyParamCaption}\item[{float}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 45 of file spincameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_spin_1_1_spin_camera_property_ae9db4d79cdfc7ecc2c44dcb9d4b4e796}\label{class_camera_manager_spin_1_1_spin_camera_property_ae9db4d79cdfc7ecc2c44dcb9d4b4e796}} 
+\index{CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}!setValueFromSlider@{setValueFromSlider}}
+\index{setValueFromSlider@{setValueFromSlider}!CameraManagerSpin::SpinCameraProperty@{CameraManagerSpin::SpinCameraProperty}}
+\subsubsection{\texorpdfstring{setValueFromSlider()}{setValueFromSlider()}}
+{\footnotesize\ttfamily void Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property\+::set\+Value\+From\+Slider (\begin{DoxyParamCaption}\item[{int}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 49 of file spincameraproperty.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{spincameraproperty_8h}{spincameraproperty.\+h}}\item 
+src/\mbox{\hyperlink{spincameraproperty_8cpp}{spincameraproperty.\+cpp}}\end{DoxyCompactItemize}

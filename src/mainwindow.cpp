@@ -2,7 +2,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QWidgetItem>
 #include <QStandardItem>
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 #include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMdiSubWindow>
 #include <QPoint>
@@ -26,9 +26,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "abstractcameramanager.h"
-#include "testcameramanager.h"
 #include "emptycameramanager.h"
-#include "flycameramanager.h"
+//Hugo Fournier - 03.06.2019 - IMPLEMENT FLY/SPIN
+#include "spincameramanager.h"
+
 #include "configfileviewerwidget.h"
 #include "socketviewerwidget.h"
 #include "calibrationfilewidget.h"
@@ -36,19 +37,23 @@
 #include "imageviewerwidget.h"
 #include "constants.h"
 
+
+
 using namespace std;
+
+
 
 
 bool Ui::crosshair = false, Ui::crosshairReal = false, Ui::forceHighQuality = false;
 
 /* Constructor of MainWindow*/
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), selectedCameraManager(-1), tdc(this), detectCameras(true), tup(this) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), selectedCameraManager(-1), detectCameras(true) , tdc(this),tup(this) {
 
     // g jan 2015: icons og filnavn er definert i cameramanager.qrc
     propertiesIcons[0] = QIcon(":/icons/camera").pixmap(16, 16);
     propertiesIcons[1] = QIcon(":/icons/folder").pixmap(16, 16);
     propertiesIcons[2] = QIcon(":/icons/folder_camera").pixmap(16, 16);
-    
+
     // Lars Aksel - 10.03.2015 - Save memory by loading icons only once...
     icons[0] = QIcon(":/icons/folder");
     icons[1] = QIcon(":/icons/coordinates");
@@ -61,12 +66,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->setupUi(this);
 
+    // Armand & Nathan on 13/05/2024
+    // selection = 2;
+
     // Lars Aksel - 05.02.2015 - Load TrackPoint-settings
     loadDefaultTrackPointSettings();
     setupTrackPointTab();
 
-    cameraManagers.push_back(new FlyCameraManager());
-    cameraManagers.push_back(new TestCameraManager());
+
+    cameraManagers.push_back(new SpinCameraManager());
+
+    //cameraManagers.push_back(new TestCameraManager());
 
     for (unsigned int i = 0; i < cameraManagers.size(); ++i){
         AbstractCameraManager* manager = cameraManagers.at(i);
@@ -93,7 +103,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
-
+    //Hugo Fournier - 03.06.2019 - IMPLEMENT FLY/SPIN
+    connect(ui->selectCameraManager, SIGNAL(currentTextChanged(QString)), this, SLOT(combobox_changeSDK()));
+;
     //tomas
     connect(ui->projectTree, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(projectTree_customContextMenuRequested(QPoint) ));
     connect(ui->projectTree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(projectTree_doubleClicked(QModelIndex)));
@@ -105,24 +117,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
     /* Title */
-    setWindowTitle("Qt Camera Manager");
+    setWindowTitle("Camera Manager");
 
     /* Thread to detect automatically new cameras*/
     //connect(&tdc, SIGNAL(resizeCameraTree()), this, SLOT(resizeColumnsCameraTree()));
     ui->cameraTree->setColumnWidth(0, 60);
     ui->cameraTree->setColumnWidth(1, 70);
 
+    //system = new SystemManager();
+
+    //startCameraDetection(system);
     tdc.start();
+
 
     setFocusPolicy(Qt::TabFocus);
 }
+
+// Armand & Nathan on 13/05/2024 : Useless because we only use Spinnaker
+
+//Constant to set get if the selected manager is FlyCapture or Spinnaker
+//wrote on 11/06/2019 by French students
+// int MainWindow::selection = 2;
 
 /* Destructor of MainWindow */
 MainWindow::~MainWindow() {
     detectCameras = false;
     on_actionLiveView_toggled(false);
+    // deux lignes a remettr en commentaire si bug
     tdc.wait();
     tup.wait();
+    // deux lignes a remettre en commentaire si bug
     for (int i = 0; i < cameraManagers.size(); i++) {
         delete cameraManagers[i];
         cameraManagers[i] = nullptr;
@@ -145,6 +169,26 @@ void MainWindow::modifySubWindow(QMdiSubWindow* in, bool add) {
     }
 }
 
+// Armand & Nathan on 13/05/2024 : Useless because we only use Spinnaker
+
+//RAJOUT HUGO IMPLEMENT FLY/SPIN
+/* Slot called when selection in combobox changed */
+void MainWindow::combobox_changeSDK() {
+    // if(ui->selectCameraManager->currentText() == "FlyCapture Camera Manager") {
+    //      selection = 1;
+    //      cameraManagers[selectedCameraManager]->loadPropertiesDefaultsInit();
+
+
+    //  } else {
+    //      selection = 2;
+    //      cameraManagers[selectedCameraManager]->loadPropertiesDefaultsInit();
+    //  }
+}
+
+
+
+
+
 /* Slot called when index of the cameras project changed */
 void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
     if (selectedCameraManager >= 0){
@@ -154,7 +198,7 @@ void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
         camManager->getPropertiesWidget()->hide();
     }
     selectedCameraManager = index;
-    AbstractCameraManager* cm = cameraManagers.at(selectedCameraManager); 
+    AbstractCameraManager* cm = cameraManagers.at(selectedCameraManager);
     ui->cameraTree->setModel(cm->getModel());
     ui->propertiesContainer->addWidget(cm->getPropertiesWidget());
     cm->getPropertiesWidget()->show();
@@ -170,7 +214,7 @@ void MainWindow::on_actionLiveView_toggled(bool arg1) {
     cameraManagers.at(selectedCameraManager)->activateLiveView(arg1);
     cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
     if (arg1) tup.start();
-    //else 
+    //else
 }
 
 /* Clic on UpdateImage button */
@@ -288,7 +332,7 @@ void MainWindow::on_CameraTree_customContextMenuRequested(const QPoint &pos) {
     connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuCameraAction_triggered(QAction*)));
 }
 
-/* Click on item in CameraTree popup Menu */    
+/* Click on item in CameraTree popup Menu */
 void MainWindow::menuCameraAction_triggered(QAction *action) {
     if (action->text() == "Add Group")
         on_addGroup();
@@ -311,14 +355,14 @@ void MainWindow::menuBarClicked(QAction* action) {
         ui->actionLiveView->setChecked(b);
         bar->getUpdateImage()->setDisabled(b);
         if (!tup.isRunning())
-            tup.start();
+           tup.start();
 
     } else if (action->text() == "Update Image") {
         on_actionUpdateImages_triggered();
     } else if (action->text() == "Camera Autodetection") {
         detectCameras = bar->getCameraAutoDetection()->isChecked();
         if (detectCameras) {
-            tdc.start();
+           tdc.start();
         }
     } else if (action->text() == "Activate Coordinates"){
         bool b = bar->getActivateCoordinates()->isChecked();
@@ -372,19 +416,30 @@ void MainWindow::menuBarClicked(QAction* action) {
 //////////////////////
 
 // When Thread DetectCamera is launched, it call this method to find new camera
-void MainWindow::startCameraDetection() {
+void MainWindow::startCameraDetection(SystemManager *sm) {
     while (detectCameras){
-        ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(), true);
+        ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(sm), true);
         //emit resizeColumnsCameraTree();
         QThread::msleep(200);
-    }
+   }
 }
 
 // When Thread UpdateProperties is launched, it call this method to update the selected camera properties
 void MainWindow::startUpdateProperties() {
     while (bar->getRunLiveView()->isChecked()){
         //printf("Updating properties...\n");
-        cameraManagers.at(selectedCameraManager)->updateProperties();
+
+        // Armand & Nathan on 13/05/2024
+        cameraManagers.at(selectedCameraManager)->updateSpinProperties();
+
+        // useless because we only use Spinnaker
+        // if( MainWindow::selection == 2 ) {
+        //      cameraManagers.at(selectedCameraManager)->updateSpinProperties();
+
+        // } else {
+        //     cameraManagers.at(selectedCameraManager)->updateProperties();
+        // }
+
         //QThread::
         QThread::msleep(250);
     }
@@ -400,14 +455,14 @@ void MainWindow::projectTree_clicked(const QModelIndex &index) {}
 
 //Action for Double clicking on one of the Project Tree's Item
 void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
-    //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");   
+    //QMessageBox::information(this, "Cannot open", "On projectTree_doubleClicked - must be implemented");
     QFileSystemModel *model = dynamic_cast<QFileSystemModel*>(ui->projectTree->model());
 
     if (model->isDir(index)) return;//nothing to do
 
     QString filePath = model->filePath(index);
     QString dirPath  = model->filePath(index.parent());
-    QString fileName = model->fileName(index);   
+    QString fileName = model->fileName(index);
 
     if (fileName.contains("options")){
         // If the item is Config File
@@ -419,7 +474,7 @@ void MainWindow::projectTree_doubleClicked(const QModelIndex &index) {
         SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget, projectsPath + "/output" , fileName, calibrationPath);
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
-    } else if (fileName.contains("calibration_summary")){       
+    } else if (fileName.contains("calibration_summary")){
         CalibrationFile* calibFile = new CalibrationFile(filePath);
         CalibrationFileWidget* calibWidget = new CalibrationFileWidget(ui->centralwidget, calibFile);
         if (!calibWidget->isValid()) {
@@ -477,7 +532,6 @@ bool isOkProjectFolderPath(const QString& folderPath){
  * List of all actions made on items in the ProjectTree Menu after having right clicked the project tree (customContextMenuRequested method)*/
 void MainWindow::menuProjectAction_triggered(QAction *action) {
     QString menuText = action->text();
-
 
     if (menuText == "Load project"){
         QFileSystemModel *model = new QFileSystemModel;
@@ -698,7 +752,7 @@ void MainWindow::on_TrackPointSliderValueChanged(int value) {
 
 void MainWindow::quickSaveCameraSettings() {
     QString quickFile(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_QUICK_FILE);
-    cameraManagers[selectedCameraManager]->savePropertiesToFile(quickFile);
+    cameraManagers[selectedCameraManager]->saveSpinPropertiesToFile(quickFile);
 }
 
 void MainWindow::quickLoadCameraSettings() {
@@ -707,9 +761,9 @@ void MainWindow::quickLoadCameraSettings() {
     if (!file.exists()) {
         QMessageBox::information(this, "Error", "No quicksave-file exists!");
     } else {
-        std::vector<CameraProperty> prop;
-        cameraManagers[selectedCameraManager]->loadPropertiesFromFile(quickFile, prop);
-        cameraManagers[selectedCameraManager]->updateProperties(prop);
+        std::vector<SpinCameraProperty> prop;
+        cameraManagers[selectedCameraManager]->loadSpinPropertiesFromFile(quickFile, prop);
+        cameraManagers[selectedCameraManager]->updateSpinProperties(prop);
     }
 }
 
@@ -940,7 +994,7 @@ void MainWindow::setupTrackPointTab() {
     trackPointLayout->addWidget(ui->maxPointSlider, 8, 2);
     connect(ui->maxPointValueEdit, SIGNAL(returnPressed()), this, SLOT(on_TrackPointValueChanged()));
     connect(ui->maxPointSlider, SIGNAL(valueChanged(int)), this, SLOT(on_TrackPointSliderValueChanged(int)));
-    
+
     QLabel* minSepLabel = new QLabel(trackPointProperty.minSepText);
     ui->minSepValueEdit = new QLineEdit(QString::number(trackPointProperty.minSepValue));
     ui->minSepValueEdit->setMaximumWidth(lineEditWidth);
@@ -981,4 +1035,3 @@ void MainWindow::resizeColumnsCameraTree() {
     ui->cameraTree->resizeColumnToContents(1);
     ui->cameraTree->resizeColumnToContents(2);
 }*/
-

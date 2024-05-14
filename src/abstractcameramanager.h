@@ -27,10 +27,13 @@
 #include "cameraproperty.h"
 #include "abstractcamera.h"
 #include "constants.h"
+#include "systemmanager.h"
+#include "spincameraproperty.h"
 
 class MainWindow;
 
 using namespace CameraManager;
+using namespace CameraManagerSpin;
 
 enum MyRoles {
     CameraGroupRole = Qt::UserRole + 1,
@@ -49,7 +52,13 @@ class AbstractCameraManager : public QObject {
          * @brief (Pure virtual) detect new cameras
          * @param newCameras (modified by the function) will be filled with all the camera connected to the computer, even ones already connected
          */
+        virtual void detectNewCameras() = 0;
+
+        //RAJOUT HUGO IMPLEMENT FLY/SPIN
+
         virtual void detectNewCameras(std::vector<AbstractCamera*> *newCameras) = 0;
+
+
 
         /**
          * @brief (Pure virtual) get the name of the Manager
@@ -62,7 +71,7 @@ class AbstractCameraManager : public QObject {
          * @brief detect new cameras
          * @return the index in the model corresponding to the "Detected Cameras" group, in order to expand it in the view
          */
-        QModelIndex detectNewCamerasAndExpand();
+        QModelIndex detectNewCamerasAndExpand(SystemManager *sm);
 
         //may be changed
         void updateImages();
@@ -73,8 +82,17 @@ class AbstractCameraManager : public QObject {
         bool loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop);
         bool updatePropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop);
         bool savePropertiesToFile(QString& filepath);
+        bool saveSpinPropertiesToFile(QString &filepath);
         void setProperties(std::vector<CameraManager::CameraProperty> &properties);
         void updateProperties(std::vector<CameraManager::CameraProperty> &properties);
+
+        //Hugo Fournier - 4.06.2019
+        bool loadSpinPropertiesFromFile(QString& filepath, std::vector<SpinCameraProperty>& prop);
+        bool updateSpinPropertiesFromFile(QString& filepath, std::vector<SpinCameraProperty>& prop);
+        void updateSpinProperties(std::vector<CameraManagerSpin::SpinCameraProperty> &properties);
+        void updateSpinProperties();
+        void setSpinProperties(std::vector<CameraManagerSpin::SpinCameraProperty> &properties);
+
 
         // Lars Aksel - 05.02.2015
         void setTrackPointProperty(TrackPointProperty* prop) { 
@@ -164,8 +182,8 @@ class AbstractCameraManager : public QObject {
                 videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 window->setWidget(videoWidget);
                 window->resize(400, 300);
-                QObject::connect(window, SIGNAL(windowStateChanged(Qt::WindowStates, Qt::WindowStates)),
-                                 videoWidget, SLOT(changedState(Qt::WindowStates, Qt::WindowStates)));
+                //QObject::connect(window, SIGNAL(windowStateChanged(Qt::WindowStates, Qt::WindowStates)),
+                                 //videoWidget, SLOT(changedState(Qt::WindowStates, Qt::WindowStates)));
             }
             //~activeCameraEntry(){ delete window; }
             AbstractCamera* camera;
@@ -174,6 +192,7 @@ class AbstractCameraManager : public QObject {
         };
 
         const std::vector<activeCameraEntry>& getActiveCameraEntries() { return this->activeCameras; }
+         void loadPropertiesDefaultsInit();
 
     protected:
         /**
@@ -191,6 +210,7 @@ class AbstractCameraManager : public QObject {
         void on_propertyCheckbox_changed(int state);
         void on_propertySlider_changed(int val);
         void on_propertyValue_changed();
+
     protected:
 
         MainWindow* mainWindow;
@@ -205,13 +225,13 @@ class AbstractCameraManager : public QObject {
         
         std::vector<activeCameraEntry> activeCameras;
         std::vector<CameraManager::CameraProperty> cameraProperties;
+        std::vector<CameraManagerSpin::SpinCameraProperty> spinCameraProperties;
         void cameraTree_recursiveCheck(QStandardItem* parent, Qt::CheckState checked);
         QStandardItem* cameraTree_recursiveFirstCamera(QStandardItem* parent);
         void cameraTree_recursiveSetProperty(QStandardItem* parent, CameraManager::CameraProperty* prop);
+        void cameraTree_recursiveSetSpinProperty(QStandardItem* parent, CameraManagerSpin::SpinCameraProperty* prop);
         void cameraTree_getCameraList(QStandardItem* parent, std::vector<QStandardItem*> *list);
         AbstractCamera* getSelectedCamera();
-
-        void loadPropertiesDefaultsInit();
 };
 
 #endif // ABSTRACTCAMERAMANAGER_H

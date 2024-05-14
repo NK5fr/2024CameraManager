@@ -34,6 +34,7 @@ const QString TRACKPOINT_SOCKET_DIR = TRACKPOINT_OUTPUT_DIR;
 // Paths... (Is used!)
 const QString PROPERTY_PATH = "CameraManager/props";
 const QString CAMERA_PROPERTY_DEFAULT_FILE = "defaultCameraSettings.ini";
+const QString CAMERA_PROPERTY_SPINNAKER = "spinCameraSettings.ini";
 const QString CAMERA_PROPERTY_QUICK_FILE = "quickfile_camerasettings.ini";
 const QString TRACKPOINT_PROPERTY_DEFAULT_FILE = "defaultTrackPointSettings.ini";
 const QString TRACKPOINT_PROPERTY_QUICK_FILE = "quickfile_trackpoint.ini";

@@ -1,0 +1,281 @@
+\hypertarget{class_spin_camera}{}\section{Spin\+Camera Class Reference}
+\label{class_spin_camera}\index{SpinCamera@{SpinCamera}}
+
+
+{\ttfamily \#include $<$spincamera.\+h$>$}
+
+Inheritance diagram for Spin\+Camera\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_spin_camera}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_spin_camera_a448a5ad609674d1187641b0e3cc706d3}{Spin\+Camera}} (Spinnaker\+::\+Camera\+Ptr p\+Cam)
+\item 
+\mbox{\hyperlink{class_spin_camera_ab6480a04f9be775bbf9a7b61a248921b}{$\sim$\+Spin\+Camera}} ()
+\item 
+Spinnaker\+::\+Camera\+Ptr \mbox{\hyperlink{class_spin_camera_aa7d20cfe4e16b461580e98c0cd8982f7}{get\+Camera}} ()
+\item 
+Q\+String \mbox{\hyperlink{class_spin_camera_a2427902f7a8bc6cca397966b14399e9b}{get\+Serial}} ()
+\item 
+Q\+String \mbox{\hyperlink{class_spin_camera_a254522436d6e70878a8b2df0654614c8}{get\+Model}} ()
+\item 
+void \mbox{\hyperlink{class_spin_camera_abb8eddf9373bf488a8eaa87b117d40c0}{set\+Spin\+Property}} (\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $\ast$p)
+\begin{DoxyCompactList}\small\item\em (Pure virtual) set the camera according to the spinnaker sdk property \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_spin_camera_a3083f5156bef457595fb0ca5ed3a6cf1}{set\+Property}} (\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $\ast$p)
+\begin{DoxyCompactList}\small\item\em (Pure virtual) set the camera according to that property \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_spin_camera_acee6b2c38898f23b5bbba4a7810caa49}{start\+Auto\+Capture}} ()
+\begin{DoxyCompactList}\small\item\em (Pure virtual) start callback based Liveview \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_spin_camera_a161f8d383c56161a8e7731d7299504db}{stop\+Auto\+Capture}} ()
+\begin{DoxyCompactList}\small\item\em (Pure virtual) stop\+Auto\+Capture stop callback based Liveview \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_spin_camera_ac97107c1a201ab3c7e28d60302b28d0a}{Configure\+Trigger}} (I\+Node\+Map \&node\+Map)
+\item 
+unsigned char $\ast$ \mbox{\hyperlink{class_spin_camera_af93d61657150a85134a6193fed344442}{retrieve\+Image}} (unsigned int $\ast$buffer\+Size, unsigned int $\ast$image\+Width, unsigned int $\ast$image\+Height)
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get one image from camera \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_spin_camera_a1c3344dcd483c0ba889e8bb64d688039}{equals\+To}} (\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$c)
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the value of that property for that camera \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_spin_camera_ad3b02eb926fbc4312e7f19e3834db576}{get\+String}} ()
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the name corresponding to the camera model and id \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 23 of file spincamera.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_spin_camera_a448a5ad609674d1187641b0e3cc706d3}\label{class_spin_camera_a448a5ad609674d1187641b0e3cc706d3}} 
+\index{SpinCamera@{SpinCamera}!SpinCamera@{SpinCamera}}
+\index{SpinCamera@{SpinCamera}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{SpinCamera()}{SpinCamera()}}
+{\footnotesize\ttfamily Spin\+Camera\+::\+Spin\+Camera (\begin{DoxyParamCaption}\item[{Spinnaker\+::\+Camera\+Ptr}]{p\+Cam }\end{DoxyParamCaption})}
+
+
+
+Definition at line 12 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_ab6480a04f9be775bbf9a7b61a248921b}\label{class_spin_camera_ab6480a04f9be775bbf9a7b61a248921b}} 
+\index{SpinCamera@{SpinCamera}!````~SpinCamera@{$\sim$SpinCamera}}
+\index{````~SpinCamera@{$\sim$SpinCamera}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{$\sim$SpinCamera()}{~SpinCamera()}}
+{\footnotesize\ttfamily Spin\+Camera\+::$\sim$\+Spin\+Camera (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 17 of file spincamera.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_spin_camera_ac97107c1a201ab3c7e28d60302b28d0a}\label{class_spin_camera_ac97107c1a201ab3c7e28d60302b28d0a}} 
+\index{SpinCamera@{SpinCamera}!ConfigureTrigger@{ConfigureTrigger}}
+\index{ConfigureTrigger@{ConfigureTrigger}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{ConfigureTrigger()}{ConfigureTrigger()}}
+{\footnotesize\ttfamily int Spin\+Camera\+::\+Configure\+Trigger (\begin{DoxyParamCaption}\item[{I\+Node\+Map \&}]{node\+Map }\end{DoxyParamCaption})}
+
+
+
+Definition at line 165 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_a1c3344dcd483c0ba889e8bb64d688039}\label{class_spin_camera_a1c3344dcd483c0ba889e8bb64d688039}} 
+\index{SpinCamera@{SpinCamera}!equalsTo@{equalsTo}}
+\index{equalsTo@{equalsTo}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{equalsTo()}{equalsTo()}}
+{\footnotesize\ttfamily bool Spin\+Camera\+::equals\+To (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) get the value of that property for that camera 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & property to updatecompare 2 cameras \\
+\hline
+{\em c} & camera to compare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the cameras are physically the same 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{class_abstract_camera_a244917ab081c18caf389473847871dd6}{Abstract\+Camera}}.
+
+
+
+Definition at line 343 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_aa7d20cfe4e16b461580e98c0cd8982f7}\label{class_spin_camera_aa7d20cfe4e16b461580e98c0cd8982f7}} 
+\index{SpinCamera@{SpinCamera}!getCamera@{getCamera}}
+\index{getCamera@{getCamera}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{getCamera()}{getCamera()}}
+{\footnotesize\ttfamily Spinnaker\+::\+Camera\+Ptr Spin\+Camera\+::get\+Camera (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 28 of file spincamera.\+h.
+
+\mbox{\Hypertarget{class_spin_camera_a254522436d6e70878a8b2df0654614c8}\label{class_spin_camera_a254522436d6e70878a8b2df0654614c8}} 
+\index{SpinCamera@{SpinCamera}!getModel@{getModel}}
+\index{getModel@{getModel}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{getModel()}{getModel()}}
+{\footnotesize\ttfamily Q\+String Spin\+Camera\+::get\+Model (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_abstract_camera_ae263e210c55f094ef5b8fc8cb3341043}{Abstract\+Camera}}.
+
+
+
+Definition at line 35 of file spincamera.\+h.
+
+\mbox{\Hypertarget{class_spin_camera_a2427902f7a8bc6cca397966b14399e9b}\label{class_spin_camera_a2427902f7a8bc6cca397966b14399e9b}} 
+\index{SpinCamera@{SpinCamera}!getSerial@{getSerial}}
+\index{getSerial@{getSerial}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{getSerial()}{getSerial()}}
+{\footnotesize\ttfamily Q\+String Spin\+Camera\+::get\+Serial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_abstract_camera_a0dcd65fa3bcc83ba95ffdb0a9044a407}{Abstract\+Camera}}.
+
+
+
+Definition at line 31 of file spincamera.\+h.
+
+\mbox{\Hypertarget{class_spin_camera_ad3b02eb926fbc4312e7f19e3834db576}\label{class_spin_camera_ad3b02eb926fbc4312e7f19e3834db576}} 
+\index{SpinCamera@{SpinCamera}!getString@{getString}}
+\index{getString@{getString}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{getString()}{getString()}}
+{\footnotesize\ttfamily std\+::string Spin\+Camera\+::get\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) get the name corresponding to the camera model and id 
+
+\begin{DoxyReturn}{Returns}
+String containing these informations 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_a75dc6b53d5a8717944d5e8ded9609611}{Abstract\+Camera}}.
+
+
+
+Definition at line 348 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_af93d61657150a85134a6193fed344442}\label{class_spin_camera_af93d61657150a85134a6193fed344442}} 
+\index{SpinCamera@{SpinCamera}!retrieveImage@{retrieveImage}}
+\index{retrieveImage@{retrieveImage}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{retrieveImage()}{retrieveImage()}}
+{\footnotesize\ttfamily unsigned char $\ast$ Spin\+Camera\+::retrieve\+Image (\begin{DoxyParamCaption}\item[{unsigned int $\ast$}]{buffer\+Size,  }\item[{unsigned int $\ast$}]{image\+Width,  }\item[{unsigned int $\ast$}]{image\+Height }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) get one image from camera 
+
+\begin{DoxyReturn}{Returns}
+Q\+Image image 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_a46f1a355c0dbfe5dd66016faefc97eba}{Abstract\+Camera}}.
+
+
+
+Definition at line 304 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_a3083f5156bef457595fb0ca5ed3a6cf1}\label{class_spin_camera_a3083f5156bef457595fb0ca5ed3a6cf1}} 
+\index{SpinCamera@{SpinCamera}!setProperty@{setProperty}}
+\index{setProperty@{setProperty}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{setProperty()}{setProperty()}}
+{\footnotesize\ttfamily void Spin\+Camera\+::set\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $\ast$}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) set the camera according to that property 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & property to set \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_a8b50d3e4925cfe74ed383376ba02bb5e}{Abstract\+Camera}}.
+
+
+
+Definition at line 21 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_abb8eddf9373bf488a8eaa87b117d40c0}\label{class_spin_camera_abb8eddf9373bf488a8eaa87b117d40c0}} 
+\index{SpinCamera@{SpinCamera}!setSpinProperty@{setSpinProperty}}
+\index{setSpinProperty@{setSpinProperty}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{setSpinProperty()}{setSpinProperty()}}
+{\footnotesize\ttfamily void Spin\+Camera\+::set\+Spin\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $\ast$}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) set the camera according to the spinnaker sdk property 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & property to set \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_ac6943d94ae61e2c8d431bf9fe9d55313}{Abstract\+Camera}}.
+
+
+
+Definition at line 25 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_acee6b2c38898f23b5bbba4a7810caa49}\label{class_spin_camera_acee6b2c38898f23b5bbba4a7810caa49}} 
+\index{SpinCamera@{SpinCamera}!startAutoCapture@{startAutoCapture}}
+\index{startAutoCapture@{startAutoCapture}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{startAutoCapture()}{startAutoCapture()}}
+{\footnotesize\ttfamily void Spin\+Camera\+::start\+Auto\+Capture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) start callback based Liveview 
+
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_a2f47d9877c5308856f42c94723faca33}{Abstract\+Camera}}.
+
+
+
+Definition at line 243 of file spincamera.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_a161f8d383c56161a8e7731d7299504db}\label{class_spin_camera_a161f8d383c56161a8e7731d7299504db}} 
+\index{SpinCamera@{SpinCamera}!stopAutoCapture@{stopAutoCapture}}
+\index{stopAutoCapture@{stopAutoCapture}!SpinCamera@{SpinCamera}}
+\subsubsection{\texorpdfstring{stopAutoCapture()}{stopAutoCapture()}}
+{\footnotesize\ttfamily void Spin\+Camera\+::stop\+Auto\+Capture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) stop\+Auto\+Capture stop callback based Liveview 
+
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_a08bd5e2c3f8a92187f36e1f6322eccb5}{Abstract\+Camera}}.
+
+
+
+Definition at line 299 of file spincamera.\+cpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{spincamera_8h}{spincamera.\+h}}\item 
+src/\mbox{\hyperlink{spincamera_8cpp}{spincamera.\+cpp}}\end{DoxyCompactItemize}

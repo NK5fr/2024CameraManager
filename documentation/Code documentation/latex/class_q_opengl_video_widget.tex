@@ -1,0 +1,255 @@
+\hypertarget{class_q_opengl_video_widget}{}\section{Q\+Opengl\+Video\+Widget Class Reference}
+\label{class_q_opengl_video_widget}\index{QOpenglVideoWidget@{QOpenglVideoWidget}}
+
+
+{\ttfamily \#include $<$qopenglvideowidget.\+h$>$}
+
+Inheritance diagram for Q\+Opengl\+Video\+Widget\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_q_opengl_video_widget}
+\end{center}
+\end{figure}
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a4f024f71a8de0fe02723afed8388ffb1}{changed\+State}} (Qt\+::\+Window\+States old\+State, Qt\+::\+Window\+States new\+State)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_ab67a75026cc3213c618b7d25227f179c}{activate\+Crosshair}} (bool state)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_ae73f50f66112684b2552b6e8496e0e6f}{receive\+Update}} ()
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a597448d1dd651ceb1d7b1d0e3c21c273}{force\+Update}} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_q_opengl_video_widget_a55029786e1e6efafddc48743b37553e3}{Q\+Opengl\+Video\+Widget}} ()
+\item 
+\mbox{\hyperlink{class_q_opengl_video_widget_a6ad850569c0b4dc54d73de589ace82e9}{$\sim$\+Q\+Opengl\+Video\+Widget}} ()
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a9534a70d67f329c85b623f6f708c08ba}{set\+Image}} (unsigned char $\ast$img\+Buffer, unsigned int buffer\+Size, unsigned int image\+Width, unsigned int image\+Height)
+\item 
+\mbox{\hyperlink{class_image_detect}{Image\+Detect}} $\ast$ \mbox{\hyperlink{class_q_opengl_video_widget_ab256cefe1bb2e4790f1c7d4c1989b12e}{get\+Image\+Detect}} ()
+\item 
+\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$ \mbox{\hyperlink{class_q_opengl_video_widget_ae028c3ff76eb983d0222ec2c0a6b4cfb}{get\+Track\+Point\+Property}} ()
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a66fe89ddc0d8ba4600320dd00bb5ddee}{set\+Track\+Point\+Property}} (\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$prop)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a35d303070fbebce4bb907ccbcfb6059c}{initialize\+GL}} ()
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_af99c251dee6be9884bf0284156272208}{paint\+GL}} ()
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a807f6872097233a3d7b573317bcca3c3}{resize\+GL}} (int w, int h)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a11e8a8b01accae096650fd79ef49a1c6}{resize\+Event}} (Q\+Resize\+Event $\ast$event=nullptr)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_ad38b0422d0b45ec7af1cd0327925c6d4}{mouse\+Double\+Click\+Event}} (Q\+Mouse\+Event $\ast$event)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a3498bcce428d78238d1b101850c0db52}{mouse\+Move\+Event}} (Q\+Mouse\+Event $\ast$event)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_a7742313ffd8e43af717677a630563451}{enter\+Event}} (Q\+Event $\ast$)
+\item 
+void \mbox{\hyperlink{class_q_opengl_video_widget_afd181aad471752131da2bcb37cf3abc3}{leave\+Event}} (Q\+Event $\ast$)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 16 of file qopenglvideowidget.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_q_opengl_video_widget_a55029786e1e6efafddc48743b37553e3}\label{class_q_opengl_video_widget_a55029786e1e6efafddc48743b37553e3}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{QOpenglVideoWidget()}{QOpenglVideoWidget()}}
+{\footnotesize\ttfamily Q\+Opengl\+Video\+Widget\+::\+Q\+Opengl\+Video\+Widget (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 4 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a6ad850569c0b4dc54d73de589ace82e9}\label{class_q_opengl_video_widget_a6ad850569c0b4dc54d73de589ace82e9}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!````~QOpenglVideoWidget@{$\sim$QOpenglVideoWidget}}
+\index{````~QOpenglVideoWidget@{$\sim$QOpenglVideoWidget}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{$\sim$QOpenglVideoWidget()}{~QOpenglVideoWidget()}}
+{\footnotesize\ttfamily Q\+Opengl\+Video\+Widget\+::$\sim$\+Q\+Opengl\+Video\+Widget (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 18 of file qopenglvideowidget.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_q_opengl_video_widget_ab67a75026cc3213c618b7d25227f179c}\label{class_q_opengl_video_widget_ab67a75026cc3213c618b7d25227f179c}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!activateCrosshair@{activateCrosshair}}
+\index{activateCrosshair@{activateCrosshair}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{activateCrosshair}{activateCrosshair}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::activate\+Crosshair (\begin{DoxyParamCaption}\item[{bool}]{state }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+
+
+Definition at line 104 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a4f024f71a8de0fe02723afed8388ffb1}\label{class_q_opengl_video_widget_a4f024f71a8de0fe02723afed8388ffb1}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!changedState@{changedState}}
+\index{changedState@{changedState}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{changedState}{changedState}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::changed\+State (\begin{DoxyParamCaption}\item[{Qt\+::\+Window\+States}]{old\+State,  }\item[{Qt\+::\+Window\+States}]{new\+State }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+
+
+Definition at line 100 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a7742313ffd8e43af717677a630563451}\label{class_q_opengl_video_widget_a7742313ffd8e43af717677a630563451}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!enterEvent@{enterEvent}}
+\index{enterEvent@{enterEvent}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{enterEvent()}{enterEvent()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::enter\+Event (\begin{DoxyParamCaption}\item[{Q\+Event $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 79 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a597448d1dd651ceb1d7b1d0e3c21c273}\label{class_q_opengl_video_widget_a597448d1dd651ceb1d7b1d0e3c21c273}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!forceUpdate@{forceUpdate}}
+\index{forceUpdate@{forceUpdate}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{forceUpdate}{forceUpdate}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::force\+Update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_ab256cefe1bb2e4790f1c7d4c1989b12e}\label{class_q_opengl_video_widget_ab256cefe1bb2e4790f1c7d4c1989b12e}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!getImageDetect@{getImageDetect}}
+\index{getImageDetect@{getImageDetect}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{getImageDetect()}{getImageDetect()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_image_detect}{Image\+Detect}}$\ast$ Q\+Opengl\+Video\+Widget\+::get\+Image\+Detect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 24 of file qopenglvideowidget.\+h.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_ae028c3ff76eb983d0222ec2c0a6b4cfb}\label{class_q_opengl_video_widget_ae028c3ff76eb983d0222ec2c0a6b4cfb}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!getTrackPointProperty@{getTrackPointProperty}}
+\index{getTrackPointProperty@{getTrackPointProperty}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{getTrackPointProperty()}{getTrackPointProperty()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}}$\ast$ Q\+Opengl\+Video\+Widget\+::get\+Track\+Point\+Property (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 25 of file qopenglvideowidget.\+h.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a35d303070fbebce4bb907ccbcfb6059c}\label{class_q_opengl_video_widget_a35d303070fbebce4bb907ccbcfb6059c}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!initializeGL@{initializeGL}}
+\index{initializeGL@{initializeGL}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{initializeGL()}{initializeGL()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::initialize\+GL (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 42 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_afd181aad471752131da2bcb37cf3abc3}\label{class_q_opengl_video_widget_afd181aad471752131da2bcb37cf3abc3}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!leaveEvent@{leaveEvent}}
+\index{leaveEvent@{leaveEvent}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{leaveEvent()}{leaveEvent()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::leave\+Event (\begin{DoxyParamCaption}\item[{Q\+Event $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 83 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_ad38b0422d0b45ec7af1cd0327925c6d4}\label{class_q_opengl_video_widget_ad38b0422d0b45ec7af1cd0327925c6d4}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!mouseDoubleClickEvent@{mouseDoubleClickEvent}}
+\index{mouseDoubleClickEvent@{mouseDoubleClickEvent}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{mouseDoubleClickEvent()}{mouseDoubleClickEvent()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::mouse\+Double\+Click\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 95 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a3498bcce428d78238d1b101850c0db52}\label{class_q_opengl_video_widget_a3498bcce428d78238d1b101850c0db52}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!mouseMoveEvent@{mouseMoveEvent}}
+\index{mouseMoveEvent@{mouseMoveEvent}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{mouseMoveEvent()}{mouseMoveEvent()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::mouse\+Move\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 89 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_af99c251dee6be9884bf0284156272208}\label{class_q_opengl_video_widget_af99c251dee6be9884bf0284156272208}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!paintGL@{paintGL}}
+\index{paintGL@{paintGL}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{paintGL()}{paintGL()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::paint\+GL (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 51 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_ae73f50f66112684b2552b6e8496e0e6f}\label{class_q_opengl_video_widget_ae73f50f66112684b2552b6e8496e0e6f}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!receiveUpdate@{receiveUpdate}}
+\index{receiveUpdate@{receiveUpdate}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{receiveUpdate}{receiveUpdate}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::receive\+Update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+
+
+Definition at line 37 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a11e8a8b01accae096650fd79ef49a1c6}\label{class_q_opengl_video_widget_a11e8a8b01accae096650fd79ef49a1c6}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!resizeEvent@{resizeEvent}}
+\index{resizeEvent@{resizeEvent}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{resizeEvent()}{resizeEvent()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::resize\+Event (\begin{DoxyParamCaption}\item[{Q\+Resize\+Event $\ast$}]{event = {\ttfamily nullptr} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 75 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a807f6872097233a3d7b573317bcca3c3}\label{class_q_opengl_video_widget_a807f6872097233a3d7b573317bcca3c3}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!resizeGL@{resizeGL}}
+\index{resizeGL@{resizeGL}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{resizeGL()}{resizeGL()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::resize\+GL (\begin{DoxyParamCaption}\item[{int}]{w,  }\item[{int}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 70 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a9534a70d67f329c85b623f6f708c08ba}\label{class_q_opengl_video_widget_a9534a70d67f329c85b623f6f708c08ba}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!setImage@{setImage}}
+\index{setImage@{setImage}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{setImage()}{setImage()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::set\+Image (\begin{DoxyParamCaption}\item[{unsigned char $\ast$}]{img\+Buffer,  }\item[{unsigned int}]{buffer\+Size,  }\item[{unsigned int}]{image\+Width,  }\item[{unsigned int}]{image\+Height }\end{DoxyParamCaption})}
+
+
+
+Definition at line 22 of file qopenglvideowidget.\+cpp.
+
+\mbox{\Hypertarget{class_q_opengl_video_widget_a66fe89ddc0d8ba4600320dd00bb5ddee}\label{class_q_opengl_video_widget_a66fe89ddc0d8ba4600320dd00bb5ddee}} 
+\index{QOpenglVideoWidget@{QOpenglVideoWidget}!setTrackPointProperty@{setTrackPointProperty}}
+\index{setTrackPointProperty@{setTrackPointProperty}!QOpenglVideoWidget@{QOpenglVideoWidget}}
+\subsubsection{\texorpdfstring{setTrackPointProperty()}{setTrackPointProperty()}}
+{\footnotesize\ttfamily void Q\+Opengl\+Video\+Widget\+::set\+Track\+Point\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$}]{prop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 26 of file qopenglvideowidget.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{qopenglvideowidget_8h}{qopenglvideowidget.\+h}}\item 
+src/\mbox{\hyperlink{qopenglvideowidget_8cpp}{qopenglvideowidget.\+cpp}}\end{DoxyCompactItemize}

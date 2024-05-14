@@ -1,0 +1,69 @@
+\hypertarget{abstractcameramanager_8h}{}\section{src/abstractcameramanager.h File Reference}
+\label{abstractcameramanager_8h}\index{src/abstractcameramanager.h@{src/abstractcameramanager.h}}
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$qobject.\+h$>$}\newline
+{\ttfamily \#include $<$Q\+Standard\+Item\+Model$>$}\newline
+{\ttfamily \#include $<$Q\+Standard\+Item$>$}\newline
+{\ttfamily \#include $<$Q\+Thread$>$}\newline
+{\ttfamily \#include $<$Q\+Debug$>$}\newline
+{\ttfamily \#include $<$Qt\+Core$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Mdi\+Area$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Mdi\+Sub\+Window$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Tree\+Widget$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Check\+Box$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Slider$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/qpushbutton.\+h$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include \char`\"{}mainwindow.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}videoopenglwidget.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}cameraproperty.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}abstractcamera.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}flycamera.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}systemmanager.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}spincameraproperty.\+h\char`\"{}}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_abstract_camera_manager}{Abstract\+Camera\+Manager}}
+\begin{DoxyCompactList}\small\item\em Class that need to be subclassed for each camera A\+PI. It is used to list and display Cameras, properties and liveview. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_abstract_camera_manager_1_1active_camera_entry}{Abstract\+Camera\+Manager\+::active\+Camera\+Entry}}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7}{My\+Roles}} \{ \mbox{\hyperlink{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7ae9a3fec61c144c16b21dd3c7ffdbb8d1}{Camera\+Group\+Role}} = Qt\+::User\+Role + 1, 
+\mbox{\hyperlink{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7a4312a7ae3a725530f7138f64af74d7d3}{Camera\+Role}} = Qt\+::User\+Role + 1
+ \}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Virgile Wozny 
+\end{DoxyAuthor}
+
+
+\subsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7}\label{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7}} 
+\index{abstractcameramanager.h@{abstractcameramanager.h}!MyRoles@{MyRoles}}
+\index{MyRoles@{MyRoles}!abstractcameramanager.h@{abstractcameramanager.h}}
+\subsubsection{\texorpdfstring{MyRoles}{MyRoles}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7}{My\+Roles}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CameraGroupRole@{CameraGroupRole}!abstractcameramanager.h@{abstractcameramanager.h}}\index{abstractcameramanager.h@{abstractcameramanager.h}!CameraGroupRole@{CameraGroupRole}}}\mbox{\Hypertarget{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7ae9a3fec61c144c16b21dd3c7ffdbb8d1}\label{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7ae9a3fec61c144c16b21dd3c7ffdbb8d1}} 
+Camera\+Group\+Role&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CameraRole@{CameraRole}!abstractcameramanager.h@{abstractcameramanager.h}}\index{abstractcameramanager.h@{abstractcameramanager.h}!CameraRole@{CameraRole}}}\mbox{\Hypertarget{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7a4312a7ae3a725530f7138f64af74d7d3}\label{abstractcameramanager_8h_a5bda330203a1c5ba02aeeb292ce20cc7a4312a7ae3a725530f7138f64af74d7d3}} 
+Camera\+Role&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 39 of file abstractcameramanager.\+h.
+

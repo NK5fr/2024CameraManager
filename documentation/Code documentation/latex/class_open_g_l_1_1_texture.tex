@@ -1,0 +1,232 @@
+\hypertarget{class_open_g_l_1_1_texture}{}\section{Open\+GL\+::Texture Class Reference}
+\label{class_open_g_l_1_1_texture}\index{OpenGL::Texture@{OpenGL::Texture}}
+
+
+{\ttfamily \#include $<$texture.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_open_g_l_1_1_texture_a6c275e3f186675ff6ed73ccf970e552f}{Texture}} ()
+\item 
+\mbox{\hyperlink{class_open_g_l_1_1_texture_a09c4bcb7462f64c1d20fa69dba3cee8a}{$\sim$\+Texture}} ()
+\item 
+bool \mbox{\hyperlink{class_open_g_l_1_1_texture_ae129740a08ae6255eecd6d399a27c2bd}{update\+Texture}} (unsigned char $\ast$image\+Buffer, unsigned int buffer\+Size)
+\item 
+void \mbox{\hyperlink{class_open_g_l_1_1_texture_a1d8a63d9862d8149836737b19a2b4c7d}{create\+Empty\+Texture}} (int image\+Width, int image\+Height, \mbox{\hyperlink{namespace_open_g_l_a85472a7a9e32091b8a7ed8dc728d505b}{Pixel\+Format}} pixel\+Format=Pixel\+Format\+::\+L\+U\+M\+I\+N\+A\+N\+CE)
+\item 
+void \mbox{\hyperlink{class_open_g_l_1_1_texture_a52b73edf08a1621ad18e20afa2b3446a}{set\+Texture\+Filter}} (\mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}} tex\+Min\+Filter, \mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}} tex\+Mag\+Filter)
+\item 
+void \mbox{\hyperlink{class_open_g_l_1_1_texture_a8078d636e2c0a31812d90f0010dcab7a}{set\+Texture\+Wrap}} (\mbox{\hyperlink{namespace_open_g_l_a22eb6a3df5ed600fb89f2baf8d1c8027}{Texture\+Wrap}} tex\+Wrap)
+\item 
+void \mbox{\hyperlink{class_open_g_l_1_1_texture_a5ea786e618849c76825597fe53af8990}{bind}} ()
+\item 
+void \mbox{\hyperlink{class_open_g_l_1_1_texture_a762d9b99b7eb49845da1e37009d1fe5d}{unbind}} ()
+\item 
+G\+Luint \mbox{\hyperlink{class_open_g_l_1_1_texture_a23a849a67d8608d3af93b969ab6320c7}{get\+Texture\+Id}} () const
+\item 
+G\+Luint \mbox{\hyperlink{class_open_g_l_1_1_texture_a3dce8a3d16bc4a3a98f0dfa5a8979e4b}{get\+Texture\+Width}} () const
+\item 
+G\+Luint \mbox{\hyperlink{class_open_g_l_1_1_texture_ae593a5c033d3fc0c801d64771b4bc0fe}{get\+Texture\+Height}} () const
+\item 
+\mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}} \mbox{\hyperlink{class_open_g_l_1_1_texture_a4624594b4d85149bedcf7f906802c3d7}{get\+Texture\+Mag\+Filter}} ()
+\item 
+\mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}} \mbox{\hyperlink{class_open_g_l_1_1_texture_a9bc108632436d11c6f1242ea7d301914}{get\+Texture\+Min\+Filter}} ()
+\item 
+\mbox{\hyperlink{namespace_open_g_l_a22eb6a3df5ed600fb89f2baf8d1c8027}{Texture\+Wrap}} \mbox{\hyperlink{class_open_g_l_1_1_texture_aacf92c2dd4d2e93b483c9fe1978a8aa4}{get\+Texture\+Wrap}} ()
+\item 
+\mbox{\hyperlink{namespace_open_g_l_a85472a7a9e32091b8a7ed8dc728d505b}{Pixel\+Format}} \mbox{\hyperlink{class_open_g_l_1_1_texture_acc763a16c79059cbbb2ae91b8d5f1f13}{get\+Pixel\+Format}} ()
+\item 
+\mbox{\hyperlink{class_data_buffer}{Data\+Buffer}} $\ast$ \mbox{\hyperlink{class_open_g_l_1_1_texture_aa47ea4825ad19b5c91b97afad57e1806}{get\+Image\+Buffer}} ()
+\item 
+unsigned int \mbox{\hyperlink{class_open_g_l_1_1_texture_a85d6c0174b566fee142071e57d6537c9}{get\+Texture\+Size}} () const
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 36 of file texture.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a6c275e3f186675ff6ed73ccf970e552f}\label{class_open_g_l_1_1_texture_a6c275e3f186675ff6ed73ccf970e552f}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!Texture@{Texture}}
+\index{Texture@{Texture}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{Texture()}{Texture()}}
+{\footnotesize\ttfamily Texture\+::\+Texture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 6 of file texture.\+cpp.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a09c4bcb7462f64c1d20fa69dba3cee8a}\label{class_open_g_l_1_1_texture_a09c4bcb7462f64c1d20fa69dba3cee8a}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!````~Texture@{$\sim$Texture}}
+\index{````~Texture@{$\sim$Texture}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{$\sim$Texture()}{~Texture()}}
+{\footnotesize\ttfamily Texture\+::$\sim$\+Texture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 16 of file texture.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a5ea786e618849c76825597fe53af8990}\label{class_open_g_l_1_1_texture_a5ea786e618849c76825597fe53af8990}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!bind@{bind}}
+\index{bind@{bind}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{bind()}{bind()}}
+{\footnotesize\ttfamily void Open\+G\+L\+::\+Texture\+::bind (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 47 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a1d8a63d9862d8149836737b19a2b4c7d}\label{class_open_g_l_1_1_texture_a1d8a63d9862d8149836737b19a2b4c7d}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!createEmptyTexture@{createEmptyTexture}}
+\index{createEmptyTexture@{createEmptyTexture}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{createEmptyTexture()}{createEmptyTexture()}}
+{\footnotesize\ttfamily void Texture\+::create\+Empty\+Texture (\begin{DoxyParamCaption}\item[{int}]{image\+Width,  }\item[{int}]{image\+Height,  }\item[{\mbox{\hyperlink{namespace_open_g_l_a85472a7a9e32091b8a7ed8dc728d505b}{Pixel\+Format}}}]{pixel\+Format = {\ttfamily PixelFormat\+:\+:LUMINANCE} }\end{DoxyParamCaption})}
+
+
+
+Definition at line 84 of file texture.\+cpp.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_aa47ea4825ad19b5c91b97afad57e1806}\label{class_open_g_l_1_1_texture_aa47ea4825ad19b5c91b97afad57e1806}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getImageBuffer@{getImageBuffer}}
+\index{getImageBuffer@{getImageBuffer}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getImageBuffer()}{getImageBuffer()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_data_buffer}{Data\+Buffer}}$\ast$ Open\+G\+L\+::\+Texture\+::get\+Image\+Buffer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 57 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_acc763a16c79059cbbb2ae91b8d5f1f13}\label{class_open_g_l_1_1_texture_acc763a16c79059cbbb2ae91b8d5f1f13}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getPixelFormat@{getPixelFormat}}
+\index{getPixelFormat@{getPixelFormat}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getPixelFormat()}{getPixelFormat()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_open_g_l_a85472a7a9e32091b8a7ed8dc728d505b}{Pixel\+Format}} Open\+G\+L\+::\+Texture\+::get\+Pixel\+Format (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 56 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_ae593a5c033d3fc0c801d64771b4bc0fe}\label{class_open_g_l_1_1_texture_ae593a5c033d3fc0c801d64771b4bc0fe}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureHeight@{getTextureHeight}}
+\index{getTextureHeight@{getTextureHeight}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureHeight()}{getTextureHeight()}}
+{\footnotesize\ttfamily G\+Luint Open\+G\+L\+::\+Texture\+::get\+Texture\+Height (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 52 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a23a849a67d8608d3af93b969ab6320c7}\label{class_open_g_l_1_1_texture_a23a849a67d8608d3af93b969ab6320c7}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureId@{getTextureId}}
+\index{getTextureId@{getTextureId}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureId()}{getTextureId()}}
+{\footnotesize\ttfamily G\+Luint Open\+G\+L\+::\+Texture\+::get\+Texture\+Id (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 50 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a4624594b4d85149bedcf7f906802c3d7}\label{class_open_g_l_1_1_texture_a4624594b4d85149bedcf7f906802c3d7}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureMagFilter@{getTextureMagFilter}}
+\index{getTextureMagFilter@{getTextureMagFilter}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureMagFilter()}{getTextureMagFilter()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}} Open\+G\+L\+::\+Texture\+::get\+Texture\+Mag\+Filter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 53 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a9bc108632436d11c6f1242ea7d301914}\label{class_open_g_l_1_1_texture_a9bc108632436d11c6f1242ea7d301914}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureMinFilter@{getTextureMinFilter}}
+\index{getTextureMinFilter@{getTextureMinFilter}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureMinFilter()}{getTextureMinFilter()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}} Open\+G\+L\+::\+Texture\+::get\+Texture\+Min\+Filter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 54 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a85d6c0174b566fee142071e57d6537c9}\label{class_open_g_l_1_1_texture_a85d6c0174b566fee142071e57d6537c9}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureSize@{getTextureSize}}
+\index{getTextureSize@{getTextureSize}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureSize()}{getTextureSize()}}
+{\footnotesize\ttfamily unsigned int Open\+G\+L\+::\+Texture\+::get\+Texture\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 58 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a3dce8a3d16bc4a3a98f0dfa5a8979e4b}\label{class_open_g_l_1_1_texture_a3dce8a3d16bc4a3a98f0dfa5a8979e4b}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureWidth@{getTextureWidth}}
+\index{getTextureWidth@{getTextureWidth}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureWidth()}{getTextureWidth()}}
+{\footnotesize\ttfamily G\+Luint Open\+G\+L\+::\+Texture\+::get\+Texture\+Width (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 51 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_aacf92c2dd4d2e93b483c9fe1978a8aa4}\label{class_open_g_l_1_1_texture_aacf92c2dd4d2e93b483c9fe1978a8aa4}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!getTextureWrap@{getTextureWrap}}
+\index{getTextureWrap@{getTextureWrap}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{getTextureWrap()}{getTextureWrap()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_open_g_l_a22eb6a3df5ed600fb89f2baf8d1c8027}{Texture\+Wrap}} Open\+G\+L\+::\+Texture\+::get\+Texture\+Wrap (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 55 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a52b73edf08a1621ad18e20afa2b3446a}\label{class_open_g_l_1_1_texture_a52b73edf08a1621ad18e20afa2b3446a}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!setTextureFilter@{setTextureFilter}}
+\index{setTextureFilter@{setTextureFilter}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{setTextureFilter()}{setTextureFilter()}}
+{\footnotesize\ttfamily void Texture\+::set\+Texture\+Filter (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}}}]{tex\+Min\+Filter,  }\item[{\mbox{\hyperlink{namespace_open_g_l_a34bc5965567ca64f43e5e38e7cfdb2e4}{Texture\+Filter}}}]{tex\+Mag\+Filter }\end{DoxyParamCaption})}
+
+
+
+Definition at line 112 of file texture.\+cpp.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a8078d636e2c0a31812d90f0010dcab7a}\label{class_open_g_l_1_1_texture_a8078d636e2c0a31812d90f0010dcab7a}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!setTextureWrap@{setTextureWrap}}
+\index{setTextureWrap@{setTextureWrap}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{setTextureWrap()}{setTextureWrap()}}
+{\footnotesize\ttfamily void Texture\+::set\+Texture\+Wrap (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_open_g_l_a22eb6a3df5ed600fb89f2baf8d1c8027}{Texture\+Wrap}}}]{tex\+Wrap }\end{DoxyParamCaption})}
+
+
+
+Definition at line 128 of file texture.\+cpp.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_a762d9b99b7eb49845da1e37009d1fe5d}\label{class_open_g_l_1_1_texture_a762d9b99b7eb49845da1e37009d1fe5d}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!unbind@{unbind}}
+\index{unbind@{unbind}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{unbind()}{unbind()}}
+{\footnotesize\ttfamily void Open\+G\+L\+::\+Texture\+::unbind (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 48 of file texture.\+h.
+
+\mbox{\Hypertarget{class_open_g_l_1_1_texture_ae129740a08ae6255eecd6d399a27c2bd}\label{class_open_g_l_1_1_texture_ae129740a08ae6255eecd6d399a27c2bd}} 
+\index{OpenGL::Texture@{OpenGL::Texture}!updateTexture@{updateTexture}}
+\index{updateTexture@{updateTexture}!OpenGL::Texture@{OpenGL::Texture}}
+\subsubsection{\texorpdfstring{updateTexture()}{updateTexture()}}
+{\footnotesize\ttfamily bool Texture\+::update\+Texture (\begin{DoxyParamCaption}\item[{unsigned char $\ast$}]{image\+Buffer,  }\item[{unsigned int}]{buffer\+Size }\end{DoxyParamCaption})}
+
+
+
+Definition at line 65 of file texture.\+cpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{texture_8h}{texture.\+h}}\item 
+src/\mbox{\hyperlink{texture_8cpp}{texture.\+cpp}}\end{DoxyCompactItemize}

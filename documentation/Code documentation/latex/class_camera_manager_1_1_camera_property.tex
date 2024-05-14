@@ -1,0 +1,256 @@
+\hypertarget{class_camera_manager_1_1_camera_property}{}\section{Camera\+Manager\+::Camera\+Property Class Reference}
+\label{class_camera_manager_1_1_camera_property}\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+
+
+memorize one property (value and auto mode) that will be exchanged between the manager end the cameras  
+
+
+
+
+{\ttfamily \#include $<$cameraproperty.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_camera_manager_1_1_camera_property_a7f096010f1d8c0cb5a0b7e3c592196a6}{Camera\+Property}} (\mbox{\hyperlink{namespace_camera_manager_a91c5befa73ac521c804690839ad888ab}{Property\+Type}} type, Q\+String name, double min, double max, int decimals=0, bool can\+Auto=false, bool is\+Auto=true, bool on\+Off=true, double value=0)
+\begin{DoxyCompactList}\small\item\em Contructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespace_camera_manager_a91c5befa73ac521c804690839ad888ab}{Property\+Type}} \mbox{\hyperlink{class_camera_manager_1_1_camera_property_abba29ee03832b7036f2d828223a5e26d}{get\+Type}} ()
+\item 
+void \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a3c86a53f13aff002234e1c2e7ba17e22}{set\+Auto}} (bool a)
+\item 
+bool \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a09276d4af15cb3b6b282d75108eefc2c}{get\+Auto}} ()
+\item 
+bool \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a79acdab6a37d6c8c07d2fc46cfee8067}{get\+Can\+Auto}} ()
+\item 
+bool \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a9e78cc25ce3d0a22429852c3b6b4007d}{get\+On\+Off}} ()
+\item 
+void \mbox{\hyperlink{class_camera_manager_1_1_camera_property_aabbcf30d6a190b57e87f9b5249a7614d}{set\+Value}} (float value)
+\item 
+double \mbox{\hyperlink{class_camera_manager_1_1_camera_property_ac01056c2c3edb087f186fc279b4c40d6}{get\+Value}} ()
+\item 
+double \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a1e93325c345214a7eee443ef7702fcc9}{get\+Decimals}} ()
+\item 
+void \mbox{\hyperlink{class_camera_manager_1_1_camera_property_aebccd803702e01dbd9418b0ed4efba9a}{set\+Value\+From\+Slider}} (int value)
+\item 
+int \mbox{\hyperlink{class_camera_manager_1_1_camera_property_aa07b5e54635ea946dde8e5e3407c38d8}{get\+Value\+To\+Slider}} ()
+\item 
+int \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a8680d2fcb0b57d832d7c13065320439f}{get\+Min\+To\+Slider}} ()
+\item 
+int \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a756d1e67c3e8f994e836c6b2b3334f13}{get\+Max\+To\+S\+Lider}} ()
+\item 
+double \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a41de5747a0e0fa788b2e3260dc44d286}{get\+Min}} ()
+\item 
+double \mbox{\hyperlink{class_camera_manager_1_1_camera_property_ac4fc8a13780145042b4a8a825490aca4}{get\+Max}} ()
+\item 
+Q\+String \mbox{\hyperlink{class_camera_manager_1_1_camera_property_a789075edb5350c79f7fd807f3360d7e4}{get\+Name}} ()
+\item 
+Q\+String \mbox{\hyperlink{class_camera_manager_1_1_camera_property_ab3f85bdadf9078d3af6c1cf42f8fb1f1}{format\+Value}} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+memorize one property (value and auto mode) that will be exchanged between the manager end the cameras 
+
+\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Property}} 
+
+Definition at line 36 of file cameraproperty.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a7f096010f1d8c0cb5a0b7e3c592196a6}\label{class_camera_manager_1_1_camera_property_a7f096010f1d8c0cb5a0b7e3c592196a6}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!CameraProperty@{CameraProperty}}
+\index{CameraProperty@{CameraProperty}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{CameraProperty()}{CameraProperty()}}
+{\footnotesize\ttfamily Camera\+Property\+::\+Camera\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespace_camera_manager_a91c5befa73ac521c804690839ad888ab}{Camera\+Manager\+::\+Property\+Type}}}]{type,  }\item[{Q\+String}]{name,  }\item[{double}]{min,  }\item[{double}]{max,  }\item[{int}]{decimals = {\ttfamily 0},  }\item[{bool}]{can\+Auto = {\ttfamily false},  }\item[{bool}]{is\+Auto = {\ttfamily true},  }\item[{bool}]{on\+Off = {\ttfamily true},  }\item[{double}]{value = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+Contructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & type of the property \\
+\hline
+{\em min} & minimum value for that property \\
+\hline
+{\em max} & maximum value for that property \\
+\hline
+{\em decimals} & number of decimal for that property (used for the slider) \\
+\hline
+{\em can\+Auto} & true if that property can be set to auto (will desactivate the slider) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 6 of file cameraproperty.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_ab3f85bdadf9078d3af6c1cf42f8fb1f1}\label{class_camera_manager_1_1_camera_property_ab3f85bdadf9078d3af6c1cf42f8fb1f1}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!formatValue@{formatValue}}
+\index{formatValue@{formatValue}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{formatValue()}{formatValue()}}
+{\footnotesize\ttfamily Q\+String Camera\+Manager\+::\+Camera\+Property\+::format\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 65 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a09276d4af15cb3b6b282d75108eefc2c}\label{class_camera_manager_1_1_camera_property_a09276d4af15cb3b6b282d75108eefc2c}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getAuto@{getAuto}}
+\index{getAuto@{getAuto}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getAuto()}{getAuto()}}
+{\footnotesize\ttfamily bool Camera\+Manager\+::\+Camera\+Property\+::get\+Auto (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 51 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a79acdab6a37d6c8c07d2fc46cfee8067}\label{class_camera_manager_1_1_camera_property_a79acdab6a37d6c8c07d2fc46cfee8067}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getCanAuto@{getCanAuto}}
+\index{getCanAuto@{getCanAuto}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getCanAuto()}{getCanAuto()}}
+{\footnotesize\ttfamily bool Camera\+Manager\+::\+Camera\+Property\+::get\+Can\+Auto (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 52 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a1e93325c345214a7eee443ef7702fcc9}\label{class_camera_manager_1_1_camera_property_a1e93325c345214a7eee443ef7702fcc9}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getDecimals@{getDecimals}}
+\index{getDecimals@{getDecimals}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getDecimals()}{getDecimals()}}
+{\footnotesize\ttfamily double Camera\+Manager\+::\+Camera\+Property\+::get\+Decimals (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 56 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_ac4fc8a13780145042b4a8a825490aca4}\label{class_camera_manager_1_1_camera_property_ac4fc8a13780145042b4a8a825490aca4}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getMax@{getMax}}
+\index{getMax@{getMax}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getMax()}{getMax()}}
+{\footnotesize\ttfamily double Camera\+Manager\+::\+Camera\+Property\+::get\+Max (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 63 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a756d1e67c3e8f994e836c6b2b3334f13}\label{class_camera_manager_1_1_camera_property_a756d1e67c3e8f994e836c6b2b3334f13}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getMaxToSLider@{getMaxToSLider}}
+\index{getMaxToSLider@{getMaxToSLider}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getMaxToSLider()}{getMaxToSLider()}}
+{\footnotesize\ttfamily int Camera\+Manager\+::\+Camera\+Property\+::get\+Max\+To\+S\+Lider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 61 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a41de5747a0e0fa788b2e3260dc44d286}\label{class_camera_manager_1_1_camera_property_a41de5747a0e0fa788b2e3260dc44d286}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getMin@{getMin}}
+\index{getMin@{getMin}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getMin()}{getMin()}}
+{\footnotesize\ttfamily double Camera\+Manager\+::\+Camera\+Property\+::get\+Min (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 62 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a8680d2fcb0b57d832d7c13065320439f}\label{class_camera_manager_1_1_camera_property_a8680d2fcb0b57d832d7c13065320439f}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getMinToSlider@{getMinToSlider}}
+\index{getMinToSlider@{getMinToSlider}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getMinToSlider()}{getMinToSlider()}}
+{\footnotesize\ttfamily int Camera\+Manager\+::\+Camera\+Property\+::get\+Min\+To\+Slider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 60 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a789075edb5350c79f7fd807f3360d7e4}\label{class_camera_manager_1_1_camera_property_a789075edb5350c79f7fd807f3360d7e4}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getName@{getName}}
+\index{getName@{getName}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily Q\+String Camera\+Manager\+::\+Camera\+Property\+::get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 64 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a9e78cc25ce3d0a22429852c3b6b4007d}\label{class_camera_manager_1_1_camera_property_a9e78cc25ce3d0a22429852c3b6b4007d}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getOnOff@{getOnOff}}
+\index{getOnOff@{getOnOff}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getOnOff()}{getOnOff()}}
+{\footnotesize\ttfamily bool Camera\+Manager\+::\+Camera\+Property\+::get\+On\+Off (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 53 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_abba29ee03832b7036f2d828223a5e26d}\label{class_camera_manager_1_1_camera_property_abba29ee03832b7036f2d828223a5e26d}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getType@{getType}}
+\index{getType@{getType}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getType()}{getType()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespace_camera_manager_a91c5befa73ac521c804690839ad888ab}{Property\+Type}} Camera\+Manager\+::\+Camera\+Property\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 49 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_ac01056c2c3edb087f186fc279b4c40d6}\label{class_camera_manager_1_1_camera_property_ac01056c2c3edb087f186fc279b4c40d6}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getValue@{getValue}}
+\index{getValue@{getValue}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}}
+{\footnotesize\ttfamily double Camera\+Manager\+::\+Camera\+Property\+::get\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 55 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_aa07b5e54635ea946dde8e5e3407c38d8}\label{class_camera_manager_1_1_camera_property_aa07b5e54635ea946dde8e5e3407c38d8}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!getValueToSlider@{getValueToSlider}}
+\index{getValueToSlider@{getValueToSlider}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{getValueToSlider()}{getValueToSlider()}}
+{\footnotesize\ttfamily int Camera\+Manager\+::\+Camera\+Property\+::get\+Value\+To\+Slider (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 59 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_a3c86a53f13aff002234e1c2e7ba17e22}\label{class_camera_manager_1_1_camera_property_a3c86a53f13aff002234e1c2e7ba17e22}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!setAuto@{setAuto}}
+\index{setAuto@{setAuto}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{setAuto()}{setAuto()}}
+{\footnotesize\ttfamily void Camera\+Manager\+::\+Camera\+Property\+::set\+Auto (\begin{DoxyParamCaption}\item[{bool}]{a }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 50 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_aabbcf30d6a190b57e87f9b5249a7614d}\label{class_camera_manager_1_1_camera_property_aabbcf30d6a190b57e87f9b5249a7614d}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!setValue@{setValue}}
+\index{setValue@{setValue}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{setValue()}{setValue()}}
+{\footnotesize\ttfamily void Camera\+Manager\+::\+Camera\+Property\+::set\+Value (\begin{DoxyParamCaption}\item[{float}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 54 of file cameraproperty.\+h.
+
+\mbox{\Hypertarget{class_camera_manager_1_1_camera_property_aebccd803702e01dbd9418b0ed4efba9a}\label{class_camera_manager_1_1_camera_property_aebccd803702e01dbd9418b0ed4efba9a}} 
+\index{CameraManager::CameraProperty@{CameraManager::CameraProperty}!setValueFromSlider@{setValueFromSlider}}
+\index{setValueFromSlider@{setValueFromSlider}!CameraManager::CameraProperty@{CameraManager::CameraProperty}}
+\subsubsection{\texorpdfstring{setValueFromSlider()}{setValueFromSlider()}}
+{\footnotesize\ttfamily void Camera\+Manager\+::\+Camera\+Property\+::set\+Value\+From\+Slider (\begin{DoxyParamCaption}\item[{int}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 58 of file cameraproperty.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{cameraproperty_8h}{cameraproperty.\+h}}\item 
+src/\mbox{\hyperlink{cameraproperty_8cpp}{cameraproperty.\+cpp}}\end{DoxyCompactItemize}

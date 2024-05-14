@@ -1,0 +1,683 @@
+\hypertarget{class_image_open_g_l_widget}{}\section{Image\+Open\+G\+L\+Widget Class Reference}
+\label{class_image_open_g_l_widget}\index{ImageOpenGLWidget@{ImageOpenGLWidget}}
+
+
+{\ttfamily \#include $<$imageopenglwidget.\+h$>$}
+
+Inheritance diagram for Image\+Open\+G\+L\+Widget\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_image_open_g_l_widget}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_image_open_g_l_widget_a7d4da279a6dc2a37cdceb4d32233ecbd}{Image\+Open\+G\+L\+Widget}} (\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$track\+Point\+Props=nullptr, Q\+Widget $\ast$parent=nullptr)
+\item 
+\mbox{\hyperlink{class_image_open_g_l_widget_a3e1ff39cc67dc55a2240833810370aa7}{$\sim$\+Image\+Open\+G\+L\+Widget}} ()
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a9f92b0518343d716a79e4f4958970b5f}{set\+Track\+Point\+Property}} (\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$track\+Point)
+\item 
+virtual void \mbox{\hyperlink{class_image_open_g_l_widget_abb7d20bc625fc370bf2757a9ec3c1ac3}{update\+Image}} (unsigned char $\ast$\mbox{\hyperlink{class_image_open_g_l_widget_a52ca337428d317ca2765cdf4d95e1b43}{img\+Buffer}}, unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a2c22ecc7b2355c66ed8d7ca6d824404e}{buffer\+Size}}, unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a8c3fbf15ba41c21741f8916079f5b6c3}{image\+Width}}, unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a30f0fce34d5d14972dce2c2d534aa692}{image\+Height}})
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_ac8bb2a294c8c164bcbca358ceaf0140a}{set\+Num\+Sub\+ImagesX}} (unsigned int num\+Sub\+ImagesX)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_af7165f96bb82f81eafdadab6621cc2f4}{set\+Num\+Sub\+ImagesY}} (unsigned int num\+Sub\+ImagesY)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_aa31585e01f544f1cdb3354e47a1e32bd}{set\+Enable\+Sub\+Image}} (bool enable\+Sub\+Image)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a874c34093bdf9ca318fe8283b610f1ee}{set\+Zoom\+Area\+Size}} (double \mbox{\hyperlink{class_image_open_g_l_widget_ad8c3b1eb294a2dba58026490f1c46aed}{zoom\+Size}})
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a65cd3ee1761e0960b41ba3dcbd834294}{set\+Zoom\+Factor}} (double \mbox{\hyperlink{class_image_open_g_l_widget_acbc58856739558290b873f3266ae2939}{zoom\+Factor}})
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a7c6d59c79d8d253d24a184001e965c4e}{set\+Show\+Point\+Series}} (bool \mbox{\hyperlink{class_image_open_g_l_widget_a5be69a20fb48ac0b5e9e6f78a187b488}{show\+Point\+Series}})
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a462cbec4f057d369e375b1455d62d3cd}{set\+Show\+Point\+Series\+Label}} (bool show\+Point\+Series\+Label)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a3bca6c1bb92647be48c7edb4e095ea25}{set\+Single\+Point\+Series}} (bool single\+Point\+Series)
+\item 
+const \mbox{\hyperlink{class_open_g_l_1_1_texture}{Open\+G\+L\+::\+Texture}} $\ast$ \mbox{\hyperlink{class_image_open_g_l_widget_ae48d37d074944ab505eb3d9b3a8a7cb8}{get\+Texture}} ()
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a704677ac5ee71b767a5905ead14fdc1f}{get\+Num\+Sub\+ImagesX}} ()
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a50933016b069d25455cbd0e86862c645}{get\+Num\+Sub\+ImagesY}} ()
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a7ebf129300faf2c55e168089131c9b01}{get\+Image\+Width}} ()
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a5b291ad9fa44ecd670a2447ef54c48b3}{get\+Image\+Height}} ()
+\item 
+double \mbox{\hyperlink{class_image_open_g_l_widget_ab42b2ef0661e973a89fd611a295ba0f2}{get\+Zoom\+Factor}} ()
+\item 
+double \mbox{\hyperlink{class_image_open_g_l_widget_a08f939efcfeeee4d0b39562f78a0cd79}{get\+Zoom\+Area\+Size}} ()
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a97e1cefaf5e7a103f869e6ab2bdef80f}{is\+Enable\+Sub\+Image}} ()
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a05ea8cde0274873838b869a85236bcb1}{is\+Enable\+Show\+Point\+Series}} ()
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a71009f85668eac77fb4901c00785d369}{is\+Enable\+Show\+Point\+Series\+Label}} ()
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a5420820b5b94c4362d4031659b3f4268}{is\+Single\+Point\+Series}} ()
+\item 
+const vector$<$ \mbox{\hyperlink{struct_track_point_1_1_point_in_camera}{Track\+Point\+::\+Point\+In\+Camera}} $\ast$ $>$ \& \mbox{\hyperlink{class_image_open_g_l_widget_aecdc8b3f3d6f614a863ded3c6fae03a8}{get\+Point\+Series}} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a0ee0a04058d97ccf201d5bda36e42e96}{initialize\+GL}} ()
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a13c5d40cf7b52ff5ef13cd86475c9800}{paint\+GL}} ()
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a96a4d8310e628c1ef7d1d1616f9161c8}{mouse\+Press\+Event}} (Q\+Mouse\+Event $\ast$event)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_af77205be650a03c589cfeb5cfa3945f1}{mouse\+Release\+Event}} (Q\+Mouse\+Event $\ast$event)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_aaee9c377ff4d9fa3f9811da857d04ea5}{mouse\+Move\+Event}} (Q\+Mouse\+Event $\ast$event)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_a0eb921a06eb622b7cc13ce40c935b1e7}{enter\+Event}} (Q\+Event $\ast$)
+\item 
+void \mbox{\hyperlink{class_image_open_g_l_widget_ab92a330665a31c7dc8216d5f4af01f93}{leave\+Event}} (Q\+Event $\ast$)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Q\+Rect \mbox{\hyperlink{class_image_open_g_l_widget_a3d9bf777ce1e2421b2160bd1924ddbea}{scaled\+Image\+Area}}
+\item 
+\mbox{\hyperlink{class_image_detect}{Image\+Detect}} $\ast$ \mbox{\hyperlink{class_image_open_g_l_widget_a33de4fe0a57b24dd5e0f0ea9b9c8a524}{image\+Detect}}
+\item 
+\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$ \mbox{\hyperlink{class_image_open_g_l_widget_aa525150cbd7dd57063306107da79aaf5}{track\+Point\+Property}}
+\item 
+\mbox{\hyperlink{class_open_g_l_1_1_texture}{Open\+G\+L\+::\+Texture}} \mbox{\hyperlink{class_image_open_g_l_widget_a70afc17e43c0925734da723ef409f3a5}{texture}}
+\item 
+Q\+PointF \mbox{\hyperlink{class_image_open_g_l_widget_a504949f3bdbae83e84c335fe3444b4d5}{actual\+Mouse\+Pos}}
+\item 
+Q\+PointF \mbox{\hyperlink{class_image_open_g_l_widget_a43adc2e21552e46e661998bf1af738f2}{mouse\+Pos}}
+\item 
+Q\+PointF \mbox{\hyperlink{class_image_open_g_l_widget_a1912119a80016ed9239166071d24962d}{mouse\+Pos\+In\+Image}}
+\item 
+unsigned char $\ast$ \mbox{\hyperlink{class_image_open_g_l_widget_a52ca337428d317ca2765cdf4d95e1b43}{img\+Buffer}}
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a2c22ecc7b2355c66ed8d7ca6d824404e}{buffer\+Size}}
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a8c3fbf15ba41c21741f8916079f5b6c3}{image\+Width}}
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a30f0fce34d5d14972dce2c2d534aa692}{image\+Height}}
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a2c07dae50d938be8bbe60d253ee2d93b}{num\+Image\+GroupsX}}
+\item 
+unsigned int \mbox{\hyperlink{class_image_open_g_l_widget_a408eb368d49090f7ee75fb1cd3a470da}{num\+Image\+GroupsY}}
+\item 
+double \mbox{\hyperlink{class_image_open_g_l_widget_acbc58856739558290b873f3266ae2939}{zoom\+Factor}} = 16.\+0
+\item 
+double \mbox{\hyperlink{class_image_open_g_l_widget_ad8c3b1eb294a2dba58026490f1c46aed}{zoom\+Size}} = 300.\+0
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_af8723e437fd5eec91127e380adc1ad2a}{mouse\+In}}
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a4680fd2bd5b3e6ef189badc3de509d89}{enable\+Sub\+Images}}
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_af9f269f12c2c29d314995db1ddb2005f}{show\+Mouse\+Over\+Coordinate\+Label}}
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a4bd1fa338477adeef44c2bd39b3e30ab}{show\+Mouse\+Cross}}
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a3d3bb1ef06c353c66215cdff9bf9941b}{show\+Bounding\+Areas}}
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_a5be69a20fb48ac0b5e9e6f78a187b488}{show\+Point\+Series}} = true
+\item 
+bool \mbox{\hyperlink{class_image_open_g_l_widget_ad3a65bd8f5c6994c4f32445f519bfc99}{show\+Zoom\+Area}} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 20 of file imageopenglwidget.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_image_open_g_l_widget_a7d4da279a6dc2a37cdceb4d32233ecbd}\label{class_image_open_g_l_widget_a7d4da279a6dc2a37cdceb4d32233ecbd}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{ImageOpenGLWidget()}{ImageOpenGLWidget()}}
+{\footnotesize\ttfamily Image\+Open\+G\+L\+Widget\+::\+Image\+Open\+G\+L\+Widget (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$}]{track\+Point\+Props = {\ttfamily nullptr},  }\item[{Q\+Widget $\ast$}]{parent = {\ttfamily nullptr} }\end{DoxyParamCaption})}
+
+
+
+Definition at line 4 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a3e1ff39cc67dc55a2240833810370aa7}\label{class_image_open_g_l_widget_a3e1ff39cc67dc55a2240833810370aa7}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!````~ImageOpenGLWidget@{$\sim$ImageOpenGLWidget}}
+\index{````~ImageOpenGLWidget@{$\sim$ImageOpenGLWidget}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{$\sim$ImageOpenGLWidget()}{~ImageOpenGLWidget()}}
+{\footnotesize\ttfamily Image\+Open\+G\+L\+Widget\+::$\sim$\+Image\+Open\+G\+L\+Widget (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 37 of file imageopenglwidget.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_image_open_g_l_widget_a0eb921a06eb622b7cc13ce40c935b1e7}\label{class_image_open_g_l_widget_a0eb921a06eb622b7cc13ce40c935b1e7}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!enterEvent@{enterEvent}}
+\index{enterEvent@{enterEvent}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{enterEvent()}{enterEvent()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::enter\+Event (\begin{DoxyParamCaption}\item[{Q\+Event $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 608 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a5b291ad9fa44ecd670a2447ef54c48b3}\label{class_image_open_g_l_widget_a5b291ad9fa44ecd670a2447ef54c48b3}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getImageHeight@{getImageHeight}}
+\index{getImageHeight@{getImageHeight}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getImageHeight()}{getImageHeight()}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::get\+Image\+Height (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 41 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a7ebf129300faf2c55e168089131c9b01}\label{class_image_open_g_l_widget_a7ebf129300faf2c55e168089131c9b01}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getImageWidth@{getImageWidth}}
+\index{getImageWidth@{getImageWidth}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getImageWidth()}{getImageWidth()}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::get\+Image\+Width (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 40 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a704677ac5ee71b767a5905ead14fdc1f}\label{class_image_open_g_l_widget_a704677ac5ee71b767a5905ead14fdc1f}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getNumSubImagesX@{getNumSubImagesX}}
+\index{getNumSubImagesX@{getNumSubImagesX}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getNumSubImagesX()}{getNumSubImagesX()}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::get\+Num\+Sub\+ImagesX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 38 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a50933016b069d25455cbd0e86862c645}\label{class_image_open_g_l_widget_a50933016b069d25455cbd0e86862c645}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getNumSubImagesY@{getNumSubImagesY}}
+\index{getNumSubImagesY@{getNumSubImagesY}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getNumSubImagesY()}{getNumSubImagesY()}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::get\+Num\+Sub\+ImagesY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 39 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_aecdc8b3f3d6f614a863ded3c6fae03a8}\label{class_image_open_g_l_widget_aecdc8b3f3d6f614a863ded3c6fae03a8}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getPointSeries@{getPointSeries}}
+\index{getPointSeries@{getPointSeries}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getPointSeries()}{getPointSeries()}}
+{\footnotesize\ttfamily const vector$<$\mbox{\hyperlink{struct_track_point_1_1_point_in_camera}{Track\+Point\+::\+Point\+In\+Camera}}$\ast$$>$\& Image\+Open\+G\+L\+Widget\+::get\+Point\+Series (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 48 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_ae48d37d074944ab505eb3d9b3a8a7cb8}\label{class_image_open_g_l_widget_ae48d37d074944ab505eb3d9b3a8a7cb8}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getTexture@{getTexture}}
+\index{getTexture@{getTexture}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getTexture()}{getTexture()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{class_open_g_l_1_1_texture}{Open\+G\+L\+::\+Texture}}$\ast$ Image\+Open\+G\+L\+Widget\+::get\+Texture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 37 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a08f939efcfeeee4d0b39562f78a0cd79}\label{class_image_open_g_l_widget_a08f939efcfeeee4d0b39562f78a0cd79}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getZoomAreaSize@{getZoomAreaSize}}
+\index{getZoomAreaSize@{getZoomAreaSize}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getZoomAreaSize()}{getZoomAreaSize()}}
+{\footnotesize\ttfamily double Image\+Open\+G\+L\+Widget\+::get\+Zoom\+Area\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 43 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_ab42b2ef0661e973a89fd611a295ba0f2}\label{class_image_open_g_l_widget_ab42b2ef0661e973a89fd611a295ba0f2}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!getZoomFactor@{getZoomFactor}}
+\index{getZoomFactor@{getZoomFactor}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{getZoomFactor()}{getZoomFactor()}}
+{\footnotesize\ttfamily double Image\+Open\+G\+L\+Widget\+::get\+Zoom\+Factor (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 42 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a0ee0a04058d97ccf201d5bda36e42e96}\label{class_image_open_g_l_widget_a0ee0a04058d97ccf201d5bda36e42e96}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!initializeGL@{initializeGL}}
+\index{initializeGL@{initializeGL}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{initializeGL()}{initializeGL()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::initialize\+GL (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 41 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a05ea8cde0274873838b869a85236bcb1}\label{class_image_open_g_l_widget_a05ea8cde0274873838b869a85236bcb1}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!isEnableShowPointSeries@{isEnableShowPointSeries}}
+\index{isEnableShowPointSeries@{isEnableShowPointSeries}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{isEnableShowPointSeries()}{isEnableShowPointSeries()}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::is\+Enable\+Show\+Point\+Series (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 45 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a71009f85668eac77fb4901c00785d369}\label{class_image_open_g_l_widget_a71009f85668eac77fb4901c00785d369}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!isEnableShowPointSeriesLabel@{isEnableShowPointSeriesLabel}}
+\index{isEnableShowPointSeriesLabel@{isEnableShowPointSeriesLabel}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{isEnableShowPointSeriesLabel()}{isEnableShowPointSeriesLabel()}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::is\+Enable\+Show\+Point\+Series\+Label (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 46 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a97e1cefaf5e7a103f869e6ab2bdef80f}\label{class_image_open_g_l_widget_a97e1cefaf5e7a103f869e6ab2bdef80f}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!isEnableSubImage@{isEnableSubImage}}
+\index{isEnableSubImage@{isEnableSubImage}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{isEnableSubImage()}{isEnableSubImage()}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::is\+Enable\+Sub\+Image (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 44 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a5420820b5b94c4362d4031659b3f4268}\label{class_image_open_g_l_widget_a5420820b5b94c4362d4031659b3f4268}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!isSinglePointSeries@{isSinglePointSeries}}
+\index{isSinglePointSeries@{isSinglePointSeries}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{isSinglePointSeries()}{isSinglePointSeries()}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::is\+Single\+Point\+Series (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 47 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_ab92a330665a31c7dc8216d5f4af01f93}\label{class_image_open_g_l_widget_ab92a330665a31c7dc8216d5f4af01f93}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!leaveEvent@{leaveEvent}}
+\index{leaveEvent@{leaveEvent}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{leaveEvent()}{leaveEvent()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::leave\+Event (\begin{DoxyParamCaption}\item[{Q\+Event $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 613 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_aaee9c377ff4d9fa3f9811da857d04ea5}\label{class_image_open_g_l_widget_aaee9c377ff4d9fa3f9811da857d04ea5}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!mouseMoveEvent@{mouseMoveEvent}}
+\index{mouseMoveEvent@{mouseMoveEvent}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{mouseMoveEvent()}{mouseMoveEvent()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::mouse\+Move\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 699 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a96a4d8310e628c1ef7d1d1616f9161c8}\label{class_image_open_g_l_widget_a96a4d8310e628c1ef7d1d1616f9161c8}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!mousePressEvent@{mousePressEvent}}
+\index{mousePressEvent@{mousePressEvent}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{mousePressEvent()}{mousePressEvent()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::mouse\+Press\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 624 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_af77205be650a03c589cfeb5cfa3945f1}\label{class_image_open_g_l_widget_af77205be650a03c589cfeb5cfa3945f1}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!mouseReleaseEvent@{mouseReleaseEvent}}
+\index{mouseReleaseEvent@{mouseReleaseEvent}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{mouseReleaseEvent()}{mouseReleaseEvent()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::mouse\+Release\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 640 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a13c5d40cf7b52ff5ef13cd86475c9800}\label{class_image_open_g_l_widget_a13c5d40cf7b52ff5ef13cd86475c9800}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!paintGL@{paintGL}}
+\index{paintGL@{paintGL}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{paintGL()}{paintGL()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::paint\+GL (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 93 of file imageopenglwidget.\+cpp.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_aa31585e01f544f1cdb3354e47a1e32bd}\label{class_image_open_g_l_widget_aa31585e01f544f1cdb3354e47a1e32bd}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setEnableSubImage@{setEnableSubImage}}
+\index{setEnableSubImage@{setEnableSubImage}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setEnableSubImage()}{setEnableSubImage()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Enable\+Sub\+Image (\begin{DoxyParamCaption}\item[{bool}]{enable\+Sub\+Image }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 30 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_ac8bb2a294c8c164bcbca358ceaf0140a}\label{class_image_open_g_l_widget_ac8bb2a294c8c164bcbca358ceaf0140a}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setNumSubImagesX@{setNumSubImagesX}}
+\index{setNumSubImagesX@{setNumSubImagesX}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setNumSubImagesX()}{setNumSubImagesX()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Num\+Sub\+ImagesX (\begin{DoxyParamCaption}\item[{unsigned int}]{num\+Sub\+ImagesX }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 28 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_af7165f96bb82f81eafdadab6621cc2f4}\label{class_image_open_g_l_widget_af7165f96bb82f81eafdadab6621cc2f4}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setNumSubImagesY@{setNumSubImagesY}}
+\index{setNumSubImagesY@{setNumSubImagesY}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setNumSubImagesY()}{setNumSubImagesY()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Num\+Sub\+ImagesY (\begin{DoxyParamCaption}\item[{unsigned int}]{num\+Sub\+ImagesY }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 29 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a7c6d59c79d8d253d24a184001e965c4e}\label{class_image_open_g_l_widget_a7c6d59c79d8d253d24a184001e965c4e}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setShowPointSeries@{setShowPointSeries}}
+\index{setShowPointSeries@{setShowPointSeries}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setShowPointSeries()}{setShowPointSeries()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Show\+Point\+Series (\begin{DoxyParamCaption}\item[{bool}]{show\+Point\+Series }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 33 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a462cbec4f057d369e375b1455d62d3cd}\label{class_image_open_g_l_widget_a462cbec4f057d369e375b1455d62d3cd}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setShowPointSeriesLabel@{setShowPointSeriesLabel}}
+\index{setShowPointSeriesLabel@{setShowPointSeriesLabel}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setShowPointSeriesLabel()}{setShowPointSeriesLabel()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Show\+Point\+Series\+Label (\begin{DoxyParamCaption}\item[{bool}]{show\+Point\+Series\+Label }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 34 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a3bca6c1bb92647be48c7edb4e095ea25}\label{class_image_open_g_l_widget_a3bca6c1bb92647be48c7edb4e095ea25}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setSinglePointSeries@{setSinglePointSeries}}
+\index{setSinglePointSeries@{setSinglePointSeries}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setSinglePointSeries()}{setSinglePointSeries()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Single\+Point\+Series (\begin{DoxyParamCaption}\item[{bool}]{single\+Point\+Series }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 35 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a9f92b0518343d716a79e4f4958970b5f}\label{class_image_open_g_l_widget_a9f92b0518343d716a79e4f4958970b5f}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setTrackPointProperty@{setTrackPointProperty}}
+\index{setTrackPointProperty@{setTrackPointProperty}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setTrackPointProperty()}{setTrackPointProperty()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Track\+Point\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$}]{track\+Point }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 26 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a874c34093bdf9ca318fe8283b610f1ee}\label{class_image_open_g_l_widget_a874c34093bdf9ca318fe8283b610f1ee}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setZoomAreaSize@{setZoomAreaSize}}
+\index{setZoomAreaSize@{setZoomAreaSize}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setZoomAreaSize()}{setZoomAreaSize()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Zoom\+Area\+Size (\begin{DoxyParamCaption}\item[{double}]{zoom\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 31 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a65cd3ee1761e0960b41ba3dcbd834294}\label{class_image_open_g_l_widget_a65cd3ee1761e0960b41ba3dcbd834294}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!setZoomFactor@{setZoomFactor}}
+\index{setZoomFactor@{setZoomFactor}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{setZoomFactor()}{setZoomFactor()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::set\+Zoom\+Factor (\begin{DoxyParamCaption}\item[{double}]{zoom\+Factor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 32 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_abb7d20bc625fc370bf2757a9ec3c1ac3}\label{class_image_open_g_l_widget_abb7d20bc625fc370bf2757a9ec3c1ac3}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!updateImage@{updateImage}}
+\index{updateImage@{updateImage}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{updateImage()}{updateImage()}}
+{\footnotesize\ttfamily void Image\+Open\+G\+L\+Widget\+::update\+Image (\begin{DoxyParamCaption}\item[{unsigned char $\ast$}]{img\+Buffer,  }\item[{unsigned int}]{buffer\+Size,  }\item[{unsigned int}]{image\+Width,  }\item[{unsigned int}]{image\+Height }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{class_video_open_g_l_widget_a116b4ee59731f274ba190167e9a91283}{Video\+Open\+G\+L\+Widget}}.
+
+
+
+Definition at line 47 of file imageopenglwidget.\+cpp.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_image_open_g_l_widget_a504949f3bdbae83e84c335fe3444b4d5}\label{class_image_open_g_l_widget_a504949f3bdbae83e84c335fe3444b4d5}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!actualMousePos@{actualMousePos}}
+\index{actualMousePos@{actualMousePos}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{actualMousePos}{actualMousePos}}
+{\footnotesize\ttfamily Q\+PointF Image\+Open\+G\+L\+Widget\+::actual\+Mouse\+Pos\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 55 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a2c22ecc7b2355c66ed8d7ca6d824404e}\label{class_image_open_g_l_widget_a2c22ecc7b2355c66ed8d7ca6d824404e}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!bufferSize@{bufferSize}}
+\index{bufferSize@{bufferSize}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{bufferSize}{bufferSize}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::buffer\+Size\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 59 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a4680fd2bd5b3e6ef189badc3de509d89}\label{class_image_open_g_l_widget_a4680fd2bd5b3e6ef189badc3de509d89}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!enableSubImages@{enableSubImages}}
+\index{enableSubImages@{enableSubImages}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{enableSubImages}{enableSubImages}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::enable\+Sub\+Images\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 67 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a33de4fe0a57b24dd5e0f0ea9b9c8a524}\label{class_image_open_g_l_widget_a33de4fe0a57b24dd5e0f0ea9b9c8a524}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!imageDetect@{imageDetect}}
+\index{imageDetect@{imageDetect}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{imageDetect}{imageDetect}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_image_detect}{Image\+Detect}}$\ast$ Image\+Open\+G\+L\+Widget\+::image\+Detect\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 52 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a30f0fce34d5d14972dce2c2d534aa692}\label{class_image_open_g_l_widget_a30f0fce34d5d14972dce2c2d534aa692}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!imageHeight@{imageHeight}}
+\index{imageHeight@{imageHeight}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{imageHeight}{imageHeight}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::image\+Height\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 61 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a8c3fbf15ba41c21741f8916079f5b6c3}\label{class_image_open_g_l_widget_a8c3fbf15ba41c21741f8916079f5b6c3}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!imageWidth@{imageWidth}}
+\index{imageWidth@{imageWidth}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{imageWidth}{imageWidth}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::image\+Width\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 60 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a52ca337428d317ca2765cdf4d95e1b43}\label{class_image_open_g_l_widget_a52ca337428d317ca2765cdf4d95e1b43}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!imgBuffer@{imgBuffer}}
+\index{imgBuffer@{imgBuffer}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{imgBuffer}{imgBuffer}}
+{\footnotesize\ttfamily unsigned char$\ast$ Image\+Open\+G\+L\+Widget\+::img\+Buffer\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 58 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_af8723e437fd5eec91127e380adc1ad2a}\label{class_image_open_g_l_widget_af8723e437fd5eec91127e380adc1ad2a}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!mouseIn@{mouseIn}}
+\index{mouseIn@{mouseIn}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{mouseIn}{mouseIn}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::mouse\+In\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 66 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a43adc2e21552e46e661998bf1af738f2}\label{class_image_open_g_l_widget_a43adc2e21552e46e661998bf1af738f2}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!mousePos@{mousePos}}
+\index{mousePos@{mousePos}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{mousePos}{mousePos}}
+{\footnotesize\ttfamily Q\+PointF Image\+Open\+G\+L\+Widget\+::mouse\+Pos\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 56 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a1912119a80016ed9239166071d24962d}\label{class_image_open_g_l_widget_a1912119a80016ed9239166071d24962d}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!mousePosInImage@{mousePosInImage}}
+\index{mousePosInImage@{mousePosInImage}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{mousePosInImage}{mousePosInImage}}
+{\footnotesize\ttfamily Q\+PointF Image\+Open\+G\+L\+Widget\+::mouse\+Pos\+In\+Image\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 57 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a2c07dae50d938be8bbe60d253ee2d93b}\label{class_image_open_g_l_widget_a2c07dae50d938be8bbe60d253ee2d93b}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!numImageGroupsX@{numImageGroupsX}}
+\index{numImageGroupsX@{numImageGroupsX}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{numImageGroupsX}{numImageGroupsX}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::num\+Image\+GroupsX\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 62 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a408eb368d49090f7ee75fb1cd3a470da}\label{class_image_open_g_l_widget_a408eb368d49090f7ee75fb1cd3a470da}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!numImageGroupsY@{numImageGroupsY}}
+\index{numImageGroupsY@{numImageGroupsY}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{numImageGroupsY}{numImageGroupsY}}
+{\footnotesize\ttfamily unsigned int Image\+Open\+G\+L\+Widget\+::num\+Image\+GroupsY\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 63 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a3d9bf777ce1e2421b2160bd1924ddbea}\label{class_image_open_g_l_widget_a3d9bf777ce1e2421b2160bd1924ddbea}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!scaledImageArea@{scaledImageArea}}
+\index{scaledImageArea@{scaledImageArea}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{scaledImageArea}{scaledImageArea}}
+{\footnotesize\ttfamily Q\+Rect Image\+Open\+G\+L\+Widget\+::scaled\+Image\+Area\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 51 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a3d3bb1ef06c353c66215cdff9bf9941b}\label{class_image_open_g_l_widget_a3d3bb1ef06c353c66215cdff9bf9941b}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!showBoundingAreas@{showBoundingAreas}}
+\index{showBoundingAreas@{showBoundingAreas}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{showBoundingAreas}{showBoundingAreas}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::show\+Bounding\+Areas\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 70 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a4bd1fa338477adeef44c2bd39b3e30ab}\label{class_image_open_g_l_widget_a4bd1fa338477adeef44c2bd39b3e30ab}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!showMouseCross@{showMouseCross}}
+\index{showMouseCross@{showMouseCross}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{showMouseCross}{showMouseCross}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::show\+Mouse\+Cross\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 69 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_af9f269f12c2c29d314995db1ddb2005f}\label{class_image_open_g_l_widget_af9f269f12c2c29d314995db1ddb2005f}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!showMouseOverCoordinateLabel@{showMouseOverCoordinateLabel}}
+\index{showMouseOverCoordinateLabel@{showMouseOverCoordinateLabel}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{showMouseOverCoordinateLabel}{showMouseOverCoordinateLabel}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::show\+Mouse\+Over\+Coordinate\+Label\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 68 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a5be69a20fb48ac0b5e9e6f78a187b488}\label{class_image_open_g_l_widget_a5be69a20fb48ac0b5e9e6f78a187b488}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!showPointSeries@{showPointSeries}}
+\index{showPointSeries@{showPointSeries}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{showPointSeries}{showPointSeries}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::show\+Point\+Series = true\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 71 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_ad3a65bd8f5c6994c4f32445f519bfc99}\label{class_image_open_g_l_widget_ad3a65bd8f5c6994c4f32445f519bfc99}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!showZoomArea@{showZoomArea}}
+\index{showZoomArea@{showZoomArea}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{showZoomArea}{showZoomArea}}
+{\footnotesize\ttfamily bool Image\+Open\+G\+L\+Widget\+::show\+Zoom\+Area = false\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 72 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_a70afc17e43c0925734da723ef409f3a5}\label{class_image_open_g_l_widget_a70afc17e43c0925734da723ef409f3a5}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!texture@{texture}}
+\index{texture@{texture}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{texture}{texture}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_open_g_l_1_1_texture}{Open\+G\+L\+::\+Texture}} Image\+Open\+G\+L\+Widget\+::texture\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 54 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_aa525150cbd7dd57063306107da79aaf5}\label{class_image_open_g_l_widget_aa525150cbd7dd57063306107da79aaf5}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!trackPointProperty@{trackPointProperty}}
+\index{trackPointProperty@{trackPointProperty}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{trackPointProperty}{trackPointProperty}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}}$\ast$ Image\+Open\+G\+L\+Widget\+::track\+Point\+Property\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 53 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_acbc58856739558290b873f3266ae2939}\label{class_image_open_g_l_widget_acbc58856739558290b873f3266ae2939}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!zoomFactor@{zoomFactor}}
+\index{zoomFactor@{zoomFactor}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{zoomFactor}{zoomFactor}}
+{\footnotesize\ttfamily double Image\+Open\+G\+L\+Widget\+::zoom\+Factor = 16.\+0\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 64 of file imageopenglwidget.\+h.
+
+\mbox{\Hypertarget{class_image_open_g_l_widget_ad8c3b1eb294a2dba58026490f1c46aed}\label{class_image_open_g_l_widget_ad8c3b1eb294a2dba58026490f1c46aed}} 
+\index{ImageOpenGLWidget@{ImageOpenGLWidget}!zoomSize@{zoomSize}}
+\index{zoomSize@{zoomSize}!ImageOpenGLWidget@{ImageOpenGLWidget}}
+\subsubsection{\texorpdfstring{zoomSize}{zoomSize}}
+{\footnotesize\ttfamily double Image\+Open\+G\+L\+Widget\+::zoom\+Size = 300.\+0\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 65 of file imageopenglwidget.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{imageopenglwidget_8h}{imageopenglwidget.\+h}}\item 
+src/\mbox{\hyperlink{imageopenglwidget_8cpp}{imageopenglwidget.\+cpp}}\end{DoxyCompactItemize}

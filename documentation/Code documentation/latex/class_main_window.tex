@@ -1,0 +1,207 @@
+\hypertarget{class_main_window}{}\section{Main\+Window Class Reference}
+\label{class_main_window}\index{MainWindow@{MainWindow}}
+
+
+handle ui events.  
+
+
+
+
+{\ttfamily \#include $<$mainwindow.\+h$>$}
+
+Inheritance diagram for Main\+Window\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_main_window}
+\end{center}
+\end{figure}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_main_window_a8aca5460ce992afb3fcba398cc387466}{activate\+Crosshair}} (bool)
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_main_window_a8b244be8b7b7db1b08de2a2acb9409db}{Main\+Window}} (Q\+Widget $\ast$parent=0)
+\item 
+\mbox{\hyperlink{class_main_window_ae98d00a93bc118200eeef9f9bba1dba7}{$\sim$\+Main\+Window}} ()
+\item 
+void \mbox{\hyperlink{class_main_window_aa1aedeaf20f2f0b571a7bd655e3e819e}{modify\+Sub\+Window}} (Q\+Mdi\+Sub\+Window $\ast$in, bool add)
+\item 
+\mbox{\hyperlink{class_ui_1_1_main_window}{Ui\+::\+Main\+Window}} $\ast$ \mbox{\hyperlink{class_main_window_a7dede2dbcc623cec02de056df521e96b}{get\+Ui}} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera_manager}{Abstract\+Camera\+Manager}} $\ast$ $>$ \mbox{\hyperlink{class_main_window_af6bc85f58060fbcd3ea4b0e6cdc5425a}{get\+Camera\+Managers}} ()
+\item 
+int \mbox{\hyperlink{class_main_window_adc95f98d2a718dff996a70851f4739f4}{get\+Selected\+Camera\+Manager}} ()
+\item 
+void \mbox{\hyperlink{class_main_window_a38b8219e5331a62fb73e180533d1a0f0}{start\+Camera\+Detection}} (\mbox{\hyperlink{class_system_manager}{System\+Manager}} $\ast$sm)
+\item 
+void \mbox{\hyperlink{class_main_window_a8881d72d32283db4867dc254df19ae83}{start\+Update\+Properties}} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static int \mbox{\hyperlink{class_main_window_a911848dbb7d268519126fd35326d8f44}{selection}} = 2
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_main_window_a16f8da8df766a6b3fb2be1a93d6a3a49}{on\+\_\+add\+Group}} ()
+\item 
+void \mbox{\hyperlink{class_main_window_a6b3dcc79316502d1d6ecb230312e62c8}{on\+\_\+delete\+Group}} ()
+\item 
+void \mbox{\hyperlink{class_main_window_a5f6c4aa27d5540a3e7f17d8fd88ded3f}{on\+\_\+edit\+Item}} ()
+\item 
+void \mbox{\hyperlink{class_main_window_a8fde7b67c704217df22de4576f741e21}{on\+\_\+reset\+Item}} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+handle ui events. 
+
+\mbox{\hyperlink{class_main_window}{Main\+Window}} 
+
+Definition at line 49 of file mainwindow.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_main_window_a8b244be8b7b7db1b08de2a2acb9409db}\label{class_main_window_a8b244be8b7b7db1b08de2a2acb9409db}} 
+\index{MainWindow@{MainWindow}!MainWindow@{MainWindow}}
+\index{MainWindow@{MainWindow}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{MainWindow()}{MainWindow()}}
+{\footnotesize\ttfamily Main\+Window\+::\+Main\+Window (\begin{DoxyParamCaption}\item[{Q\+Widget $\ast$}]{parent = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+C\+O\+N\+S\+T\+R\+U\+C\+T\+OR -\/ D\+E\+S\+T\+R\+U\+C\+T\+OR 
+
+Definition at line 51 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_ae98d00a93bc118200eeef9f9bba1dba7}\label{class_main_window_ae98d00a93bc118200eeef9f9bba1dba7}} 
+\index{MainWindow@{MainWindow}!````~MainWindow@{$\sim$MainWindow}}
+\index{````~MainWindow@{$\sim$MainWindow}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{$\sim$MainWindow()}{~MainWindow()}}
+{\footnotesize\ttfamily Main\+Window\+::$\sim$\+Main\+Window (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 141 of file mainwindow.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_main_window_a8aca5460ce992afb3fcba398cc387466}\label{class_main_window_a8aca5460ce992afb3fcba398cc387466}} 
+\index{MainWindow@{MainWindow}!activateCrosshair@{activateCrosshair}}
+\index{activateCrosshair@{activateCrosshair}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{activateCrosshair}{activateCrosshair}}
+{\footnotesize\ttfamily void Main\+Window\+::activate\+Crosshair (\begin{DoxyParamCaption}\item[{bool}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+\mbox{\Hypertarget{class_main_window_af6bc85f58060fbcd3ea4b0e6cdc5425a}\label{class_main_window_af6bc85f58060fbcd3ea4b0e6cdc5425a}} 
+\index{MainWindow@{MainWindow}!getCameraManagers@{getCameraManagers}}
+\index{getCameraManagers@{getCameraManagers}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{getCameraManagers()}{getCameraManagers()}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{class_abstract_camera_manager}{Abstract\+Camera\+Manager}}$\ast$$>$ Main\+Window\+::get\+Camera\+Managers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_main_window_adc95f98d2a718dff996a70851f4739f4}\label{class_main_window_adc95f98d2a718dff996a70851f4739f4}} 
+\index{MainWindow@{MainWindow}!getSelectedCameraManager@{getSelectedCameraManager}}
+\index{getSelectedCameraManager@{getSelectedCameraManager}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{getSelectedCameraManager()}{getSelectedCameraManager()}}
+{\footnotesize\ttfamily int Main\+Window\+::get\+Selected\+Camera\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_main_window_a7dede2dbcc623cec02de056df521e96b}\label{class_main_window_a7dede2dbcc623cec02de056df521e96b}} 
+\index{MainWindow@{MainWindow}!getUi@{getUi}}
+\index{getUi@{getUi}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{getUi()}{getUi()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_ui_1_1_main_window}{Ui\+::\+Main\+Window}}$\ast$ Main\+Window\+::get\+Ui (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_main_window_aa1aedeaf20f2f0b571a7bd655e3e819e}\label{class_main_window_aa1aedeaf20f2f0b571a7bd655e3e819e}} 
+\index{MainWindow@{MainWindow}!modifySubWindow@{modifySubWindow}}
+\index{modifySubWindow@{modifySubWindow}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{modifySubWindow()}{modifySubWindow()}}
+{\footnotesize\ttfamily void Main\+Window\+::modify\+Sub\+Window (\begin{DoxyParamCaption}\item[{Q\+Mdi\+Sub\+Window $\ast$}]{in,  }\item[{bool}]{add }\end{DoxyParamCaption})}
+
+A\+C\+C\+E\+S\+S\+O\+RS 
+
+Definition at line 158 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_a16f8da8df766a6b3fb2be1a93d6a3a49}\label{class_main_window_a16f8da8df766a6b3fb2be1a93d6a3a49}} 
+\index{MainWindow@{MainWindow}!on\_addGroup@{on\_addGroup}}
+\index{on\_addGroup@{on\_addGroup}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{on\_addGroup()}{on\_addGroup()}}
+{\footnotesize\ttfamily void Main\+Window\+::on\+\_\+add\+Group (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+C\+A\+M\+E\+RA T\+R\+EE
+
+C\+A\+M\+E\+RA T\+R\+EE A\+ND A\+S\+S\+I\+M\+I\+L\+A\+T\+ED F\+U\+N\+C\+T\+I\+O\+NS 
+
+Definition at line 264 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_a6b3dcc79316502d1d6ecb230312e62c8}\label{class_main_window_a6b3dcc79316502d1d6ecb230312e62c8}} 
+\index{MainWindow@{MainWindow}!on\_deleteGroup@{on\_deleteGroup}}
+\index{on\_deleteGroup@{on\_deleteGroup}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{on\_deleteGroup()}{on\_deleteGroup()}}
+{\footnotesize\ttfamily void Main\+Window\+::on\+\_\+delete\+Group (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 279 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_a5f6c4aa27d5540a3e7f17d8fd88ded3f}\label{class_main_window_a5f6c4aa27d5540a3e7f17d8fd88ded3f}} 
+\index{MainWindow@{MainWindow}!on\_editItem@{on\_editItem}}
+\index{on\_editItem@{on\_editItem}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{on\_editItem()}{on\_editItem()}}
+{\footnotesize\ttfamily void Main\+Window\+::on\+\_\+edit\+Item (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 269 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_a8fde7b67c704217df22de4576f741e21}\label{class_main_window_a8fde7b67c704217df22de4576f741e21}} 
+\index{MainWindow@{MainWindow}!on\_resetItem@{on\_resetItem}}
+\index{on\_resetItem@{on\_resetItem}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{on\_resetItem()}{on\_resetItem()}}
+{\footnotesize\ttfamily void Main\+Window\+::on\+\_\+reset\+Item (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 274 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_a38b8219e5331a62fb73e180533d1a0f0}\label{class_main_window_a38b8219e5331a62fb73e180533d1a0f0}} 
+\index{MainWindow@{MainWindow}!startCameraDetection@{startCameraDetection}}
+\index{startCameraDetection@{startCameraDetection}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{startCameraDetection()}{startCameraDetection()}}
+{\footnotesize\ttfamily void Main\+Window\+::start\+Camera\+Detection (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_system_manager}{System\+Manager}} $\ast$}]{sm }\end{DoxyParamCaption})}
+
+T\+H\+R\+E\+AD M\+E\+T\+H\+O\+DS 
+
+Definition at line 415 of file mainwindow.\+cpp.
+
+\mbox{\Hypertarget{class_main_window_a8881d72d32283db4867dc254df19ae83}\label{class_main_window_a8881d72d32283db4867dc254df19ae83}} 
+\index{MainWindow@{MainWindow}!startUpdateProperties@{startUpdateProperties}}
+\index{startUpdateProperties@{startUpdateProperties}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{startUpdateProperties()}{startUpdateProperties()}}
+{\footnotesize\ttfamily void Main\+Window\+::start\+Update\+Properties (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 424 of file mainwindow.\+cpp.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_main_window_a911848dbb7d268519126fd35326d8f44}\label{class_main_window_a911848dbb7d268519126fd35326d8f44}} 
+\index{MainWindow@{MainWindow}!selection@{selection}}
+\index{selection@{selection}!MainWindow@{MainWindow}}
+\subsubsection{\texorpdfstring{selection}{selection}}
+{\footnotesize\ttfamily int Main\+Window\+::selection = 2\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Definition at line 58 of file mainwindow.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{mainwindow_8h}{mainwindow.\+h}}\item 
+src/\mbox{\hyperlink{mainwindow_8cpp}{mainwindow.\+cpp}}\end{DoxyCompactItemize}

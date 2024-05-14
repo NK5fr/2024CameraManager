@@ -1,0 +1,362 @@
+\hypertarget{class_abstract_camera}{}\section{Abstract\+Camera Class Reference}
+\label{class_abstract_camera}\index{AbstractCamera@{AbstractCamera}}
+
+
+Class that need to be subclassed for each camera A\+PI. It is used to exchange Camera\+Property between the application and the A\+PI, to lauch auto capture and receive frames.  
+
+
+
+
+{\ttfamily \#include $<$abstractcamera.\+h$>$}
+
+Inheritance diagram for Abstract\+Camera\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_abstract_camera}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_abstract_camera_addf550f9f41d04bd6651b19d795bdabe}{$\sim$\+Abstract\+Camera}} ()
+\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_a8b50d3e4925cfe74ed383376ba02bb5e}{set\+Property}} (\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $\ast$p)=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) set the camera according to that property \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_ac6943d94ae61e2c8d431bf9fe9d55313}{set\+Spin\+Property}} (\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $\ast$p)=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) set the camera according to the spinnaker sdk property \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_abstract_camera_a244917ab081c18caf389473847871dd6}{equals\+To}} (\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$c)
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the value of that property for that camera \end{DoxyCompactList}\item 
+virtual std\+::string \mbox{\hyperlink{class_abstract_camera_a75dc6b53d5a8717944d5e8ded9609611}{get\+String}} ()=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the name corresponding to the camera model and id \end{DoxyCompactList}\item 
+virtual Q\+String \mbox{\hyperlink{class_abstract_camera_a0dcd65fa3bcc83ba95ffdb0a9044a407}{get\+Serial}} ()
+\item 
+virtual Q\+String \mbox{\hyperlink{class_abstract_camera_ae263e210c55f094ef5b8fc8cb3341043}{get\+Model}} ()
+\item 
+virtual Q\+String \mbox{\hyperlink{class_abstract_camera_acdbe8cb6af440aefa5958c6919ff1ec1}{get\+Custom\+Name}} ()
+\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_adb6f411fe49721c570128ef51013cf1e}{set\+Custom\+Name}} (Q\+String name)
+\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_a2f47d9877c5308856f42c94723faca33}{start\+Auto\+Capture}} ()=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) start callback based Liveview \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_a08bd5e2c3f8a92187f36e1f6322eccb5}{stop\+Auto\+Capture}} ()=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) stop\+Auto\+Capture stop callback based Liveview \end{DoxyCompactList}\item 
+virtual unsigned char $\ast$ \mbox{\hyperlink{class_abstract_camera_a46f1a355c0dbfe5dd66016faefc97eba}{retrieve\+Image}} (unsigned int $\ast$buffer\+Size, unsigned int $\ast$image\+Width, unsigned int $\ast$image\+Height)=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get one image from camera \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_abbbf7accb8254546aace4e2affa2467c}{start\+Capture}} (\mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}} $\ast$video\+Widget)
+\begin{DoxyCompactList}\small\item\em start liveview capture from manager \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_abstract_camera_a6a5f894f0e605991aed6c85279efc3a0}{is\+Capturing}} ()
+\item 
+\mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}} $\ast$ \mbox{\hyperlink{class_abstract_camera_a0236b61264a6659a05475896ab167da4}{get\+Video\+Container}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_a5320bb45065833d441811d2273bfce64}{set\+Video\+Container}} (\mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}} $\ast$video\+Widget)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_abstract_camera_a68e6ddb404a4a4e9aafc97e08f2c84ea}{Abstract\+Camera}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_a75a673fee75a95e52adf4a15cd5310c4}{send\+Frame}} (void $\ast$img\+Buffer, unsigned int buffer\+Size, unsigned int image\+Width, unsigned int image\+Height)
+\begin{DoxyCompactList}\small\item\em send\+Frame send a new Q\+Image for the view \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_a8fa772437cbf23ba88f38c6e5b9f64d8}{capturing}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class that need to be subclassed for each camera A\+PI. It is used to exchange Camera\+Property between the application and the A\+PI, to lauch auto capture and receive frames. 
+
+\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} 
+
+Definition at line 27 of file abstractcamera.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_abstract_camera_addf550f9f41d04bd6651b19d795bdabe}\label{class_abstract_camera_addf550f9f41d04bd6651b19d795bdabe}} 
+\index{AbstractCamera@{AbstractCamera}!````~AbstractCamera@{$\sim$AbstractCamera}}
+\index{````~AbstractCamera@{$\sim$AbstractCamera}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{$\sim$AbstractCamera()}{~AbstractCamera()}}
+{\footnotesize\ttfamily Abstract\+Camera\+::$\sim$\+Abstract\+Camera (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Definition at line 14 of file abstractcamera.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_a68e6ddb404a4a4e9aafc97e08f2c84ea}\label{class_abstract_camera_a68e6ddb404a4a4e9aafc97e08f2c84ea}} 
+\index{AbstractCamera@{AbstractCamera}!AbstractCamera@{AbstractCamera}}
+\index{AbstractCamera@{AbstractCamera}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{AbstractCamera()}{AbstractCamera()}}
+{\footnotesize\ttfamily Abstract\+Camera\+::\+Abstract\+Camera (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 7 of file abstractcamera.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_abstract_camera_a244917ab081c18caf389473847871dd6}\label{class_abstract_camera_a244917ab081c18caf389473847871dd6}} 
+\index{AbstractCamera@{AbstractCamera}!equalsTo@{equalsTo}}
+\index{equalsTo@{equalsTo}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{equalsTo()}{equalsTo()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+::equals\+To (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) get the value of that property for that camera 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & property to updatecompare 2 cameras \\
+\hline
+{\em c} & camera to compare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the cameras are physically the same 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{class_spin_camera_a1c3344dcd483c0ba889e8bb64d688039}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_a8121735229105485f73289a36bd41042}{Fly\+Camera}}.
+
+
+
+Definition at line 17 of file abstractcamera.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_acdbe8cb6af440aefa5958c6919ff1ec1}\label{class_abstract_camera_acdbe8cb6af440aefa5958c6919ff1ec1}} 
+\index{AbstractCamera@{AbstractCamera}!getCustomName@{getCustomName}}
+\index{getCustomName@{getCustomName}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{getCustomName()}{getCustomName()}}
+{\footnotesize\ttfamily virtual Q\+String Abstract\+Camera\+::get\+Custom\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Definition at line 65 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_ae263e210c55f094ef5b8fc8cb3341043}\label{class_abstract_camera_ae263e210c55f094ef5b8fc8cb3341043}} 
+\index{AbstractCamera@{AbstractCamera}!getModel@{getModel}}
+\index{getModel@{getModel}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{getModel()}{getModel()}}
+{\footnotesize\ttfamily virtual Q\+String Abstract\+Camera\+::get\+Model (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{class_spin_camera_a254522436d6e70878a8b2df0654614c8}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_ae161d0e4afa9abfc87aec13263d6cadb}{Fly\+Camera}}.
+
+
+
+Definition at line 64 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_a0dcd65fa3bcc83ba95ffdb0a9044a407}\label{class_abstract_camera_a0dcd65fa3bcc83ba95ffdb0a9044a407}} 
+\index{AbstractCamera@{AbstractCamera}!getSerial@{getSerial}}
+\index{getSerial@{getSerial}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{getSerial()}{getSerial()}}
+{\footnotesize\ttfamily virtual Q\+String Abstract\+Camera\+::get\+Serial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{class_spin_camera_a2427902f7a8bc6cca397966b14399e9b}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_a2f6857dd2270d473f3d4ecb590b5dcab}{Fly\+Camera}}.
+
+
+
+Definition at line 63 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_a75dc6b53d5a8717944d5e8ded9609611}\label{class_abstract_camera_a75dc6b53d5a8717944d5e8ded9609611}} 
+\index{AbstractCamera@{AbstractCamera}!getString@{getString}}
+\index{getString@{getString}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{getString()}{getString()}}
+{\footnotesize\ttfamily virtual std\+::string Abstract\+Camera\+::get\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) get the name corresponding to the camera model and id 
+
+\begin{DoxyReturn}{Returns}
+String containing these informations 
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_ad3b02eb926fbc4312e7f19e3834db576}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_a97938fec7396d02574383f7db50d9e58}{Fly\+Camera}}.
+
+\mbox{\Hypertarget{class_abstract_camera_a0236b61264a6659a05475896ab167da4}\label{class_abstract_camera_a0236b61264a6659a05475896ab167da4}} 
+\index{AbstractCamera@{AbstractCamera}!getVideoContainer@{getVideoContainer}}
+\index{getVideoContainer@{getVideoContainer}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{getVideoContainer()}{getVideoContainer()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}}$\ast$ Abstract\+Camera\+::get\+Video\+Container (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 92 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_a6a5f894f0e605991aed6c85279efc3a0}\label{class_abstract_camera_a6a5f894f0e605991aed6c85279efc3a0}} 
+\index{AbstractCamera@{AbstractCamera}!isCapturing@{isCapturing}}
+\index{isCapturing@{isCapturing}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{isCapturing()}{isCapturing()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+::is\+Capturing (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 91 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_a46f1a355c0dbfe5dd66016faefc97eba}\label{class_abstract_camera_a46f1a355c0dbfe5dd66016faefc97eba}} 
+\index{AbstractCamera@{AbstractCamera}!retrieveImage@{retrieveImage}}
+\index{retrieveImage@{retrieveImage}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{retrieveImage()}{retrieveImage()}}
+{\footnotesize\ttfamily virtual unsigned char$\ast$ Abstract\+Camera\+::retrieve\+Image (\begin{DoxyParamCaption}\item[{unsigned int $\ast$}]{buffer\+Size,  }\item[{unsigned int $\ast$}]{image\+Width,  }\item[{unsigned int $\ast$}]{image\+Height }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) get one image from camera 
+
+\begin{DoxyReturn}{Returns}
+Q\+Image image 
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_af93d61657150a85134a6193fed344442}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_a1c875e383a5a500a6a099a73fb3c54e3}{Fly\+Camera}}.
+
+\mbox{\Hypertarget{class_abstract_camera_a75a673fee75a95e52adf4a15cd5310c4}\label{class_abstract_camera_a75a673fee75a95e52adf4a15cd5310c4}} 
+\index{AbstractCamera@{AbstractCamera}!sendFrame@{sendFrame}}
+\index{sendFrame@{sendFrame}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{sendFrame()}{sendFrame()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+::send\+Frame (\begin{DoxyParamCaption}\item[{void $\ast$}]{img\+Buffer,  }\item[{unsigned int}]{buffer\+Size,  }\item[{unsigned int}]{image\+Width,  }\item[{unsigned int}]{image\+Height }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+send\+Frame send a new Q\+Image for the view 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Q\+Image grabbed from the camera \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 32 of file abstractcamera.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_adb6f411fe49721c570128ef51013cf1e}\label{class_abstract_camera_adb6f411fe49721c570128ef51013cf1e}} 
+\index{AbstractCamera@{AbstractCamera}!setCustomName@{setCustomName}}
+\index{setCustomName@{setCustomName}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{setCustomName()}{setCustomName()}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+::set\+Custom\+Name (\begin{DoxyParamCaption}\item[{Q\+String}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Definition at line 66 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_a8b50d3e4925cfe74ed383376ba02bb5e}\label{class_abstract_camera_a8b50d3e4925cfe74ed383376ba02bb5e}} 
+\index{AbstractCamera@{AbstractCamera}!setProperty@{setProperty}}
+\index{setProperty@{setProperty}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{setProperty()}{setProperty()}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+::set\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $\ast$}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) set the camera according to that property 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & property to set \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_a3083f5156bef457595fb0ca5ed3a6cf1}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_ad9d4102cab167f0d5739b2af808c43ee}{Fly\+Camera}}.
+
+\mbox{\Hypertarget{class_abstract_camera_ac6943d94ae61e2c8d431bf9fe9d55313}\label{class_abstract_camera_ac6943d94ae61e2c8d431bf9fe9d55313}} 
+\index{AbstractCamera@{AbstractCamera}!setSpinProperty@{setSpinProperty}}
+\index{setSpinProperty@{setSpinProperty}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{setSpinProperty()}{setSpinProperty()}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+::set\+Spin\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $\ast$}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) set the camera according to the spinnaker sdk property 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & property to set \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_abb8eddf9373bf488a8eaa87b117d40c0}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_a5d3b0d4395ec7654e34d56d7f13a541a}{Fly\+Camera}}.
+
+\mbox{\Hypertarget{class_abstract_camera_a5320bb45065833d441811d2273bfce64}\label{class_abstract_camera_a5320bb45065833d441811d2273bfce64}} 
+\index{AbstractCamera@{AbstractCamera}!setVideoContainer@{setVideoContainer}}
+\index{setVideoContainer@{setVideoContainer}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{setVideoContainer()}{setVideoContainer()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+::set\+Video\+Container (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}} $\ast$}]{video\+Widget }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 93 of file abstractcamera.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_a2f47d9877c5308856f42c94723faca33}\label{class_abstract_camera_a2f47d9877c5308856f42c94723faca33}} 
+\index{AbstractCamera@{AbstractCamera}!startAutoCapture@{startAutoCapture}}
+\index{startAutoCapture@{startAutoCapture}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{startAutoCapture()}{startAutoCapture()}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+::start\+Auto\+Capture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) start callback based Liveview 
+
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_acee6b2c38898f23b5bbba4a7810caa49}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_aa91c2cd580029a1fb242e2d8dace33b7}{Fly\+Camera}}.
+
+\mbox{\Hypertarget{class_abstract_camera_abbbf7accb8254546aace4e2affa2467c}\label{class_abstract_camera_abbbf7accb8254546aace4e2affa2467c}} 
+\index{AbstractCamera@{AbstractCamera}!startCapture@{startCapture}}
+\index{startCapture@{startCapture}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{startCapture()}{startCapture()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+::start\+Capture (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}} $\ast$}]{video\+Widget }\end{DoxyParamCaption})}
+
+
+
+start liveview capture from manager 
+
+
+\begin{DoxyParams}{Parameters}
+{\em video\+Widget} & \mbox{\hyperlink{class_video_open_g_l_widget}{Video\+Open\+G\+L\+Widget}} that will receive the frames \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 21 of file abstractcamera.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_a08bd5e2c3f8a92187f36e1f6322eccb5}\label{class_abstract_camera_a08bd5e2c3f8a92187f36e1f6322eccb5}} 
+\index{AbstractCamera@{AbstractCamera}!stopAutoCapture@{stopAutoCapture}}
+\index{stopAutoCapture@{stopAutoCapture}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{stopAutoCapture()}{stopAutoCapture()}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+::stop\+Auto\+Capture (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) stop\+Auto\+Capture stop callback based Liveview 
+
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_a161f8d383c56161a8e7731d7299504db}{Spin\+Camera}}, and \mbox{\hyperlink{class_fly_camera_a7d637bd9237fae3ee3cd55b044ec80f1}{Fly\+Camera}}.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_abstract_camera_a8fa772437cbf23ba88f38c6e5b9f64d8}\label{class_abstract_camera_a8fa772437cbf23ba88f38c6e5b9f64d8}} 
+\index{AbstractCamera@{AbstractCamera}!capturing@{capturing}}
+\index{capturing@{capturing}!AbstractCamera@{AbstractCamera}}
+\subsubsection{\texorpdfstring{capturing}{capturing}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+::capturing\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 109 of file abstractcamera.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{abstractcamera_8h}{abstractcamera.\+h}}\item 
+src/\mbox{\hyperlink{abstractcamera_8cpp}{abstractcamera.\+cpp}}\end{DoxyCompactItemize}

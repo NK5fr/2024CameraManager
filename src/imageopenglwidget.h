@@ -1,14 +1,15 @@
 
-// Written by: Lars Aksel Tveråmo
+// Written by: Lars Aksel Tver?mo
 // 3D Motion Technologies AS
 
 #ifndef IMAGE_OPENGL_WIDGET_H
 #define IMAGE_OPENGL_WIDGET_H
 
+#include <QtOpenGL>
 #include <QtWidgets/qwidget.h>
-#include <QtOpenGL/QGL>
+#include <QtOpenGL>
 #include <QtOpenGL/QtOpenGL>
-#include <qopenglwidget.h>
+#include <QtOpenGLWidgets/QtOpenGLWidgets>
 #include <qopengl.h>
 
 #include "imagedetect.h"

@@ -10,7 +10,7 @@ class ImageLabel : public QWidget {
 
 public:
     explicit ImageLabel(QWidget *parent = 0);
-    const QPixmap* pixmap() const;
+    const QPixmap pixmap() const;
 
     public slots:
     void setPixmap(const QPixmap&);

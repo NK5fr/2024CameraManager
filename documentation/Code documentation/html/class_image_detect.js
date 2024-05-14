@@ -1,0 +1,25 @@
+var class_image_detect =
+[
+    [ "ImageDetect", "class_image_detect.html#a2ea78db5ab4e9e09bfd4853919c9351e", null ],
+    [ "~ImageDetect", "class_image_detect.html#ae62102131d454c944194d77a9feba76c", null ],
+    [ "getFilteredImage", "class_image_detect.html#ad825631c35588b68c69911097b2d26de", null ],
+    [ "getFinalNumPoints", "class_image_detect.html#a40764a69b1ea845b170c006150561d5b", null ],
+    [ "getFinalPoints", "class_image_detect.html#a8a27f31e31b2a7671194536d8187ba57", null ],
+    [ "getImage", "class_image_detect.html#aa5bf3a0fbc4dd9b377abf6cfdb86f054", null ],
+    [ "getImageHeight", "class_image_detect.html#a68a50fce55888eb61c8cd13b9e89a2d6", null ],
+    [ "getImageWidth", "class_image_detect.html#afd28916cc8e9627eed3e47757b770258", null ],
+    [ "getInitNumPoints", "class_image_detect.html#a44343ed4640409fea5062b82ceb421c6", null ],
+    [ "getInitPoints", "class_image_detect.html#ade0368fed2ea4cccbbc436eb651603a5", null ],
+    [ "getMaxPix", "class_image_detect.html#acd993d239569845c322f5956c7370911", null ],
+    [ "getMaxPoints", "class_image_detect.html#a0df3a01d26a8fbf8383f5980f430ba03", null ],
+    [ "getMinPix", "class_image_detect.html#ac0d3d2046393acd84b358ea653662456", null ],
+    [ "imageDetectPoints", "class_image_detect.html#a9a9779c213e8842fa7c4bdba59dc312e", null ],
+    [ "imageRemoveBackground", "class_image_detect.html#a6d6fc10052fa8bc5435d045046005c9c", null ],
+    [ "removeDuplicatePoints", "class_image_detect.html#a9541c02a480030211d7e5089f80634e0", null ],
+    [ "setImage", "class_image_detect.html#a02ed47fccf8c8a00263d3c246d025626", null ],
+    [ "setMaxPix", "class_image_detect.html#a9dda32888b1d56cf47d13e2e195254b2", null ],
+    [ "setMinPix", "class_image_detect.html#a11d8d8f15063dd4694136420f61caa9f", null ],
+    [ "setMinSep", "class_image_detect.html#a76ef2d1c6072b5375a6071e8af461e7b", null ],
+    [ "setSubwinSize", "class_image_detect.html#a4a210d6197477252ce4e50fc79b890d5", null ],
+    [ "setThreshold", "class_image_detect.html#aea9ed08fad1db74ba5ac0925a9ce4642", null ]
+];

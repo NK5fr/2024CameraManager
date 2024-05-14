@@ -11,7 +11,7 @@ QOpenglVideoWidget::QOpenglVideoWidget() {
     imageWidth = 0;
     imageHeight = 0;
     initializeGL();
-    updateGL();
+    update();
     connect(this, SIGNAL(forceUpdate()), this, SLOT(receiveUpdate()));
 }
 

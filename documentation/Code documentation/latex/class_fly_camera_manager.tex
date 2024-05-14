@@ -1,0 +1,128 @@
+\hypertarget{class_fly_camera_manager}{}\section{Fly\+Camera\+Manager Class Reference}
+\label{class_fly_camera_manager}\index{FlyCameraManager@{FlyCameraManager}}
+
+
+The \mbox{\hyperlink{class_fly_camera_manager}{Fly\+Camera\+Manager}} class deals with all the Fly Capture Cameras.  
+
+
+
+
+{\ttfamily \#include $<$flycameramanager.\+h$>$}
+
+Inheritance diagram for Fly\+Camera\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_fly_camera_manager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_fly_camera_manager_aae844953f01b9ee53219968e280cd8d9}{Fly\+Camera\+Manager}} ()
+\item 
+\mbox{\hyperlink{class_fly_camera_manager_a302cd47f5244d8fbcd2f1cdde52b92f6}{$\sim$\+Fly\+Camera\+Manager}} ()
+\item 
+virtual void \mbox{\hyperlink{class_fly_camera_manager_aab72966a50baaf966817c7f1265341a8}{detect\+New\+Cameras}} (std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ $>$ $\ast$new\+Cameras)
+\item 
+virtual void \mbox{\hyperlink{class_fly_camera_manager_a0f2138fb094303db2da4b8dee7f1fba8}{detect\+New\+Cameras}} ()
+\begin{DoxyCompactList}\small\item\em (Pure virtual) detect new cameras \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_fly_camera_manager_a4e368cea1f4cedf26b653518c75c1433}{get\+Name}} () const
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the name of the Manager \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+The \mbox{\hyperlink{class_fly_camera_manager}{Fly\+Camera\+Manager}} class deals with all the Fly Capture Cameras. 
+
+Definition at line 27 of file flycameramanager.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_fly_camera_manager_aae844953f01b9ee53219968e280cd8d9}\label{class_fly_camera_manager_aae844953f01b9ee53219968e280cd8d9}} 
+\index{FlyCameraManager@{FlyCameraManager}!FlyCameraManager@{FlyCameraManager}}
+\index{FlyCameraManager@{FlyCameraManager}!FlyCameraManager@{FlyCameraManager}}
+\subsubsection{\texorpdfstring{FlyCameraManager()}{FlyCameraManager()}}
+{\footnotesize\ttfamily Fly\+Camera\+Manager\+::\+Fly\+Camera\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 5 of file flycameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_fly_camera_manager_a302cd47f5244d8fbcd2f1cdde52b92f6}\label{class_fly_camera_manager_a302cd47f5244d8fbcd2f1cdde52b92f6}} 
+\index{FlyCameraManager@{FlyCameraManager}!````~FlyCameraManager@{$\sim$FlyCameraManager}}
+\index{````~FlyCameraManager@{$\sim$FlyCameraManager}!FlyCameraManager@{FlyCameraManager}}
+\subsubsection{\texorpdfstring{$\sim$FlyCameraManager()}{~FlyCameraManager()}}
+{\footnotesize\ttfamily Fly\+Camera\+Manager\+::$\sim$\+Fly\+Camera\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 35 of file flycameramanager.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_fly_camera_manager_aab72966a50baaf966817c7f1265341a8}\label{class_fly_camera_manager_aab72966a50baaf966817c7f1265341a8}} 
+\index{FlyCameraManager@{FlyCameraManager}!detectNewCameras@{detectNewCameras}}
+\index{detectNewCameras@{detectNewCameras}!FlyCameraManager@{FlyCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCameras()}{detectNewCameras()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Fly\+Camera\+Manager\+::detect\+New\+Cameras (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ $>$ $\ast$}]{new\+Cameras }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_manager_a8e215b2531fd8c18551382dc8f571817}{Abstract\+Camera\+Manager}}.
+
+
+
+Definition at line 17 of file flycameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_fly_camera_manager_a0f2138fb094303db2da4b8dee7f1fba8}\label{class_fly_camera_manager_a0f2138fb094303db2da4b8dee7f1fba8}} 
+\index{FlyCameraManager@{FlyCameraManager}!detectNewCameras@{detectNewCameras}}
+\index{detectNewCameras@{detectNewCameras}!FlyCameraManager@{FlyCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCameras()}{detectNewCameras()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Fly\+Camera\+Manager\+::detect\+New\+Cameras (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) detect new cameras 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Cameras} & (modified by the function) will be filled with all the camera connected to the computer, even ones already connected \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_manager_a5285c2cf6e1976d0c22e46f01efdef51}{Abstract\+Camera\+Manager}}.
+
+
+
+Definition at line 31 of file flycameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_fly_camera_manager_a4e368cea1f4cedf26b653518c75c1433}\label{class_fly_camera_manager_a4e368cea1f4cedf26b653518c75c1433}} 
+\index{FlyCameraManager@{FlyCameraManager}!getName@{getName}}
+\index{getName@{getName}!FlyCameraManager@{FlyCameraManager}}
+\subsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily string Fly\+Camera\+Manager\+::get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) get the name of the Manager 
+
+\begin{DoxyReturn}{Returns}
+String containing the name manager 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_manager_a6e4b041842471b9ed42ddd5c9ab260d1}{Abstract\+Camera\+Manager}}.
+
+
+
+Definition at line 39 of file flycameramanager.\+cpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{flycameramanager_8h}{flycameramanager.\+h}}\item 
+src/\mbox{\hyperlink{flycameramanager_8cpp}{flycameramanager.\+cpp}}\end{DoxyCompactItemize}

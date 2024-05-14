@@ -13,19 +13,20 @@ namespace CameraManager {
 
 	enum PropertyType {
         BRIGHTNESS,
-        HUE,
-        GAIN,
-        EXPOSURE,
-        GAMMA,
-        SHUTTER,
-        FRAMERATE,
-        CROPX,
-        CROPY,
-        CROP,
-        PANX,
-        PANY,
-        PAN,
-        AUTOTRIGGER
+              HUE,
+              GAIN,
+              EXPOSURE,
+              GAMMA,
+              SHUTTER,
+              FRAMERATE,
+              CROPX,
+              CROPY,
+              CROP,
+              PANX,
+              PANY,
+              PAN,
+              AUTOTRIGGER
+
     };
 
 	/**

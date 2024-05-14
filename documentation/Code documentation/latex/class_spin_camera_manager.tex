@@ -1,0 +1,128 @@
+\hypertarget{class_spin_camera_manager}{}\section{Spin\+Camera\+Manager Class Reference}
+\label{class_spin_camera_manager}\index{SpinCameraManager@{SpinCameraManager}}
+
+
+The \mbox{\hyperlink{class_spin_camera_manager}{Spin\+Camera\+Manager}} class deals with all the Spin Capture Cameras.  
+
+
+
+
+{\ttfamily \#include $<$spincameramanager.\+h$>$}
+
+Inheritance diagram for Spin\+Camera\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_spin_camera_manager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_spin_camera_manager_a8931fe8336705233c818f216f0e0d235}{Spin\+Camera\+Manager}} ()
+\item 
+\mbox{\hyperlink{class_spin_camera_manager_a1e1e60eb35671a981b884dde99484253}{$\sim$\+Spin\+Camera\+Manager}} ()
+\item 
+virtual void \mbox{\hyperlink{class_spin_camera_manager_affc9edfd215e7dd1ad050cd111906863}{detect\+New\+Cameras}} ()
+\begin{DoxyCompactList}\small\item\em (Pure virtual) detect new cameras \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_spin_camera_manager_a6586a44c68b7e37a0992819af7711cc7}{detect\+New\+Cameras}} (std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ $>$ $\ast$new\+Cameras)
+\item 
+std\+::string \mbox{\hyperlink{class_spin_camera_manager_ac3ea32324ae75d80e9b1e3108ee9c6d2}{get\+Name}} () const
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the name of the Manager \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+The \mbox{\hyperlink{class_spin_camera_manager}{Spin\+Camera\+Manager}} class deals with all the Spin Capture Cameras. 
+
+Definition at line 27 of file spincameramanager.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_spin_camera_manager_a8931fe8336705233c818f216f0e0d235}\label{class_spin_camera_manager_a8931fe8336705233c818f216f0e0d235}} 
+\index{SpinCameraManager@{SpinCameraManager}!SpinCameraManager@{SpinCameraManager}}
+\index{SpinCameraManager@{SpinCameraManager}!SpinCameraManager@{SpinCameraManager}}
+\subsubsection{\texorpdfstring{SpinCameraManager()}{SpinCameraManager()}}
+{\footnotesize\ttfamily Spin\+Camera\+Manager\+::\+Spin\+Camera\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 6 of file spincameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_manager_a1e1e60eb35671a981b884dde99484253}\label{class_spin_camera_manager_a1e1e60eb35671a981b884dde99484253}} 
+\index{SpinCameraManager@{SpinCameraManager}!````~SpinCameraManager@{$\sim$SpinCameraManager}}
+\index{````~SpinCameraManager@{$\sim$SpinCameraManager}!SpinCameraManager@{SpinCameraManager}}
+\subsubsection{\texorpdfstring{$\sim$SpinCameraManager()}{~SpinCameraManager()}}
+{\footnotesize\ttfamily Spin\+Camera\+Manager\+::$\sim$\+Spin\+Camera\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 47 of file spincameramanager.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_spin_camera_manager_affc9edfd215e7dd1ad050cd111906863}\label{class_spin_camera_manager_affc9edfd215e7dd1ad050cd111906863}} 
+\index{SpinCameraManager@{SpinCameraManager}!detectNewCameras@{detectNewCameras}}
+\index{detectNewCameras@{detectNewCameras}!SpinCameraManager@{SpinCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCameras()}{detectNewCameras()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Spin\+Camera\+Manager\+::detect\+New\+Cameras (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) detect new cameras 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Cameras} & (modified by the function) will be filled with all the camera connected to the computer, even ones already connected \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_manager_a5285c2cf6e1976d0c22e46f01efdef51}{Abstract\+Camera\+Manager}}.
+
+
+
+Definition at line 56 of file spincameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_manager_a6586a44c68b7e37a0992819af7711cc7}\label{class_spin_camera_manager_a6586a44c68b7e37a0992819af7711cc7}} 
+\index{SpinCameraManager@{SpinCameraManager}!detectNewCameras@{detectNewCameras}}
+\index{detectNewCameras@{detectNewCameras}!SpinCameraManager@{SpinCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCameras()}{detectNewCameras()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Spin\+Camera\+Manager\+::detect\+New\+Cameras (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ $>$ $\ast$}]{new\+Cameras }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_manager_a8e215b2531fd8c18551382dc8f571817}{Abstract\+Camera\+Manager}}.
+
+
+
+Definition at line 51 of file spincameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_spin_camera_manager_ac3ea32324ae75d80e9b1e3108ee9c6d2}\label{class_spin_camera_manager_ac3ea32324ae75d80e9b1e3108ee9c6d2}} 
+\index{SpinCameraManager@{SpinCameraManager}!getName@{getName}}
+\index{getName@{getName}!SpinCameraManager@{SpinCameraManager}}
+\subsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily string Spin\+Camera\+Manager\+::get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+(Pure virtual) get the name of the Manager 
+
+\begin{DoxyReturn}{Returns}
+String containing the name manager 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_abstract_camera_manager_a6e4b041842471b9ed42ddd5c9ab260d1}{Abstract\+Camera\+Manager}}.
+
+
+
+Definition at line 60 of file spincameramanager.\+cpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{spincameramanager_8h}{spincameramanager.\+h}}\item 
+src/\mbox{\hyperlink{spincameramanager_8cpp}{spincameramanager.\+cpp}}\end{DoxyCompactItemize}

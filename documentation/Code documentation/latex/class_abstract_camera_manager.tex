@@ -1,0 +1,813 @@
+\hypertarget{class_abstract_camera_manager}{}\section{Abstract\+Camera\+Manager Class Reference}
+\label{class_abstract_camera_manager}\index{AbstractCameraManager@{AbstractCameraManager}}
+
+
+Class that need to be subclassed for each camera A\+PI. It is used to list and display Cameras, properties and liveview.  
+
+
+
+
+{\ttfamily \#include $<$abstractcameramanager.\+h$>$}
+
+Inheritance diagram for Abstract\+Camera\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_abstract_camera_manager}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_abstract_camera_manager_1_1active_camera_entry}{active\+Camera\+Entry}}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_manager_a5285c2cf6e1976d0c22e46f01efdef51}{detect\+New\+Cameras}} ()=0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) detect new cameras \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_abstract_camera_manager_a8e215b2531fd8c18551382dc8f571817}{detect\+New\+Cameras}} (std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ $>$ $\ast$new\+Cameras)=0
+\item 
+virtual std\+::string \mbox{\hyperlink{class_abstract_camera_manager_a6e4b041842471b9ed42ddd5c9ab260d1}{get\+Name}} () const =0
+\begin{DoxyCompactList}\small\item\em (Pure virtual) get the name of the Manager \end{DoxyCompactList}\item 
+Q\+Model\+Index \mbox{\hyperlink{class_abstract_camera_manager_a318bac5016843160762ffe7e271b33b5}{detect\+New\+Cameras\+And\+Expand}} (\mbox{\hyperlink{class_system_manager}{System\+Manager}} $\ast$sm)
+\begin{DoxyCompactList}\small\item\em detect new cameras \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a336e5cf760314194c1baf1234b87b247}{update\+Images}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a518b8dd27c032030ff23930488da0a52}{update\+Properties}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a128aa1d8ba9757ccafd1923a66a3ee9a}{load\+Properties\+Defaults}} ()
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_ae4c1fb8afd64ed6e843130ac9ccb90ce}{load\+Properties\+From\+File}} (Q\+String \&filepath, std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Property}} $>$ \&prop)
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_aeeb2e0003c8aea5e0816277325ff7b61}{update\+Properties\+From\+File}} (Q\+String \&filepath, std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Property}} $>$ \&prop)
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_a2a649f85fb8bfd333379204af3399e5a}{save\+Properties\+To\+File}} (Q\+String \&filepath)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_ac5c7ff3b69138df82efafa0400b50ce5}{set\+Properties}} (std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $>$ \&properties)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_aa9e2342648ea4b4683885a3f5658fd91}{update\+Properties}} (std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $>$ \&properties)
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_aaa967ad7d97960c28f38dba3a08b824d}{load\+Spin\+Properties\+From\+File}} (Q\+String \&filepath, std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Spin\+Camera\+Property}} $>$ \&prop)
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_a33b5b6ea968d18e5931ecbd38596fac8}{update\+Spin\+Properties\+From\+File}} (Q\+String \&filepath, std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Spin\+Camera\+Property}} $>$ \&prop)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_ab4d708f46438adc8cf886c8f5057d1a6}{update\+Spin\+Properties}} (std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $>$ \&properties)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a26eac9ad8b2d2fe00bd557453c90d012}{update\+Spin\+Properties}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_acc348fb5e89f17e0b80e9e591925d139}{set\+Spin\+Properties}} (std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $>$ \&properties)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a81e28dcc4866f495816a99bcfad9fd21}{set\+Track\+Point\+Property}} (\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$prop)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a419cecb816ee7fe4c3074f4f6a6d41f9}{update\+Container}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a5aefb0e4ae48767ead04581a4ee940a8}{stop\+Capturing}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_abd6c2f0822bef37ca5625b8d3aa43e56}{set\+Update\+Properties}} (bool on\+Off)
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_a12c4528190897eecd744e9508430910d}{is\+Capturing}} ()
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_aaa7c4f101bb59d9aa8fdc1ca4bfc25d8}{is\+Update\+Properties}} ()
+\item 
+Q\+Model\+Index \mbox{\hyperlink{class_abstract_camera_manager_a4eaaf63434076e5d53d19a44f434bec9}{add\+Group}} ()
+\begin{DoxyCompactList}\small\item\em add a empty group of cameras in the model \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a5eea7f4d2ab3ea314020b405550b378c}{remove\+Group}} (Q\+Model\+Index index)
+\begin{DoxyCompactList}\small\item\em remove a group from the model \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a89cd0d1f9bb47d4abda51ea4f1e08f49}{reset\+Item}} (Q\+Model\+Index index)
+\begin{DoxyCompactList}\small\item\em reset the name of a camera \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_aeafa7b5e2b0eb5bbc105fe6a0ee5e2f2}{activate\+Camera}} (\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$camera, Q\+Standard\+Item $\ast$item, bool active)
+\begin{DoxyCompactList}\small\item\em check the camera in the model, add it in the active\+Cameras vector and open a subwindow for it \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a92ed218ecaab3f6a75d3d24e5544d17f}{desactive\+All\+Cameras}} ()
+\begin{DoxyCompactList}\small\item\em used to close all liveviews from this manager \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a10dee0f2e9a5efa1cf8b5775df66fb19}{camera\+Tree\+\_\+item\+Clicked}} (const Q\+Model\+Index \&index, Q\+String \&string, int \&icon, bool \&editable, bool \&deleteable)
+\begin{DoxyCompactList}\small\item\em select a camera or a group to edit its properties \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a01cbc0e517b10e8b1c087138307ab676}{activate\+Live\+View}} (bool active)
+\item 
+Q\+Standard\+Item\+Model $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_a02097102061955f0092969a6cf812823}{get\+Model}} ()
+\begin{DoxyCompactList}\small\item\em get the model ( camera list ) \end{DoxyCompactList}\item 
+Q\+Tree\+Widget $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_a8cfcc9f2156936f1d8faea55ad97eeab}{get\+Properties\+Widget}} ()
+\begin{DoxyCompactList}\small\item\em get the model of the properties \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a9369df77518a91e24596d2bbe3436bab}{set\+Main\+Window}} (\mbox{\hyperlink{class_main_window}{Main\+Window}} $\ast$window)
+\begin{DoxyCompactList}\small\item\em to set the needed cross reference, called once after construction \end{DoxyCompactList}\item 
+const std\+::vector$<$ \mbox{\hyperlink{struct_abstract_camera_manager_1_1active_camera_entry}{active\+Camera\+Entry}} $>$ \& \mbox{\hyperlink{class_abstract_camera_manager_aff485288660c144b5c269c10ef4c8782}{get\+Active\+Camera\+Entries}} ()
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a8de0c6eb036295d3bcf6d25c95ed4da2}{load\+Properties\+Defaults\+Init}} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_abstract_camera_manager_a23be9d93959d992c91efcf1416c597ef}{Abstract\+Camera\+Manager}} (bool empty=false)
+\begin{DoxyCompactList}\small\item\em constructor \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a967471f87b6d538e63f3a8c03d0d68f5}{camera\+Tree\+\_\+recursive\+Check}} (Q\+Standard\+Item $\ast$parent, Qt\+::\+Check\+State checked)
+\item 
+Q\+Standard\+Item $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_a35d2442e2130462fc4f6f991c36d51f7}{camera\+Tree\+\_\+recursive\+First\+Camera}} (Q\+Standard\+Item $\ast$parent)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_ab0fdb008fbd46d94899053d1ca671f35}{camera\+Tree\+\_\+recursive\+Set\+Property}} (Q\+Standard\+Item $\ast$parent, \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $\ast$prop)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a28adef627215413716f8a301330055c9}{camera\+Tree\+\_\+recursive\+Set\+Spin\+Property}} (Q\+Standard\+Item $\ast$parent, \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $\ast$prop)
+\item 
+void \mbox{\hyperlink{class_abstract_camera_manager_a81a5dd1be751723f195ac6269891ed3f}{camera\+Tree\+\_\+get\+Camera\+List}} (Q\+Standard\+Item $\ast$parent, std\+::vector$<$ Q\+Standard\+Item $\ast$ $>$ $\ast$list)
+\item 
+\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_a4bcb266a61c634e5f65a653f217f994c}{get\+Selected\+Camera}} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_main_window}{Main\+Window}} $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_a4da500120930cd1b916dda0c00a6644d}{main\+Window}}
+\item 
+Q\+Standard\+Item\+Model \mbox{\hyperlink{class_abstract_camera_manager_a9b502f3e4d39972a14172735eeed4257}{camera\+Tree}}
+\item 
+Q\+Standard\+Item \mbox{\hyperlink{class_abstract_camera_manager_aabb32afc5e43c72a43cda751c0545314}{new\+Camera\+List}}
+\item 
+Q\+Tree\+Widget \mbox{\hyperlink{class_abstract_camera_manager_a1cbe78ef302f1ca371515b337d6c4cb0}{properties\+List}}
+\item 
+Q\+Standard\+Item $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_a82d1d50b12a4fc2a8647c503df60d08d}{selected\+Item}}
+\item 
+\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ \mbox{\hyperlink{class_abstract_camera_manager_aa6e71b6a58aecadf7c5f329e097f417a}{selected\+Camera}}
+\item 
+Q\+Icon \mbox{\hyperlink{class_abstract_camera_manager_a990953dbac1ef8b82c661236f6222e40}{folder\+Icon}}
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_a6d123827ae872e0cd681f515aac2661b}{live\+View}}
+\item 
+bool \mbox{\hyperlink{class_abstract_camera_manager_a204492d1767bbf1c6cdfa7b145c41429}{update\+Props}}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_abstract_camera_manager_1_1active_camera_entry}{active\+Camera\+Entry}} $>$ \mbox{\hyperlink{class_abstract_camera_manager_a6487a5d1471603bd4c9cd18ff953813d}{active\+Cameras}}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $>$ \mbox{\hyperlink{class_abstract_camera_manager_af11e8e49cfd447f24db39409522896a7}{camera\+Properties}}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $>$ \mbox{\hyperlink{class_abstract_camera_manager_a259e5562b28f304fa3d84c4b85bead45}{spin\+Camera\+Properties}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class that need to be subclassed for each camera A\+PI. It is used to list and display Cameras, properties and liveview. 
+
+\mbox{\hyperlink{class_abstract_camera_manager}{Abstract\+Camera\+Manager}} 
+
+Definition at line 48 of file abstractcameramanager.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_abstract_camera_manager_a23be9d93959d992c91efcf1416c597ef}\label{class_abstract_camera_manager_a23be9d93959d992c91efcf1416c597ef}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!AbstractCameraManager@{AbstractCameraManager}}
+\index{AbstractCameraManager@{AbstractCameraManager}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{AbstractCameraManager()}{AbstractCameraManager()}}
+{\footnotesize\ttfamily Abstract\+Camera\+Manager\+::\+Abstract\+Camera\+Manager (\begin{DoxyParamCaption}\item[{bool}]{empty = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em empty} & true if the manager is an emty manager \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 18 of file abstractcameramanager.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_abstract_camera_manager_aeafa7b5e2b0eb5bbc105fe6a0ee5e2f2}\label{class_abstract_camera_manager_aeafa7b5e2b0eb5bbc105fe6a0ee5e2f2}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!activateCamera@{activateCamera}}
+\index{activateCamera@{activateCamera}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{activateCamera()}{activateCamera()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::activate\+Camera (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$}]{camera,  }\item[{Q\+Standard\+Item $\ast$}]{item,  }\item[{bool}]{active }\end{DoxyParamCaption})}
+
+
+
+check the camera in the model, add it in the active\+Cameras vector and open a subwindow for it 
+
+
+\begin{DoxyParams}{Parameters}
+{\em camera} & pointer to the camera to add \\
+\hline
+{\em item} & position of the camera in the model \\
+\hline
+{\em active} & true to activate, false to desactivate \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 539 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a01cbc0e517b10e8b1c087138307ab676}\label{class_abstract_camera_manager_a01cbc0e517b10e8b1c087138307ab676}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!activateLiveView@{activateLiveView}}
+\index{activateLiveView@{activateLiveView}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{activateLiveView()}{activateLiveView()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::activate\+Live\+View (\begin{DoxyParamCaption}\item[{bool}]{active }\end{DoxyParamCaption})}
+
+
+
+Definition at line 415 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a4eaaf63434076e5d53d19a44f434bec9}\label{class_abstract_camera_manager_a4eaaf63434076e5d53d19a44f434bec9}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!addGroup@{addGroup}}
+\index{addGroup@{addGroup}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{addGroup()}{addGroup()}}
+{\footnotesize\ttfamily Q\+Model\+Index Abstract\+Camera\+Manager\+::add\+Group (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+add a empty group of cameras in the model 
+
+\begin{DoxyReturn}{Returns}
+the index in the model corresponding to this group, in order to select it 
+\end{DoxyReturn}
+
+
+Definition at line 509 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a81a5dd1be751723f195ac6269891ed3f}\label{class_abstract_camera_manager_a81a5dd1be751723f195ac6269891ed3f}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree\_getCameraList@{cameraTree\_getCameraList}}
+\index{cameraTree\_getCameraList@{cameraTree\_getCameraList}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree\_getCameraList()}{cameraTree\_getCameraList()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::camera\+Tree\+\_\+get\+Camera\+List (\begin{DoxyParamCaption}\item[{Q\+Standard\+Item $\ast$}]{parent,  }\item[{std\+::vector$<$ Q\+Standard\+Item $\ast$ $>$ $\ast$}]{list }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 685 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a10dee0f2e9a5efa1cf8b5775df66fb19}\label{class_abstract_camera_manager_a10dee0f2e9a5efa1cf8b5775df66fb19}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree\_itemClicked@{cameraTree\_itemClicked}}
+\index{cameraTree\_itemClicked@{cameraTree\_itemClicked}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree\_itemClicked()}{cameraTree\_itemClicked()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::camera\+Tree\+\_\+item\+Clicked (\begin{DoxyParamCaption}\item[{const Q\+Model\+Index \&}]{index,  }\item[{Q\+String \&}]{string,  }\item[{int \&}]{icon,  }\item[{bool \&}]{editable,  }\item[{bool \&}]{deleteable }\end{DoxyParamCaption})}
+
+
+
+select a camera or a group to edit its properties 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & index of the item in the model \\
+\hline
+{\em string} & (modified by the function) desccritive of the item \\
+\hline
+{\em icon} & (modified by the function) corresponding to the type of element selected \\
+\hline
+{\em editable} & (modified by the function) true if the item is editable \\
+\hline
+{\em deletable} & (modified by the function) true if the item is deletable \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 586 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a967471f87b6d538e63f3a8c03d0d68f5}\label{class_abstract_camera_manager_a967471f87b6d538e63f3a8c03d0d68f5}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree\_recursiveCheck@{cameraTree\_recursiveCheck}}
+\index{cameraTree\_recursiveCheck@{cameraTree\_recursiveCheck}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree\_recursiveCheck()}{cameraTree\_recursiveCheck()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::camera\+Tree\+\_\+recursive\+Check (\begin{DoxyParamCaption}\item[{Q\+Standard\+Item $\ast$}]{parent,  }\item[{Qt\+::\+Check\+State}]{checked }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 634 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a35d2442e2130462fc4f6f991c36d51f7}\label{class_abstract_camera_manager_a35d2442e2130462fc4f6f991c36d51f7}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree\_recursiveFirstCamera@{cameraTree\_recursiveFirstCamera}}
+\index{cameraTree\_recursiveFirstCamera@{cameraTree\_recursiveFirstCamera}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree\_recursiveFirstCamera()}{cameraTree\_recursiveFirstCamera()}}
+{\footnotesize\ttfamily Q\+Standard\+Item $\ast$ Abstract\+Camera\+Manager\+::camera\+Tree\+\_\+recursive\+First\+Camera (\begin{DoxyParamCaption}\item[{Q\+Standard\+Item $\ast$}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 646 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_ab0fdb008fbd46d94899053d1ca671f35}\label{class_abstract_camera_manager_ab0fdb008fbd46d94899053d1ca671f35}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree\_recursiveSetProperty@{cameraTree\_recursiveSetProperty}}
+\index{cameraTree\_recursiveSetProperty@{cameraTree\_recursiveSetProperty}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree\_recursiveSetProperty()}{cameraTree\_recursiveSetProperty()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::camera\+Tree\+\_\+recursive\+Set\+Property (\begin{DoxyParamCaption}\item[{Q\+Standard\+Item $\ast$}]{parent,  }\item[{\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $\ast$}]{prop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 658 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a28adef627215413716f8a301330055c9}\label{class_abstract_camera_manager_a28adef627215413716f8a301330055c9}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree\_recursiveSetSpinProperty@{cameraTree\_recursiveSetSpinProperty}}
+\index{cameraTree\_recursiveSetSpinProperty@{cameraTree\_recursiveSetSpinProperty}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree\_recursiveSetSpinProperty()}{cameraTree\_recursiveSetSpinProperty()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::camera\+Tree\+\_\+recursive\+Set\+Spin\+Property (\begin{DoxyParamCaption}\item[{Q\+Standard\+Item $\ast$}]{parent,  }\item[{\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $\ast$}]{prop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 671 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a92ed218ecaab3f6a75d3d24e5544d17f}\label{class_abstract_camera_manager_a92ed218ecaab3f6a75d3d24e5544d17f}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!desactiveAllCameras@{desactiveAllCameras}}
+\index{desactiveAllCameras@{desactiveAllCameras}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{desactiveAllCameras()}{desactiveAllCameras()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::desactive\+All\+Cameras (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+used to close all liveviews from this manager 
+
+
+
+Definition at line 629 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a5285c2cf6e1976d0c22e46f01efdef51}\label{class_abstract_camera_manager_a5285c2cf6e1976d0c22e46f01efdef51}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!detectNewCameras@{detectNewCameras}}
+\index{detectNewCameras@{detectNewCameras}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCameras()}{detectNewCameras()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+Manager\+::detect\+New\+Cameras (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) detect new cameras 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Cameras} & (modified by the function) will be filled with all the camera connected to the computer, even ones already connected \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \mbox{\hyperlink{class_fly_camera_manager_a0f2138fb094303db2da4b8dee7f1fba8}{Fly\+Camera\+Manager}}, and \mbox{\hyperlink{class_spin_camera_manager_affc9edfd215e7dd1ad050cd111906863}{Spin\+Camera\+Manager}}.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a8e215b2531fd8c18551382dc8f571817}\label{class_abstract_camera_manager_a8e215b2531fd8c18551382dc8f571817}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!detectNewCameras@{detectNewCameras}}
+\index{detectNewCameras@{detectNewCameras}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCameras()}{detectNewCameras()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void Abstract\+Camera\+Manager\+::detect\+New\+Cameras (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}} $\ast$ $>$ $\ast$}]{new\+Cameras }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_manager_a6586a44c68b7e37a0992819af7711cc7}{Spin\+Camera\+Manager}}, \mbox{\hyperlink{class_fly_camera_manager_aab72966a50baaf966817c7f1265341a8}{Fly\+Camera\+Manager}}, and \mbox{\hyperlink{class_empty_camera_manager_ae32a44d1576763cf49d46dba3aef0007}{Empty\+Camera\+Manager}}.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a318bac5016843160762ffe7e271b33b5}\label{class_abstract_camera_manager_a318bac5016843160762ffe7e271b33b5}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!detectNewCamerasAndExpand@{detectNewCamerasAndExpand}}
+\index{detectNewCamerasAndExpand@{detectNewCamerasAndExpand}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{detectNewCamerasAndExpand()}{detectNewCamerasAndExpand()}}
+{\footnotesize\ttfamily Q\+Model\+Index Abstract\+Camera\+Manager\+::detect\+New\+Cameras\+And\+Expand (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_system_manager}{System\+Manager}} $\ast$}]{sm }\end{DoxyParamCaption})}
+
+
+
+detect new cameras 
+
+\begin{DoxyReturn}{Returns}
+the index in the model corresponding to the \char`\"{}\+Detected Cameras\char`\"{} group, in order to expand it in the view 
+\end{DoxyReturn}
+
+
+Definition at line 437 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aff485288660c144b5c269c10ef4c8782}\label{class_abstract_camera_manager_aff485288660c144b5c269c10ef4c8782}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!getActiveCameraEntries@{getActiveCameraEntries}}
+\index{getActiveCameraEntries@{getActiveCameraEntries}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{getActiveCameraEntries()}{getActiveCameraEntries()}}
+{\footnotesize\ttfamily const std\+::vector$<$\mbox{\hyperlink{struct_abstract_camera_manager_1_1active_camera_entry}{active\+Camera\+Entry}}$>$\& Abstract\+Camera\+Manager\+::get\+Active\+Camera\+Entries (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 194 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a02097102061955f0092969a6cf812823}\label{class_abstract_camera_manager_a02097102061955f0092969a6cf812823}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!getModel@{getModel}}
+\index{getModel@{getModel}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{getModel()}{getModel()}}
+{\footnotesize\ttfamily Q\+Standard\+Item\+Model $\ast$ Abstract\+Camera\+Manager\+::get\+Model (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+get the model ( camera list ) 
+
+\begin{DoxyReturn}{Returns}
+pointer to the model 
+\end{DoxyReturn}
+
+
+Definition at line 43 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a6e4b041842471b9ed42ddd5c9ab260d1}\label{class_abstract_camera_manager_a6e4b041842471b9ed42ddd5c9ab260d1}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!getName@{getName}}
+\index{getName@{getName}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily virtual std\+::string Abstract\+Camera\+Manager\+::get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+(Pure virtual) get the name of the Manager 
+
+\begin{DoxyReturn}{Returns}
+String containing the name manager 
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_spin_camera_manager_ac3ea32324ae75d80e9b1e3108ee9c6d2}{Spin\+Camera\+Manager}}, \mbox{\hyperlink{class_fly_camera_manager_a4e368cea1f4cedf26b653518c75c1433}{Fly\+Camera\+Manager}}, and \mbox{\hyperlink{class_empty_camera_manager_a9956650ba2c7ec4d18029c896311ac8e}{Empty\+Camera\+Manager}}.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a8cfcc9f2156936f1d8faea55ad97eeab}\label{class_abstract_camera_manager_a8cfcc9f2156936f1d8faea55ad97eeab}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!getPropertiesWidget@{getPropertiesWidget}}
+\index{getPropertiesWidget@{getPropertiesWidget}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{getPropertiesWidget()}{getPropertiesWidget()}}
+{\footnotesize\ttfamily Q\+Tree\+Widget $\ast$ Abstract\+Camera\+Manager\+::get\+Properties\+Widget (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+get the model of the properties 
+
+\begin{DoxyReturn}{Returns}
+pointer to the widget 
+\end{DoxyReturn}
+
+
+Definition at line 47 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a4bcb266a61c634e5f65a653f217f994c}\label{class_abstract_camera_manager_a4bcb266a61c634e5f65a653f217f994c}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!getSelectedCamera@{getSelectedCamera}}
+\index{getSelectedCamera@{getSelectedCamera}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{getSelectedCamera()}{getSelectedCamera()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}}$\ast$ Abstract\+Camera\+Manager\+::get\+Selected\+Camera (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a12c4528190897eecd744e9508430910d}\label{class_abstract_camera_manager_a12c4528190897eecd744e9508430910d}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!isCapturing@{isCapturing}}
+\index{isCapturing@{isCapturing}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{isCapturing()}{isCapturing()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::is\+Capturing (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 112 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aaa7c4f101bb59d9aa8fdc1ca4bfc25d8}\label{class_abstract_camera_manager_aaa7c4f101bb59d9aa8fdc1ca4bfc25d8}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!isUpdateProperties@{isUpdateProperties}}
+\index{isUpdateProperties@{isUpdateProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{isUpdateProperties()}{isUpdateProperties()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::is\+Update\+Properties (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 113 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a128aa1d8ba9757ccafd1923a66a3ee9a}\label{class_abstract_camera_manager_a128aa1d8ba9757ccafd1923a66a3ee9a}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!loadPropertiesDefaults@{loadPropertiesDefaults}}
+\index{loadPropertiesDefaults@{loadPropertiesDefaults}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{loadPropertiesDefaults()}{loadPropertiesDefaults()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::load\+Properties\+Defaults (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 286 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a8de0c6eb036295d3bcf6d25c95ed4da2}\label{class_abstract_camera_manager_a8de0c6eb036295d3bcf6d25c95ed4da2}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!loadPropertiesDefaultsInit@{loadPropertiesDefaultsInit}}
+\index{loadPropertiesDefaultsInit@{loadPropertiesDefaultsInit}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{loadPropertiesDefaultsInit()}{loadPropertiesDefaultsInit()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::load\+Properties\+Defaults\+Init (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 302 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_ae4c1fb8afd64ed6e843130ac9ccb90ce}\label{class_abstract_camera_manager_ae4c1fb8afd64ed6e843130ac9ccb90ce}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!loadPropertiesFromFile@{loadPropertiesFromFile}}
+\index{loadPropertiesFromFile@{loadPropertiesFromFile}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{loadPropertiesFromFile()}{loadPropertiesFromFile()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::load\+Properties\+From\+File (\begin{DoxyParamCaption}\item[{Q\+String \&}]{filepath,  }\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Property}} $>$ \&}]{prop }\end{DoxyParamCaption})}
+
+
+
+Definition at line 319 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aaa967ad7d97960c28f38dba3a08b824d}\label{class_abstract_camera_manager_aaa967ad7d97960c28f38dba3a08b824d}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!loadSpinPropertiesFromFile@{loadSpinPropertiesFromFile}}
+\index{loadSpinPropertiesFromFile@{loadSpinPropertiesFromFile}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{loadSpinPropertiesFromFile()}{loadSpinPropertiesFromFile()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::load\+Spin\+Properties\+From\+File (\begin{DoxyParamCaption}\item[{Q\+String \&}]{filepath,  }\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Spin\+Camera\+Property}} $>$ \&}]{prop }\end{DoxyParamCaption})}
+
+
+
+Definition at line 356 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a5eea7f4d2ab3ea314020b405550b378c}\label{class_abstract_camera_manager_a5eea7f4d2ab3ea314020b405550b378c}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!removeGroup@{removeGroup}}
+\index{removeGroup@{removeGroup}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{removeGroup()}{removeGroup()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::remove\+Group (\begin{DoxyParamCaption}\item[{Q\+Model\+Index}]{index }\end{DoxyParamCaption})}
+
+
+
+remove a group from the model 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & of the item to remove \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 518 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a89cd0d1f9bb47d4abda51ea4f1e08f49}\label{class_abstract_camera_manager_a89cd0d1f9bb47d4abda51ea4f1e08f49}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!resetItem@{resetItem}}
+\index{resetItem@{resetItem}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{resetItem()}{resetItem()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::reset\+Item (\begin{DoxyParamCaption}\item[{Q\+Model\+Index}]{index }\end{DoxyParamCaption})}
+
+
+
+reset the name of a camera 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & of the camera \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 532 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a2a649f85fb8bfd333379204af3399e5a}\label{class_abstract_camera_manager_a2a649f85fb8bfd333379204af3399e5a}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!savePropertiesToFile@{savePropertiesToFile}}
+\index{savePropertiesToFile@{savePropertiesToFile}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{savePropertiesToFile()}{savePropertiesToFile()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::save\+Properties\+To\+File (\begin{DoxyParamCaption}\item[{Q\+String \&}]{filepath }\end{DoxyParamCaption})}
+
+
+
+Definition at line 386 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a9369df77518a91e24596d2bbe3436bab}\label{class_abstract_camera_manager_a9369df77518a91e24596d2bbe3436bab}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!setMainWindow@{setMainWindow}}
+\index{setMainWindow@{setMainWindow}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{setMainWindow()}{setMainWindow()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::set\+Main\+Window (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_main_window}{Main\+Window}} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+to set the needed cross reference, called once after construction 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & pointer to the main window \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 39 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_ac5c7ff3b69138df82efafa0400b50ce5}\label{class_abstract_camera_manager_ac5c7ff3b69138df82efafa0400b50ce5}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!setProperties@{setProperties}}
+\index{setProperties@{setProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{setProperties()}{setProperties()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::set\+Properties (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $>$ \&}]{properties }\end{DoxyParamCaption})}
+
+
+
+Definition at line 699 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_acc348fb5e89f17e0b80e9e591925d139}\label{class_abstract_camera_manager_acc348fb5e89f17e0b80e9e591925d139}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!setSpinProperties@{setSpinProperties}}
+\index{setSpinProperties@{setSpinProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{setSpinProperties()}{setSpinProperties()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::set\+Spin\+Properties (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $>$ \&}]{properties }\end{DoxyParamCaption})}
+
+
+
+Definition at line 758 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a81e28dcc4866f495816a99bcfad9fd21}\label{class_abstract_camera_manager_a81e28dcc4866f495816a99bcfad9fd21}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!setTrackPointProperty@{setTrackPointProperty}}
+\index{setTrackPointProperty@{setTrackPointProperty}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{setTrackPointProperty()}{setTrackPointProperty()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::set\+Track\+Point\+Property (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_track_point_property}{Track\+Point\+Property}} $\ast$}]{prop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 98 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_abd6c2f0822bef37ca5625b8d3aa43e56}\label{class_abstract_camera_manager_abd6c2f0822bef37ca5625b8d3aa43e56}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!setUpdateProperties@{setUpdateProperties}}
+\index{setUpdateProperties@{setUpdateProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{setUpdateProperties()}{setUpdateProperties()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::set\+Update\+Properties (\begin{DoxyParamCaption}\item[{bool}]{on\+Off }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 111 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a5aefb0e4ae48767ead04581a4ee940a8}\label{class_abstract_camera_manager_a5aefb0e4ae48767ead04581a4ee940a8}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!stopCapturing@{stopCapturing}}
+\index{stopCapturing@{stopCapturing}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{stopCapturing()}{stopCapturing()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::stop\+Capturing (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 110 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a419cecb816ee7fe4c3074f4f6a6d41f9}\label{class_abstract_camera_manager_a419cecb816ee7fe4c3074f4f6a6d41f9}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateContainer@{updateContainer}}
+\index{updateContainer@{updateContainer}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateContainer()}{updateContainer()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::update\+Container (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 104 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a336e5cf760314194c1baf1234b87b247}\label{class_abstract_camera_manager_a336e5cf760314194c1baf1234b87b247}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateImages@{updateImages}}
+\index{updateImages@{updateImages}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateImages()}{updateImages()}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::update\+Images (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 51 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a518b8dd27c032030ff23930488da0a52}\label{class_abstract_camera_manager_a518b8dd27c032030ff23930488da0a52}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateProperties@{updateProperties}}
+\index{updateProperties@{updateProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateProperties()}{updateProperties()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::update\+Properties (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 66 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aa9e2342648ea4b4683885a3f5658fd91}\label{class_abstract_camera_manager_aa9e2342648ea4b4683885a3f5658fd91}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateProperties@{updateProperties}}
+\index{updateProperties@{updateProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateProperties()}{updateProperties()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::update\+Properties (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}} $>$ \&}]{properties }\end{DoxyParamCaption})}
+
+
+
+Definition at line 818 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aeeb2e0003c8aea5e0816277325ff7b61}\label{class_abstract_camera_manager_aeeb2e0003c8aea5e0816277325ff7b61}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updatePropertiesFromFile@{updatePropertiesFromFile}}
+\index{updatePropertiesFromFile@{updatePropertiesFromFile}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updatePropertiesFromFile()}{updatePropertiesFromFile()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::update\+Properties\+From\+File (\begin{DoxyParamCaption}\item[{Q\+String \&}]{filepath,  }\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Property}} $>$ \&}]{prop }\end{DoxyParamCaption})}
+
+
+
+Definition at line 195 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_ab4d708f46438adc8cf886c8f5057d1a6}\label{class_abstract_camera_manager_ab4d708f46438adc8cf886c8f5057d1a6}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateSpinProperties@{updateSpinProperties}}
+\index{updateSpinProperties@{updateSpinProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateSpinProperties()}{updateSpinProperties()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::update\+Spin\+Properties (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}} $>$ \&}]{properties }\end{DoxyParamCaption})}
+
+
+
+Definition at line 848 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a26eac9ad8b2d2fe00bd557453c90d012}\label{class_abstract_camera_manager_a26eac9ad8b2d2fe00bd557453c90d012}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateSpinProperties@{updateSpinProperties}}
+\index{updateSpinProperties@{updateSpinProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateSpinProperties()}{updateSpinProperties()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Abstract\+Camera\+Manager\+::update\+Spin\+Properties (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 98 of file abstractcameramanager.\+cpp.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a33b5b6ea968d18e5931ecbd38596fac8}\label{class_abstract_camera_manager_a33b5b6ea968d18e5931ecbd38596fac8}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateSpinPropertiesFromFile@{updateSpinPropertiesFromFile}}
+\index{updateSpinPropertiesFromFile@{updateSpinPropertiesFromFile}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateSpinPropertiesFromFile()}{updateSpinPropertiesFromFile()}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::update\+Spin\+Properties\+From\+File (\begin{DoxyParamCaption}\item[{Q\+String \&}]{filepath,  }\item[{std\+::vector$<$ \mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Spin\+Camera\+Property}} $>$ \&}]{prop }\end{DoxyParamCaption})}
+
+
+
+Definition at line 231 of file abstractcameramanager.\+cpp.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_abstract_camera_manager_a6487a5d1471603bd4c9cd18ff953813d}\label{class_abstract_camera_manager_a6487a5d1471603bd4c9cd18ff953813d}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!activeCameras@{activeCameras}}
+\index{activeCameras@{activeCameras}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{activeCameras}{activeCameras}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{struct_abstract_camera_manager_1_1active_camera_entry}{active\+Camera\+Entry}}$>$ Abstract\+Camera\+Manager\+::active\+Cameras\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 226 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_af11e8e49cfd447f24db39409522896a7}\label{class_abstract_camera_manager_af11e8e49cfd447f24db39409522896a7}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraProperties@{cameraProperties}}
+\index{cameraProperties@{cameraProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraProperties}{cameraProperties}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{class_camera_manager_1_1_camera_property}{Camera\+Manager\+::\+Camera\+Property}}$>$ Abstract\+Camera\+Manager\+::camera\+Properties\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 227 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a9b502f3e4d39972a14172735eeed4257}\label{class_abstract_camera_manager_a9b502f3e4d39972a14172735eeed4257}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!cameraTree@{cameraTree}}
+\index{cameraTree@{cameraTree}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{cameraTree}{cameraTree}}
+{\footnotesize\ttfamily Q\+Standard\+Item\+Model Abstract\+Camera\+Manager\+::camera\+Tree\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 217 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a990953dbac1ef8b82c661236f6222e40}\label{class_abstract_camera_manager_a990953dbac1ef8b82c661236f6222e40}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!folderIcon@{folderIcon}}
+\index{folderIcon@{folderIcon}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{folderIcon}{folderIcon}}
+{\footnotesize\ttfamily Q\+Icon Abstract\+Camera\+Manager\+::folder\+Icon\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 222 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a6d123827ae872e0cd681f515aac2661b}\label{class_abstract_camera_manager_a6d123827ae872e0cd681f515aac2661b}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!liveView@{liveView}}
+\index{liveView@{liveView}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{liveView}{liveView}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::live\+View\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 223 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a4da500120930cd1b916dda0c00a6644d}\label{class_abstract_camera_manager_a4da500120930cd1b916dda0c00a6644d}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!mainWindow@{mainWindow}}
+\index{mainWindow@{mainWindow}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{mainWindow}{mainWindow}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_main_window}{Main\+Window}}$\ast$ Abstract\+Camera\+Manager\+::main\+Window\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 216 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aabb32afc5e43c72a43cda751c0545314}\label{class_abstract_camera_manager_aabb32afc5e43c72a43cda751c0545314}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!newCameraList@{newCameraList}}
+\index{newCameraList@{newCameraList}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{newCameraList}{newCameraList}}
+{\footnotesize\ttfamily Q\+Standard\+Item Abstract\+Camera\+Manager\+::new\+Camera\+List\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 218 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a1cbe78ef302f1ca371515b337d6c4cb0}\label{class_abstract_camera_manager_a1cbe78ef302f1ca371515b337d6c4cb0}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!propertiesList@{propertiesList}}
+\index{propertiesList@{propertiesList}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{propertiesList}{propertiesList}}
+{\footnotesize\ttfamily Q\+Tree\+Widget Abstract\+Camera\+Manager\+::properties\+List\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 219 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_aa6e71b6a58aecadf7c5f329e097f417a}\label{class_abstract_camera_manager_aa6e71b6a58aecadf7c5f329e097f417a}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!selectedCamera@{selectedCamera}}
+\index{selectedCamera@{selectedCamera}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{selectedCamera}{selectedCamera}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_abstract_camera}{Abstract\+Camera}}$\ast$ Abstract\+Camera\+Manager\+::selected\+Camera\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 221 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a82d1d50b12a4fc2a8647c503df60d08d}\label{class_abstract_camera_manager_a82d1d50b12a4fc2a8647c503df60d08d}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!selectedItem@{selectedItem}}
+\index{selectedItem@{selectedItem}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{selectedItem}{selectedItem}}
+{\footnotesize\ttfamily Q\+Standard\+Item$\ast$ Abstract\+Camera\+Manager\+::selected\+Item\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 220 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a259e5562b28f304fa3d84c4b85bead45}\label{class_abstract_camera_manager_a259e5562b28f304fa3d84c4b85bead45}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!spinCameraProperties@{spinCameraProperties}}
+\index{spinCameraProperties@{spinCameraProperties}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{spinCameraProperties}{spinCameraProperties}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{class_camera_manager_spin_1_1_spin_camera_property}{Camera\+Manager\+Spin\+::\+Spin\+Camera\+Property}}$>$ Abstract\+Camera\+Manager\+::spin\+Camera\+Properties\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 228 of file abstractcameramanager.\+h.
+
+\mbox{\Hypertarget{class_abstract_camera_manager_a204492d1767bbf1c6cdfa7b145c41429}\label{class_abstract_camera_manager_a204492d1767bbf1c6cdfa7b145c41429}} 
+\index{AbstractCameraManager@{AbstractCameraManager}!updateProps@{updateProps}}
+\index{updateProps@{updateProps}!AbstractCameraManager@{AbstractCameraManager}}
+\subsubsection{\texorpdfstring{updateProps}{updateProps}}
+{\footnotesize\ttfamily bool Abstract\+Camera\+Manager\+::update\+Props\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Definition at line 224 of file abstractcameramanager.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{abstractcameramanager_8h}{abstractcameramanager.\+h}}\item 
+src/\mbox{\hyperlink{abstractcameramanager_8cpp}{abstractcameramanager.\+cpp}}\end{DoxyCompactItemize}

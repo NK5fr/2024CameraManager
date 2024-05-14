@@ -119,7 +119,7 @@ QStringList *ConfigFileReader::readNextParameterAndComment() {
 	//if the second line contains a "!" (that shouldn't happen since it's the parameter), we swap with the first line and we continue the reading.
 	while(r->at(1).contains("!")) {
 		if(!Stream->atEnd()) {
-			r->swap(0,1);
+            r->swapItemsAt(0,1);
 			r->replace(1, Stream->readLine());
 		} else {
 			return NULL;

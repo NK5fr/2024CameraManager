@@ -1,0 +1,47 @@
+!List of parameters visible in the wizards.
+!-------------------------------------------------
+!You can write comments by writing a line with a "!".
+! "|" is considered as a separator. Don't use it in your strings, or you might have cut strings and others undesirable effects!
+
+!All parameters need to be put in the order they are written to keep the same order in the wizard.
+!All parameters follow the same pattern:
+!First, you write the parameter number in the file.
+!Then you write its type: 
+!-"category" for a new category
+!-"cmbBox" for a new comboBox, which contains a list of string values
+!-"int" for a new integer parameter, represented by a spinbox.
+!-"path" for a path parameter.
+!Next, type of parameters need a name to distinguish them from others, and have other options:
+!-"category" only need a name, and have no options.
+!-"cmbBox" have one or multiple couples of showed value/real Values. Write all possible values you can have.
+!-"int" can have (but is not obliged to) a minimum value and a maximum value.
+!-"path" use 1 optional value: "folder" which indicates that the parameter is a folder path and not a file one. By default, the parameter is considered as a file path.
+
+0|category|Type of run:|
+
+1|cmbBox|type of run:|calibration from file|CF|calibration from camera|CC|production from file|PF|production from camera|PC|
+2|cmbBox|image file output:|true|T|false|F
+
+3|category|Input data for all runs:
+
+3|int|no. of triplet groups of cameras:|0|100
+6|int|no. of time points, this run:|0|25000
+9|int|Offset pixel value to separate background from particles:|-25000|25000
+10|int|Minimum no of pixels|0|2500
+
+10|category|Input data for all camera runs:
+
+15|cmbBox|camera type:|RGB8|RGB8|RGB24|RGB24
+17|path|path and name of the trigger program:|file
+18|int|triggering interval in ms:|0|25000
+19|cmbBox|trigger port:|COM4|COM4|COM3|COM3
+
+!14|category|Input data for all file runs:
+
+!15|category|input data for all production runs
+
+!19|int|no of markers:|0|2500
+
+!28|category|Input data for all calibration runs:
+
+!28|path|calibration files folder:|folder

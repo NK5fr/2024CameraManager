@@ -23,6 +23,7 @@ signals:
 public slots:
     void receiveUpdate();
 
+
 protected:
     void mouseDoubleClickEvent(QMouseEvent* event);
 };

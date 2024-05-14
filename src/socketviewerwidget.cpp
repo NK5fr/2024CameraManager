@@ -1,6 +1,6 @@
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QMenu>
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
 #include <QTextStream>
@@ -14,9 +14,9 @@
 #include <QtNetwork/qabstractsocket.h>
 #include <QtNetwork/qhostinfo.h>
 #include <QtNetwork/qnetworkinterface.h>
-#include <QtNetwork/qnetworkconfiguration.h>
-#include <QtNetwork/qnetworkconfigmanager.h>
-#include <QtNetwork/qnetworksession.h>
+#include <QScrollBar>
+#include <QDialogButtonBox>
+#include <QMessageBox>
 
 #include <string.h>
 #include <iostream>
@@ -38,7 +38,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString fi
     fileContain->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
     const int tabStop = 16;  // 16 characters
     QFontMetrics metrics(fileContain->font());
-    fileContain->setTabStopWidth(tabStop * metrics.width(' '));
+    fileContain->setTabStopDistance(tabStop * metrics.horizontalAdvance(' '));
     widgetGL = new WidgetGL(this, &pointData, calibrationPath);
     readTextFromFile();
 
@@ -64,7 +64,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) 
     fileContain->setFont(QFont("Courier", 9));
     const int tabStop = 16;  // 16 characters
     QFontMetrics metrics(fileContain->font());
-    fileContain->setTabStopWidth(tabStop * metrics.width(' '));
+    fileContain->setTabStopDistance(tabStop * metrics.horizontalAdvance(' '));
     //fileContain->setWindowTitle(filename);
     fileContain->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
     coordinatesShown = 0;
@@ -114,7 +114,7 @@ vector<Vector3d*> SocketViewerWidget::readLine(QString& line) {
 }
 
 void SocketViewerWidget::extractDataFromText() {
-    QStringList lineList = fullText.split("\n", QString::SkipEmptyParts);
+    QStringList lineList = fullText.split("\n", Qt::SkipEmptyParts);
     linesNumber = lineList.size();
 
     int rowNumberLocal = 0;
@@ -506,7 +506,7 @@ void HostAddressDialog::readSocketLine() {
     //qDebug() << "Data:\n" << QString::fromLocal8Bit(buffer) << "\n";
 
     QString socketLine = QString::fromLocal8Bit(buffer);
-    QStringList list = socketLine.split("\n", QString::SkipEmptyParts);
+    QStringList list = socketLine.split("\n", Qt::SkipEmptyParts);
     for (int i = 0; i < list.size(); i++) {
         vector<Vector3d*> pos = socketWidget->readLine(list[i]);
         if (pos.size() > 0) {

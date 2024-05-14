@@ -1,0 +1,292 @@
+\hypertarget{class_image_detect}{}\section{Image\+Detect Class Reference}
+\label{class_image_detect}\index{ImageDetect@{ImageDetect}}
+
+
+{\ttfamily \#include $<$imagedetect.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_image_detect_a2ea78db5ab4e9e09bfd4853919c9351e}{Image\+Detect}} (int image\+Width, int image\+Height, int imlimit=0, int subwinsiz=0, int min\+Pix=0, int max\+Pix=0)
+\item 
+\mbox{\hyperlink{class_image_detect_ae62102131d454c944194d77a9feba76c}{$\sim$\+Image\+Detect}} ()
+\item 
+void \mbox{\hyperlink{class_image_detect_a9a9779c213e8842fa7c4bdba59dc312e}{image\+Detect\+Points}} ()
+\item 
+void \mbox{\hyperlink{class_image_detect_a6d6fc10052fa8bc5435d045046005c9c}{image\+Remove\+Background}} ()
+\item 
+void \mbox{\hyperlink{class_image_detect_a9541c02a480030211d7e5089f80634e0}{remove\+Duplicate\+Points}} ()
+\item 
+void \mbox{\hyperlink{class_image_detect_a02ed47fccf8c8a00263d3c246d025626}{set\+Image}} (unsigned char $\ast$imarray)
+\item 
+void \mbox{\hyperlink{class_image_detect_aea9ed08fad1db74ba5ac0925a9ce4642}{set\+Threshold}} (int imlimit)
+\item 
+void \mbox{\hyperlink{class_image_detect_a4a210d6197477252ce4e50fc79b890d5}{set\+Subwin\+Size}} (int subwinsiz)
+\item 
+void \mbox{\hyperlink{class_image_detect_a9dda32888b1d56cf47d13e2e195254b2}{set\+Max\+Pix}} (int maxpix)
+\item 
+void \mbox{\hyperlink{class_image_detect_a11d8d8f15063dd4694136420f61caa9f}{set\+Min\+Pix}} (int minpix)
+\item 
+void \mbox{\hyperlink{class_image_detect_a76ef2d1c6072b5375a6071e8af461e7b}{set\+Min\+Sep}} (int min\+Sep)
+\item 
+\mbox{\hyperlink{struct_im_point}{Im\+Point}} $\ast$ \mbox{\hyperlink{class_image_detect_ade0368fed2ea4cccbbc436eb651603a5}{get\+Init\+Points}} ()
+\item 
+\mbox{\hyperlink{struct_im_point}{Im\+Point}} $\ast$ \mbox{\hyperlink{class_image_detect_a8a27f31e31b2a7671194536d8187ba57}{get\+Final\+Points}} ()
+\item 
+unsigned char $\ast$ \mbox{\hyperlink{class_image_detect_ad825631c35588b68c69911097b2d26de}{get\+Filtered\+Image}} ()
+\item 
+unsigned char $\ast$ \mbox{\hyperlink{class_image_detect_aa5bf3a0fbc4dd9b377abf6cfdb86f054}{get\+Image}} ()
+\item 
+int \mbox{\hyperlink{class_image_detect_a44343ed4640409fea5062b82ceb421c6}{get\+Init\+Num\+Points}} ()
+\item 
+int \mbox{\hyperlink{class_image_detect_a40764a69b1ea845b170c006150561d5b}{get\+Final\+Num\+Points}} ()
+\item 
+int \mbox{\hyperlink{class_image_detect_acd993d239569845c322f5956c7370911}{get\+Max\+Pix}} ()
+\item 
+int \mbox{\hyperlink{class_image_detect_ac0d3d2046393acd84b358ea653662456}{get\+Min\+Pix}} ()
+\item 
+int \mbox{\hyperlink{class_image_detect_afd28916cc8e9627eed3e47757b770258}{get\+Image\+Width}} ()
+\item 
+int \mbox{\hyperlink{class_image_detect_a68a50fce55888eb61c8cd13b9e89a2d6}{get\+Image\+Height}} ()
+\item 
+const int \mbox{\hyperlink{class_image_detect_a0df3a01d26a8fbf8383f5980f430ba03}{get\+Max\+Points}} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 153 of file imagedetect.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_image_detect_a2ea78db5ab4e9e09bfd4853919c9351e}\label{class_image_detect_a2ea78db5ab4e9e09bfd4853919c9351e}} 
+\index{ImageDetect@{ImageDetect}!ImageDetect@{ImageDetect}}
+\index{ImageDetect@{ImageDetect}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{ImageDetect()}{ImageDetect()}}
+{\footnotesize\ttfamily Image\+Detect\+::\+Image\+Detect (\begin{DoxyParamCaption}\item[{int}]{image\+Width,  }\item[{int}]{image\+Height,  }\item[{int}]{imlimit = {\ttfamily 0},  }\item[{int}]{subwinsiz = {\ttfamily 0},  }\item[{int}]{min\+Pix = {\ttfamily 0},  }\item[{int}]{max\+Pix = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+Definition at line 6 of file imagedetect.\+cpp.
+
+\mbox{\Hypertarget{class_image_detect_ae62102131d454c944194d77a9feba76c}\label{class_image_detect_ae62102131d454c944194d77a9feba76c}} 
+\index{ImageDetect@{ImageDetect}!````~ImageDetect@{$\sim$ImageDetect}}
+\index{````~ImageDetect@{$\sim$ImageDetect}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{$\sim$ImageDetect()}{~ImageDetect()}}
+{\footnotesize\ttfamily Image\+Detect\+::$\sim$\+Image\+Detect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 21 of file imagedetect.\+cpp.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_image_detect_ad825631c35588b68c69911097b2d26de}\label{class_image_detect_ad825631c35588b68c69911097b2d26de}} 
+\index{ImageDetect@{ImageDetect}!getFilteredImage@{getFilteredImage}}
+\index{getFilteredImage@{getFilteredImage}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getFilteredImage()}{getFilteredImage()}}
+{\footnotesize\ttfamily unsigned char$\ast$ Image\+Detect\+::get\+Filtered\+Image (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 170 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a40764a69b1ea845b170c006150561d5b}\label{class_image_detect_a40764a69b1ea845b170c006150561d5b}} 
+\index{ImageDetect@{ImageDetect}!getFinalNumPoints@{getFinalNumPoints}}
+\index{getFinalNumPoints@{getFinalNumPoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getFinalNumPoints()}{getFinalNumPoints()}}
+{\footnotesize\ttfamily int Image\+Detect\+::get\+Final\+Num\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 173 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a8a27f31e31b2a7671194536d8187ba57}\label{class_image_detect_a8a27f31e31b2a7671194536d8187ba57}} 
+\index{ImageDetect@{ImageDetect}!getFinalPoints@{getFinalPoints}}
+\index{getFinalPoints@{getFinalPoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getFinalPoints()}{getFinalPoints()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_im_point}{Im\+Point}}$\ast$ Image\+Detect\+::get\+Final\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 169 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_aa5bf3a0fbc4dd9b377abf6cfdb86f054}\label{class_image_detect_aa5bf3a0fbc4dd9b377abf6cfdb86f054}} 
+\index{ImageDetect@{ImageDetect}!getImage@{getImage}}
+\index{getImage@{getImage}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getImage()}{getImage()}}
+{\footnotesize\ttfamily unsigned char$\ast$ Image\+Detect\+::get\+Image (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 171 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a68a50fce55888eb61c8cd13b9e89a2d6}\label{class_image_detect_a68a50fce55888eb61c8cd13b9e89a2d6}} 
+\index{ImageDetect@{ImageDetect}!getImageHeight@{getImageHeight}}
+\index{getImageHeight@{getImageHeight}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getImageHeight()}{getImageHeight()}}
+{\footnotesize\ttfamily int Image\+Detect\+::get\+Image\+Height (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 177 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_afd28916cc8e9627eed3e47757b770258}\label{class_image_detect_afd28916cc8e9627eed3e47757b770258}} 
+\index{ImageDetect@{ImageDetect}!getImageWidth@{getImageWidth}}
+\index{getImageWidth@{getImageWidth}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getImageWidth()}{getImageWidth()}}
+{\footnotesize\ttfamily int Image\+Detect\+::get\+Image\+Width (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 176 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a44343ed4640409fea5062b82ceb421c6}\label{class_image_detect_a44343ed4640409fea5062b82ceb421c6}} 
+\index{ImageDetect@{ImageDetect}!getInitNumPoints@{getInitNumPoints}}
+\index{getInitNumPoints@{getInitNumPoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getInitNumPoints()}{getInitNumPoints()}}
+{\footnotesize\ttfamily int Image\+Detect\+::get\+Init\+Num\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 172 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_ade0368fed2ea4cccbbc436eb651603a5}\label{class_image_detect_ade0368fed2ea4cccbbc436eb651603a5}} 
+\index{ImageDetect@{ImageDetect}!getInitPoints@{getInitPoints}}
+\index{getInitPoints@{getInitPoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getInitPoints()}{getInitPoints()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_im_point}{Im\+Point}}$\ast$ Image\+Detect\+::get\+Init\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 168 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_acd993d239569845c322f5956c7370911}\label{class_image_detect_acd993d239569845c322f5956c7370911}} 
+\index{ImageDetect@{ImageDetect}!getMaxPix@{getMaxPix}}
+\index{getMaxPix@{getMaxPix}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getMaxPix()}{getMaxPix()}}
+{\footnotesize\ttfamily int Image\+Detect\+::get\+Max\+Pix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 174 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a0df3a01d26a8fbf8383f5980f430ba03}\label{class_image_detect_a0df3a01d26a8fbf8383f5980f430ba03}} 
+\index{ImageDetect@{ImageDetect}!getMaxPoints@{getMaxPoints}}
+\index{getMaxPoints@{getMaxPoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getMaxPoints()}{getMaxPoints()}}
+{\footnotesize\ttfamily const int Image\+Detect\+::get\+Max\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 178 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_ac0d3d2046393acd84b358ea653662456}\label{class_image_detect_ac0d3d2046393acd84b358ea653662456}} 
+\index{ImageDetect@{ImageDetect}!getMinPix@{getMinPix}}
+\index{getMinPix@{getMinPix}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{getMinPix()}{getMinPix()}}
+{\footnotesize\ttfamily int Image\+Detect\+::get\+Min\+Pix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 175 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a9a9779c213e8842fa7c4bdba59dc312e}\label{class_image_detect_a9a9779c213e8842fa7c4bdba59dc312e}} 
+\index{ImageDetect@{ImageDetect}!imageDetectPoints@{imageDetectPoints}}
+\index{imageDetectPoints@{imageDetectPoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{imageDetectPoints()}{imageDetectPoints()}}
+{\footnotesize\ttfamily void Image\+Detect\+::image\+Detect\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 36 of file imagedetect.\+cpp.
+
+\mbox{\Hypertarget{class_image_detect_a6d6fc10052fa8bc5435d045046005c9c}\label{class_image_detect_a6d6fc10052fa8bc5435d045046005c9c}} 
+\index{ImageDetect@{ImageDetect}!imageRemoveBackground@{imageRemoveBackground}}
+\index{imageRemoveBackground@{imageRemoveBackground}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{imageRemoveBackground()}{imageRemoveBackground()}}
+{\footnotesize\ttfamily void Image\+Detect\+::image\+Remove\+Background (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 223 of file imagedetect.\+cpp.
+
+\mbox{\Hypertarget{class_image_detect_a9541c02a480030211d7e5089f80634e0}\label{class_image_detect_a9541c02a480030211d7e5089f80634e0}} 
+\index{ImageDetect@{ImageDetect}!removeDuplicatePoints@{removeDuplicatePoints}}
+\index{removeDuplicatePoints@{removeDuplicatePoints}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{removeDuplicatePoints()}{removeDuplicatePoints()}}
+{\footnotesize\ttfamily void Image\+Detect\+::remove\+Duplicate\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 995 of file imagedetect.\+cpp.
+
+\mbox{\Hypertarget{class_image_detect_a02ed47fccf8c8a00263d3c246d025626}\label{class_image_detect_a02ed47fccf8c8a00263d3c246d025626}} 
+\index{ImageDetect@{ImageDetect}!setImage@{setImage}}
+\index{setImage@{setImage}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{setImage()}{setImage()}}
+{\footnotesize\ttfamily void Image\+Detect\+::set\+Image (\begin{DoxyParamCaption}\item[{unsigned char $\ast$}]{imarray }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 162 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a9dda32888b1d56cf47d13e2e195254b2}\label{class_image_detect_a9dda32888b1d56cf47d13e2e195254b2}} 
+\index{ImageDetect@{ImageDetect}!setMaxPix@{setMaxPix}}
+\index{setMaxPix@{setMaxPix}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{setMaxPix()}{setMaxPix()}}
+{\footnotesize\ttfamily void Image\+Detect\+::set\+Max\+Pix (\begin{DoxyParamCaption}\item[{int}]{maxpix }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 165 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a11d8d8f15063dd4694136420f61caa9f}\label{class_image_detect_a11d8d8f15063dd4694136420f61caa9f}} 
+\index{ImageDetect@{ImageDetect}!setMinPix@{setMinPix}}
+\index{setMinPix@{setMinPix}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{setMinPix()}{setMinPix()}}
+{\footnotesize\ttfamily void Image\+Detect\+::set\+Min\+Pix (\begin{DoxyParamCaption}\item[{int}]{minpix }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 166 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a76ef2d1c6072b5375a6071e8af461e7b}\label{class_image_detect_a76ef2d1c6072b5375a6071e8af461e7b}} 
+\index{ImageDetect@{ImageDetect}!setMinSep@{setMinSep}}
+\index{setMinSep@{setMinSep}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{setMinSep()}{setMinSep()}}
+{\footnotesize\ttfamily void Image\+Detect\+::set\+Min\+Sep (\begin{DoxyParamCaption}\item[{int}]{min\+Sep }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 167 of file imagedetect.\+h.
+
+\mbox{\Hypertarget{class_image_detect_a4a210d6197477252ce4e50fc79b890d5}\label{class_image_detect_a4a210d6197477252ce4e50fc79b890d5}} 
+\index{ImageDetect@{ImageDetect}!setSubwinSize@{setSubwinSize}}
+\index{setSubwinSize@{setSubwinSize}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{setSubwinSize()}{setSubwinSize()}}
+{\footnotesize\ttfamily void Image\+Detect\+::set\+Subwin\+Size (\begin{DoxyParamCaption}\item[{int}]{subwinsiz }\end{DoxyParamCaption})}
+
+
+
+Definition at line 30 of file imagedetect.\+cpp.
+
+\mbox{\Hypertarget{class_image_detect_aea9ed08fad1db74ba5ac0925a9ce4642}\label{class_image_detect_aea9ed08fad1db74ba5ac0925a9ce4642}} 
+\index{ImageDetect@{ImageDetect}!setThreshold@{setThreshold}}
+\index{setThreshold@{setThreshold}!ImageDetect@{ImageDetect}}
+\subsubsection{\texorpdfstring{setThreshold()}{setThreshold()}}
+{\footnotesize\ttfamily void Image\+Detect\+::set\+Threshold (\begin{DoxyParamCaption}\item[{int}]{imlimit }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 163 of file imagedetect.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\mbox{\hyperlink{imagedetect_8h}{imagedetect.\+h}}\item 
+src/\mbox{\hyperlink{imagedetect_8cpp}{imagedetect.\+cpp}}\end{DoxyCompactItemize}

@@ -20,6 +20,9 @@
 
 #include "menubar.h"
 #include "abstractcameramanager.h"
+#include "systemmanager.h"
+
+
 
 namespace Ui {
     class MainWindow;
@@ -50,6 +53,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    //Armand & Nathan on 13/05/2024 : Useless because we only use Spinnaker
+
+    //Constant to get if the selected manager is Fly or SPIN
+    //wrote on 11/06/2019 by French students
+    // static int selection;
+
+
+
     /** ACCESSORS **/
     void modifySubWindow(QMdiSubWindow* in, bool add);
     Ui::MainWindow *getUi();
@@ -57,7 +68,7 @@ public:
     int getSelectedCameraManager();
 
     /** THREAD METHODS **/
-    void startCameraDetection();
+    void startCameraDetection(SystemManager *sm);
     void startUpdateProperties();
 
     // gs test
@@ -89,6 +100,9 @@ private slots:
     void projectTree_doubleClicked(const QModelIndex &index);
     void projectTree_clicked(const QModelIndex &index);
     void menuProjectAction_triggered(QAction *);
+
+    //RAJOUT HUGO IMPLEMENT SPIN/
+    void combobox_changeSDK();
 
     /** TO BE DELETED **/
     /*void on_Detect_clicked();*/
@@ -132,7 +146,7 @@ protected:
     void on_resetItem();
 
 private:
-    // gs TEST for å real time output fra trackpoint
+    // gs TEST for ? real time output fra trackpoint
     ExternalProcess* trackPointProcess; // Lars Aksel
     //QTextEdit* trackPointOutput; //gs
     //QStringList options;  // gs
@@ -166,23 +180,30 @@ private:
     QString calibrationPath;
     bool isProjectLoaded = false;
 
+    //SystemManager *system;
+
     QLabel *label;
     std::vector<QString> ConfigFilesPaths;
     /* Internal class to detect cameras */
+    //classe a remettre en commentaire si bug
     class ThreadDetectCamera : public QThread {
     public:
         ThreadDetectCamera(MainWindow *w) : QThread() { window = w; }
     protected:
         void run() {
-            window->startCameraDetection();
+            window->startCameraDetection(system);
+
         }
     private:
         MainWindow *window;
+        SystemManager *system = new SystemManager;
+
     };
     ThreadDetectCamera tdc;
+    //classe a remettre en commentaire si bug
     bool detectCameras;
 
-    /* Internal class to update properties from cameras */
+    //Internal class to update properties from cameras
     class ThreadUpdateProperties : public QThread {
     public:
         ThreadUpdateProperties(MainWindow *w) : QThread() { window = w; }
@@ -197,5 +218,3 @@ private:
 };
 
 #endif // MAINWINDOW_H
-
-

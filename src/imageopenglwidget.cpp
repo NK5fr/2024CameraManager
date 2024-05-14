@@ -15,7 +15,11 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     showBoundingAreas = false;
     numImageGroupsX = 3;
     numImageGroupsY = 3;
-    setMouseTracking(true);
+    /*
+     * 13/05/2024
+     * Nathan & Armand - set to false, as the crosshair button already puts it to true
+    */
+    setMouseTracking(false);
 
     // Test-code for boxes and circles, used for drawing masking-areas etc.
     // Maybe about 70-80 % finished bounding-area management code.

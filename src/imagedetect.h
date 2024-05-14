@@ -9,7 +9,8 @@
 #include <iostream>
 #include <qthread.h>
 #include <algorithm>
-
+#include <emmintrin.h>
+#include <math.h>
 #include "constants.h"
 
 // Unsigned greater-than comparison 8-bit

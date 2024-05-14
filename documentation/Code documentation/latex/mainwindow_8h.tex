@@ -1,0 +1,66 @@
+\hypertarget{mainwindow_8h}{}\section{src/mainwindow.h File Reference}
+\label{mainwindow_8h}\index{src/mainwindow.h@{src/mainwindow.h}}
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Main\+Window$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Frame$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+List\+Widget$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Line\+Edit$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Label$>$}\newline
+{\ttfamily \#include $<$Qt\+Widgets/\+Q\+Text\+Edit$>$}\newline
+{\ttfamily \#include $<$Q\+Timer$>$}\newline
+{\ttfamily \#include $<$Q\+Process$>$}\newline
+{\ttfamily \#include $<$qsettings.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}trackpointproperty.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}externalprocess.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}menubar.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}abstractcameramanager.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}systemmanager.\+h\char`\"{}}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_main_window}{Main\+Window}}
+\begin{DoxyCompactList}\small\item\em handle ui events. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespace_ui}{Ui}}
+\item 
+ \mbox{\hyperlink{namespace_file_info}{File\+Info}}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{namespace_ui_a63c7d5e09274c605df66a0251b2db5de}{Ui\+::\+Properties\+Widget\+Position}} \{ \newline
+\mbox{\hyperlink{namespace_ui_a63c7d5e09274c605df66a0251b2db5dea8777cf0aa2c4e679ba1bdf9707dac972}{Ui\+::\+Property\+Name}} = 0, 
+\mbox{\hyperlink{namespace_ui_a63c7d5e09274c605df66a0251b2db5dea8ea0e137ca57c213bb2ff91c6b65f232}{Ui\+::\+Property\+Auto}} = 1, 
+\mbox{\hyperlink{namespace_ui_a63c7d5e09274c605df66a0251b2db5deaf01620e8f4dffdc93a3bdc4d40e661b9}{Ui\+::\+Property\+Write\+Value}} = 2, 
+\mbox{\hyperlink{namespace_ui_a63c7d5e09274c605df66a0251b2db5dea2e479d024139ecda5617df06cd0a3c08}{Ui\+::\+Property\+Read\+Value}} = 3, 
+\newline
+\mbox{\hyperlink{namespace_ui_a63c7d5e09274c605df66a0251b2db5deaa29fa9efb61bbe4e5d91d5d57d198260}{Ui\+::\+Property\+Slider}} = 4
+ \}
+\item 
+enum \mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752}{File\+Info\+::\+File\+Type}} \{ \newline
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752a89179b71dffc59f77a07b941b5be1489}{File\+Info\+::\+Configuration\+File}}, 
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752ad1d5942c086937f7de31ebd2d75ce4b0}{File\+Info\+::\+Socket\+File}}, 
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752a3c1ddc27d3a11a7e28a2de1151c9b415}{File\+Info\+::\+Folder}}, 
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752a367795a2cc834b1cb309bb64cb122138}{File\+Info\+::\+Image\+File}}, 
+\newline
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752a98141c146a660b57571ba76a11b2fd13}{File\+Info\+::\+Calibration\+File}}, 
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752a45a1f2bec91f40158a03babdb08c606d}{File\+Info\+::\+Executable}}, 
+\mbox{\hyperlink{namespace_file_info_a061391d645c7825487ebb57cc2ff2752a27f63f9e61146267d9d4ccbb96990dbd}{File\+Info\+::\+Text\+File}}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{namespace_ui_abe5a6cd1ec23118ea54cb4a9d8d0bde3}{Ui\+::crosshair}} = false
+\item 
+bool \mbox{\hyperlink{namespace_ui_ab5be07ff0bbd6f053a2eeeb3148e4531}{Ui\+::crosshair\+Real}} = false
+\item 
+bool \mbox{\hyperlink{namespace_ui_a9665fd20baaf4665d58dedf7ec1bca54}{Ui\+::force\+High\+Quality}} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Virgile Wozny 
+\end{DoxyAuthor}

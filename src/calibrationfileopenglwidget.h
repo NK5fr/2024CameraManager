@@ -1,11 +1,11 @@
 
-// Written by: Lars Aksel Tveråmo
+// Written by: Lars Aksel Tver?mo
 // 3D Motion Technologies AS
 
 #ifndef CALIBRATIONFILE_OPENGL_WIDGET_H
 #define CALIBRATIONFILE_OPENGL_WIDGET_H
 
-#include <qopenglwidget.h>
+#include <QtOpenGLWidgets/qopenglwidget.h>
 #include <qpainter.h>
 #include <vector>
 #include "calibrationfile.h"

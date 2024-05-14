@@ -1,7 +1,7 @@
 #include "configfileviewerwidget.h"
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QMenu>
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
@@ -278,7 +278,7 @@ void ConfigFileViewerWidget::createWizard() {
     line = pListReader.readLine();
     //if the line is not a comment or empty, we split the line with the delimiter "|" and determine what type it is
     if (!line.contains("!") && !line.isEmpty()) {
-      splitLine = line.split("|", QString::SkipEmptyParts);
+      splitLine = line.split("|", Qt::SkipEmptyParts);
       //read the first element, which shall correspond to the number of the parameter
       parameterNumber = splitLine.at(0).toInt(&ok);
       //if we successfully read the parameter, we search the type of parameter
@@ -534,7 +534,7 @@ void pathEditBox::selectFile() {
     path = QFileDialog::getOpenFileName(this, "Choose a file", this->startPlaceToSearch, "All files (*)");
   }
 
-  if (path != NULL) {
+  if (path.isNull()) {
     text->setText(path);
   }
 

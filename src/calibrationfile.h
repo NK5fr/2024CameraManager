@@ -1,5 +1,5 @@
 
-// Written by: Lars Aksel Tveråmo
+// Written by: Lars Aksel Tver?mo
 // 3D Motion Technologies AS
 
 #ifndef CALIBRATION_FILE_H
@@ -12,7 +12,7 @@
 #include <qtreeview.h>
 #include <qtableview.h>
 #include <qlayout.h>
-#include <qopenglwidget.h>
+#include <QtOpenGLWidgets/QOpenGLWidget>
 #include <qtreewidget.h>
 #include <qstandarditemmodel.h>
 #include <qplaintextedit.h>
@@ -28,7 +28,7 @@ class CalibrationFile {
 public:
     CalibrationFile(QString filePath);
     ~CalibrationFile();
-    
+
     inline int getNumCameras() { return this->numCameras; }
     inline int getNumCombinations() { return this->numCombinations; }
     inline const vector<TrackPoint::CameraCombination*>& getCameraCombinations() { return this->camCombs; }

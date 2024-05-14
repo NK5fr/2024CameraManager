@@ -1,7 +1,7 @@
 #ifndef CALIBRATIONVIEWERWIDGET_H
 #define CALIBRATIONVIEWERWIDGET_H
 
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>

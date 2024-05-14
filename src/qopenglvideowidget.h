@@ -5,7 +5,8 @@
 #define QOPENGLVIDEOWIDGET_H
 
 #include <QtWidgets/qwidget.h>
-#include <QtOpenGL/qgl.h>
+#include <QtOpenGL>
+#include <QtOpenGLWidgets/QtOpenGLWidgets>
 #include <QtCore/qmath.h>
 #include <QThread>
 #include <QMutex>
@@ -13,7 +14,7 @@
 #include "trackpointproperty.h"
 #include "texture.h"
 
-class QOpenglVideoWidget : public QGLWidget {
+class QOpenglVideoWidget : public QOpenGLWidget {
     Q_OBJECT
 public:
     QOpenglVideoWidget();

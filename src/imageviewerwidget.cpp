@@ -40,7 +40,7 @@ void ImageViewerWidget::setImageFromFile(const QString& filepath) {
 }
 
 void ImageViewerWidget::wheelEvent(QWheelEvent* event) {
-    int tempSelectedImageInFolder = max(0, min((event->delta() / 120) + selectedImageInFolder, imageFiles.size() - 1));
+    int tempSelectedImageInFolder = max(0, min((event->angleDelta().y() / 120) + selectedImageInFolder, (int) imageFiles.size() - 1));
     if (tempSelectedImageInFolder != selectedImageInFolder) {
         selectedImageInFolder = tempSelectedImageInFolder;
         setImageFromFile(imageFiles[selectedImageInFolder].absoluteFilePath());
