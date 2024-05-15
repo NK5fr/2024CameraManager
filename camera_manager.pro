@@ -51,18 +51,14 @@ LIBS += -lglu32
 
 unix {
     CONFIG += c++11
-#QMAKE_CXXFLAGS += -std=gnu++0x
-    INCLUDEPATH += $$PWD/include/
+    #QMAKE_CXXFLAGS += -std=gnu++0x
+    INCLUDEPATH += $$PWD/include/Spinnaker
     #LIBS += -lflycapture
-    LIBS += -L"/opt/spinnaker/lib/" -lGenApi_gcc11_v3_0
-    LIBS += -L"/opt/spinnaker/lib/" -lGCBase_gcc11_v3_0
+    LIBS += -L"$$PWD/lib/" -lSpinnaker
+    LIBS += -L"$$PWD/lib/" -lGenApi_gcc11_v3_0
+    LIBS += -L"$$PWD/lib/" -lGCBase_gcc11_v3_0
     LIBS += -lGLU
 }
-
-unix:!macx: LIBS += -L$$PWD/../../../../opt/spinnaker/lib/ -lSpinnaker
-
-INCLUDEPATH += $$PWD/../../../../opt/spinnaker/include
-DEPENDPATH += $$PWD/../../../../opt/spinnaker/include
 
 
 
