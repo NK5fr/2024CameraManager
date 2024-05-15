@@ -87,8 +87,8 @@ void CalibrationFileOpenGLWidget::paintGL() {
 
     glColor3f(1, 0, 0);
     double pointSize = 5;
-    glPointSize(max(1.0, pointSize));
-    vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
+    glPointSize(std::max(1.0, pointSize));
+    std::vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
     for (int i = 0; i < camComb.size(); i++) {
         if (camComb[i]->cameras[0] != nullptr && camComb[i] != selectedCameraCombination) {
             glBegin(GL_POINTS);
@@ -98,7 +98,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
     }
     if (selectedCameraCombination != nullptr) {
         if (selectedCameraCombination->cameras[0] != nullptr) {
-            glPointSize(max(1.0, pointSize * 2));
+            glPointSize(std::max(1.0, pointSize * 2));
             glColor3f(1, 1, 0);
             glBegin(GL_POINTS);
             for (int j = 0; j < 3; j++) {
@@ -108,7 +108,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
         }
     }
     if (selectedCamera >= 0) {
-        glPointSize(max(1.0, pointSize * 2));
+        glPointSize(std::max(1.0, pointSize * 2));
         glColor3f(1, 1, 0);
         glBegin(GL_POINTS);
         for (int i = 0; i < camComb.size(); i++) {
@@ -123,7 +123,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
         glEnd();
     }
 
-    vector<TrackPoint::Camera*> cams = calibFile->getCameras();
+    std::vector<TrackPoint::Camera*> cams = calibFile->getCameras();
     float screenFactorX = screenFactorX = (float) width() / screenArea.width();
     float screenFactorY = screenFactorY = (float) height() / screenArea.height();
     int leftBottomOffsetX = screenArea.left() * screenFactorX;
@@ -191,8 +191,8 @@ void CalibrationFileOpenGLWidget::setSelectedCamera(int selectedCam) {
 }
 
 void CalibrationFileOpenGLWidget::initCameraArea() {
-    vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
-    vector<TrackPoint::Camera*> cams = calibFile->getCameras();
+    std::vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
+    std::vector<TrackPoint::Camera*> cams = calibFile->getCameras();
     cameraArea.resize(cams.size());
     const float max = 10000000; // 10 km
     for (int i = 0; i < cams.size(); i++) {
@@ -229,10 +229,10 @@ void CalibrationFileOpenGLWidget::addCameraAreaMargin(double margin) {
 }
 
 void CalibrationFileOpenGLWidget::adjustCameraAreaForCoordinateOrigin() {
-    calibrationCameraArea.setLeft(min(calibrationCameraArea.left(), 0.0));
-    calibrationCameraArea.setRight(max(calibrationCameraArea.right(), 0.0));
-    calibrationCameraArea.setTop(max(calibrationCameraArea.top(), 0.0));
-    calibrationCameraArea.setBottom(min(calibrationCameraArea.bottom(), 0.0));
+    calibrationCameraArea.setLeft(std::min(calibrationCameraArea.left(), 0.0));
+    calibrationCameraArea.setRight(std::max(calibrationCameraArea.right(), 0.0));
+    calibrationCameraArea.setTop(std::max(calibrationCameraArea.top(), 0.0));
+    calibrationCameraArea.setBottom(std::min(calibrationCameraArea.bottom(), 0.0));
 }
 
 void CalibrationFileOpenGLWidget::createCoordinateGrid(QRectF area, double gridSize, const QColor& color) {

@@ -29,9 +29,6 @@
 #include <qdir.h>
 #include <qfileinfo.h>
 
-
-using namespace std;
-
 class ImageViewerWidget : public QMdiSubWindow {
     Q_OBJECT
 public:
@@ -63,7 +60,7 @@ private:
     QString fullPath;
     QPoint point;
     QSlider imageFileSlider;
-    vector<vector<QPoint>> points;
+    std::vector<std::vector<QPoint>> points;
     
     // "Sub-Region" GUI-elements
     QPushButton toggleHideSubRegionOptions;

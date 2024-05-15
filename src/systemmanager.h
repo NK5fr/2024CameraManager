@@ -8,7 +8,6 @@
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
-using namespace std;
 
 class SystemManager
 {

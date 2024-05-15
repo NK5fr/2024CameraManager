@@ -6,7 +6,6 @@
 
 using namespace CameraManager;
 using namespace CameraManagerSpin;
-using namespace std;
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
@@ -435,9 +434,9 @@ bool AbstractCameraManager::savePropertiesToFile(QString& filepath) {
 
 // Armand & Nathan on 13/05/2024
 bool AbstractCameraManager::saveSpinPropertiesToFile(QString& filepath) {
-    cout << "saveSpinProperties" << endl;
+    std::cout << "saveSpinProperties" << std::endl;
     QSettings settings(filepath, QSettings::IniFormat);
-    cout << "settings" << endl;
+    std::cout << "settings" << std::endl;
     settings.beginGroup("BlackLevel");
     setSpinPropToSettings(settings, spinCameraProperties[0]);
     settings.endGroup();
@@ -919,11 +918,11 @@ void AbstractCameraManager::updateProperties(std::vector<CameraProperty> &proper
 //Update Spinnaker properties
 //wrote on 11/06/2019 by French students modified by Armand & Nathan on 13/05/2024
 void AbstractCameraManager::updateSpinProperties(std::vector<CameraManagerSpin::SpinCameraProperty> &properties) {
-    cout << properties.size() << endl;
+    std::cout << properties.size() << std::endl;
     for (unsigned int i = 0; i < spinCameraProperties.size(); i++){
         QTreeWidgetItem* it = propertiesList.topLevelItem(i);
         SpinCameraProperty &property = properties.at(i);
-        cout << property.getName().toStdString() << property.getValue() << endl;
+        std::cout << property.getName().toStdString() << property.getValue() << std::endl;
         for (int j = activeCameras.size() - 1; j >= 0; j--){
            // activeCameras.at(j).camera->setProperty(&property);
         }
@@ -954,14 +953,14 @@ void AbstractCameraManager::on_propertyCheckbox_changed(int state){
 
     if (selectedItem == NULL) return;
     SpinCameraProperty* prop = reinterpret_cast<SpinCameraProperty*>( sender()->property("CameraProperty").value<quintptr>() );
-    cout << sender() << qPrintable(prop->getName()) << endl;
+    std::cout << sender() << qPrintable(prop->getName()) << std::endl;
     prop->setAuto(state == Qt::Checked);
     cameraTree_recursiveSetSpinProperty(selectedItem, prop);
 
     //(de)activate slider
     if (prop->getType() == CameraManagerSpin::AUTOTRIGGER) return;
     QSlider* slider =  reinterpret_cast<QSlider*>( sender()->property("TreeWidgetSlider").value<quintptr>());
-    cout << "Qslider" << slider << endl;
+    std::cout << "Qslider" << slider << std::endl;
     if (state != Qt::Checked) {
         slider->setEnabled(true);
         slider->setValue(prop->getValueToSlider());

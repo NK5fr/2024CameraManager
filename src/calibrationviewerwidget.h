@@ -18,8 +18,6 @@
 
 #include "calibrationfile.h"
 
-using namespace std;
-
 class CalibrationEdit;
 
 /* This is the state of each camera combination

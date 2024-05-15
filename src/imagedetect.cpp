@@ -1,8 +1,5 @@
 ﻿#include "imagedetect.h"
 
-using namespace std;
-using namespace std::chrono;
-
 ImageDetect::ImageDetect(int imageWidth, int imageHeight, int imlimit, int subwinsiz, int minPix, int maxPix) {
     this->imageWidth = imageWidth;
     this->imageHeight = imageHeight;
@@ -67,7 +64,7 @@ void ImageDetect::imageDetectPoints() {  // imno for logging
         iloop++;
         if (!imageFindPoint()) break;
         imageMaxPixelPosition();
-        if (min(pointDef->maxx, pointDef->maxy) >= minpix && max(pointDef->maxx, pointDef->maxy) <= 2 * maxpix) { //Allow possible dipols to be treated further also
+        if (std::min(pointDef->maxx, pointDef->maxy) >= minpix && std::max(pointDef->maxx, pointDef->maxy) <= 2 * maxpix) { //Allow possible dipols to be treated further also
             pointDef->newpnt.x = pointDef->pnt.x - (subwinsiz / 2); // + 1 ???
             pointDef->newpnt.y = pointDef->pnt.y - (subwinsiz / 2); // + 1 ???
             int ii = (int) (pointDef->newpnt.x + 0.5); // 23.04.2010
@@ -78,7 +75,7 @@ void ImageDetect::imageDetectPoints() {  // imno for logging
             subwinFindPoint(ic, jc);
             if (imagePointPosition()) {
                 //Check minimum size of point
-                if (min(pointDef->maxx, pointDef->maxy) >= minpix && max(pointDef->maxx, pointDef->maxy) <= 2 * maxpix) { //Allow possible dipols to be treated further also
+                if (std::min(pointDef->maxx, pointDef->maxy) >= minpix && std::max(pointDef->maxx, pointDef->maxy) <= 2 * maxpix) { //Allow possible dipols to be treated further also
                     if (points->numpoints < MAX_POINTS - 1) {
                         points->table[points->numpoints] = pointDef->pnt;
                         points->numpoints++;
@@ -318,7 +315,7 @@ void ImageDetect::imageRemoveBackground() {
                     imthresh = subwinavg + imlimit;
                 } else {
                     // Set offset treshold value (use smaller offset when background is bright -> less contrast)
-                    imthresh = min(imlimit, (int) (0.3 * (255. - subwinavg)));
+                    imthresh = std::min(imlimit, (int) (0.3 * (255. - subwinavg)));
                     //imthresh = max(min(imlimit,INT(210.-subwinavg)),10)
                     imthresh = subwinavg + imthresh;
                 }
@@ -405,7 +402,7 @@ void ImageDetect::subwinRemoveBackground() {
             imthresh = subwinavg + imlimit;
         } else {
             // Set offset treshold value (use smaller offset when background is bright -> less contrast)
-            imthresh = min(imlimit, (int) (0.3*(255. - subwinavg)));
+            imthresh = std::min(imlimit, (int) (0.3*(255. - subwinavg)));
             //imthresh = max(min(imlimit,INT(210.-subwinavg)),10)
             imthresh = subwinavg + imthresh;
         }
@@ -448,9 +445,9 @@ void ImageDetect::subwinRead(int ix, int iy, int &ic, int &jc) {
     // Purpose: To read part of an image into a subwindow
     //          This routine replaces the previous program:
     //             a SPOT subroutine (vin_les)
-    swtab->x1 = max(min(ix, imageWidth - subwinsiz), 0);
+    swtab->x1 = std::max(std::min(ix, imageWidth - subwinsiz), 0);
     //make sure y-location is within 1:imy - subwinsiz + 1
-    swtab->y1 = max(min(iy, imageHeight - subwinsiz), 0);
+    swtab->y1 = std::max(std::min(iy, imageHeight - subwinsiz), 0);
     int i1 = swtab->x1;
     int j1 = swtab->y1;
     //Set the location of the maximum pixel to the location in the subwindow
@@ -594,13 +591,13 @@ bool ImageDetect::imageFindPoint() {
                 i++; //search to the right at the end
             }
             pointDef->stripes[jj].x2 = i; //rightmost extension for this stripe
-            iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
+            iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
             i = pointDef->stripes[jj].x1 - 1;
             while (i >= imin && newarray[(j * imageWidth) + i] > 0) {
                 i--; //search to the left at the end
             }
             pointDef->stripes[jj].x1 = i + 1; //leftmost extension for this stripe
-            ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
+            ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
             //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
             //  Update extension of longest stripe in x-direction?
         } // ENDIF
@@ -703,8 +700,8 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
     }
     pointDef->stripes[jj].x2 = i;
     //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-    ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension of the stripe
-    iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension of the stripe
+    ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension of the stripe
+    iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension of the stripe
     i = ic;
     if (jc > j1) {
         for (j = jc - 1; j >= j1; j--) {
@@ -718,7 +715,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
             ipixlasty = swtab->sw[((j + 1) * imageWidth) + ii];
             i = ic;
             if (i < pointDef->stripes[jj + 1].x1) ipixlasty = ipixlastx;
-            while (i >= 0 && swtab->sw[(j * imageWidth) + i] > 0 && swtab->sw[(j * imageWidth) + i] <= max(ipixlastx, ipixlasty)) {
+            while (i >= 0 && swtab->sw[(j * imageWidth) + i] > 0 && swtab->sw[(j * imageWidth) + i] <= std::max(ipixlastx, ipixlasty)) {
                 ipixlastx = swtab->sw[(j * imageWidth) + i];
                 if (i > 0 && i - 1 >= pointDef->stripes[jj + 1].x1) {
                     ipixlasty = swtab->sw[((j + 1) * imageWidth) + (i - 1)];
@@ -735,7 +732,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
             ipixlasty = swtab->sw[((j + 1) * imageWidth) + ii];
             i = ii;
             if (i > pointDef->stripes[jj + 1].x2) ipixlasty = ipixlastx;
-            while (i < subwinsiz && swtab->sw[(j * imageWidth) + i] > 0 && swtab->sw[(j * imageWidth) + i] <= max(ipixlastx, ipixlasty)) {
+            while (i < subwinsiz && swtab->sw[(j * imageWidth) + i] > 0 && swtab->sw[(j * imageWidth) + i] <= std::max(ipixlastx, ipixlasty)) {
                 ipixlastx = swtab->sw[(j * imageWidth) + i];
                 if (i < subwinsiz - 1 && i + 1 <= pointDef->stripes[jj + 1].x2)	ipixlasty = swtab->sw[((j + 1) * imageWidth) + (i + 1)];
                 else ipixlasty = ipixlastx;
@@ -744,8 +741,8 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
             //????			pointDef->stripes[jj].x2 = j-1;
             pointDef->stripes[jj].x2 = i;
             //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-            ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension of the stripe
-            iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension of the stripe
+            ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension of the stripe
+            iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension of the stripe
         } //	END DO
     } //endif
 
@@ -763,7 +760,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
             for (i = ii - 1; i >= 0; i--) {
                 if (i < pointDef->stripes[jj - 1].x1) ipixlasty = ipixlastx;
                 int ipixnext = swtab->sw[(j * imageWidth) + i];
-                if (ipixnext == 0 || ipixnext > max(ipixlastx, ipixlasty)) {
+                if (ipixnext == 0 || ipixnext > std::max(ipixlastx, ipixlasty)) {
                     break;
                 }
                 pointDef->stripes[jj].x1 = i; //leftmost extension of the stripe
@@ -779,7 +776,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                     ipixlasty = ipixlastx;
                 }
                 int ipixnext = swtab->sw[(j * imageWidth) + i];
-                if (ipixnext == 0 || ipixnext > max(ipixlastx, ipixlasty)) {
+                if (ipixnext == 0 || ipixnext > std::max(ipixlastx, ipixlasty)) {
                     break;
                 }
                 pointDef->stripes[jj].x2 = i + 1; //rightmost extension of the stripe
@@ -787,8 +784,8 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                 ipixlasty = swtab->sw[((j - 1) * imageWidth) + (i + 1)];
             }	//END DO
             //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-            ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension of the stripe
-            iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension of the stripe
+            ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension of the stripe
+            iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension of the stripe
         } //	END DO
         jj = j2 - j1 - 1; // Lagt til
     } else {
@@ -812,7 +809,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                 ipixlastx = swtab->sw[((j + 1) * imageWidth) + (ii - 1)];
                 ipixlasty = swtab->sw[((j + 1) * imageWidth) + ii];
                 int ipixnext = swtab->sw[(j * imageWidth) + ii];
-                if (ipixnext < max(ipixlastx, ipixlasty)) {
+                if (ipixnext < std::max(ipixlastx, ipixlasty)) {
                     jj++;
                     //pointDef->stripes[jj].numpoints = 1;
                     pointDef->stripes[jj].x1 = i;
@@ -823,14 +820,14 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                     for (i = ii; i < /*this->imgParam->*/subwinsiz; i++) {
                         ipixlasty = swtab->sw[((j + 1) * imageWidth) + i];
                         ipixnext = swtab->sw[(j * imageWidth) + i];
-                        if (ipixnext == 0 || ipixnext > max(ipixlastx, ipixlasty)) break;
+                        if (ipixnext == 0 || ipixnext > std::max(ipixlastx, ipixlasty)) break;
                         pointDef->stripes[jj].x2 = i + 1; //rightmost extension for this stripe
                         ipixlastx = ipixlasty;
                     } //END DO
                     //
                     //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-                    ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
-                    iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
+                    ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
+                    iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
                 } else {
                     done = true;
                 }
@@ -856,7 +853,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                 ipixlastx = swtab->sw[((j + 1) * imageWidth) + (ii + 1)];
                 ipixlasty = swtab->sw[((j + 1) * imageWidth) + ii];
                 int ipixnext = swtab->sw[(j * imageWidth) + ii];
-                if (ipixnext < max(ipixlastx, ipixlasty)) {
+                if (ipixnext < std::max(ipixlastx, ipixlasty)) {
                     jj++;
                     //pointDef->stripes[jj].numpoints = 1;
                     pointDef->stripes[jj].x1 = i;
@@ -867,14 +864,14 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                     for (i = ii - 1; i >= 0; i--) {
                         ipixlasty = swtab->sw[((j + 1) * imageWidth) + i];
                         ipixnext = swtab->sw[(j * imageWidth) + i];
-                        if (ipixnext == 0 || ipixnext > max(ipixlastx, ipixlasty)) break;
+                        if (ipixnext == 0 || ipixnext > std::max(ipixlastx, ipixlasty)) break;
                         pointDef->stripes[jj].x1 = i; //rightmost extension for this stripe
                         ipixlastx = ipixlasty;
                     } //END DO
                     //
                     //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-                    ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
-                    iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
+                    ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
+                    iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
                 } else {
                     done = true;
                 }
@@ -903,7 +900,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                 ipixlastx = swtab->sw[((j - 1) * imageWidth) + (ii - 1)];
                 ipixlasty = swtab->sw[((j - 1) * imageWidth) + ii];
                 int ipixnext = swtab->sw[(j * imageWidth) + ii];
-                if (ipixnext < max(ipixlastx, ipixlasty)) {
+                if (ipixnext < std::max(ipixlastx, ipixlasty)) {
                     jj++;
                     //pointDef->stripes[jj].numpoints = 1;
                     pointDef->stripes[jj].x1 = i;
@@ -914,7 +911,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                     for (i = ii; i < subwinsiz; i++) {
                         ipixlasty = swtab->sw[((j - 1) * imageWidth) + i];
                         ipixnext = swtab->sw[(j * imageWidth) + i];
-                        if (ipixnext == 0 || ipixnext > max(ipixlastx, ipixlasty)) {
+                        if (ipixnext == 0 || ipixnext > std::max(ipixlastx, ipixlasty)) {
                             break;
                         }
                         pointDef->stripes[jj].x2 = i + 1; //rightmost extension for this stripe
@@ -922,8 +919,8 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                     } //END DO
                     //
                     //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-                    ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
-                    iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
+                    ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
+                    iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
                 } else {
                     done = 1;
                 }
@@ -948,7 +945,7 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                 ipixlastx = swtab->sw[((j - 1) * imageWidth) + (ii + 1)];
                 ipixlasty = swtab->sw[((j - 1) * imageWidth) + ii];
                 int ipixnext = swtab->sw[(j * imageWidth) + ii];
-                if (ipixnext < max(ipixlastx, ipixlasty)) {
+                if (ipixnext < std::max(ipixlastx, ipixlasty)) {
                     jj++;
                     //pointDef->stripes[jj].numpoints = 0;
                     pointDef->stripes[jj].x1 = i;
@@ -959,14 +956,14 @@ void ImageDetect::subwinFindPoint(int &ii, int &jj) {
                     for (i = ii; i >= 0; i--) {
                         ipixlasty = swtab->sw[((j - 1) * imageWidth) + i];
                         ipixnext = swtab->sw[(j * imageWidth) + i];
-                        if (ipixnext == 0 || ipixnext > max(ipixlastx, ipixlasty)) break;
+                        if (ipixnext == 0 || ipixnext > std::max(ipixlastx, ipixlasty)) break;
                         pointDef->stripes[jj].x1 = i; //rightmost extension for this stripe
                         ipixlastx = ipixlasty;
                     } //END DO
                     //
                     //pointDef->stripes[jj].numpoints = pointDef->stripes[jj].x2 - pointDef->stripes[jj].x1; // + 1
-                    ileft = min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
-                    iright = max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
+                    ileft = std::min(ileft, pointDef->stripes[jj].x1); //leftmost extension for this point
+                    iright = std::max(iright, pointDef->stripes[jj].x2); //rightmost extension for this point
                 } else {
                     done = true;
                 }

@@ -15,7 +15,6 @@
 #include <include/Spinnaker/SpinGenApi/SpinnakerGenApi.h>
 #endif
 
-using namespace std;
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;

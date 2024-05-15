@@ -39,10 +39,6 @@
 
 
 
-using namespace std;
-
-
-
 
 bool Ui::crosshair = false, Ui::crosshairReal = false, Ui::forceHighQuality = false;
 

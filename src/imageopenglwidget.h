@@ -45,7 +45,7 @@ public:
     bool isEnableShowPointSeries() { return this->showPointSeries; }
     bool isEnableShowPointSeriesLabel() { return this->showPointSeriesString; }
     bool isSinglePointSeries() { return this->singlePointsOnly; }
-    const vector<TrackPoint::PointInCamera*>& getPointSeries() { return this->pointSeries; }
+    const std::vector<TrackPoint::PointInCamera*>& getPointSeries() { return this->pointSeries; }
 
 protected:
     QRect scaledImageArea;
@@ -80,8 +80,8 @@ protected:
     void leaveEvent(QEvent*);
 
 private:
-    vector<CircleF*> boundingCircles;
-    vector<QRectF*> boundingBoxes;
+    std::vector<CircleF*> boundingCircles;
+    std::vector<QRectF*> boundingBoxes;
     bool newImageReady;
 
     double imageToScreenCoordX;
@@ -103,7 +103,7 @@ private:
     int selectedBoundingBoxCorner = -1; // 0-topLeft, 1-topRight, 2-bottomLeft, 3-bottomRight
     bool selectedBoundingCircleEdge = false; // If edge is selected
 
-    vector<TrackPoint::PointInCamera*> pointSeries;
+    std::vector<TrackPoint::PointInCamera*> pointSeries;
     QString lastPointString;
     double selectedPointThreshold = 3;
     double pointCrossWingSize = 1;

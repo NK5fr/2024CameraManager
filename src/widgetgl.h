@@ -13,20 +13,23 @@
 
 #include <vector>
 #include <iostream>
+
+#if defined(WIN32) || defined(_WIN32)
+#include <Windows.h>
+#endif
+
 #include <GL/glu.h>
 
 #include "socketviewerwidget.h"
 #include "calibrationfile.h"
 #include "datastructs.h"
 
-using namespace std;
-
 class SocketViewerWidget;
 
 class WidgetGL : public QOpenGLWidget {
     Q_OBJECT
 public:
-    WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>>* points, QString calibrationPath);
+    WidgetGL(SocketViewerWidget* socket, std::vector<std::vector<Vector3d*>>* points, QString calibrationPath);
     WidgetGL(SocketViewerWidget* socket);
     ~WidgetGL();
 
@@ -35,7 +38,7 @@ public:
     void showXZPlane();
     void showYZPlane();
 
-    void appendPoints(vector<Vector3d*> points) { this->pointData.push_back(points); }
+    void appendPoints(std::vector<Vector3d*> points) { this->pointData.push_back(points); }
     
     inline void setShowFovCone(bool onOff) { this->showFovCone = onOff; }
     inline void setShowPreceedingPoints(bool onOff) { this->showPreceedingPoints = onOff; }
@@ -80,8 +83,8 @@ protected:
 private:
     SocketViewerWidget* svw;
     CalibrationFile* calibFile;
-    vector<vector<Vector3d*>> pointData;
-    vector<TrackPoint::Camera*> camerasData;
+    std::vector<std::vector<Vector3d*>> pointData;
+    std::vector<TrackPoint::Camera*> camerasData;
     QPoint lastPos;
     int coordinatesShown;
     int keyPressed;

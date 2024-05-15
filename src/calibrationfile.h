@@ -20,8 +20,6 @@
 #include "datastructs.h"
 #include "calibrationfileopenglwidget.h"
 
-using namespace std;
-
 // Only supporting calibration_summary-files...
 
 class CalibrationFile {
@@ -31,8 +29,8 @@ public:
 
     inline int getNumCameras() { return this->numCameras; }
     inline int getNumCombinations() { return this->numCombinations; }
-    inline const vector<TrackPoint::CameraCombination*>& getCameraCombinations() { return this->camCombs; }
-    inline const vector<TrackPoint::Camera*>& getCameras() { return this->cams; }
+    inline const std::vector<TrackPoint::CameraCombination*>& getCameraCombinations() { return this->camCombs; }
+    inline const std::vector<TrackPoint::Camera*>& getCameras() { return this->cams; }
     inline const QString& getFileContains() { return this->fileContain; }
     inline const QString& getFileName() { return this->fileName; }
     inline QPlainTextEdit* getTextEdit() { return &this->textEdit; }
@@ -43,8 +41,8 @@ private:
     QString fileName;
     QString fileContain;
     QPlainTextEdit textEdit;
-    vector<TrackPoint::CameraCombination*> camCombs;
-    vector<TrackPoint::Camera*> cams;
+    std::vector<TrackPoint::CameraCombination*> camCombs;
+    std::vector<TrackPoint::Camera*> cams;
     int numCameras;
     int numCombinations;
     bool failed;

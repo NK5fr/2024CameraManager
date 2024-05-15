@@ -23,8 +23,6 @@
 
 #include "socketviewerwidget.h"
 
-using namespace std;
-
 // Reading from file...
 SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString filename, QString calibPath)
     : filename(filename), fullPath(path + "/" + filename), tmpPath(path), calibrationPath(calibPath), linesNumber(0), QMdiSubWindow(parent) {
@@ -52,7 +50,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent, QString path, QString fi
     disconnectButton->hide();
     show3DView();
     setWindowTitle(filename);
-    cout << "PATH ******************* " << path.toStdString() << " filname: " << filename.toStdString() << " calibPath: " << calibPath.toStdString();
+    std::cout << "PATH ******************* " << path.toStdString() << " filname: " << filename.toStdString() << " calibPath: " << calibPath.toStdString();
 }
 
 // Reading from network...
@@ -82,7 +80,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) 
 SocketViewerWidget::~SocketViewerWidget() {
 }
 
-void SocketViewerWidget::appendPoints(vector<Vector3d*> pos) {
+void SocketViewerWidget::appendPoints(std::vector<Vector3d*> pos) {
     slider->setMaximum(rowNumber - 1);
     spinBox->setMaximum(rowNumber - 1);
     rowNumber++;
@@ -98,10 +96,10 @@ void SocketViewerWidget::readTextFromFile() {
     myFile.close();
 }
 
-vector<Vector3d*> SocketViewerWidget::readLine(QString& line) {
+std::vector<Vector3d*> SocketViewerWidget::readLine(QString& line) {
     QRegularExpression coordsRegEx("(-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?)(?:\\s*)(-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?)(?:\\s*)(-?\\d+(?:\\.?\\d*[eE]?\\-?\\d*)?)");
     QRegularExpressionMatchIterator i = coordsRegEx.globalMatch(line);
-    vector<Vector3d*> vectors;
+    std::vector<Vector3d*> vectors;
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
         Vector3d* v = new Vector3d();
@@ -121,7 +119,7 @@ void SocketViewerWidget::extractDataFromText() {
     QTextCursor prev_cursor = fileContain->textCursor();
     for (int row = 0; row < linesNumber; row++) {
         if (lineList[row].isEmpty()) continue;
-        vector<Vector3d*> points = readLine(lineList[row]);
+        std::vector<Vector3d*> points = readLine(lineList[row]);
         pointData.push_back(points);
         rowNumberLocal++;
         int grey = 200;
@@ -508,7 +506,7 @@ void HostAddressDialog::readSocketLine() {
     QString socketLine = QString::fromLocal8Bit(buffer);
     QStringList list = socketLine.split("\n", Qt::SkipEmptyParts);
     for (int i = 0; i < list.size(); i++) {
-        vector<Vector3d*> pos = socketWidget->readLine(list[i]);
+        std::vector<Vector3d*> pos = socketWidget->readLine(list[i]);
         if (pos.size() > 0) {
             //list[i].remove("\n");
             socketWidget->getFileContain()->insertPlainText(QString("%1  \t").arg((socketWidget->getRowNumber() - 1), 6, 10, QChar(' ')) + list[i] + "\n");

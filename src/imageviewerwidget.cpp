@@ -1,7 +1,5 @@
 #include "imageviewerwidget.h"
 
-using namespace std;
-
 ImageViewerWidget::ImageViewerWidget(QString path, QString filename, TrackPointProperty* trackPoint) : path(path), filename(filename) {
     fullPath = path + "/" + filename;
     setImageFromFile(fullPath);
@@ -40,7 +38,7 @@ void ImageViewerWidget::setImageFromFile(const QString& filepath) {
 }
 
 void ImageViewerWidget::wheelEvent(QWheelEvent* event) {
-    int tempSelectedImageInFolder = max(0, min((event->angleDelta().y() / 120) + selectedImageInFolder, (int) imageFiles.size() - 1));
+    int tempSelectedImageInFolder = std::max(0, std::min((event->angleDelta().y() / 120) + selectedImageInFolder, (int) imageFiles.size() - 1));
     if (tempSelectedImageInFolder != selectedImageInFolder) {
         selectedImageInFolder = tempSelectedImageInFolder;
         setImageFromFile(imageFiles[selectedImageInFolder].absoluteFilePath());
@@ -115,8 +113,8 @@ void ImageViewerWidget::createPointFileClicked() {
     double subWidth = (imageWidget.getImageWidth() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesX() : 1));
     double subHeight = (imageWidget.getImageHeight() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesY() : 1));
     if (fileInfo.allPointsInOneImageFirst) {
-        vector<TrackPoint::PointInCamera*> newP;
-        const vector<TrackPoint::PointInCamera*>& p = imageWidget.getPointSeries();
+        std::vector<TrackPoint::PointInCamera*> newP;
+        const std::vector<TrackPoint::PointInCamera*>& p = imageWidget.getPointSeries();
         for (int i = 0; i < ((imageWidget.isEnableSubImage()) ? (imageWidget.getNumSubImagesX() * imageWidget.getNumSubImagesY()) : 1); i++) {
             for (int j = 0; j < p.size(); j++) {
                 int pointSubRegionX = (int) p[j]->pointX / (imageWidget.getImageWidth() / ((imageWidget.isEnableSubImage()) ? imageWidget.getNumSubImagesX() : 1));
@@ -137,8 +135,8 @@ void ImageViewerWidget::createPointFileClicked() {
             fileContain.append(QString::number(xPos, 'f', 0) + " " + QString::number(yPos, 'f', 0) + "\r\n");
         }
     } else {
-        vector<TrackPoint::PointInCamera*> newP;
-        const vector<TrackPoint::PointInCamera*>& p = imageWidget.getPointSeries();
+        std::vector<TrackPoint::PointInCamera*> newP;
+        const std::vector<TrackPoint::PointInCamera*>& p = imageWidget.getPointSeries();
         bool* taken = new bool[p.size()];
         for (int i = 0; i < p.size(); i++) {
             taken[i] = false;

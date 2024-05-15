@@ -1,8 +1,6 @@
 #include "spincameramanager.h"
 #include <iostream>
 
-using namespace std;
-
 SpinCameraManager::SpinCameraManager() : AbstractCameraManager() {
 #if defined(WIN32) || defined(WIN64)
     QProcess *myProcess = new QProcess(NULL);
@@ -57,6 +55,6 @@ void  SpinCameraManager::detectNewCameras() {
 
 }
 
-string SpinCameraManager::getName() const {
+std::string SpinCameraManager::getName() const {
     return "Spinnaker Camera Manager";
 }

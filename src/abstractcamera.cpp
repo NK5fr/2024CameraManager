@@ -2,8 +2,6 @@
 #include <QDebug>
 #include "abstractcamera.h"
 
-using namespace std;
-
 AbstractCamera::AbstractCamera() : thread(this) {
     capturing= false;
     container = nullptr;

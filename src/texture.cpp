@@ -1,7 +1,6 @@
 #include "texture.h"
 
 using namespace OpenGL;
-using namespace std;
 
 Texture::Texture() {
     glGenTextures(1, &textureId);

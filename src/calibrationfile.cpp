@@ -51,7 +51,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
     int numLines = dataList.size();
 
     // Grabs camera number, and serialnumber
-    vector<TrackPoint::Camera*> cameras;
+    std::vector<TrackPoint::Camera*> cameras;
     QRegularExpression numberMatchRegEx("-?\\d+\\.?\\d*\\e?-?\\d*");
     QRegularExpression camLinesRegEx("\\d+");
     while (!dataList[atLine].isEmpty()) {
@@ -185,7 +185,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->camPos.x;
                 }
             }
@@ -193,7 +193,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->camPos.y;
                 }
             }
@@ -201,7 +201,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->camPos.z;
                 }
             }
@@ -211,21 +211,21 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->orient.alpha;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->orient.beta;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->orient.kappa;
                 }
             }
@@ -235,21 +235,21 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->cameraConstant;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->cameraConstantStdDev;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->XH;
                 }
             }
@@ -257,7 +257,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->XHStdDev;
                 }
             }
@@ -267,21 +267,21 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->YH;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->YHStdDev;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->AF;
                 }
             }
@@ -289,7 +289,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->AFStdDev;
                 }
             }
@@ -299,14 +299,14 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->ORT;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->ORTStdDev;
                 }
             }
@@ -317,7 +317,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->F1;
                 }
             }
@@ -325,7 +325,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->F1StdDev;
                 }
             }
@@ -333,7 +333,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->F2;
                 }
             }
@@ -341,7 +341,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->F2StdDev;
                 }
             }
@@ -351,7 +351,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->F3;
                 }
             }
@@ -359,7 +359,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->F3StdDev;
                 }
             }
@@ -367,7 +367,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->P1;
                 }
             }
@@ -375,7 +375,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->P1StdDev;
                 }
             }
@@ -385,7 +385,7 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->P2;
                 }
             }
@@ -393,14 +393,14 @@ bool CalibrationFile::parseCalibrationData(QString& data) {
                 camLineIter.next(); // This match is ignored...
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->P2StdDev;
                 }
             }
             if (camLineIter.hasNext()) {
                 QRegularExpressionMatch match = camLineIter.next();
                 if (match.hasMatch()) {
-                    istringstream os(match.captured(0).toStdString());
+                    std::istringstream os(match.captured(0).toStdString());
                     os >> cam->RO;
                 }
             }

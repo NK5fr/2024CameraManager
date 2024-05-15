@@ -18,7 +18,6 @@
 
 
 #include <iostream>
-using namespace std;
 
 /* Constructor */
 ConfigFileViewerWidget::ConfigFileViewerWidget(QString filePath) : textEditable(true), view(0){

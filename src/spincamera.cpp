@@ -4,7 +4,6 @@
 #include <QRgb>
 #include <iostream>
 
-using namespace std;
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
@@ -35,18 +34,18 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
     case CameraManagerSpin::BLACKLEVEL :
         try{
         if (cam->BlackLevel == NULL || cam->BlackLevel.GetAccessMode() != RW){ //Check if the property can be accessed on the camera
-            cout << "Unable to access the black level property."<< endl;
+            std::cout << "Unable to access the black level property."<< std::endl;
             return ;
         }
         cam->BlackLevel.SetValue(p->getValue()); //Set the wanted value to the camera property
     }catch (Spinnaker::Exception &e){
-            cout << "Error: " << e.what() << endl;
+            std::cout << "Error: " << e.what() << std::endl;
         }
         break;
     case CameraManagerSpin::EXPOSURETIME :
         try{
         if(cam->ExposureAuto == NULL || cam->ExposureAuto.GetAccessMode() != RW){ //Check if the auto can be disabled
-            cout << "Unable to access the exposure auto property." << endl;
+            std::cout << "Unable to access the exposure auto property." << std::endl;
         }else{
             if(p->getAuto() && (cam->ExposureAuto.GetValue() == ExposureAuto_Off)){ //Check if the auto status on the camera match the auto status of the wanter property
                 cam->ExposureAuto.SetValue(ExposureAuto_Continuous);
@@ -54,12 +53,12 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 cam->ExposureAuto.SetValue(ExposureAuto_Off);
             }else if(!p->getAuto()){ //If auto is disabled
                 if(cam->ExposureTime == NULL || cam->ExposureTime.GetAccessMode() != RW){ //And the node available
-                    cout << "Unable to access the exposure property." << endl;
+                    std::cout << "Unable to access the exposure property." << std::endl;
                 }else{
                     if (p->getValue() >= cam->ExposureTime.GetMin() && p->getValue() <= cam->ExposureTime.GetMax()) {
                         cam->ExposureTime.SetValue(p->getValue()); // Set the value
                     } else {
-                        cout << "Wanted exposure value was not within the limits, setting to minimum available value..." << endl;
+                        std::cout << "Wanted exposure value was not within the limits, setting to minimum available value..." << std::endl;
                         cam->ExposureTime.SetValue(cam->ExposureTime.GetMin());
                     }
                 }
@@ -67,13 +66,13 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
         }
 
     }catch (Spinnaker::Exception &e){
-            cout << "Error : " << e.what() << endl;
+            std::cout << "Error : " << e.what() << std::endl;
         }
         break;
     case CameraManagerSpin::GAIN :
         try{
         if(cam->GainAuto == NULL || cam->GainAuto.GetAccessMode() != RW){
-            cout << "Unable to access the gain auto property." << endl;
+            std::cout << "Unable to access the gain auto property." << std::endl;
         }else{
             if(p->getAuto() && (cam->GainAuto.GetValue() == GainAuto_Off)){
                 cam->GainAuto.SetValue(GainAuto_Continuous);
@@ -81,21 +80,21 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 cam->GainAuto.SetValue(GainAuto_Off);
             }else if(!p->getAuto()){
                 if(cam->Gain == NULL || cam->Gain.GetAccessMode() != RW){
-                    cout << "Unable to access the gain property." << endl;
+                    std::cout << "Unable to access the gain property." << std::endl;
                 }else{
                     cam->Gain.SetValue(p->getValue());
                 }
             }
         }
     }catch (Spinnaker::Exception &e){
-            cout << "Error: " << e.what() << endl;
+            std::cout << "Error: " << e.what() << std::endl;
         }
         break;
 
     case CameraManagerSpin::GAMMA :
         try{
         if(cam->GammaEnable == NULL || cam->GammaEnable.GetAccessMode() != RW){
-            cout << "Unable to access the gamma auto property." << endl;
+            std::cout << "Unable to access the gamma auto property." << std::endl;
         }else{
             if(p->getAuto() && (cam->GammaEnable.GetValue() == 1)){
                 cam->GammaEnable.SetValue(0);
@@ -103,14 +102,14 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 cam->GammaEnable.SetValue(1);
             }else if(!p->getAuto()){
                 if(cam->Gamma == NULL || cam->Gamma.GetAccessMode() != RW){
-                    cout << "Unable to access the gamma property." << endl;
+                    std::cout << "Unable to access the gamma property." << std::endl;
                 }else{
                     cam->Gamma.SetValue(p->getValue());
                 }
             }
         }
     }catch (Spinnaker::Exception &e){
-            cout << "Error: " << e.what() << endl;
+            std::cout << "Error: " << e.what() << std::endl;
         }
         break;
 
@@ -119,7 +118,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
         CBooleanPtr acquisitionFrameRateAutoNode = cam->GetNodeMap().GetNode("AcquisitionFrameRateEnable");
 
         if(!IsAvailable(acquisitionFrameRateAutoNode) && !IsWritable(acquisitionFrameRateAutoNode)){
-            cout << "Unable to access the frame rate auto property." << endl;
+            std::cout << "Unable to access the frame rate auto property." << std::endl;
         }else{
             if(p->getAuto() && (acquisitionFrameRateAutoNode->GetValue() == 1)){
                 acquisitionFrameRateAutoNode->SetValue(0);
@@ -127,7 +126,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 acquisitionFrameRateAutoNode->SetValue(1);
             }else if(!p->getAuto()){
                 if (cam->AcquisitionFrameRate == NULL || cam->AcquisitionFrameRate.GetAccessMode() != RW){
-                    cout << "Unable to access the frame rate property." << endl << endl;
+                    std::cout << "Unable to access the frame rate property." << std::endl << std::endl;
                 }else{
                     cam->AcquisitionFrameRate.SetValue(p->getValue());
                 }
@@ -135,7 +134,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
         }
 
     }catch (Spinnaker::Exception &e){
-            cout << "Error: " << e.what() << endl;
+            std::cout << "Error: " << e.what() << std::endl;
         }
         break;
     }
@@ -146,7 +145,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
 ImagePtr SpinCamera::captureImage() {
     if(trigger==0){
 
-        cout << "Trigger Software is not available, you can't activate Auto Trigger" << endl; // Auto Trigger is not available, if you need it please uncomment the seven following lines
+        std::cout << "Trigger Software is not available, you can't activate Auto Trigger" << std::endl; // Auto Trigger is not available, if you need it please uncomment the seven following lines
 
     // Armand & Nathan 10/05/2024 : Auto Trigger disable because not available with our cameras
 
@@ -169,12 +168,12 @@ ImagePtr SpinCamera::captureImage() {
             convertedImage = processor.Convert(image, PixelFormat_Mono8);
 
         } else {
-            cout <<" not streaming" << endl;
+            std::cout <<" not streaming" << std::endl;
         }
         return convertedImage;
 
     }catch(Spinnaker::Exception &e) {
-        cout << "Error: " << e.what() << endl;
+        std::cout << "Error: " << e.what() << std::endl;
     }
 
 
@@ -183,7 +182,7 @@ ImagePtr SpinCamera::captureImage() {
 // Hugo Fournier - 3.06.2019 - Trigger Configuration Spinnaker
 int SpinCamera::ConfigureTrigger(INodeMap &nodeMap) {
     int result = 0;
-    cout << endl << endl << "*** CONFIGURING TRIGGER ***" << endl << endl;
+    std::cout << std::endl << std::endl << "*** CONFIGURING TRIGGER ***" << std::endl << std::endl;
     try
     {
         // Ensure trigger mode off
@@ -195,39 +194,39 @@ int SpinCamera::ConfigureTrigger(INodeMap &nodeMap) {
         CEnumerationPtr ptrTriggerMode = nodeMap.GetNode("TriggerMode");
         if (!IsAvailable(ptrTriggerMode) || !IsReadable(ptrTriggerMode))
         {
-            cout << "Unable to disable trigger mode (node retrieval). Aborting..." << endl;
+            std::cout << "Unable to disable trigger mode (node retrieval). Aborting..." << std::endl;
             return -1;
         }
 
         CEnumEntryPtr ptrTriggerModeOff = ptrTriggerMode->GetEntryByName("Off");
         if (!IsAvailable(ptrTriggerModeOff) || !IsReadable(ptrTriggerModeOff))
         {
-            cout << "Unable to disable trigger mode (enum entry retrieval). Aborting..." << endl;
+            std::cout << "Unable to disable trigger mode (enum entry retrieval). Aborting..." << std::endl;
             return -1;
         }
 
         ptrTriggerMode->SetIntValue(ptrTriggerModeOff->GetValue());
 
-        cout << "Trigger mode disabled..." << endl;
+        std::cout << "Trigger mode disabled..." << std::endl;
 
         if(trigger==1){
             if (cam->TriggerSource == NULL || cam->TriggerSource.GetAccessMode() != RW){
-                cout << "Unable to set trigger mode (node retrieval). Aborting..." << endl;
+                std::cout << "Unable to set trigger mode (node retrieval). Aborting..." << std::endl;
                 return -1;
             }
 
             cam->TriggerSource.SetValue(TriggerSource_Line0);
 
-            cout << "Trigger source set to hardware..." << endl;
+            std::cout << "Trigger source set to hardware..." << std::endl;
         }else{
             if (cam->TriggerSource == NULL || cam->TriggerSource.GetAccessMode() != RW){
-                cout << "Unable to set trigger mode (node retrieval). Aborting..." << endl;
+                std::cout << "Unable to set trigger mode (node retrieval). Aborting..." << std::endl;
                 return -1;
             }
 
             cam->TriggerSource.SetValue(TriggerSource_Software);
 
-            cout << "Trigger source set to software..." << endl;
+            std::cout << "Trigger source set to software..." << std::endl;
         }
 
         // Turn trigger mode on
@@ -253,8 +252,8 @@ int SpinCamera::ConfigureTrigger(INodeMap &nodeMap) {
     }
     catch (Spinnaker::Exception &e)
     {
-        cout << "Error: " << e.what() << endl;
-        cout << "erreur dans trigger" << endl;
+        std::cout << "Error: " << e.what() << std::endl;
+        std::cout << "erreur dans trigger" << std::endl;
         result = -1;
     }
     return result;
@@ -282,14 +281,14 @@ void SpinCamera::startAutoCapture(){
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
         if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
         {
-            cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
+            std::cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << std::endl << std::endl;
             exit(-1);
         }
 
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
         if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
         {
-            cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl << endl;
+            std::cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << std::endl << std::endl;
             exit(-1);
         }
 
@@ -297,13 +296,13 @@ void SpinCamera::startAutoCapture(){
 
         ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
 
-        cout << "Acquisition mode set to continuous..." << endl;
+        std::cout << "Acquisition mode set to continuous..." << std::endl;
 
         cam->BeginAcquisition();
     }catch (Spinnaker::Exception &ex){
-        cout << "Error: " << ex.what() << endl;
+        std::cout << "Error: " << ex.what() << std::endl;
     }
-    cout << "valeur de capoturing: " << capturing << endl;
+    std::cout << "valeur de capoturing: " << capturing << std::endl;
     while(capturing){
         ImagePtr image = captureImage();
         AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight());
@@ -313,7 +312,7 @@ void SpinCamera::startAutoCapture(){
         //cam->AcquisitionStop.Execute();
         cam->EndAcquisition();
     }catch (Spinnaker::Exception &ex){
-        cout << "Error: " << ex.what() << endl;
+        std::cout << "Error: " << ex.what() << std::endl;
     }
     printf("Stopped autoCapture!\n");
 
@@ -381,7 +380,7 @@ bool SpinCamera::equalsTo(AbstractCamera *c){
 }
 
 std::string SpinCamera::getString(){
-    ostringstream ss;
+    std::ostringstream ss;
     ss << cam->GetUniqueID();
     return ss.str();
 }

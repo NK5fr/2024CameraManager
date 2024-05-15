@@ -159,7 +159,7 @@ void CalibrationFileWidget::initUI() {
 
 void CalibrationFileWidget::updateCombinationTable() {
     combinationList->clear();
-    vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
+    std::vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
     for (int i = 0; i < camComb.size(); i++) {
         QString combination = QString::number(camComb[i]->camNumbers[0]) + "_" + QString::number(camComb[i]->camNumbers[1]) + "_" + QString::number(camComb[i]->camNumbers[2]);
         QTreeWidgetItem* item = new QTreeWidgetItem();
@@ -206,8 +206,8 @@ void CalibrationFileWidget::filtersChanged() {
 
 void CalibrationFileWidget::updateCameraTable() {
     cameraTable->clear();
-    vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
-    vector<TrackPoint::Camera*> cams = calibFile->getCameras();
+    std::vector<TrackPoint::CameraCombination*> camComb = calibFile->getCameraCombinations();
+    std::vector<TrackPoint::Camera*> cams = calibFile->getCameras();
     for (int i = 0; i < cams.size(); i++) {
         int ok = 0;
         int warning = 0;

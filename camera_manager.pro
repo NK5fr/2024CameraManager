@@ -10,42 +10,43 @@ CONFIG += debug
 
 win32{
 DEFINES += _WINDOWS _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64 _WINDOWS _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64 QT_OPENGL_LIB QT_WIDGETS_LIB QT_NETWORK_LIB QT_OPENGL_LIB QT_WIDGETS_LIB
-INCLUDEPATH += ./GeneratedFiles/$(ConfigurationName) \
-    ./GeneratedFiles \
-    . \
-    ./GeneratedFiles/$(ConfigurationName) \
-    ./GeneratedFiles \
-    ./include \
-    ./../../../../QT/5.12.0/MSVC2015_64/include \
-    ./../../../../QT/5.12.0/MSVC2015_64/include/QtOpenGL \
-    ./../../../../QT/5.12.0/MSVC2015_64/include/QtWidgets \
-    ./../../../../QT/5.12.0/MSVC2015_64/include/QtGui \
-    ./../../../../QT/5.12.0/MSVC2015_64/include/QtANGLE \
-    ./../../../../QT/5.12.0/MSVC2015_64/include/QtNetwork \
-    ./../../../../QT/5.12.0/MSVC2015_64/include/QtCore \
-    ./debug \
-    ./../../../../../VulkanSDK/1.0.51.0/include \
-    $(QTDIR)/mkspecs/win-32-msvc \
-    ./../../../../QT/5.12.0/MSVC2015_64/mkspecs/win32-msvc \
-    ./../../../../../Program \
-    ./Files/Point \
-    ./Grey \
-    ./Research/FlyCapture2/include \
-    ./Files \
-    ./(x86)/Point \
-    ./$(Configuration) \
-    ../../../../../VulkanSDK/1.0.51.0/include
-LIBS += -L"./lib" \
-    -l./FlyCapture2_v100 \
-    -l./Spinnaker_v140 \
-    -L"../../../../../Program Files/Point Grey Research/FlyCapture2/lib64" \
-    -L"../../../../../Program Files (x86)/Point Grey Research/FlyCapture2/lib" \
-    -l/ \
-    -l"../../../../../Program Files (x86)/Windows Kits/10/lib/10.0.17763.0/um/x64/opengl32" \
-    -l"../../../../../Program Files (x86)/Windows Kits/10/lib/10.0.17763.0/um/x64/glu32" \
-    -l"../../../../../Program Files/Point Grey Research/FlyCapture2/lib64/FlyCapture2d_v100" \
-    -lopengl32 \
-    -lglu32
+INCLUDEPATH += $$PWD/GeneratedFiles/$(ConfigurationName)
+INCLUDEPATH += $$PWD/GeneratedFiles
+INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD/GeneratedFiles/$(ConfigurationName)
+INCLUDEPATH += $$PWD/GeneratedFiles
+INCLUDEPATH += $$PWD/include/Spinnaker
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtOpenGL
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtWidgets
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtGui
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtANGLE
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtNetwork
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtCore
+INCLUDEPATH += /QT/6.7.0/msvc2019_64/include/QtOpenGLWidgets
+INCLUDEPATH += $$PWD/debug
+INCLUDEPATH += $$PWD/../../../../../VulkanSDK/1.0.51.0/include
+INCLUDEPATH += $(QTDIR)/mkspecs/win-32-msvc
+INCLUDEPATH += /QT/5.12.0/MSVC2015_64/mkspecs/win32-msvc
+INCLUDEPATH += $$PWD/../../../../../Program
+INCLUDEPATH += $$PWD/Files/Point
+INCLUDEPATH += $$PWD/Grey
+INCLUDEPATH += $$PWD/Research/FlyCapture2/include
+INCLUDEPATH += $$PWD/Files
+INCLUDEPATH += $$PWD/(x86)/Point
+INCLUDEPATH += $$PWD/$(Configuration)
+INCLUDEPATH += $$PWD/../../../../../VulkanSDK/1.0.51.0/include
+LIBS += -L"$$PWD/lib/" -lSpinnaker_v140
+#LIBS += -L"$$PWD/lib"
+#LIBS += -l$$PWD/FlyCapture2_v100
+#LIBS += -l$$PWD/Spinnaker_v140
+#LIBS += -L"$$PWD/../../../../../Program Files/Point Grey Research/FlyCapture2/lib64"
+#LIBS += -L"$$PWD/../../../../../Program Files (x86)/Point Grey Research/FlyCapture2/lib"
+#LIBS += -l"$$PWD/../../../../../Program Files (x86)/Windows Kits/10/lib/10.0.17763.0/um/x64/opengl32"
+#LIBS += -l"$$PWD/../../../../../Program Files (x86)/Windows Kits/10/lib/10.0.17763.0/um/x64/glu32"
+#LIBS += -l"$$PWD/../../../../../Program Files/Point Grey Research/FlyCapture2/lib64/FlyCapture2d_v100"
+LIBS += -lopengl32
+LIBS += -lglu32
 }
 
 unix {
@@ -67,9 +68,9 @@ DEPENDPATH += $$PWD/../../../../opt/spinnaker/include
 
 
 
-DEPENDPATH += .
-MOC_DIR += .
+DEPENDPATH += $$PWD
+MOC_DIR += $$PWD
 OBJECTS_DIR += debug
-UI_DIR += ./GeneratedFiles
-RCC_DIR += .
+UI_DIR += $$PWD/GeneratedFiles
+RCC_DIR += $$PWD
 include(camera_manager.pri)

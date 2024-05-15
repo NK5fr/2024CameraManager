@@ -11,8 +11,6 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 /** CONSTRUCTOR AND ASSIMILATED **/
 /* Constructor */
 CalibrationViewerWidget::CalibrationViewerWidget(QString path, QString name) {
@@ -200,7 +198,7 @@ void CalibrationViewerWidget::showTableView(int lig){
     connect(mainWidget, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(onRightClic()));
 
-    cout << "End of function" << endl;
+    std::cout << "End of function" << std::endl;
 }
 
 /** RIGHT CLIC AND ASSIMILATED **/
@@ -209,7 +207,7 @@ void CalibrationViewerWidget::onRightClic(){
     /* Creating a menu with allowed actions */
     QMenu *menu = new QMenu();
 
-    cout << "View : " << view << endl;
+    std::cout << "View : " << view << std::endl;
     if(view==0){
         menu->addAction("Go top");
         QAction *fileEdition = new QAction(tr("File edition"), menu);
@@ -257,15 +255,15 @@ void CalibrationViewerWidget::menuProjectAction_triggered(QAction* action){
         changeFirstLine();
         /* Saving the QTextEdit contain into the file at the fullPath path */
         QFile file(fullPath);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){ cout << "Open problems" << endl; }
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){ std::cout << "Open problems" << std::endl; }
         QTextStream out(&file);
         out << fileContain->toPlainText().toUtf8().constData();
     } else if(action->text()=="Change view"){
-        cout << "Test" << endl;
+        std::cout << "Test" << std::endl;
         showTextView();
         displayCombinations();
         view=0;
-        cout << "View inside : " << view << endl;
+        std::cout << "View inside : " << view << std::endl;
     }
 }
 
@@ -777,7 +775,7 @@ void CalibrationViewerWidget::executeSortChanges(QHash<QString, int> order){
 }
 
 QString CalibrationViewerWidget::getReversedKey(QString key){
-    vector<bool> present;
+    std::vector<bool> present;
     present.resize(6);
     for(int i=0;i<present.size();i++)
         present[i]=false;

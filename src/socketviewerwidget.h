@@ -25,8 +25,6 @@
 
 #include "widgetgl.h"
 
-using namespace std;
-
 class QTcpSocket;
 class QNetworkSession;
 class HostAddressDialog;
@@ -43,15 +41,15 @@ public:
     ~SocketViewerWidget();
 
     void displayToolTip(CoordinatesLabel *label);
-    void appendPoints(vector<Vector3d*>);
+    void appendPoints(std::vector<Vector3d*>);
     QSlider *getTimeSlider();
-    vector<Vector3d*> readLine(QString& line);
+    std::vector<Vector3d*> readLine(QString& line);
 
     inline QPlainTextEdit* getFileContain() { return this->fileContain; }
     inline QSpinBox* getSpinBox() { return this->spinBox; }
     inline WidgetGL* getWidgetGL() { return this->widgetGL; }
     inline int getRowNumber() { return this->rowNumber; }
-    inline vector<vector<Vector3d*>>& getPointData() { return this->pointData; }
+    inline std::vector<std::vector<Vector3d*>>& getPointData() { return this->pointData; }
     inline void setLineNumbers(int lineNumbers) { this->linesNumber = lineNumbers; }
 
 private slots:
@@ -114,18 +112,18 @@ private:
     QPushButton* disconnectButton;
 
     /* Table view */
-    vector<QGridLayout*> coordinatesLayout;
+    std::vector<QGridLayout*> coordinatesLayout;
     QScrollArea* timeArea;
     QScrollArea* coordinatesArea;
     QScrollArea* timeAreaBis;
-    vector<bool> showPoints;
+    std::vector<bool> showPoints;
 
     /* Used for the 3D visualization */
     /* Lines and columns number */
     int linesNumber;
     int rowNumber;
     /* The 2D array */
-    vector<vector<Vector3d*>> pointData;
+    std::vector<std::vector<Vector3d*>> pointData;
     /* The time shown */
     int coordinatesShown;
     bool hideButtonPanel;

@@ -1,10 +1,9 @@
 #include "widgetgl.h"
 
-using namespace std;
 
 static const double PI = 3.1415926535;
 
-WidgetGL::WidgetGL(SocketViewerWidget* socket, vector<vector<Vector3d*>> *points, QString calibrationPath) : QOpenGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
+WidgetGL::WidgetGL(SocketViewerWidget* socket, std::vector<std::vector<Vector3d*>> *points, QString calibrationPath) : QOpenGLWidget(socket), pointData(*points), initialScale(false), keyPressed(0), svw(socket) {
     coordinatesShown = 0;
     calibFile = new CalibrationFile(calibrationPath);
     initializingCameras();
