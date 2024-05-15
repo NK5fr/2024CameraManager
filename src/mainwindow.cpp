@@ -669,7 +669,7 @@ void MainWindow::on_TrackPointValueChanged() {
         } else {
             trackPointProperty.minPointValue = lineEdit->text().toInt();
             ui->minPointSlider->setValue(lineEdit->text().toInt());
-            ui->minPointSlider->setRange(trackPointProperty.minPointMin, min(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
+            ui->minPointSlider->setRange(trackPointProperty.minPointMin, qMin(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
         }
     }
     if (lineEdit == ui->maxPointValueEdit) {
@@ -679,7 +679,7 @@ void MainWindow::on_TrackPointValueChanged() {
         } else {
             trackPointProperty.maxPointValue = lineEdit->text().toInt();
             ui->maxPointSlider->setValue(lineEdit->text().toInt());
-            ui->maxPointSlider->setRange(max(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
+            ui->maxPointSlider->setRange(qMax(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
         }
     }
     if (lineEdit == ui->minSepValueEdit) {
@@ -700,7 +700,7 @@ void MainWindow::on_TrackPointSliderValueChanged(int value) {
         //cameraManagers[selectedCameraManager]->updateContainer();
     }
     if (slider == ui->subwinSlider) {
-        value = max(1, value);
+        value = qMax(1, value);
         ui->subwinValueEdit->setText(QString::number(value * SIMD_NUM_ELEMENTS));
         trackPointProperty.subwinValue = value * SIMD_NUM_ELEMENTS;
         //cameraManagers[selectedCameraManager]->updateContainer();
@@ -709,13 +709,13 @@ void MainWindow::on_TrackPointSliderValueChanged(int value) {
         if (value > trackPointProperty.maxPointValue) {
             ui->minPointValueEdit->setText(QString::number(trackPointProperty.maxPointValue));
             trackPointProperty.minPointValue = trackPointProperty.maxPointValue;
-            ui->minPointSlider->setRange(trackPointProperty.minPointMin, min(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
+            ui->minPointSlider->setRange(trackPointProperty.minPointMin, qMin(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
             ui->minPointSlider->update();
             //cameraManagers[selectedCameraManager]->updateContainer();
         } else {
-            ui->minPointValueEdit->setText(QString::number(min( trackPointProperty.maxPointValue, value)));
+            ui->minPointValueEdit->setText(QString::number(qMin( trackPointProperty.maxPointValue, value)));
             trackPointProperty.minPointValue = ui->minPointValueEdit->text().toInt();
-            ui->minPointSlider->setRange(trackPointProperty.minPointMin, min(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
+            ui->minPointSlider->setRange(trackPointProperty.minPointMin, qMin(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
             ui->minPointSlider->update();
             //cameraManagers[selectedCameraManager]->updateContainer();
         }
@@ -724,13 +724,13 @@ void MainWindow::on_TrackPointSliderValueChanged(int value) {
         if (value < trackPointProperty.minPointValue) {
             ui->maxPointValueEdit->setText(QString::number(trackPointProperty.minPointValue));
             trackPointProperty.maxPointValue = trackPointProperty.minPointValue;
-            ui->maxPointSlider->setRange(max(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
+            ui->maxPointSlider->setRange(qMax(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
             ui->minPointSlider->update();
             //cameraManagers[selectedCameraManager]->updateContainer();
         } else {
-            ui->maxPointValueEdit->setText(QString::number(max(trackPointProperty.minPointValue, value)));
+            ui->maxPointValueEdit->setText(QString::number(qMax(trackPointProperty.minPointValue, value)));
             trackPointProperty.maxPointValue = ui->maxPointValueEdit->text().toInt();
-            ui->maxPointSlider->setRange(max(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
+            ui->maxPointSlider->setRange(qMax(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
             ui->minPointSlider->update();
             //cameraManagers[selectedCameraManager]->updateContainer();
         }
@@ -970,7 +970,7 @@ void MainWindow::setupTrackPointTab() {
     ui->minPointSlider = new QSlider(Qt::Horizontal);
     ui->minPointSlider->setValue(trackPointProperty.minPointValue);
     //ui->minPointSlider->setRange(trackPointProperty.minPointMin, trackPointProperty.minPointMax);
-    ui->minPointSlider->setRange(trackPointProperty.minPointMin, min(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
+    ui->minPointSlider->setRange(trackPointProperty.minPointMin, qMin(trackPointProperty.maxPointValue, trackPointProperty.minPointMax));
     trackPointLayout->addWidget(minPointLabel, 7, 0);
     trackPointLayout->addWidget(ui->minPointValueEdit, 7, 1);
     trackPointLayout->addWidget(ui->minPointSlider, 7, 2);
@@ -984,7 +984,7 @@ void MainWindow::setupTrackPointTab() {
     ui->maxPointSlider = new QSlider(Qt::Horizontal);
     ui->maxPointSlider->setValue(trackPointProperty.maxPointValue);
     //ui->maxPointSlider->setRange(trackPointProperty.maxPointMin, trackPointProperty.maxPointMax);
-    ui->maxPointSlider->setRange(max(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
+    ui->maxPointSlider->setRange(qMax(trackPointProperty.minPointValue, trackPointProperty.maxPointMin), trackPointProperty.maxPointMax);
     trackPointLayout->addWidget(maxPointLabel, 8, 0);
     trackPointLayout->addWidget(ui->maxPointValueEdit, 8, 1);
     trackPointLayout->addWidget(ui->maxPointSlider, 8, 2);

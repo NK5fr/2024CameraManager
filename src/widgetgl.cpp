@@ -161,7 +161,7 @@ void WidgetGL::paintGL() {
         glColor3f(0.75f, 0.75f, 0.75f);
         for (int point = 0; point < (pointData[0]).size(); point++){
             glBegin(GL_LINE_STRIP);
-            for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time <= coordinatesShown; time++) {
+            for (int time = qMax(0, coordinatesShown - numShowedPreceedingPoints); time <= coordinatesShown; time++) {
                 glColor4f(1, 1, 1, 1 - (((double) coordinatesShown - time) / numShowedPreceedingPoints));
                 glVertex3f(GLfloat(pointData[time][point]->x),
                            GLfloat(pointData[time][point]->z),
@@ -175,7 +175,7 @@ void WidgetGL::paintGL() {
     glPointSize(2.5f);
     // Drawing the preceeding points to the selected timeframe
     if (showPreceedingPoints && pointData.size() > 0) {
-        for (int time = max(0, coordinatesShown - numShowedPreceedingPoints); time < coordinatesShown; time++) {
+        for (int time = qMax(0, coordinatesShown - numShowedPreceedingPoints); time < coordinatesShown; time++) {
             for (int point = 0; point < (pointData[time]).size(); point++) {
                 glColor4f(1, 0, 0, 1 - (((double) coordinatesShown - time) / numShowedPreceedingPoints));
                 glBegin(GL_POINTS);
@@ -514,7 +514,7 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
         }
         const double deltaSpeed = 2;
         if (adjustCamDistance) {
-            camDistance = max((double) 10, min(camDistance - (eventWheel->angleDelta().y() * deltaSpeed), (double) 100000));
+            camDistance = qMax((double) 10, qMin(camDistance - (eventWheel->angleDelta().y() * deltaSpeed), (double) 100000));
             update();
             return true;
         }
@@ -541,7 +541,7 @@ void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
         const double speed = 0.005;
         double maxVerticalAngle = PI / 2; // 90 degrees in radians...
         rotX += (lastMouseX - mouseEvent->localPos().x()) * speed;
-        rotY = max(-maxVerticalAngle, min(rotY + ((lastMouseY - mouseEvent->localPos().y()) * speed), maxVerticalAngle));
+        rotY = qMax(-maxVerticalAngle, qMin(rotY + ((lastMouseY - mouseEvent->localPos().y()) * speed), maxVerticalAngle));
         update();
     }
     lastMouseX = mouseEvent->localPos().x();

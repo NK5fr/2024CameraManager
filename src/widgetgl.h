@@ -12,7 +12,6 @@
 #include <QtWidgets/QMenu>
 
 #include <vector>
-#include <iostream>
 
 #if defined(WIN32) || defined(_WIN32)
 #include <Windows.h>
@@ -23,6 +22,8 @@
 #include "socketviewerwidget.h"
 #include "calibrationfile.h"
 #include "datastructs.h"
+
+#include <iostream>
 
 class SocketViewerWidget;
 
