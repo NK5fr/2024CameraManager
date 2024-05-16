@@ -21,7 +21,6 @@ void ImageLabel::setPixmap(const QPixmap &pixmap) {
 void ImageLabel::resizeImage() {
     QSize pixSize = label->pixmap().size();
     pixSize.scale(size(), Qt::KeepAspectRatio);
-    qInfo() << "height" << pixSize.height();
-    qInfo() << "width" << pixSize.width();
+    qInfo() << "JE RESIZE LA";
     label->setFixedSize(pixSize);
 }

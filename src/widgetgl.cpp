@@ -112,7 +112,6 @@ void WidgetGL::setViewFromCamera(int index) {
     } else {
         newScreenHeight = (newScreenWidth * camScreenHeight) / camScreenWidth;
     }
-
     updateProjection(newScreenWidth, newScreenWidth, camerasData[index]->fovWidth);
 }
 

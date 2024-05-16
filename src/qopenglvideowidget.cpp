@@ -20,8 +20,6 @@ QOpenglVideoWidget::~QOpenglVideoWidget() {
 }
 
 void QOpenglVideoWidget::setImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    qInfo() << "seim - height" << imageWidth;
-    qInfo() << "seim - width" << imageHeight;
 
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {

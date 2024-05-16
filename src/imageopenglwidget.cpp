@@ -1,6 +1,8 @@
 
 #include "imageopenglwidget.h"
 
+#include <QPixMap>
+
 ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidget* parent) : QOpenGLWidget(parent) {
     trackPointProperty = trackPointProps;
     imageDetect = nullptr;
@@ -15,11 +17,7 @@ ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidge
     showBoundingAreas = false;
     numImageGroupsX = 3;
     numImageGroupsY = 3;
-    /*
-     * 13/05/2024
-     * Nathan & Armand - set to false, as the crosshair button already puts it to true
-    */
-    setMouseTracking(false);
+    setMouseTracking(true);
 
     // Test-code for boxes and circles, used for drawing masking-areas etc.
     // Maybe about 70-80 % finished bounding-area management code.
@@ -49,15 +47,13 @@ void ImageOpenGLWidget::initializeGL() {
 }
 
 void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
+    qInfo() << "ioglw" << this->size();
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
         if (this->imgBuffer != nullptr) delete[] this->imgBuffer;
         this->imgBuffer = new unsigned char[bufferSize];
         this->imageWidth = imageWidth;
         this->imageHeight = imageHeight;
-
-        qInfo() << "upim - height" << imageWidth;
-        qInfo() << "upim - width" << imageHeight;
     }
     memcpy(this->imgBuffer, imgBuffer, bufferSize);
     this->bufferSize = bufferSize;
@@ -71,7 +67,10 @@ void ImageOpenGLWidget::updateView() {
     //glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glViewport(0, 0, this->width(), this->height());
+    //glViewport(0, 0, this->width(), this->height());
+    qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
+    qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
+    glViewport(0,0,this->width(),this->height());
     glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -92,6 +91,13 @@ void ImageOpenGLWidget::updateView() {
         scaledImageArea.setTop((height - (((float) imageHeight / imageWidth) * width)) / 2);
         scaledImageArea.setLeft(0);
     }
+
+
+    // QPixmap scaled = QPixmap(imageWidth, imageHeight).scaled(this->width(), this->height(), Qt::KeepAspectRatio);
+    // scaledImageArea.setTopLeft(scaled.rect().topLeft());
+    // scaledImageArea.setBottomRight(scaled.rect().bottomRight());
+    qInfo() << "scaled w/h \t\t" << scaledImageArea.width() << "/" << scaledImageArea.height();
+
 }
 
 void ImageOpenGLWidget::paintGL() {
@@ -244,7 +250,7 @@ void ImageOpenGLWidget::paintGL() {
 
             glColor4f(0, 1, 0, 0.3f);
             glBegin(GL_POLYGON);
-            glVertex3d(myBox->topLeft().x() * imageToScreenCoordX, 
+            glVertex3d(myBox->topLeft().x() * imageToScreenCoordX,
                        myBox->topLeft().y() * imageToScreenCoordY,
                        0);
             glVertex3d(myBox->topRight().x() * imageToScreenCoordX,
@@ -357,7 +363,7 @@ void ImageOpenGLWidget::paintGL() {
             glBegin(GL_LINES);
             glVertex2f(myBox->topLeft().x() * imageToScreenCoordX,
                        myBox->topLeft().y() * imageToScreenCoordY + (myBox->height() * imageToScreenCoordY / 2));
-            glVertex2f(myBox->topRight().x() * imageToScreenCoordX, 
+            glVertex2f(myBox->topRight().x() * imageToScreenCoordX,
                        myBox->topLeft().y() * imageToScreenCoordY + (myBox->height() * imageToScreenCoordY / 2));
             glEnd();
         }
@@ -469,7 +475,7 @@ void ImageOpenGLWidget::paintGL() {
                 QPainter painter(this);
                 painter.setFont(QFont("Courier"));
                 QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
-                painter.fillRect(pos.x(), pos.y(), 10 * s.size(), 12, Qt::white); 
+                painter.fillRect(pos.x(), pos.y(), 10 * s.size(), 12, Qt::white);
                 painter.drawText(pos + QPoint(2, 10), s);
             }
         }
