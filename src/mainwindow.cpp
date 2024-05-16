@@ -45,6 +45,12 @@ bool Ui::crosshair = false, Ui::crosshairReal = false, Ui::forceHighQuality = fa
 /* Constructor of MainWindow*/
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), selectedCameraManager(-1), detectCameras(true) , tdc(this),tup(this) {
 
+    // Armand & Nathan on 16/05/2024
+    QDir defaultDir = QDir::current();
+    defaultDir.cd("../../..");
+    QDir::setCurrent(defaultDir.absolutePath());
+
+
     // g jan 2015: icons og filnavn er definert i cameramanager.qrc
     propertiesIcons[0] = QIcon(":/icons/camera").pixmap(16, 16);
     propertiesIcons[1] = QIcon(":/icons/folder").pixmap(16, 16);
@@ -606,7 +612,7 @@ void MainWindow::loadDefaultTrackPointSettings() {
     loadTrackPointSettingsFromFile(path);
 }
 
-void MainWindow::on_TrackPointChecked(int state) {
+void MainWindow::on_TrackPointChecked(Qt::CheckState state) {
     trackPointProperty.trackPointPreview = (state == Qt::Checked);
     //cameraManagers[selectedCameraManager]->updateContainer();
     QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();
@@ -615,7 +621,7 @@ void MainWindow::on_TrackPointChecked(int state) {
     }
 }
 
-void MainWindow::on_FilteredImageChecked(int state) {
+void MainWindow::on_FilteredImageChecked(Qt::CheckState state) {
     trackPointProperty.filteredImagePreview = (state == Qt::Checked);
     //cameraManagers[selectedCameraManager]->updateContainer();
     QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();
@@ -624,7 +630,7 @@ void MainWindow::on_FilteredImageChecked(int state) {
     }
 }
 
-void MainWindow::on_ShowCoordinateLabelChecked(int state) {
+void MainWindow::on_ShowCoordinateLabelChecked(Qt::CheckState state) {
     trackPointProperty.showCoordinates = (state == Qt::Checked);
     //cameraManagers[selectedCameraManager]->updateContainer();
     QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();
@@ -633,7 +639,7 @@ void MainWindow::on_ShowCoordinateLabelChecked(int state) {
     }
 }
 
-void MainWindow::on_RemoveDuplicatesChecked(int state) {
+void MainWindow::on_RemoveDuplicatesChecked(Qt::CheckState state) {
     trackPointProperty.removeDuplicates = (state == Qt::Checked);
     //cameraManagers[selectedCameraManager]->updateContainer();
     QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();
@@ -642,7 +648,7 @@ void MainWindow::on_RemoveDuplicatesChecked(int state) {
     }
 }
 
-void MainWindow::on_ShowMinSepCircleChecked(int state) {
+void MainWindow::on_ShowMinSepCircleChecked(Qt::CheckState state) {
   trackPointProperty.showMinSepCircle = (state == Qt::Checked);
   //cameraManagers[selectedCameraManager]->updateContainer();
   QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();
@@ -905,14 +911,14 @@ void MainWindow::setupTrackPointTab() {
     ui->trackPointEnabled->setChecked(trackPointProperty.trackPointPreview);
     trackPointLayout->addWidget(trackpointLabel, 0, 0);
     trackPointLayout->addWidget(ui->trackPointEnabled, 0, 1);
-    connect(ui->trackPointEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_TrackPointChecked(int)));
+    connect(ui->trackPointEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_TrackPointChecked(Qt::CheckState)));
 
     QLabel* filteredImageLabel = new QLabel("Filtered Image Preview:");
     ui->filteredImagePreviewEnabled = new QCheckBox();
     ui->filteredImagePreviewEnabled->setChecked(trackPointProperty.filteredImagePreview);
     trackPointLayout->addWidget(filteredImageLabel, 1, 0);
     trackPointLayout->addWidget(ui->filteredImagePreviewEnabled, 1, 1);
-    connect(ui->filteredImagePreviewEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_FilteredImageChecked(int)));
+    connect(ui->filteredImagePreviewEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_FilteredImageChecked(Qt::CheckState)));
 
     QLabel* showCoordinatesLabel = new QLabel("Show Coordinate Labels:");
     ui->showCoordinateLabelEnabled = new QCheckBox();
@@ -926,14 +932,14 @@ void MainWindow::setupTrackPointTab() {
     ui->removeDuplicatPointsEnabled->setChecked(trackPointProperty.removeDuplicates);
     trackPointLayout->addWidget(removeDuplicatesLabel, 3, 0);
     trackPointLayout->addWidget(ui->removeDuplicatPointsEnabled, 3, 1);
-    connect(ui->removeDuplicatPointsEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_RemoveDuplicatesChecked(int)));
+    connect(ui->removeDuplicatPointsEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_RemoveDuplicatesChecked(Qt::CheckState)));
 
     QLabel* showMinSepLabel = new QLabel("Show minimal separation circle:");
     ui->showMinSepCircleEnabled = new QCheckBox();
     ui->showMinSepCircleEnabled->setChecked(trackPointProperty.showMinSepCircle);
     trackPointLayout->addWidget(showMinSepLabel, 4, 0);
     trackPointLayout->addWidget(ui->showMinSepCircleEnabled, 4, 1);
-    connect(ui->showMinSepCircleEnabled, SIGNAL(stateChanged(int)), this, SLOT(on_ShowMinSepCircleChecked(int)));
+    connect(ui->showMinSepCircleEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_ShowMinSepCircleChecked(Qt::CheckState)));
 
     const int lineEditWidth = 75;
 

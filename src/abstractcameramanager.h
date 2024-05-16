@@ -207,7 +207,7 @@ class AbstractCameraManager : public QObject {
     private slots:
         void on_CameraTree_itemChanged(QStandardItem* item);
         void on_subwindow_closing(QObject* window);
-        void on_propertyCheckbox_changed(int state);
+        void on_propertyCheckbox_changed(Qt::CheckState);
         void on_propertySlider_changed(int val);
         void on_propertyValue_changed();
 

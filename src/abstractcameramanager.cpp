@@ -779,7 +779,7 @@ void AbstractCameraManager::setProperties(std::vector<CameraProperty> &propertie
         box->setChecked(property.getAuto());
         if (!property.getCanAuto()) box->setEnabled(false);
         propertiesList.setItemWidget(it, Ui::PropertyAuto, box);
-        connect(box, SIGNAL(stateChanged(int)), this, SLOT(on_propertyCheckbox_changed(int)));
+        connect(box, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_propertyCheckbox_changed(Qt::CheckState)));
 
         if (property.getType() == CameraManager::AUTOTRIGGER) continue;
 
@@ -842,7 +842,7 @@ void AbstractCameraManager::setSpinProperties(std::vector<CameraManagerSpin::Spi
         box->setChecked(property.getAuto());
         if (!property.getCanAuto()) box->setEnabled(false);
         propertiesList.setItemWidget(it, Ui::PropertyAuto, box);
-        connect(box, SIGNAL(stateChanged(int)), this, SLOT(on_propertyCheckbox_changed(int)));
+        connect(box, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_propertyCheckbox_changed(Qt::CheckState)));
 
         if (property.getType() == CameraManagerSpin::AUTOTRIGGER) continue;
 
@@ -947,7 +947,7 @@ void AbstractCameraManager::updateSpinProperties(std::vector<CameraManagerSpin::
 
 }
 
-void AbstractCameraManager::on_propertyCheckbox_changed(int state){
+void AbstractCameraManager::on_propertyCheckbox_changed(Qt::CheckState state){
 
     // Armand & Nathan on 13/05/2024
 

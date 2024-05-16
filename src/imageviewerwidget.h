@@ -41,13 +41,13 @@ protected:
 
 private slots:
     void imageFileSliderChanged(int value);
-    void enableSubRegionsStateChanged(int);
+    void enableSubRegionsStateChanged(Qt::CheckState);
     void numSubRegionsXChanged(int);
     void numSubRegionsYChanged(int);
     void zoomFactorChanged(const QString&);
     void zoomAreaSizeChanged(const QString&);
-    void enablePointStateChanged(int);
-    void customPointStringStateChanged(int);
+    void enablePointStateChanged(Qt::CheckState);
+    void customPointStringStateChanged(Qt::CheckState);
     void singlePointClicked();
     void multiplePointClicked();
     void createPointFileClicked();

@@ -113,11 +113,11 @@ private slots:
     void quickSaveTrackPointSettings();
     void loadDefaultTrackPointSettings_clicked();
     void loadDefaultCameraProperties_clicked();
-    void on_TrackPointChecked(int state);
-    void on_FilteredImageChecked(int state);
-    void on_ShowCoordinateLabelChecked(int state);
-    void on_RemoveDuplicatesChecked(int state);
-    void on_ShowMinSepCircleChecked(int state);
+    void on_TrackPointChecked(Qt::CheckState state);
+    void on_FilteredImageChecked(Qt::CheckState state);
+    void on_ShowCoordinateLabelChecked(Qt::CheckState state);
+    void on_RemoveDuplicatesChecked(Qt::CheckState state);
+    void on_ShowMinSepCircleChecked(Qt::CheckState state);
     void on_TrackPointValueChanged();
     void on_TrackPointSliderValueChanged(int);
 

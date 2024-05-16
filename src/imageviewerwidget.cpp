@@ -54,7 +54,7 @@ void ImageViewerWidget::imageFileSliderChanged(int value) {
     setWindowTitle(imageFiles[selectedImageInFolder].fileName());
 }
 
-void ImageViewerWidget::enableSubRegionsStateChanged(int state) {
+void ImageViewerWidget::enableSubRegionsStateChanged(Qt::CheckState state) {
     imageWidget.setEnableSubImage(state == Qt::CheckState::Checked);
     imageWidget.update();
 }
@@ -84,12 +84,12 @@ void ImageViewerWidget::zoomAreaSizeChanged(const QString& text) {
     imageWidget.setZoomAreaSize(text.toDouble());
 }
 
-void ImageViewerWidget::enablePointStateChanged(int val) {
+void ImageViewerWidget::enablePointStateChanged(Qt::CheckState val) {
     imageWidget.setShowPointSeries(val == Qt::CheckState::Checked);
     update();
 }
 
-void ImageViewerWidget::customPointStringStateChanged(int val) {
+void ImageViewerWidget::customPointStringStateChanged(Qt::CheckState val) {
     imageWidget.setShowPointSeriesLabel(val == Qt::CheckState::Checked);
     update();
 }
@@ -310,14 +310,14 @@ void ImageViewerWidget::initGUI() {
     imageFileSlider.setTickInterval(1);
     imageFileSlider.setTickPosition(QSlider::TickPosition::TicksBelow);
 
-    connect(&enableSubRegions, SIGNAL(stateChanged(int)), this, SLOT(enableSubRegionsStateChanged(int)));
+    connect(&enableSubRegions, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(enableSubRegionsStateChanged(Qt::CheckState)));
     connect(&numSubRegionsX, SIGNAL(valueChanged(int)), this, SLOT(numSubRegionsXChanged(int)));
     connect(&numSubRegionsY, SIGNAL(valueChanged(int)), this, SLOT(numSubRegionsYChanged(int)));
     connect(&imageFileSlider, SIGNAL(valueChanged(int)), this, SLOT(imageFileSliderChanged(int)));
     connect(&zoomFactorComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(zoomFactorChanged(const QString&)));
     connect(&zoomAreaSizeComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(zoomAreaSizeChanged(const QString&)));
-    connect(&enablePointSeries, SIGNAL(stateChanged(int)), this, SLOT(enablePointStateChanged(int)));
-    connect(&enablePointStringLabel, SIGNAL(stateChanged(int)), this, SLOT(customPointStringStateChanged(int)));
+    connect(&enablePointSeries, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(enablePointStateChanged(Qt::CheckState)));
+    connect(&enablePointStringLabel, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(customPointStringStateChanged(Qt::CheckState)));
     connect(&singlePointSeries, SIGNAL(clicked()), this, SLOT(singlePointClicked()));
     connect(&multiplePointSeries, SIGNAL(clicked()), this, SLOT(multiplePointClicked()));
     connect(&createPointFile, SIGNAL(clicked()), this, SLOT(createPointFileClicked()));

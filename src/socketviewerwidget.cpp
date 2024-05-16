@@ -271,14 +271,14 @@ void SocketViewerWidget::init() {
     //textLayout->addWidget(disconnectButton);
     textWidget.setLayout(textLayout);
 
-    connect(showPreceedingPoints, SIGNAL(stateChanged(int)), this, SLOT(showPreceedingPointsStateChanged(int)));
-    connect(showLines, SIGNAL(stateChanged(int)), this, SLOT(showLinesStateChanged(int)));
-    connect(showCameras, SIGNAL(stateChanged(int)), this, SLOT(showCamerasStateChanged(int)));
-    connect(showCameraLegs, SIGNAL(stateChanged(int)), this, SLOT(showCameraLegsStateChanged(int)));
-    connect(showCameraFOV, SIGNAL(stateChanged(int)), this, SLOT(showCameraFOVStateChanged(int)));
-    connect(showCoordinateAxis, SIGNAL(stateChanged(int)), this, SLOT(showCoordinateAxisStateChanged(int)));
-    connect(showFloor, SIGNAL(stateChanged(int)), this, SLOT(showFloorStateChanged(int)));
-    connect(showOrtho, SIGNAL(stateChanged(int)), this, SLOT(showOrthoStateChanged(int)));
+    connect(showPreceedingPoints, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showPreceedingPointsStateChanged(Qt::CheckState)));
+    connect(showLines, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showLinesStateChanged(Qt::CheckState)));
+    connect(showCameras, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showCamerasStateChanged(Qt::CheckState)));
+    connect(showCameraLegs, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showCameraLegsStateChanged(Qt::CheckState)));
+    connect(showCameraFOV, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showCameraFOVStateChanged(Qt::CheckState)));
+    connect(showCoordinateAxis, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showCoordinateAxisStateChanged(Qt::CheckState)));
+    connect(showFloor, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showFloorStateChanged(Qt::CheckState)));
+    connect(showOrtho, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(showOrthoStateChanged(Qt::CheckState)));
     connect(showSocketText, SIGNAL(clicked()), this, SLOT(showSocketTextFunc()));
     connect(show3DWidget, SIGNAL(clicked()), this, SLOT(show3DWidgetFunc()));
     connect(showXYPlane, SIGNAL(clicked()), this, SLOT(showXYPlaneFunc()));
@@ -371,17 +371,17 @@ void SocketViewerWidget::hideButtonPanelFunc() {
     hideButtonPanel = !hideButtonPanel;
 }
 
-void SocketViewerWidget::showPreceedingPointsStateChanged(int state) {
+void SocketViewerWidget::showPreceedingPointsStateChanged(Qt::CheckState state) {
     widgetGL->setShowPreceedingPoints(state == Qt::Checked);
     widgetGL->update();
 }
 
-void SocketViewerWidget::showLinesStateChanged(int state) {
+void SocketViewerWidget::showLinesStateChanged(Qt::CheckState state) {
     widgetGL->setShowLines(state == Qt::Checked);
     widgetGL->update();
 }
 
-void SocketViewerWidget::showCamerasStateChanged(int state) {
+void SocketViewerWidget::showCamerasStateChanged(Qt::CheckState state) {
     widgetGL->setShowCameras(state == Qt::Checked);
     showCameraFOV->setEnabled(widgetGL->isShowCameras());
     showCameraLegs->setEnabled(widgetGL->isShowCameras());
@@ -389,28 +389,28 @@ void SocketViewerWidget::showCamerasStateChanged(int state) {
     widgetGL->update();
 }
 
-void SocketViewerWidget::showCameraLegsStateChanged(int state) {
+void SocketViewerWidget::showCameraLegsStateChanged(Qt::CheckState state) {
     widgetGL->setShowCameraLegs(state == Qt::Checked);
     widgetGL->update();
 }
 
-void SocketViewerWidget::showCameraFOVStateChanged(int state) {
+void SocketViewerWidget::showCameraFOVStateChanged(Qt::CheckState state) {
     widgetGL->setShowFovCone(state == Qt::Checked);
     fovConeSizeSlider->setEnabled(state == Qt::Checked);
     widgetGL->update();
 }
 
-void SocketViewerWidget::showCoordinateAxisStateChanged(int state) {
+void SocketViewerWidget::showCoordinateAxisStateChanged(Qt::CheckState state) {
     widgetGL->setShowCoordinateSystem(state == Qt::Checked);
     widgetGL->update();
 }
 
-void SocketViewerWidget::showFloorStateChanged(int state) {
+void SocketViewerWidget::showFloorStateChanged(Qt::CheckState state) {
     widgetGL->setShowFloorLines(state == Qt::Checked);
     widgetGL->update();
 }
 
-void SocketViewerWidget::showOrthoStateChanged(int state) {
+void SocketViewerWidget::showOrthoStateChanged(Qt::CheckState state) {
     widgetGL->setShowOrtho(state == Qt::Checked);
     widgetGL->update();
 }
