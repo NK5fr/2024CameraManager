@@ -103,7 +103,6 @@ void AbstractCameraManager::updateSpinProperties() {
         QCheckBox* checkBox = qobject_cast<QCheckBox*>(propertiesList.itemWidget(item, Ui::PropertyAuto));
         CameraManagerSpin::SpinCameraProperty * prop = reinterpret_cast<CameraManagerSpin::SpinCameraProperty*>(checkBox->property("CameraProperty").value<quintptr>());
         QSlider* slider = reinterpret_cast<QSlider*>(checkBox->property("TreeWidgetSlider").value<quintptr>());
-        qDebug() << "updating:" << prop->getName();
 
         // Lars Aksel - 09.02.2015 - Changed from updateProperties to setProperties
         //selected->updateProperty(prop);

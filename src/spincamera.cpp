@@ -305,6 +305,8 @@ void SpinCamera::startAutoCapture(){
     std::cout << "valeur de capoturing: " << capturing << std::endl;
     while(capturing){
         ImagePtr image = captureImage();
+        qInfo() << "stauca - height" << image->GetHeight();
+        qInfo() << "stauca - width" << image->GetWidth();
         AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight());
 
     }

@@ -55,6 +55,9 @@ void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int buffe
         this->imgBuffer = new unsigned char[bufferSize];
         this->imageWidth = imageWidth;
         this->imageHeight = imageHeight;
+
+        qInfo() << "upim - height" << imageWidth;
+        qInfo() << "upim - width" << imageHeight;
     }
     memcpy(this->imgBuffer, imgBuffer, bufferSize);
     this->bufferSize = bufferSize;
