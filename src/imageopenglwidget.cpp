@@ -42,12 +42,13 @@ ImageOpenGLWidget::~ImageOpenGLWidget() {
 
 void ImageOpenGLWidget::initializeGL() {
     initializeOpenGLFunctions();
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    // used to change the OpenGL background
+    //glClearColor(1.0, 1.0, 1.0, 1.0);
     updateView();
 }
 
 void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    qInfo() << "ioglw" << this->size();
+    //qInfo() << "ioglw" << this->size();
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
         if (this->imgBuffer != nullptr) delete[] this->imgBuffer;
@@ -68,8 +69,8 @@ void ImageOpenGLWidget::updateView() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glViewport(0, 0, this->width(), this->height());
-    qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
-    qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
+    //qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
+    //qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
     glViewport(0,0,this->width(),this->height());
     glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_PROJECTION);
@@ -96,7 +97,7 @@ void ImageOpenGLWidget::updateView() {
     // QPixmap scaled = QPixmap(imageWidth, imageHeight).scaled(this->width(), this->height(), Qt::KeepAspectRatio);
     // scaledImageArea.setTopLeft(scaled.rect().topLeft());
     // scaledImageArea.setBottomRight(scaled.rect().bottomRight());
-    qInfo() << "scaled w/h \t\t" << scaledImageArea.width() << "/" << scaledImageArea.height();
+    //qInfo() << "scaled w/h \t\t" << scaledImageArea.width() << "/" << scaledImageArea.height();
 
 }
 
@@ -140,7 +141,7 @@ void ImageOpenGLWidget::paintGL() {
     } else texture.updateTexture(imgBuffer, bufferSize);
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glClearColor(1, 1, 1, 1);
+    glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glLineWidth(1);
@@ -604,7 +605,7 @@ void ImageOpenGLWidget::paintGL() {
     if (showMouseOverCoordinateLabel) {
         QPainter painter(this);
         QPoint pos = scaledImageArea.topLeft();
-        painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
+        painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::gray);
         if (enableSubImages && subImageWidth > 0 && subImageHeight > 0) {
             painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(std::fmod(mousePosInImage.x(), subImageWidth), 'f', 2) + " ,Y: " + QString::number(std::fmod(mousePosInImage.y(), subImageHeight), 'f', 2));
         } else {

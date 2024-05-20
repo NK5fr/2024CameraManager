@@ -19,7 +19,6 @@ void VideoOpenGLWidget::receiveUpdate() {
 }
 
 void VideoOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    qInfo() << "voglw" << this->size();
     ImageOpenGLWidget::updateImage(imgBuffer, bufferSize, imageWidth, imageHeight);
     emit forceUpdate();
 }
