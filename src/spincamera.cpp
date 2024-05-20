@@ -26,21 +26,28 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
 
     case CameraManagerSpin::TRIGGER :
 
+        // Armand & Nathan 20/05/2024 : enable or disable trigger
+
         if(p->getAuto()){
             enableTrigger = 0;
+            cam->TriggerMode.SetValue(Spinnaker::TriggerMode_On);
         }else{
             enableTrigger = 1;
+            cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
         }
-        //ConfigureTrigger(cam->GetNodeMap());
         break;
     case CameraManagerSpin::AUTOTRIGGER :
 
+        // Armand & Nathan 20/05/2024 : change trigger source
+
+        cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
         if(p->getAuto()){
             trigger = 0;
+            cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Software);
         }else{
             trigger = 1;
+            cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Line0);
         }
-        //ConfigureTrigger(cam->GetNodeMap());
         break;
     case CameraManagerSpin::BLACKLEVEL :
         try{
@@ -169,6 +176,21 @@ ImagePtr SpinCamera::captureImage() {
     ImagePtr image = nullptr;
     ImagePtr convertedImage = nullptr;
     try {
+
+
+        // if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Line0){
+        //     qInfo() << "Line0";
+        // }else if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Software){
+        //     qInfo() << "Software";
+        // }
+
+        // if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_On){
+        //     qInfo() << "On";
+        // }else if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_Off){
+        //     qInfo() << "Off";
+        // }
+
+
         if ( cam->IsStreaming()) {
             ImageProcessor processor;
 
