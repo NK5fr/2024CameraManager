@@ -490,6 +490,7 @@ void AbstractCameraManager::activateLiveView(bool active){
 /////////////// Camera List related ///////////////
 ///////////////////////////////////////////////////
 QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) {
+
     //std::vector<CameraPtr> newCameras;
     std::vector<AbstractCamera*> newCameras;
     std::vector<QStandardItem*> oldCameras;
@@ -542,6 +543,7 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) 
             item->parent()->removeRow(item->row());
         }
     }
+
     //adding new cameras
     for (unsigned int i = 0; i < newCameras.size(); i++) {
 
@@ -570,6 +572,7 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) 
 
         newCameraList.appendRow(items);
     }
+
     return newCameraList.index();
 }
 QModelIndex AbstractCameraManager::addGroup(){
@@ -603,6 +606,7 @@ void AbstractCameraManager::resetItem(QModelIndex index){
 }
 
 void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem* item, bool active){
+
     int i = activeCameras.size() - 1;
     while (i >= 0 && activeCameras.at(i).camera != camera) --i;
 
@@ -655,6 +659,7 @@ void AbstractCameraManager::on_CameraTree_itemChanged(QStandardItem* item) {
 }
 
 void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QString &string, int &icon, bool &editable, bool &deleteable){
+
     QStandardItem* clicked = getModel()->itemFromIndex(index);
     selectedItem = clicked;
     QStandardItem* first = nullptr;
