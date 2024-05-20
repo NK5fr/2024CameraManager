@@ -1,8 +1,6 @@
 
 #include "imageopenglwidget.h"
 
-#include <QPixMap>
-
 ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidget* parent) : QOpenGLWidget(parent) {
     trackPointProperty = trackPointProps;
     imageDetect = nullptr;

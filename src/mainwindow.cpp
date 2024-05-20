@@ -130,14 +130,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     //startCameraDetection(system);
 
-    tdc.start();
+    // tdc.start();
 
-    // connect(timer, &QTimer::timeout, this, [this](){
-    //     SystemManager *sm = new SystemManager;
-    //     ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(sm), true);
-    // });
+    connect(timer, &QTimer::timeout, this, [this](){
+        SystemManager *sm = new SystemManager;
+        ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(sm), true);
+    });
 
-    // timer->start(200);
+    timer->start(200);
 
 
     setFocusPolicy(Qt::TabFocus);
@@ -154,8 +154,8 @@ MainWindow::~MainWindow() {
     detectCameras = false;
     on_actionLiveView_toggled(false);
     // deux lignes a remettr en commentaire si bug
-    tdc.wait();
-    //timer->stop();
+    //tdc.wait();
+    timer->stop();
     tup.wait();
     // deux lignes a remettre en commentaire si bug
     for (int i = 0; i < cameraManagers.size(); i++) {
