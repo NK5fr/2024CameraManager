@@ -17,7 +17,8 @@ namespace CameraManagerSpin {
         GAMMA,
         FRAMERATE,
         EXPOSURETIME,
-        AUTOTRIGGER
+        AUTOTRIGGER,
+        TRIGGER
     };
 
 	/**

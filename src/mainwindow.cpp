@@ -129,7 +129,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //system = new SystemManager();
 
     //startCameraDetection(system);
+
     tdc.start();
+
+    // connect(timer, &QTimer::timeout, this, [this](){
+    //     SystemManager *sm = new SystemManager;
+    //     ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(sm), true);
+    // });
+
+    // timer->start(200);
 
 
     setFocusPolicy(Qt::TabFocus);
@@ -147,6 +155,7 @@ MainWindow::~MainWindow() {
     on_actionLiveView_toggled(false);
     // deux lignes a remettr en commentaire si bug
     tdc.wait();
+    //timer->stop();
     tup.wait();
     // deux lignes a remettre en commentaire si bug
     for (int i = 0; i < cameraManagers.size(); i++) {
@@ -364,7 +373,8 @@ void MainWindow::menuBarClicked(QAction* action) {
     } else if (action->text() == "Camera Autodetection") {
         detectCameras = bar->getCameraAutoDetection()->isChecked();
         if (detectCameras) {
-           tdc.start();
+            tdc.start();
+            //timer->start(200);
         }
     } else if (action->text() == "Activate Coordinates"){
         bool b = bar->getActivateCoordinates()->isChecked();
@@ -419,11 +429,12 @@ void MainWindow::menuBarClicked(QAction* action) {
 
 // When Thread DetectCamera is launched, it call this method to find new camera
 void MainWindow::startCameraDetection(SystemManager *sm) {
+
     while (detectCameras){
         ui->cameraTree->setExpanded(cameraManagers.at(selectedCameraManager)->detectNewCamerasAndExpand(sm), true);
         //emit resizeColumnsCameraTree();
         QThread::msleep(200);
-   }
+    }
 }
 
 // When Thread UpdateProperties is launched, it call this method to update the selected camera properties
@@ -631,7 +642,7 @@ void MainWindow::on_FilteredImageChecked(Qt::CheckState state) {
 }
 
 void MainWindow::on_ShowCoordinateLabelChecked(Qt::CheckState state) {
-    qInfo() << "mm";
+    //qInfo() << "mm";
     trackPointProperty.showCoordinates = (state == Qt::Checked);
     //cameraManagers[selectedCameraManager]->updateContainer();
     QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();

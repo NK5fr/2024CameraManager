@@ -119,7 +119,7 @@ void AbstractCameraManager::updateSpinProperties() {
         QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(item, Ui::PropertyReadValue);
         if (valueBox != nullptr) valueBox->setText(val);
 
-        if( prop->getType() == CameraManagerSpin::AUTOTRIGGER ) continue;
+        if( prop->getType() == CameraManagerSpin::AUTOTRIGGER || prop->getType() == CameraManagerSpin::TRIGGER) continue;
         slider->setValue(prop->getValueToSlider());
         slider->setEnabled(!prop->getAuto());
     }
@@ -225,6 +225,7 @@ bool AbstractCameraManager::updatePropertiesFromFile(QString& filepath, std::vec
             return false;
         }
 }
+
 //Method to update properties from a setting file for Spinnaker camera
 //wrote on 11/06/2019 by French students
 bool AbstractCameraManager::updateSpinPropertiesFromFile(QString &filepath, std::vector<SpinCameraProperty> &prop) {
@@ -245,6 +246,9 @@ bool AbstractCameraManager::updateSpinPropertiesFromFile(QString &filepath, std:
             settings.endGroup();
             settings.beginGroup("ExposureTime");
             setSpinPropFromSettings(settings, prop, CameraManagerSpin::EXPOSURETIME);
+            settings.endGroup();
+            settings.beginGroup("Trigger");
+            setSpinPropFromSettings(settings, prop, CameraManagerSpin::TRIGGER);
             settings.endGroup();
             settings.beginGroup("AutoTrigger");
             setSpinPropFromSettings(settings, prop, CameraManagerSpin::AUTOTRIGGER);
@@ -391,6 +395,9 @@ bool AbstractCameraManager::loadSpinPropertiesFromFile(QString &filepath, std::v
           settings.beginGroup("ExposureTime");
           setNewSpinPropFromSettings(settings, prop, CameraManagerSpin::EXPOSURETIME);
           settings.endGroup();
+          settings.beginGroup("Trigger");
+          setNewSpinPropFromSettings(settings, prop, CameraManagerSpin::TRIGGER);
+          settings.endGroup();
           settings.beginGroup("AutoTrigger");
           setNewSpinPropFromSettings(settings, prop, CameraManagerSpin::AUTOTRIGGER);
           settings.endGroup();
@@ -451,8 +458,11 @@ bool AbstractCameraManager::saveSpinPropertiesToFile(QString& filepath) {
     settings.beginGroup("ExposureTime");
     setSpinPropToSettings(settings, spinCameraProperties[4]);
     settings.endGroup();
-    settings.beginGroup("AutoTrigger");
+    settings.beginGroup("Trigger");
     setSpinPropToSettings(settings, spinCameraProperties[5]);
+    settings.endGroup();
+    settings.beginGroup("AutoTrigger");
+    setSpinPropToSettings(settings, spinCameraProperties[6]);
     settings.endGroup();
     return true;
 }
@@ -480,6 +490,7 @@ void AbstractCameraManager::activateLiveView(bool active){
 /////////////// Camera List related ///////////////
 ///////////////////////////////////////////////////
 QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) {
+
     //std::vector<CameraPtr> newCameras;
     std::vector<AbstractCamera*> newCameras;
     std::vector<QStandardItem*> oldCameras;
@@ -532,6 +543,7 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) 
             item->parent()->removeRow(item->row());
         }
     }
+
     //adding new cameras
     for (unsigned int i = 0; i < newCameras.size(); i++) {
 
@@ -560,6 +572,7 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) 
 
         newCameraList.appendRow(items);
     }
+
     return newCameraList.index();
 }
 QModelIndex AbstractCameraManager::addGroup(){
@@ -593,6 +606,7 @@ void AbstractCameraManager::resetItem(QModelIndex index){
 }
 
 void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem* item, bool active){
+
     int i = activeCameras.size() - 1;
     while (i >= 0 && activeCameras.at(i).camera != camera) --i;
 
@@ -645,6 +659,7 @@ void AbstractCameraManager::on_CameraTree_itemChanged(QStandardItem* item) {
 }
 
 void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QString &string, int &icon, bool &editable, bool &deleteable){
+
     QStandardItem* clicked = getModel()->itemFromIndex(index);
     selectedItem = clicked;
     QStandardItem* first = nullptr;
@@ -843,7 +858,7 @@ void AbstractCameraManager::setSpinProperties(std::vector<CameraManagerSpin::Spi
         propertiesList.setItemWidget(it, Ui::PropertyAuto, box);
         connect(box, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(on_propertyCheckbox_changed(Qt::CheckState)));
 
-        if (property.getType() == CameraManagerSpin::AUTOTRIGGER) continue;
+        if (property.getType() == CameraManagerSpin::AUTOTRIGGER || property.getType() == CameraManagerSpin::TRIGGER) continue;
 
         QSlider* slider = new QSlider(Qt::Horizontal);
         QLineEdit* writeValueBox = new QLineEdit(property.formatValue());
@@ -928,7 +943,7 @@ void AbstractCameraManager::updateSpinProperties(std::vector<CameraManagerSpin::
         QCheckBox* box = (QCheckBox*) propertiesList.itemWidget(it, Ui::PropertyAuto);
         box->setChecked(property.getAuto());
         if (!property.getCanAuto()) box->setEnabled(false);
-        if (property.getType() == CameraManagerSpin::AUTOTRIGGER) continue;
+        if (property.getType() == CameraManagerSpin::AUTOTRIGGER || property.getType() == CameraManagerSpin::TRIGGER) continue;
         QLineEdit* valueBox = (QLineEdit*) propertiesList.itemWidget(it, Ui::PropertyWriteValue);
         valueBox->setText(QString::number(property.getValue()));
 
@@ -957,7 +972,7 @@ void AbstractCameraManager::on_propertyCheckbox_changed(Qt::CheckState state){
     cameraTree_recursiveSetSpinProperty(selectedItem, prop);
 
     //(de)activate slider
-    if (prop->getType() == CameraManagerSpin::AUTOTRIGGER) return;
+    if (prop->getType() == CameraManagerSpin::AUTOTRIGGER || prop->getType() == CameraManagerSpin::TRIGGER) return;
     QSlider* slider =  reinterpret_cast<QSlider*>( sender()->property("TreeWidgetSlider").value<quintptr>());
     std::cout << "Qslider" << slider << std::endl;
     if (state != Qt::Checked) {

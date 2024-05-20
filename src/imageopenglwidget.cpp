@@ -49,6 +49,7 @@ void ImageOpenGLWidget::initializeGL() {
 
 void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
     //qInfo() << "ioglw" << this->size();
+    //qInfo() << "ioglw" << this->size();
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
         if (this->imgBuffer != nullptr) delete[] this->imgBuffer;

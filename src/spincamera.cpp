@@ -23,12 +23,30 @@ void SpinCamera::setProperty(CameraManager::CameraProperty *p) {
 
 void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
     switch(p->getType()) { //Get the type of the property
-    case CameraManagerSpin::AUTOTRIGGER :
+
+    case CameraManagerSpin::TRIGGER :
+
+        // Armand & Nathan 20/05/2024 : enable or disable trigger
 
         if(p->getAuto()){
+            enableTrigger = 0;
+            cam->TriggerMode.SetValue(Spinnaker::TriggerMode_On);
+        }else{
+            enableTrigger = 1;
+            cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
+        }
+        break;
+    case CameraManagerSpin::AUTOTRIGGER :
+
+        // Armand & Nathan 20/05/2024 : change trigger source
+
+        cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
+        if(p->getAuto()){
             trigger = 0;
+            cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Software);
         }else{
             trigger = 1;
+            cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Line0);
         }
         break;
     case CameraManagerSpin::BLACKLEVEL :
@@ -143,30 +161,48 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
 
 // Lars Aksel - 30.01.2015 - Added support to ImageDetect
 ImagePtr SpinCamera::captureImage() {
-    if(trigger==0){
 
-        std::cout << "Trigger Software is not available, you can't activate Auto Trigger" << std::endl; // Auto Trigger is not available, if you need it please uncomment the seven following lines
+    // 20/05/2024 Armand & Nathan added enableTrigger condition to execute this part only if the user retrieves image using trigger
+    if(enableTrigger == 0 && trigger==0){
 
-    // Armand & Nathan 10/05/2024 : Auto Trigger disable because not available with our cameras
-
-    // Execute software trigger
-    // CCommandPtr ptrSoftwareTriggerCommand = cam->GetNodeMap().GetNode("TriggerSoftware");
-    // if (!IsAvailable(ptrSoftwareTriggerCommand) || !IsWritable(ptrSoftwareTriggerCommand))
-    // {
-    //     cout << "Unable to execute trigger. Aborting..." << endl;
-    //     return -1;
-    // }
-
-    // ptrSoftwareTriggerCommand->Execute();
+        CCommandPtr ptrSoftwareTriggerCommand = cam->GetNodeMap().GetNode("TriggerSoftware");
+        if (!IsAvailable(ptrSoftwareTriggerCommand) || !IsWritable(ptrSoftwareTriggerCommand))
+        {
+            std::cout << "Unable to execute trigger. Aborting..." << std::endl;
+        }else{
+           ptrSoftwareTriggerCommand->Execute();
+        }
     }
     ImagePtr image = nullptr;
     ImagePtr convertedImage = nullptr;
     try {
+
+
+        if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Line0){
+            qInfo() << "Line0";
+        }else if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Software){
+            qInfo() << "Software";
+        }
+
+        if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_On){
+            qInfo() << "On";
+        }else if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_Off){
+            qInfo() << "Off";
+        }
+
+
         if ( cam->IsStreaming()) {
             ImageProcessor processor;
-            image = cam->GetNextImage();
-            convertedImage = processor.Convert(image, PixelFormat_Mono8);
 
+            // 20/05/2024, Armand & Nathan : try to retrieve the next image, in case of failure it return nullptr
+
+            try {
+                image = cam->GetNextImage(100);
+                convertedImage = processor.Convert(image, PixelFormat_Mono8);
+            } catch (Exception e) {
+                std::cout << e.what() << std::endl;
+                convertedImage = nullptr;
+            }
         } else {
             std::cout <<" not streaming" << std::endl;
         }
@@ -235,19 +271,19 @@ int SpinCamera::ConfigureTrigger(INodeMap &nodeMap) {
         // Once the appropriate trigger source has been set, turn trigger mode
         // on in order to retrieve images using the trigger.
 
-        // Armand & Nathan 10/05/2024 : disabled TriggerMode, because we have nothing that could enable trigger this way by default
-        // if (trigger == 1) {
-        //     CEnumEntryPtr ptrTriggerModeOn = ptrTriggerMode->GetEntryByName("On");
-        //     if (!IsAvailable(ptrTriggerModeOn) || !IsReadable(ptrTriggerModeOn))
-        //     {
-        //         cout << "Unable to enable trigger mode (enum entry retrieval). Aborting..." << endl;
-        //         return -1;
-        //     }
+        // Armand & Nathan 10/05/2024 : added enableTrigger condition to execute this part only if the user retrieves image using trigger
+        if (enableTrigger == 0) {
+            CEnumEntryPtr ptrTriggerModeOn = ptrTriggerMode->GetEntryByName("On");
+            if (!IsAvailable(ptrTriggerModeOn) || !IsReadable(ptrTriggerModeOn))
+            {
+                std::cout << "Unable to enable trigger mode (enum entry retrieval). Aborting..." << std::endl;
+                return -1;
+            }
 
-        //     ptrTriggerMode->SetIntValue(ptrTriggerModeOn->GetValue());
+            ptrTriggerMode->SetIntValue(ptrTriggerModeOn->GetValue());
 
-        //     cout << "Trigger mode turned back on..." << endl << endl;
-        // }
+            std::cout << "Trigger mode turned back on..." << std::endl << std::endl;
+        }
 
     }
     catch (Spinnaker::Exception &e)
@@ -261,6 +297,7 @@ int SpinCamera::ConfigureTrigger(INodeMap &nodeMap) {
 }
 
 int SpinCamera::trigger = 0;
+int SpinCamera::enableTrigger = 0;
 
 //Start the AutoCapture
 //wrote on 11/06/2019 by French students
@@ -305,7 +342,10 @@ void SpinCamera::startAutoCapture(){
     std::cout << "valeur de capoturing: " << capturing << std::endl;
     while(capturing){
         ImagePtr image = captureImage();
-        AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight());
+
+        // 20/05/2024, Armand & Nathan : send frame only if the image is not null
+
+        if(image != nullptr) AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight());
 
     }
     try{
@@ -322,7 +362,6 @@ void SpinCamera::startAutoCapture(){
 //wrote on 11/06/2019 by French students
 void SpinCamera::stopAutoCapture(){
     capturing = false;
-
 }
 
 unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) {

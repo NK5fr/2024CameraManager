@@ -24,9 +24,13 @@ public:
     SpinCamera(Spinnaker::CameraPtr pCam);
     ~SpinCamera();
 
-    //Constant to get the trigger mode
+    //Constant to get the trigger source
     //wrote on 12/06/2019 by French students
     static int trigger;
+
+    //Constant to enable or disable trigger
+    //20/05/2024 written  by Armand & Nathan
+    static int enableTrigger;
 
     inline Spinnaker::CameraPtr getCamera() {
         return cam;
