@@ -442,20 +442,8 @@ void MainWindow::startCameraDetection(SystemManager *sm) {
 // When Thread UpdateProperties is launched, it call this method to update the selected camera properties
 void MainWindow::startUpdateProperties() {
     while (bar->getRunLiveView()->isChecked()){
-        //printf("Updating properties...\n");
-
         // Armand & Nathan on 13/05/2024
         cameraManagers.at(selectedCameraManager)->updateSpinProperties();
-
-        // useless because we only use Spinnaker
-        // if( MainWindow::selection == 2 ) {
-        //      cameraManagers.at(selectedCameraManager)->updateSpinProperties();
-
-        // } else {
-        //     cameraManagers.at(selectedCameraManager)->updateProperties();
-        // }
-
-        //QThread::
         QThread::msleep(250);
     }
 }
