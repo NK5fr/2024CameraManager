@@ -40,7 +40,6 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
 
         // Armand & Nathan 20/05/2024 : change trigger source
 
-        cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
         if(p->getAuto()){
             trigger = 0;
             cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Software);
@@ -48,6 +47,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
             trigger = 1;
             cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Line0);
         }
+
         break;
     case CameraManagerSpin::BLACKLEVEL :
         try{
@@ -178,17 +178,17 @@ ImagePtr SpinCamera::captureImage() {
     try {
 
 
-        if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Line0){
-            qInfo() << "Line0";
-        }else if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Software){
-            qInfo() << "Software";
-        }
+        // if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Line0){
+        //     qInfo() << "Line0";
+        // }else if(cam->TriggerSource.GetValue() == Spinnaker::TriggerSource_Software){
+        //     qInfo() << "Software";
+        // }
 
-        if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_On){
-            qInfo() << "On";
-        }else if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_Off){
-            qInfo() << "Off";
-        }
+        // if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_On){
+        //     qInfo() << "On";
+        // }else if(cam->TriggerMode.GetValue() == Spinnaker::TriggerMode_Off){
+        //     qInfo() << "Off";
+        // }
 
 
         if ( cam->IsStreaming()) {
@@ -197,12 +197,13 @@ ImagePtr SpinCamera::captureImage() {
             // 20/05/2024, Armand & Nathan : try to retrieve the next image, in case of failure it return nullptr
 
             try {
-                image = cam->GetNextImage(100);
+                image = cam->GetNextImage(1000);
                 convertedImage = processor.Convert(image, PixelFormat_Mono8);
             } catch (Exception e) {
                 std::cout << e.what() << std::endl;
                 convertedImage = nullptr;
             }
+
         } else {
             std::cout <<" not streaming" << std::endl;
         }
