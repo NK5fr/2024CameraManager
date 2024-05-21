@@ -176,6 +176,9 @@ private:
     void saveTrackPointSettingsToFile(QString& filepath, TrackPointProperty& props);
     void setupTrackPointTab();
 
+    // Armand & Nathan - Checks if files exist and notify user if not
+    void checkFiles();
+
     QString projectsPath;
     QString calibrationPath;
     bool isProjectLoaded = false;

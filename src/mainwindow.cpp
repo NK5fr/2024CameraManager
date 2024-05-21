@@ -50,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     defaultDir.cd("../../..");
     QDir::setCurrent(defaultDir.absolutePath());
 
+    // Armand & Nathan on 21/06/2024
+    checkFiles();
 
     // g jan 2015: icons og filnavn er definert i cameramanager.qrc
     propertiesIcons[0] = QIcon(":/icons/camera").pixmap(16, 16);
@@ -614,7 +616,13 @@ void MainWindow::loadDefaultTrackPointSettings_clicked() {
 void MainWindow::loadDefaultCameraProperties_clicked() {
     //bool tempStop = cameraManagers[selectedCameraManager]->isUpdateProperties();
     //if (tempStop) cameraManagers[selectedCameraManager]->setUpdateProperties(false);
-    cameraManagers[selectedCameraManager]->loadPropertiesDefaults();
+    QString path = QString(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_SPINNAKER);
+    QFile file = QFile(path);
+    if (!file.exists()) {
+        QMessageBox::information(this, "Error", QString("No default camera settings file found at ").append(path));
+    } else {
+        cameraManagers[selectedCameraManager]->loadPropertiesDefaults();
+    }
     //if (tempStop) cameraManagers[selectedCameraManager]->setUpdateProperties(true);
 }
 
@@ -1041,6 +1049,22 @@ void MainWindow::setupTrackPointTab() {
     vBoxLayout->addLayout(buttonGridLayout);
 
     ui->trackPointWidget->setLayout(vBoxLayout);
+}
+
+void MainWindow::checkFiles()
+{
+    QString defaultCamPath = QString(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + CAMERA_PROPERTY_SPINNAKER);
+    qInfo() << defaultCamPath;
+    QFile camFile = QFile(defaultCamPath);
+    if (!camFile.exists()) {
+        QMessageBox::information(this, "Error", QString("No default camera properties file found at ").append(defaultCamPath));
+    }
+    QString defaultTrackPointPath = QString(QDir::currentPath() + "/" + PROPERTY_PATH + "/" + TRACKPOINT_PROPERTY_DEFAULT_FILE);
+    qInfo() << defaultTrackPointPath;
+    QFile trackPointFile = QFile(defaultTrackPointPath);
+    if (!trackPointFile.exists()) {
+        QMessageBox::information(this, "Error", QString("No default trackpoint properties file found at ").append(defaultCamPath));
+    }
 }
 
 /*
