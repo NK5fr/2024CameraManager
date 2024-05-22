@@ -108,7 +108,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     //Hugo Fournier - 03.06.2019 - IMPLEMENT FLY/SPIN
-    connect(ui->selectCameraManager, SIGNAL(currentTextChanged(QString)), this, SLOT(combobox_changeSDK()));
 ;
     //tomas
     connect(ui->projectTree, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(projectTree_customContextMenuRequested(QPoint) ));
