@@ -79,12 +79,7 @@ class AbstractCameraManager : public QObject {
 
         // Lars Aksel - 27.01.2015
         void loadPropertiesDefaults();
-        bool loadPropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop);
-        bool updatePropertiesFromFile(QString& filepath, std::vector<CameraProperty>& prop);
-        bool savePropertiesToFile(QString& filepath);
         bool saveSpinPropertiesToFile(QString &filepath);
-        void setProperties(std::vector<CameraManager::CameraProperty> &properties);
-        void updateProperties(std::vector<CameraManager::CameraProperty> &properties);
 
         //Hugo Fournier - 4.06.2019
         bool loadSpinPropertiesFromFile(QString& filepath, std::vector<SpinCameraProperty>& prop);
