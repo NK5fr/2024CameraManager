@@ -182,26 +182,6 @@ void MainWindow::modifySubWindow(QMdiSubWindow* in, bool add) {
     }
 }
 
-// Armand & Nathan on 13/05/2024 : Useless because we only use Spinnaker
-
-//RAJOUT HUGO IMPLEMENT FLY/SPIN
-/* Slot called when selection in combobox changed */
-void MainWindow::combobox_changeSDK() {
-    // if(ui->selectCameraManager->currentText() == "FlyCapture Camera Manager") {
-    //      selection = 1;
-    //      cameraManagers[selectedCameraManager]->loadPropertiesDefaultsInit();
-
-
-    //  } else {
-    //      selection = 2;
-    //      cameraManagers[selectedCameraManager]->loadPropertiesDefaultsInit();
-    //  }
-}
-
-
-
-
-
 /* Slot called when index of the cameras project changed */
 void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
     if (selectedCameraManager >= 0){
@@ -220,7 +200,7 @@ void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
 }
 
 /** TOOLBAR FUNCTIONS **/
-/* Clic on LiveView button */
+/* Click on LiveView button */
 void MainWindow::on_actionLiveView_toggled(bool arg1) {
     bar->getRunLiveView()->setChecked(arg1);
     ui->actionUpdateImages->setEnabled(!arg1);
@@ -230,14 +210,14 @@ void MainWindow::on_actionLiveView_toggled(bool arg1) {
     //else
 }
 
-/* Clic on UpdateImage button */
+/* Click on UpdateImage button */
 void MainWindow::on_actionUpdateImages_triggered() {
     cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
     cameraManagers.at(selectedCameraManager)->updateImages();
     cameraManagers.at(selectedCameraManager)->updateContainer();
 }
 
-/* Clic on mosaic button */
+/* Click on mosaic button */
 void MainWindow::on_actionMosaic_triggered() {
     ui->centralwidget->tileSubWindows();
 }

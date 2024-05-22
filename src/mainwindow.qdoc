@@ -1,0 +1,102 @@
+/*!
+ * \class MainWindow
+ * \brief The MainWindow class handles what the application shows, aswell as what happens when the user interacts with the application.
+ * You'll find most of the connections here, for the cameraTree, project tree, toolbar.
+ * It also handles the loading of files and the change of the parameters.
+*/
+
+/*!
+ * \fn MainWindow::MainWindow(QWidget *parent)
+ * \brief
+*/
+
+/*!
+ * \fn MainWindow::~MainWindow()
+*/
+
+/*!
+ * \fn void MainWindow::modifySubWindow(QMdiSubWindow* in, bool add)
+*/
+
+/*!
+ * \fn void MainWindow::on_SelectCameras_currentIndexChanged(int index)
+*/
+
+/*!
+ * \fn void MainWindow::on_actionLiveView_toggled(bool arg1)
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn void MainWindow::on_actionUpdateImages_triggered()
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn void MainWindow::on_actionMosaic_triggered()
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn void MainWindow::on_actionRemoveWindows_triggered()
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn void MainWindow::on_actionCrosshair_toggled(bool arg1)
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn void MainWindow::on_actionCrosshairReal_toggled(bool arg1)
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn void MainWindow::on_actionHighQuality_toggled(bool arg1)
+ * \ingroup toolbar
+*/
+
+/*!
+ * \fn
+*/
+
+/*!
+ * \fn
+*/
+
+/*!
+ * \fn
+*/
+
+/*!
+ * \fn
+*/
+
+/*!
+ * \fn
+*/
+
+/*!
+ * \class ThreadDetectCamera
+ * \brief The ThreadDetectCamera class is a thread that handles the detection of cameras
+*/
+
+/*!
+ * \fn void ThreadDetectCamera::run()
+ * \brief Simply launches the \l {MainWindow::startCameraDetection(SystemManager *sm)} {startCameraDetection} from its MainWindow,
+ * which simply does the "detectNewCamerasAndExpand" function from the AbstractCameraManager every 250ms
+ * \sa \l MainWindow::startCameraDetection(SystemManager *sm)
+*/
+
+/*!
+ * \class ThreadUpdateProperties
+ * \brief The TreadUpdateproperties class is a thread that updates the camera's properties
+*/
+
+/*!
+ * \fn void ThreadUpdateProperties::run()
+ * \brief Simply launches the \l {MainWindow::startUpdateProperties()} {startUpdateProperties} from its MainWindow,
+ * which simply updates the parameters of the selected camera every 250ms
+ * \sa \l MainWindow::startUpdateProperties()
+*/

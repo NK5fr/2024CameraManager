@@ -101,13 +101,6 @@ private slots:
     void projectTree_clicked(const QModelIndex &index);
     void menuProjectAction_triggered(QAction *);
 
-    //RAJOUT HUGO IMPLEMENT SPIN/
-    void combobox_changeSDK();
-
-    /** TO BE DELETED **/
-    /*void on_Detect_clicked();*/
-    /*void on_updatePropertiesButton_clicked();*/
-
     // Lars Aksel - 20.04.2015
     void quickLoadTrackPointSettings();
     void quickSaveTrackPointSettings();

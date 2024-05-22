@@ -55,3 +55,6 @@ OBJECTS_DIR += debug
 UI_DIR += $$PWD/GeneratedFiles
 RCC_DIR += $$PWD
 include(camera_manager.pri)
+
+DISTFILES += \
+    src/mainwindow.qdoc
