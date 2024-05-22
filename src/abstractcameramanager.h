@@ -175,13 +175,22 @@ class AbstractCameraManager : public QObject {
 
         struct activeCameraEntry {
             activeCameraEntry(AbstractCamera *c, QStandardItem* i)
-                : camera(c), treeItem(i), window(new QMdiSubWindow()) {
+                : camera(c), treeItem(i), window(new QMdiSubWindow()), coloredWindow(new QMdiSubWindow()) {
+
+                coloredWindow->setAttribute(Qt::WA_DeleteOnClose);
+                coloredWindow->setWindowFlags(Qt::Tool);
+                VideoOpenGLWidget* coloredVideoWidget = new VideoOpenGLWidget();
+                coloredWindow->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                coloredWindow->setWidget(coloredVideoWidget);
+                coloredWindow->resize(400, 300);
+
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->setWindowFlags(Qt::Tool);
                 VideoOpenGLWidget* videoWidget = new VideoOpenGLWidget();
                 videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 window->setWidget(videoWidget);
                 window->resize(400, 300);
+
                 //QObject::connect(window, SIGNAL(windowStateChanged(Qt::WindowStates, Qt::WindowStates)),
                                  //videoWidget, SLOT(changedState(Qt::WindowStates, Qt::WindowStates)));
             }
@@ -189,6 +198,7 @@ class AbstractCameraManager : public QObject {
             AbstractCamera* camera;
             QStandardItem* treeItem;
             QMdiSubWindow* window;
+            QMdiSubWindow* coloredWindow;
         };
 
         const std::vector<activeCameraEntry>& getActiveCameraEntries() { return this->activeCameras; }
