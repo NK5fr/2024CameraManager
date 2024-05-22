@@ -160,7 +160,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
 
 
 // Lars Aksel - 30.01.2015 - Added support to ImageDetect
-ImagePtr SpinCamera::captureImage() {
+ImagePtr SpinCamera::captureImage(bool colored) {
 
     // 20/05/2024 Armand & Nathan added enableTrigger condition to execute this part only if the user retrieves image using trigger
     if(enableTrigger == 0 && trigger==0){
@@ -198,7 +198,11 @@ ImagePtr SpinCamera::captureImage() {
 
             try {
                 image = cam->GetNextImage(1000);
-                convertedImage = processor.Convert(image, PixelFormat_Mono8);
+                if(colored){
+                    convertedImage = processor.Convert(image, PixelFormat_RGB8);
+                }else{
+                    convertedImage = processor.Convert(image, PixelFormat_Mono8);
+                }
             } catch (Exception e) {
                 std::cout << e.what() << std::endl;
                 convertedImage = nullptr;
@@ -343,10 +347,14 @@ void SpinCamera::startAutoCapture(){
     std::cout << "valeur de capoturing: " << capturing << std::endl;
     while(capturing){
         ImagePtr image = captureImage();
+        ImagePtr coloredImage = captureImage(true);
 
         // 20/05/2024, Armand & Nathan : send frame only if the image is not null
 
-        if(image != nullptr) AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight());
+        if(image != nullptr && coloredImage != nullptr) {
+            AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight(), false);
+            AbstractCamera::sendFrame(coloredImage->GetData(), coloredImage->GetBufferSize(), coloredImage->GetWidth(), coloredImage->GetHeight(), true);
+        }
 
     }
     try{
@@ -365,7 +373,7 @@ void SpinCamera::stopAutoCapture(){
     capturing = false;
 }
 
-unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) {
+unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight, bool colored) {
     if (capturing) return nullptr;
     capturing = true;
     //printf("Images begin to be retrieved\n");
@@ -384,7 +392,7 @@ unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int*
     cam->BeginAcquisition();
 
     //printf("Retrieving 1...\n");
-    ImagePtr image = captureImage();
+    ImagePtr image = captureImage(colored);
 
     *bufferSize = image->GetBufferSize();
     *imageWidth = image->GetWidth();

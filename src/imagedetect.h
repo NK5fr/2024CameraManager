@@ -1,5 +1,5 @@
 
-// Adapted by: Lars Aksel Tveråmo
+// Adapted by: Lars Aksel Tver?mo
 // 3D Motion Technologies AS
 
 #ifndef DETECTPARTICLES
@@ -131,13 +131,13 @@ struct VectorOneCam {
             numOfMatches[i] = 0;
         }
     }
-    VectorOneCam(const VectorOneCam &original) : numpointsnew(original.numpointsnew) { // OBS: public copy constructor      
+    VectorOneCam(const VectorOneCam &original) : numpointsnew(original.numpointsnew) { // OBS: public copy constructor
         for (int i = 0; i < numpointsnew; i++) {
             this->vectors[i] = original.vectors[i];
             this->numOfMatches[i] = original.numOfMatches[i];   // ML 2013-08-23
         }
     }
-    VectorOneCam &operator=(const VectorOneCam &original) {  // OBS: public assignment operator      
+    VectorOneCam &operator=(const VectorOneCam &original) {  // OBS: public assignment operator
         if (this != &original) {
             this->numpointsnew = original.numpointsnew;
             for (int i = 0; i < numpointsnew; i++) {

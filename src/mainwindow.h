@@ -74,12 +74,15 @@ public:
     // gs test
     //void execute(QString command, QProcess &p);
 
+    bool isColorModeActivate(){ return colorModeActivate; }
+
 private slots:
     /* All of them could probably be private */
     /** TOOL BAR **/
     void on_actionLiveView_toggled(bool arg1);
     void on_actionUpdateImages_triggered();
     void on_actionCrosshair_toggled(bool arg1);
+    void on_actionColor_toggled(bool arg1);
     void on_actionCrosshairReal_toggled(bool arg1);
     void on_actionMosaic_triggered();
     void on_actionRemoveWindows_triggered();
@@ -139,6 +142,8 @@ protected:
     void on_resetItem();
 
 private:
+    bool colorModeActivate = false;
+
     // gs TEST for ? real time output fra trackpoint
     ExternalProcess* trackPointProcess; // Lars Aksel
     //QTextEdit* trackPointOutput; //gs

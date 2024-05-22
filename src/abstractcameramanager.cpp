@@ -51,13 +51,26 @@ void AbstractCameraManager::updateImages(){
     for(int i=activeCameras.size()-1; i>=0; i--){
         activeCameraEntry& camEntry = activeCameras.at(i);
         VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(camEntry.window->widget());
+        VideoOpenGLWidget* coloredVideoWidget = qobject_cast<VideoOpenGLWidget*>(camEntry.coloredWindow->widget());
+
         unsigned char* imgBuffer = nullptr;
         unsigned int bufferSize = 0;
         unsigned int imageWidth = 0;
         unsigned int imageHeight = 0;
         imgBuffer = camEntry.camera->retrieveImage(&bufferSize, &imageWidth, &imageHeight);
+
+        unsigned char* coloredImgBuffer = nullptr;
+        unsigned int coloredBufferSize = 0;
+        unsigned int coloredImageWidth = 0;
+        unsigned int coloredImageHeight = 0;
+        coloredImgBuffer = camEntry.camera->retrieveImage(&coloredBufferSize, &coloredImageWidth, &coloredImageHeight, true);
+
         if (imgBuffer != nullptr) {
             videoWidget->updateImage(imgBuffer, bufferSize, imageWidth, imageHeight);
+        }
+
+        if (coloredImgBuffer != nullptr) {
+            coloredVideoWidget->updateImage(coloredImgBuffer, coloredBufferSize, coloredImageWidth, coloredImageHeight);
         }
     }
 }
@@ -343,7 +356,8 @@ void AbstractCameraManager::activateLiveView(bool active){
         for(int i=activeCameras.size()-1; i>=0; i--){
             activeCameraEntry& camEntry = activeCameras.at(i);
             VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(camEntry.window->widget());
-            camEntry.camera->startCapture(videoWidget);
+            VideoOpenGLWidget* coloredVideoWidget = qobject_cast<VideoOpenGLWidget*>(camEntry.coloredWindow->widget());
+            camEntry.camera->startCapture(videoWidget, coloredVideoWidget);
             //add in the case of activating liveview after
             //camEntry.camera->startAutoCapture();
         }
@@ -466,36 +480,50 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             activeCameraEntry* entry = &activeCameras.at(i);
             entry->camera->stopAutoCapture();
             mainWindow->modifySubWindow(entry->window, false);
+            mainWindow->modifySubWindow(entry->coloredWindow, false);
             activeCameras.erase(activeCameras.begin()+i);
         } else {
             activeCameras.at(i).window->setWindowTitle(item->text());
+            activeCameras.at(i).coloredWindow->setWindowTitle(item->text());
         }
     } else {
         if (active) {
             activeCameraEntry entry = activeCameraEntry(camera, item); // Potential Memory-leak of created windows in constructor!
+
+
             connect(entry.window, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
             entry.window->setWindowTitle(camera->getString().c_str());
-            mainWindow->modifySubWindow(entry.window, true);
+            if(!mainWindow->isColorModeActivate()) mainWindow->modifySubWindow(entry.window, true);
             VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(entry.window->widget());
             camera->setVideoContainer(videoWidget);
+
+            connect(entry.coloredWindow, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
+            entry.coloredWindow->setWindowTitle(camera->getString().c_str());
+            if(mainWindow->isColorModeActivate()) mainWindow->modifySubWindow(entry.coloredWindow, true);
+            VideoOpenGLWidget* coloredVideoWidget = qobject_cast<VideoOpenGLWidget*>(entry.coloredWindow->widget());
+            camera->setColoredVideoContainer(coloredVideoWidget);
+
             activeCameras.push_back(entry);
+
             /*
              * 13/05/2024
              * Armand & Nathan - changed the connect, as the prior one was referencing soemthing that did not exist.
              * This connection activates the mouse tracking, and shows the coordinates of the mouse relative to the window in the top left corner
             */
-            connect(mainWindow, &MainWindow::activateCrosshair, videoWidget, [videoWidget](bool state){
-                videoWidget->setMouseTracking(state);
-            });
-            if(liveView) entry.camera-> startCapture(qobject_cast<VideoOpenGLWidget *>(entry.window->widget()));
+            // connect(mainWindow, &MainWindow::activateCrosshair, videoWidget, [videoWidget](bool state){
+            //     videoWidget->setMouseTracking(state);
+            // });
+            if(liveView) entry.camera->startCapture(qobject_cast<VideoOpenGLWidget *>(entry.window->widget()), qobject_cast<VideoOpenGLWidget *>(entry.coloredWindow->widget()));
 
         }
     }
 }
 
 void AbstractCameraManager::on_subwindow_closing(QObject *window) {
+
     int i = activeCameras.size()-1;
-    while(i>=0 && activeCameras.at(i).window != window) --i;
+    while(i>=0 && activeCameras.at(i).window != window && activeCameras.at(i).coloredWindow != window) --i;
+
 
     if(i>=0) activeCameras.at(i).treeItem->setCheckState(Qt::Unchecked);
 }
@@ -762,4 +790,26 @@ void AbstractCameraManager::on_propertyValue_changed() {
     prop->setValue(valueS.toFloat());
     slider->setValue(prop->getValueToSlider());
     cameraTree_recursiveSetSpinProperty(selectedItem, prop);
+}
+
+void AbstractCameraManager::changeActiveCamerasColor(bool colored) {
+    std::vector<activeCameraEntry> list;
+    for(int i = 0; i < activeCameras.size(); ++i){
+        list.push_back(activeCameras.at(i));
+    }
+    if(colored){
+        for(int i = 0; i < list.size(); ++i){
+            mainWindow->modifySubWindow(list.at(i).window, !colored);
+        }
+        for(int i = 0; i < list.size(); ++i){
+            mainWindow->modifySubWindow(list.at(i).coloredWindow, colored);
+        }
+    }else{
+        for(int i = 0; i < list.size(); ++i){
+            mainWindow->modifySubWindow(list.at(i).coloredWindow, colored);
+        }
+        for(int i = 0; i < list.size(); ++i){
+            mainWindow->modifySubWindow(list.at(i).window, !colored);
+        }
+    }
 }

@@ -92,8 +92,9 @@ class AbstractCameraManager : public QObject {
         // Lars Aksel - 05.02.2015
         void setTrackPointProperty(TrackPointProperty* prop) { 
             for (int i = activeCameras.size() - 1; i >= 0; i--) {
-                if (activeCameras.at(i).camera->getVideoContainer() == nullptr) continue;
+                if (activeCameras.at(i).camera->getVideoContainer() == nullptr || activeCameras.at(i).camera->getColoredVideoContainer() == nullptr) continue;
                 activeCameras.at(i).camera->getVideoContainer()->setTrackPointProperty(prop);
+                activeCameras.at(i).camera->getColoredVideoContainer()->setTrackPointProperty(prop);
             }
         }
         void updateContainer() {
@@ -170,13 +171,22 @@ class AbstractCameraManager : public QObject {
 
         struct activeCameraEntry {
             activeCameraEntry(AbstractCamera *c, QStandardItem* i)
-                : camera(c), treeItem(i), window(new QMdiSubWindow()) {
+                : camera(c), treeItem(i), window(new QMdiSubWindow()), coloredWindow(new QMdiSubWindow()) {
+
+                coloredWindow->setAttribute(Qt::WA_DeleteOnClose);
+                coloredWindow->setWindowFlags(Qt::Tool);
+                VideoOpenGLWidget* coloredVideoWidget = new VideoOpenGLWidget(true);
+                coloredWindow->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                coloredWindow->setWidget(coloredVideoWidget);
+                coloredWindow->resize(400, 300);
+
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->setWindowFlags(Qt::Tool);
                 VideoOpenGLWidget* videoWidget = new VideoOpenGLWidget();
                 videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 window->setWidget(videoWidget);
                 window->resize(400, 300);
+
                 //QObject::connect(window, SIGNAL(windowStateChanged(Qt::WindowStates, Qt::WindowStates)),
                                  //videoWidget, SLOT(changedState(Qt::WindowStates, Qt::WindowStates)));
             }
@@ -184,11 +194,13 @@ class AbstractCameraManager : public QObject {
             AbstractCamera* camera;
             QStandardItem* treeItem;
             QMdiSubWindow* window;
+            QMdiSubWindow* coloredWindow;
         };
 
         const std::vector<activeCameraEntry>& getActiveCameraEntries() { return this->activeCameras; }
          void loadPropertiesDefaultsInit();
 
+        void changeActiveCamerasColor(bool colored = false);
     protected:
         /**
          * @brief constructor

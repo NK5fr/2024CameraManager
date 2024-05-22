@@ -1,7 +1,8 @@
 
 #include "imageopenglwidget.h"
 
-ImageOpenGLWidget::ImageOpenGLWidget(TrackPointProperty* trackPointProps, QWidget* parent) : QOpenGLWidget(parent) {
+ImageOpenGLWidget::ImageOpenGLWidget(bool colored, TrackPointProperty* trackPointProps, QWidget* parent) : QOpenGLWidget(parent) {
+    this->colored = colored;
     trackPointProperty = trackPointProps;
     imageDetect = nullptr;
     mouseIn = false;
@@ -48,6 +49,7 @@ void ImageOpenGLWidget::initializeGL() {
 void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
     //qInfo() << "ioglw" << this->size();
     //qInfo() << "ioglw" << this->size();
+
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
         if (this->imgBuffer != nullptr) delete[] this->imgBuffer;
@@ -55,6 +57,7 @@ void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int buffe
         this->imageWidth = imageWidth;
         this->imageHeight = imageHeight;
     }
+
     memcpy(this->imgBuffer, imgBuffer, bufferSize);
     this->bufferSize = bufferSize;
     if (imageDetect == nullptr) {
@@ -109,8 +112,13 @@ void ImageOpenGLWidget::paintGL() {
     screenToImageCoordX = ((double) imageWidth / scaledImageArea.width());
     screenToImageCoordY = ((double) imageHeight / scaledImageArea.height());
     if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
-        texture.createEmptyTexture(imageWidth, imageHeight);
+        if(colored){
+            texture.createEmptyTexture(imageWidth, imageHeight, OpenGL::PixelFormat::RGB);
+        }else{
+           texture.createEmptyTexture(imageWidth, imageHeight);
+        }
     }
+
     if (imageDetect != nullptr && trackPointProperty != nullptr) {
         imageDetect->setThreshold(trackPointProperty->thresholdValue);
         imageDetect->setMinPix(trackPointProperty->minPointValue);
@@ -124,10 +132,12 @@ void ImageOpenGLWidget::paintGL() {
             imageDetect->setImage(copyBuffer);
         }
 
+
         if (trackPointProperty->filteredImagePreview) {
             imageDetect->imageRemoveBackground();
             texture.updateTexture(imageDetect->getFilteredImage(), bufferSize);
         }
+
         if (trackPointProperty->trackPointPreview) {
             imageDetect->imageDetectPoints();
             if (!trackPointProperty->filteredImagePreview) texture.updateTexture(imgBuffer, bufferSize);
@@ -137,7 +147,9 @@ void ImageOpenGLWidget::paintGL() {
         }
         delete[] imageDetect->getImage();
         imageDetect->setImage(nullptr);
-    } else texture.updateTexture(imgBuffer, bufferSize);
+    } else {
+        texture.updateTexture(imgBuffer, bufferSize);
+    }
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1, 1, 1, 1);

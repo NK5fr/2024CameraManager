@@ -20,7 +20,7 @@
 class ImageOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
 
 public:
-    ImageOpenGLWidget(TrackPointProperty* trackPointProps = nullptr, QWidget* parent = nullptr);
+    ImageOpenGLWidget(bool colored = false, TrackPointProperty* trackPointProps = nullptr, QWidget* parent = nullptr);
     ~ImageOpenGLWidget();
 
     void setTrackPointProperty(TrackPointProperty* trackPoint) { this->trackPointProperty = trackPoint; }
@@ -55,6 +55,7 @@ protected:
     QPointF actualMousePos;
     QPointF mousePos;
     QPointF mousePosInImage;
+    bool colored;
     unsigned char* imgBuffer;
     unsigned int bufferSize;
     unsigned int imageWidth;
