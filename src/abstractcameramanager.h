@@ -92,8 +92,9 @@ class AbstractCameraManager : public QObject {
         // Lars Aksel - 05.02.2015
         void setTrackPointProperty(TrackPointProperty* prop) { 
             for (int i = activeCameras.size() - 1; i >= 0; i--) {
-                if (activeCameras.at(i).camera->getVideoContainer() == nullptr) continue;
+                if (activeCameras.at(i).camera->getVideoContainer() == nullptr || activeCameras.at(i).camera->getColoredVideoContainer() == nullptr) continue;
                 activeCameras.at(i).camera->getVideoContainer()->setTrackPointProperty(prop);
+                activeCameras.at(i).camera->getColoredVideoContainer()->setTrackPointProperty(prop);
             }
         }
         void updateContainer() {
@@ -174,7 +175,7 @@ class AbstractCameraManager : public QObject {
 
                 coloredWindow->setAttribute(Qt::WA_DeleteOnClose);
                 coloredWindow->setWindowFlags(Qt::Tool);
-                VideoOpenGLWidget* coloredVideoWidget = new VideoOpenGLWidget();
+                VideoOpenGLWidget* coloredVideoWidget = new VideoOpenGLWidget(true);
                 coloredWindow->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 coloredWindow->setWidget(coloredVideoWidget);
                 coloredWindow->resize(400, 300);
@@ -199,6 +200,7 @@ class AbstractCameraManager : public QObject {
         const std::vector<activeCameraEntry>& getActiveCameraEntries() { return this->activeCameras; }
          void loadPropertiesDefaultsInit();
 
+        void changeActiveCamerasColor(bool colored = false);
     protected:
         /**
          * @brief constructor

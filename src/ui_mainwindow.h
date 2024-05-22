@@ -41,6 +41,7 @@ public:
     QAction *actionQuitter;
     QAction *actionCrosshairReal;
     QAction *actionHighQuality;
+    QAction *actionColor;
     QMdiArea *centralwidget;
     QToolBar *toolBar;
     QStatusBar *statusbar;
@@ -131,6 +132,12 @@ public:
         actionHighQuality->setIcon(icon5);
         actionHighQuality->setVisible(true);
         actionHighQuality->setIconVisibleInMenu(true);
+        actionColor = new QAction(MainWindow);
+        actionColor->setObjectName(QStringLiteral("actionColor"));
+        actionColor->setCheckable(true);
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/icons/img"), QSize(), QIcon::Normal, QIcon::Off);
+        actionColor->setIcon(icon6);
         centralwidget = new QMdiArea(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         MainWindow->setCentralWidget(centralwidget);
@@ -256,6 +263,8 @@ public:
         toolBar->addAction(actionMosaic);
         toolBar->addAction(actionRemoveWindows);
         toolBar->addAction(actionHighQuality);
+        toolBar->addSeparator();
+        toolBar->addAction(actionColor);
 
         retranslateUi(MainWindow);
 
@@ -275,8 +284,10 @@ public:
         actionUpdateImages->setShortcut(QApplication::translate("MainWindow", "Space", 0));
         actionLiveView->setText(QApplication::translate("MainWindow", "LiveView", 0));
         actionCrosshair->setText(QApplication::translate("MainWindow", "crosshair", 0));
+        actionColor->setText(QApplication::translate("MainWindow", "color", 0));
 #ifndef QT_NO_TOOLTIP
         actionCrosshair->setToolTip(QApplication::translate("MainWindow", "activate crosshair", 0));
+        actionColor->setToolTip(QApplication::translate("MainWindow", "activate color", 0));
 #endif // QT_NO_TOOLTIP
         actionQuitter->setText(QApplication::translate("MainWindow", "quitter", 0));
         actionCrosshairReal->setText(QApplication::translate("MainWindow", "Real", 0));

@@ -261,6 +261,16 @@ void MainWindow::on_actionCrosshair_toggled(bool arg1) {
     emit activateCrosshair(Ui::crosshair);
 }
 
+/* Clic on ActionColor button */
+void MainWindow::on_actionColor_toggled(bool arg1) {
+    colorModeActivate = arg1;
+    bar->setDisabled(arg1);
+    ui->projectsWidget->setDisabled(arg1);
+    ui->trackPointWidget->setDisabled(arg1);
+
+    cameraManagers.at(selectedCameraManager)->changeActiveCamerasColor(arg1);
+}
+
 /* Clic on ActionCrosshairReal button */
 void MainWindow::on_actionCrosshairReal_toggled(bool arg1) {
     bar->getIntegerCoordinates()->setChecked(arg1);
@@ -319,13 +329,22 @@ void MainWindow::cameraTree_itemDoubleClicked(const QModelIndex index) {
         AbstractCamera* camera = (clicked == nullptr) ? nullptr : reinterpret_cast<AbstractCamera*>(clicked->data(CameraRole).value<quintptr>());
         for (int i = 0; i < cameraManagers.at(selectedCameraManager)->getActiveCameraEntries().size(); i++) {
             if (camera == cameraManagers.at(selectedCameraManager)->getActiveCameraEntries()[i].camera) {
-                QMdiSubWindow* win = cameraManagers.at(selectedCameraManager)->getActiveCameraEntries()[i].window;
-                if (win->isMaximized()) {
-                    win->showNormal();
-                } else {
-                    win->showMaximized();
+                if(colorModeActivate){
+                    QMdiSubWindow* coloredWin = cameraManagers.at(selectedCameraManager)->getActiveCameraEntries()[i].coloredWindow;
+                    if (coloredWin->isMaximized()) {
+                        coloredWin->showNormal();
+                    } else {
+                        coloredWin->showMaximized();
+                    }
+                    break;
+                }else{
+                    QMdiSubWindow* win = cameraManagers.at(selectedCameraManager)->getActiveCameraEntries()[i].window;
+                    if (win->isMaximized()) {
+                        win->showNormal();
+                    } else {
+                        win->showMaximized();
+                    }
                 }
-                break;
             }
         }
     }
@@ -534,6 +553,7 @@ bool isOkProjectFolderPath(const QString& folderPath){
 /* Tomas 10.02.2016
  * List of all actions made on items in the ProjectTree Menu after having right clicked the project tree (customContextMenuRequested method)*/
 void MainWindow::menuProjectAction_triggered(QAction *action) {
+
     QString menuText = action->text();
 
     if (menuText == "Load project"){

@@ -13,7 +13,7 @@
 class VideoOpenGLWidget : public ImageOpenGLWidget {
     Q_OBJECT
 public:
-    VideoOpenGLWidget(TrackPointProperty* trackPointProps = nullptr, QWidget* parent = nullptr);
+    VideoOpenGLWidget(bool colored = false, TrackPointProperty* trackPointProps = nullptr, QWidget* parent = nullptr);
 
     void updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
 

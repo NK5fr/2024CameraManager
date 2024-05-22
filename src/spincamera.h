@@ -48,7 +48,7 @@ public:
     void startAutoCapture();
     void stopAutoCapture();
     int ConfigureTrigger(INodeMap & nodeMap);
-    unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight);
+    unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight, bool colored = false);
 
     bool equalsTo(AbstractCamera *c);
     std::string getString();
@@ -56,7 +56,7 @@ public:
 
 private:
     Spinnaker::CameraPtr cam;
-    Spinnaker::ImagePtr captureImage();
+    Spinnaker::ImagePtr captureImage(bool colored = false);
 
 };
 

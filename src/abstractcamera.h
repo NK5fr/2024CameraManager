@@ -79,19 +79,20 @@ public:
         * @brief (Pure virtual) get one image from camera
         * @return QImage image
         */
-    virtual unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight) = 0;
+    virtual unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight, bool colored = false) = 0;
 
     /**
         * @brief start liveview capture from manager
         * @param videoWidget VideoOpenGLWidget that will receive the frames
         */
-    void startCapture(VideoOpenGLWidget* videoWidget);
+    void startCapture(VideoOpenGLWidget* videoWidget, VideoOpenGLWidget* coloredVideoWidget);
 
     // Lars Aksel - 05.02.2015
     bool isCapturing() { return this->capturing; }
     VideoOpenGLWidget* getVideoContainer() { return this->container; }
+    VideoOpenGLWidget* getColoredVideoContainer() {return this->coloredContainer; }
     void setVideoContainer(VideoOpenGLWidget* videoWidget) { this->container = videoWidget; }
-
+    void setColoredVideoContainer(VideoOpenGLWidget* coloredVideoWidget) { this->coloredContainer = coloredVideoWidget; }
 
 
 
@@ -102,7 +103,7 @@ protected:
         * @brief sendFrame send a new QImage for the view
         * @param img QImage grabbed from the camera
         */
-    void sendFrame(void* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight);
+    void sendFrame(void* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight, bool colored);
 
     // Lars Aksel - 30.01.2015
     bool capturing;
@@ -114,6 +115,7 @@ private:
     QString serial;
     QString model;
     VideoOpenGLWidget* container;
+    VideoOpenGLWidget* coloredContainer;
     class CaptureThread : public QThread {
         public :
             CaptureThread(AbstractCamera* cam) : QThread() { c = cam; }
