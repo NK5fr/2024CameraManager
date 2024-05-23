@@ -17,9 +17,11 @@
 #include <QScrollBar>
 #include <QDialogButtonBox>
 #include <QMessageBox>
+#include <src/3DProject/swappingcorrectorprogram.h>
 
 #include <string.h>
 #include <iostream>
+#include <qmdiarea.h>
 
 #include "socketviewerwidget.h"
 
@@ -136,6 +138,15 @@ void SocketViewerWidget::extractDataFromText() {
     fileContain->setTextCursor(prev_cursor);
 }
 
+void SocketViewerWidget::showSwappingCorrectorFunc()
+{
+    if (swappingCorrectorWidget->isVisible()) {
+        swappingCorrectorWidget->hide();
+    } else {
+        swappingCorrectorWidget->show();
+    }
+}
+
 void SocketViewerWidget::init() {
     QFrame* line = new QFrame();
     line->setFrameShape(QFrame::HLine);
@@ -204,6 +215,12 @@ void SocketViewerWidget::init() {
     show3DWidget->setMinimumHeight(50);
     disconnectButton = new QPushButton("Disconnect Client");
 
+    // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
+    showSwappingCorrector = new QPushButton("Open Swapping Corrector");
+    swappingCorrectorWidget = new SwappingCorrectorProgram(this->fullPath);
+    swappingCorrectorWidget->hide();
+    this->parentArea = (QMdiArea*) this->parent();
+
     camDistanceSlider = new QSlider(Qt::Orientation::Horizontal);
     camDistanceSlider->setMaximum(20000);
     camDistanceSlider->setMinimum(200);
@@ -227,6 +244,7 @@ void SocketViewerWidget::init() {
     showPlaneButtonLayout->addWidget(showXYPlane);
     showPlaneButtonLayout->addWidget(showXZPlane);
     showPlaneButtonLayout->addWidget(showYZPlane);
+    showPlaneButtonLayout->addWidget(showSwappingCorrector);
     showPlaneButtonLayout->addLayout(sliderLayout);
 
     QHBoxLayout* buttonCheckBoxLayout = new QHBoxLayout();
@@ -284,6 +302,10 @@ void SocketViewerWidget::init() {
     connect(showXYPlane, SIGNAL(clicked()), this, SLOT(showXYPlaneFunc()));
     connect(showXZPlane, SIGNAL(clicked()), this, SLOT(showXZPlaneFunc()));
     connect(showYZPlane, SIGNAL(clicked()), this, SLOT(showYZPlaneFunc()));
+
+    // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
+    connect(showSwappingCorrector, SIGNAL(clicked(bool)), this, SLOT(showSwappingCorrectorFunc()));
+
     if (dialog != nullptr) connect(disconnectButton, SIGNAL(clicked()), dialog, SLOT(disconnectClient()));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hideButtonPanelFunc()));
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
