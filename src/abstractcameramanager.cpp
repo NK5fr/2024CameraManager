@@ -503,7 +503,9 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             camera->setVideoContainer(videoWidget);
 
             connect(entry.coloredWindow, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
-            entry.coloredWindow->setWindowTitle(camera->getString().c_str());
+            QString coloredName = QString::fromStdString(camera->getString().c_str());
+            coloredName.append(" COLORED");
+            entry.coloredWindow->setWindowTitle(coloredName);
             if(mainWindow->isColorModeActivate()) mainWindow->modifySubWindow(entry.coloredWindow, true);
             VideoOpenGLWidget* coloredVideoWidget = qobject_cast<VideoOpenGLWidget*>(entry.coloredWindow->widget());
             camera->setColoredVideoContainer(coloredVideoWidget);
@@ -798,23 +800,7 @@ void AbstractCameraManager::on_propertyValue_changed() {
 }
 
 void AbstractCameraManager::changeActiveCamerasColor(bool colored) {
-    std::vector<activeCameraEntry> list;
-    for(int i = 0; i < activeCameras.size(); ++i){
-        list.push_back(activeCameras.at(i));
-    }
-    if(colored){
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).window, !colored);
-        }
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).coloredWindow, colored);
-        }
-    }else{
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).coloredWindow, colored);
-        }
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).window, !colored);
-        }
+    while(activeCameras.size() > 0){
+        activeCameras.at(0).treeItem->setCheckState(Qt::Unchecked);
     }
 }
