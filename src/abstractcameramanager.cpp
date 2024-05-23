@@ -503,7 +503,9 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             camera->setVideoContainer(videoWidget);
 
             connect(entry.coloredWindow, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
-            entry.coloredWindow->setWindowTitle(camera->getString().c_str());
+            QString coloredName = QString::fromStdString(camera->getString().c_str());
+            coloredName.append(" COLORED");
+            entry.coloredWindow->setWindowTitle(coloredName);
             if(mainWindow->isColorModeActivate()) mainWindow->modifySubWindow(entry.coloredWindow, true);
             VideoOpenGLWidget* coloredVideoWidget = qobject_cast<VideoOpenGLWidget*>(entry.coloredWindow->widget());
             camera->setColoredVideoContainer(coloredVideoWidget);
@@ -797,24 +799,13 @@ void AbstractCameraManager::on_propertyValue_changed() {
     cameraTree_recursiveSetSpinProperty(selectedItem, prop);
 }
 
-void AbstractCameraManager::changeActiveCamerasColor(bool colored) {
-    std::vector<activeCameraEntry> list;
-    for(int i = 0; i < activeCameras.size(); ++i){
-        list.push_back(activeCameras.at(i));
-    }
-    if(colored){
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).window, !colored);
-        }
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).coloredWindow, colored);
-        }
-    }else{
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).coloredWindow, colored);
-        }
-        for(int i = 0; i < list.size(); ++i){
-            mainWindow->modifySubWindow(list.at(i).window, !colored);
-        }
-    }
+void AbstractCameraManager::uncheckAllCameras() {
+    // for(int i = 0; i < cameraTree.item(0)->rowCount(); ++i){
+    //     if(cameraTree.item(0)->child(i)->checkState() == Qt::Checked){
+    //         cameraTree.item(0)->child(i)->setCheckState(Qt::Unchecked);
+    //         cameraTree.item(0)->child(i)->setCheckState(Qt::Checked);
+    //     }
+    // }
+
+    cameraTree.item(0)->setCheckState(Qt::Unchecked);
 }
