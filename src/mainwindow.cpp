@@ -248,6 +248,7 @@ void MainWindow::on_actionColor_toggled(bool arg1) {
     ui->trackPointWidget->setDisabled(arg1);
 
     cameraManagers.at(selectedCameraManager)->changeActiveCamerasColor(arg1);
+    //cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
 }
 
 /* Clic on ActionCrosshairReal button */

@@ -800,33 +800,16 @@ void AbstractCameraManager::on_propertyValue_changed() {
 }
 
 void AbstractCameraManager::changeActiveCamerasColor(bool colored) {
+    // for(int i = 0; i < cameraTree.item(0)->rowCount(); ++i){
+    //     if(cameraTree.item(0)->child(i)->checkState() == Qt::Checked){
+    //         cameraTree.item(0)->child(i)->setCheckState(Qt::Unchecked);
+    //         cameraTree.item(0)->child(i)->setCheckState(Qt::Checked);
+    //     }
+    // }
 
-    for(int i = 0; i < activeCameras.size(); ++i){
-        activeCameraEntry* entry = &activeCameras.at(i);
-        entry->camera->stopAutoCapture();
-        mainWindow->modifySubWindow(entry->window, false);
-        mainWindow->modifySubWindow(entry->coloredWindow, false);
+    // while(activeCameras.size() > 0){
+    //     activeCameras.at(0).treeItem->setCheckState(Qt::Unchecked);
+    // }
 
-        connect(entry->window, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
-        entry->window->setWindowTitle(entry->camera->getString().c_str());
-        if(!mainWindow->isColorModeActivate()) mainWindow->modifySubWindow(entry->window, true);
-        VideoOpenGLWidget* videoWidget = qobject_cast<VideoOpenGLWidget*>(entry->window->widget());
-        entry->camera->setVideoContainer(videoWidget);
-
-        connect(entry->coloredWindow, SIGNAL(destroyed(QObject*)), this, SLOT(on_subwindow_closing(QObject*)));
-        QString coloredName = QString::fromStdString(entry->camera->getString().c_str());
-        coloredName.append(" COLORED");
-        entry->coloredWindow->setWindowTitle(coloredName);
-        if(mainWindow->isColorModeActivate()) mainWindow->modifySubWindow(entry->coloredWindow, true);
-        VideoOpenGLWidget* coloredVideoWidget = qobject_cast<VideoOpenGLWidget*>(entry->coloredWindow->widget());
-        entry->camera->setColoredVideoContainer(coloredVideoWidget);
-
-        if(liveView) entry->camera->startCapture(qobject_cast<VideoOpenGLWidget *>(entry->window->widget()), qobject_cast<VideoOpenGLWidget *>(entry->coloredWindow->widget()));
-    }
-
-    /*
-    while(activeCameras.size() > 0){
-        activeCameras.at(0).treeItem->setCheckState(Qt::Unchecked);
-    }
-    */
+    cameraTree.item(0)->setCheckState(Qt::Unchecked);
 }
