@@ -807,9 +807,5 @@ void AbstractCameraManager::changeActiveCamerasColor(bool colored) {
     //     }
     // }
 
-    // while(activeCameras.size() > 0){
-    //     activeCameras.at(0).treeItem->setCheckState(Qt::Unchecked);
-    // }
-
     cameraTree.item(0)->setCheckState(Qt::Unchecked);
 }
