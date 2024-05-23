@@ -247,7 +247,11 @@ void MainWindow::on_actionColor_toggled(bool arg1) {
     ui->projectsWidget->setDisabled(arg1);
     ui->trackPointWidget->setDisabled(arg1);
 
-    cameraManagers.at(selectedCameraManager)->changeActiveCamerasColor(arg1);
+    if(arg1){
+        cameraManagers.at(selectedCameraManager)->uncheckAllCameras();
+        ui->actionLiveView->setChecked(false);
+    }
+
     //cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
 }
 

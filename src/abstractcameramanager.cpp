@@ -799,7 +799,7 @@ void AbstractCameraManager::on_propertyValue_changed() {
     cameraTree_recursiveSetSpinProperty(selectedItem, prop);
 }
 
-void AbstractCameraManager::changeActiveCamerasColor(bool colored) {
+void AbstractCameraManager::uncheckAllCameras() {
     // for(int i = 0; i < cameraTree.item(0)->rowCount(); ++i){
     //     if(cameraTree.item(0)->child(i)->checkState() == Qt::Checked){
     //         cameraTree.item(0)->child(i)->setCheckState(Qt::Unchecked);
