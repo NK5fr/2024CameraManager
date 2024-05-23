@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += $$PWD/src/abstractcamera.h \
+HEADERS += \
+    $$PWD/src/abstractcamera.h \
     $$PWD/src/calibrationfile.h \
     $$PWD/src/cameraproperty.h \
     $$PWD/src/configfilereader.h \
@@ -39,7 +40,17 @@ HEADERS += $$PWD/src/abstractcamera.h \
     $$PWD/src/systemmanager.h \
     $$PWD/src/spincameramanager.h \
     $$PWD/src/spincamera.h \
-    $$PWD/src/spincameraproperty.h
+    $$PWD/src/spincameraproperty.h \
+    $$PWD/src/3DProject/coordinateswindow.h \
+    $$PWD/src/3DProject/coordinateswindow.h \
+    $$PWD/src/3DProject/data.h \
+    $$PWD/src/3DProject/displaywindow.h \
+    $$PWD/src/3DProject/filewindow.h \
+    $$PWD/src/3DProject/marker.h \
+    $$PWD/src/3DProject/markercoordinateswidget.h \
+    $$PWD/src/3DProject/programwindow.h \
+    $$PWD/src/3DProject/swappingcorrectorprogram.h \
+    $$PWD/src/3DProject/swapwindow.h
     # $$PWD/include/Spinnaker/AVIRecorder.h \
     # $$PWD/include/Spinnaker/ArrivalEvent.h \
     # $$PWD/include/Spinnaker/BasePtr.h \
@@ -226,5 +237,14 @@ SOURCES += $$PWD/src/abstractcamera.cpp \
     $$PWD/src/systemmanager.cpp \
     $$PWD/src/spincameramanager.cpp \
     $$PWD/src/spincamera.cpp \
-    $$PWD/src/spincameraproperty.cpp
+    $$PWD/src/spincameraproperty.cpp \
+    $$PWD/src/3DProject/coordinateswindow.cpp \
+    $$PWD/src/3DProject/data.cpp \
+    $$PWD/src/3DProject/displaywindow.cpp \
+    $$PWD/src/3DProject/filewindow.cpp \
+    $$PWD/src/3DProject/marker.cpp \
+    $$PWD/src/3DProject/markercoordinateswidget.cpp \
+    $$PWD/src/3DProject/programwindow.cpp \
+    $$PWD/src/3DProject/swappingcorrectorprogram.cpp \
+    $$PWD/src/3DProject/swapwindow.cpp
 RESOURCES += CameraManager/cameramanager.qrc

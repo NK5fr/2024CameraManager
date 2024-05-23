@@ -22,6 +22,9 @@
 
 #include <QtOpenGL/QtOpenGL>
 #include <QPlainTextEdit>
+#include <qmdiarea.h>
+#include <src/3DProject/programwindow.h>
+#include <src/3DProject/swappingcorrectorprogram.h>
 
 #include "widgetgl.h"
 
@@ -73,6 +76,9 @@ private slots:
     void fovConeSizeValueChanged(int);
     void extractDataFromText();
 
+    // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
+    void showSwappingCorrectorFunc();
+
 private:
     void readTextFromFile();
     void showTextView();
@@ -110,6 +116,11 @@ private:
     QPushButton* show3DWidget;
     QPushButton* hideButton;
     QPushButton* disconnectButton;
+
+    // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
+    QMdiArea* parentArea;
+    QPushButton* showSwappingCorrector;
+    SwappingCorrectorProgram* swappingCorrectorWidget;
 
     /* Table view */
     std::vector<QGridLayout*> coordinatesLayout;
