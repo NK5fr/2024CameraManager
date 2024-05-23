@@ -110,7 +110,9 @@ void AbstractCameraManager::updateProperties() {
 //wrote on 11/06/2019 by French students
 void AbstractCameraManager::updateSpinProperties() {
     AbstractCamera* selected = selectedCamera;
-    if (selected == nullptr) return;
+    if (selected == nullptr){
+        return;
+    }
     for( int i = propertiesList.topLevelItemCount()-1; i>=0; i--){
         QTreeWidgetItem* item = propertiesList.topLevelItem(i);
         QCheckBox* checkBox = qobject_cast<QCheckBox*>(propertiesList.itemWidget(item, Ui::PropertyAuto));
@@ -404,6 +406,9 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) 
             }
         }
         if (!found){ //remove if disconnected
+            if(selectedCamera == cam){
+                selectedCamera = nullptr;
+            }
             activateCamera(cam, item, false);
             item->parent()->removeRow(item->row());
         }

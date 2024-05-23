@@ -53,7 +53,6 @@ public:
     bool equalsTo(AbstractCamera *c);
     std::string getString();
 
-
 private:
     Spinnaker::CameraPtr cam;
     Spinnaker::ImagePtr captureImage(bool colored = false);

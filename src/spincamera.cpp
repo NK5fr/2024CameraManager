@@ -27,27 +27,32 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
     case CameraManagerSpin::TRIGGER :
 
         // Armand & Nathan 20/05/2024 : enable or disable trigger
-
-        if(p->getAuto()){
-            enableTrigger = 0;
-            cam->TriggerMode.SetValue(Spinnaker::TriggerMode_On);
-        }else{
-            enableTrigger = 1;
-            cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
+        try {
+            if(p->getAuto()){
+                enableTrigger = 0;
+                cam->TriggerMode.SetValue(Spinnaker::TriggerMode_On);
+            }else{
+                enableTrigger = 1;
+                cam->TriggerMode.SetValue(Spinnaker::TriggerMode_Off);
+            }
+        } catch (Spinnaker::Exception e) {
+            std::cout << "unable to acces the trigger mode property" << std::endl;
         }
         break;
     case CameraManagerSpin::AUTOTRIGGER :
 
         // Armand & Nathan 20/05/2024 : change trigger source
-
-        if(p->getAuto()){
-            trigger = 0;
-            cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Software);
-        }else{
-            trigger = 1;
-            cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Line0);
+        try {
+            if(p->getAuto()){
+                trigger = 0;
+                cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Software);
+            }else{
+                trigger = 1;
+                cam->TriggerSource.SetValue(Spinnaker::TriggerSource_Line0);
+            }
+        } catch (Spinnaker::Exception e) {
+            std::cout << "unable to acces the trigger source property" << std::endl;
         }
-
         break;
     case CameraManagerSpin::BLACKLEVEL :
         try{
@@ -57,7 +62,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
         }
         cam->BlackLevel.SetValue(p->getValue()); //Set the wanted value to the camera property
     }catch (Spinnaker::Exception &e){
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cout << "Error : " << e.what() << std::endl;
         }
         break;
     case CameraManagerSpin::EXPOSURETIME :
@@ -75,9 +80,12 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 }else{
                     if (p->getValue() >= cam->ExposureTime.GetMin() && p->getValue() <= cam->ExposureTime.GetMax()) {
                         cam->ExposureTime.SetValue(p->getValue()); // Set the value
-                    } else {
+                    } else if(p->getValue() < cam->ExposureTime.GetMin()){
                         std::cout << "Wanted exposure value was not within the limits, setting to minimum available value..." << std::endl;
                         cam->ExposureTime.SetValue(cam->ExposureTime.GetMin());
+                    } else {
+                        std::cout << "Wanted exposure value was not within the limits, setting to maximum available value..." << std::endl;
+                        cam->ExposureTime.SetValue(cam->ExposureTime.GetMax());
                     }
                 }
             }
@@ -105,7 +113,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
             }
         }
     }catch (Spinnaker::Exception &e){
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cout << "Error : " << e.what() << std::endl;
         }
         break;
 
@@ -127,7 +135,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
             }
         }
     }catch (Spinnaker::Exception &e){
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cout << "Error : " << e.what() << std::endl;
         }
         break;
 
@@ -152,7 +160,7 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
         }
 
     }catch (Spinnaker::Exception &e){
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cout << "Error : " << e.what() << std::endl;
         }
         break;
     }
@@ -214,7 +222,7 @@ ImagePtr SpinCamera::captureImage(bool colored) {
         return convertedImage;
 
     }catch(Spinnaker::Exception &e) {
-        std::cout << "Error: " << e.what() << std::endl;
+        std::cout << "Error : " << e.what() << std::endl;
     }
 
 
@@ -293,7 +301,7 @@ int SpinCamera::ConfigureTrigger(INodeMap &nodeMap) {
     }
     catch (Spinnaker::Exception &e)
     {
-        std::cout << "Error: " << e.what() << std::endl;
+        std::cout << "Error : " << e.what() << std::endl;
         std::cout << "erreur dans trigger" << std::endl;
         result = -1;
     }
@@ -342,7 +350,7 @@ void SpinCamera::startAutoCapture(){
 
         cam->BeginAcquisition();
     }catch (Spinnaker::Exception &ex){
-        std::cout << "Error: " << ex.what() << std::endl;
+        std::cout << "Error : " << ex.what() << std::endl;
     }
     std::cout << "valeur de capoturing: " << capturing << std::endl;
     while(capturing){
@@ -361,7 +369,7 @@ void SpinCamera::startAutoCapture(){
         //cam->AcquisitionStop.Execute();
         cam->EndAcquisition();
     }catch (Spinnaker::Exception &ex){
-        std::cout << "Error: " << ex.what() << std::endl;
+        std::cout << "Error : " << ex.what() << std::endl;
     }
     printf("Stopped autoCapture!\n");
 
