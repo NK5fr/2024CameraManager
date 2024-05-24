@@ -49,6 +49,7 @@ public:
 private slots:
     void onRightClic();
 	//Menu
+    /* Click on a menu item */
     void menuProjectAction_triggered(QAction*);
     //Allow file editing
 	void allowFileEditing();
@@ -61,6 +62,8 @@ private slots:
 	//Switch the view between the text view and wizard view.
 	void changeView();
 
+    //Launch Trackpoint
+    void launchTrackPointFunc();
 private:
 	//Show the text view
     void showTextView();
@@ -103,6 +106,7 @@ private:
 
 	QAction *fileEdition;
     QAction *save;
+    QAction *launchTrackPoint;
 
 	char debugstr;
 

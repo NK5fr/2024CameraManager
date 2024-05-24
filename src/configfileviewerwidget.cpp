@@ -18,6 +18,7 @@
 
 
 #include <iostream>
+#include <qprocess.h>
 
 /* Constructor */
 ConfigFileViewerWidget::ConfigFileViewerWidget(QString filePath) : textEditable(true), view(0){
@@ -65,6 +66,8 @@ void ConfigFileViewerWidget::onRightClic(){
   save = new QAction(tr("Save"), menu);
   save->setEnabled(textEditable);
 
+  launchTrackPoint = new QAction(tr("Launch TrackPoint"), menu);
+
 
   if (!isTextViewOnly){
     menu->addAction("Change view");
@@ -83,6 +86,8 @@ void ConfigFileViewerWidget::onRightClic(){
     menu->addSeparator();
   }
   menu->addAction(save);
+
+  menu->addAction(launchTrackPoint);
 
   menu->popup(cursor().pos());
 
@@ -137,14 +142,20 @@ void ConfigFileViewerWidget::menuProjectAction_triggered(QAction* action){
     /* Saving the QTextEdit contain into the file at the fullPath path */
     saveFile();
   }
+
+  else if (action->text() == "Launch TrackPoint"){
+      /* Launching the TrackPoint.exe file */
+      launchTrackPointFunc();
+  }
 }
 
 /*Save the file with the string in the QTextEdit*/
 void ConfigFileViewerWidget::saveFile() {
-  QFile file(path);
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){ return; }
-  QTextStream out(&file);
-  out << fileContain->toPlainText().toUtf8().constData();
+    qInfo() << "saved";
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){ return; }
+    QTextStream out(&file);
+    out << fileContain->toPlainText().toUtf8().constData();
 }
 
 /* Clic on the button asking confirmation about editing.
@@ -194,6 +205,13 @@ void ConfigFileViewerWidget::changeView() {
   }
 }
 
+void ConfigFileViewerWidget::launchTrackPointFunc()
+{
+    qInfo() << QDir::currentPath();
+    QString file(QDir::currentPath().append("/CameraManager/test.exe"));
+    QProcess::startDetached(file);
+}
+
 /* Show file as a text view */
 void ConfigFileViewerWidget::showTextView(){
   tabs->setCurrentWidget(fileContain);
@@ -225,7 +243,7 @@ void ConfigFileViewerWidget::resetWizard() {
   createWizard();
 }
 
-void ConfigFileViewerWidget::createWizard() {
+void ConfigFileViewerWidget::   createWizard() {
   //From the smallest widget to the biggest one: wizard; wizardWrapper; WizardScrollArea; WizardScrollAreaWrapper;
   wizard = new QFormLayout();
   wizardWrapper = new QWidget();
@@ -380,6 +398,11 @@ void ConfigFileViewerWidget::createWizard() {
   connect(saveButton, SIGNAL(clicked()), this, SLOT(saveFile()));
   wizard->addRow(saveButton, emptyLabel);
 
+  /*TrackPoint exec button*/
+  QPushButton *launchTrackPointButton = new QPushButton("launch trackpoint");
+  connect(launchTrackPointButton, SIGNAL(clicked()), this, SLOT(launchTrackPointFunc()));
+  wizard->addRow(launchTrackPointButton, emptyLabel);
+
   connect(wizardWrapper, SIGNAL(customContextMenuRequested(QPoint)),this, SLOT(onRightClic()));
   tabs->addTab(wizardScrollArea, "wizard");
   delete cfgreader;
@@ -469,7 +492,7 @@ QComboBox * ConfigFileViewerWidget::wizardAddComboBox(QString name, QList<QStrin
   for (int i = 0; i < possibleValues->size(); i++) {
     comboBox->addItem(possibleValues->at(i));
   }
-  connect(comboBox, SIGNAL(currentIndexChanged(const QString)),
+  connect(comboBox, SIGNAL(currentIndexChanged()),
     this, SLOT(WizardSave()));
   wizard->addRow(name, comboBox);
   return comboBox;

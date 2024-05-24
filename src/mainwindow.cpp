@@ -401,7 +401,7 @@ void MainWindow::menuBarClicked(QAction* action) {
     } else if (action->text() == "Hide ToolBar")
         ui->toolBar->setVisible(!bar->getHideToolBarWidget()->isChecked());
     else if (action->text() == "Connect to Server") {
-        SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget);
+            SocketViewerWidget* svw = new SocketViewerWidget(ui->centralwidget);
         ui->centralwidget->addSubWindow(svw);
         svw->showMaximized();
     }

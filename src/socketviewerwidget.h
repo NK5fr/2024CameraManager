@@ -83,6 +83,7 @@ private:
     void readTextFromFile();
     void showTextView();
     void show3DView();
+    void closeEvent(QCloseEvent *closeEvent);
 
     void init();
 
