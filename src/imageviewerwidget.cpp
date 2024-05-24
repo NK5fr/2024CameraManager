@@ -2,6 +2,7 @@
 
 ImageViewerWidget::ImageViewerWidget(QString path, QString filename, TrackPointProperty* trackPoint) : path(path), filename(filename) {
     fullPath = path + "/" + filename;
+
     setImageFromFile(fullPath);
     setWindowTitle(filename);
     imageWidget.setTrackPointProperty(trackPoint);

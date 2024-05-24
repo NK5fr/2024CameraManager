@@ -249,6 +249,7 @@ void MainWindow::on_actionColor_toggled(bool arg1) {
 
     cameraManagers.at(selectedCameraManager)->uncheckAllCameras();
     ui->actionLiveView->setChecked(false);
+    cameraManagers.at(selectedCameraManager)->activateLiveView(false);
 
     //cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
 }

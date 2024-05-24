@@ -71,9 +71,9 @@ void ImageOpenGLWidget::updateView() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glViewport(0, 0, this->width(), this->height());
-    //qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
-    //qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
-    glViewport(0,0,this->width(),this->height());
+    // qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
+    // qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
+    glViewport(0, 0,this->width(),this->height());
     glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -95,6 +95,9 @@ void ImageOpenGLWidget::updateView() {
         scaledImageArea.setLeft(0);
     }
 
+    // qInfo() << scaledImageArea.width() << "/" << scaledImageArea.height();
+    // qInfo() << scaledImageArea.top() << "/" << scaledImageArea.left();
+
 
     // QPixmap scaled = QPixmap(imageWidth, imageHeight).scaled(this->width(), this->height(), Qt::KeepAspectRatio);
     // scaledImageArea.setTopLeft(scaled.rect().topLeft());
@@ -107,15 +110,17 @@ void ImageOpenGLWidget::paintGL() {
     updateView();
     int subImageWidth = imageWidth / numImageGroupsX;
     int subImageHeight = imageHeight / numImageGroupsY;
+
     imageToScreenCoordX = ((double) scaledImageArea.width() / imageWidth);
     imageToScreenCoordY = ((double) scaledImageArea.height() / imageHeight);
     screenToImageCoordX = ((double) imageWidth / scaledImageArea.width());
     screenToImageCoordY = ((double) imageHeight / scaledImageArea.height());
+
     if (texture.getTextureWidth() != imageWidth || texture.getTextureHeight() != imageHeight) {
         if(colored){
             texture.createEmptyTexture(imageWidth, imageHeight, OpenGL::PixelFormat::RGB);
         }else{
-           texture.createEmptyTexture(imageWidth, imageHeight);
+            texture.createEmptyTexture(imageWidth, imageHeight);
         }
     }
 
@@ -159,6 +164,7 @@ void ImageOpenGLWidget::paintGL() {
 
     glEnable(GL_TEXTURE_2D);
     texture.bind();
+
     glTranslated(scaledImageArea.left(), scaledImageArea.top(), 0);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
