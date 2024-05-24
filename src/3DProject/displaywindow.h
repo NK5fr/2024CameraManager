@@ -8,6 +8,10 @@
 #include <QMatrix4x4>
 #include <QFile>
 #include <QMouseEvent>
+#if defined(WIN32) || defined(_WIN32)
+#include <Windows.h>
+#endif
+#include <GL/glu.h>
 #include "data.h"
 #include "marker.h"
 
@@ -68,6 +72,14 @@ private:
     // a boolean that indicates whether the previous steps should be displayed as points or lines
     bool formerStepsPoints;
 
+    // int length of the floor
+    float floorLength = 50.0;
+
+    // New camera tracking
+    int lastMouseX = -1;
+    int lastMouseY = -1;
+    double rotX;
+    double rotY;
 public:
 
     /**
@@ -276,7 +288,6 @@ public:
      * @return a boolean stating whether the array is already in the linkedMarkersIndexes member variable.
      */
     bool alreadyLinkedMarkers(std::array<int, 2>& linkedMarkers);
-
 public slots:
 
     /**
@@ -471,6 +482,15 @@ protected:
     void paintMarkersWithRedCross();
 
     /**
+     * @brief paintFloor
+     * Paints a grid on z=0 of the view
+     */
+    void paintFloor();
+
+
+    void drawLine(QVector3D begin, QVector3D end);
+
+    /**
      * @brief mousePressEvent
      * Method called when one of the buttons of the mouse is pressed.
      * Enables the camera to be moved.
@@ -487,7 +507,7 @@ protected:
      * @param event
      *          the event corresponding to the mouse last motion.
      */
-    void mouseMoveEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *mouseEvent);
 
     /**
      * @brief moveCamera
@@ -496,6 +516,8 @@ protected:
      *          the QMouseEvent sent by the mouseMoveEvent method.
      */
     void moveCamera(QMouseEvent *event);
+
+    void drawFloorLine(float x, float y);
 };
 
 #endif // DISPLAYWINDOW_H
