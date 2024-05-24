@@ -20,7 +20,6 @@ const int SIMD_NUM_ELEMENTS = 1;
 #endif
 
 // Paths... (Not used yet)
-const QString TRACKPOINT_EXECUTABLE_NAME = "TrackPoint_VS13_Proj_PG_GPU.exe";
 const QString TRACKPOINT_WORKING_DIRECORY = "TrackPoint_VS13_Proj_PG_GPU";
 const QString TRACKPOINT_BINARY_TO_PROJECT = "../../" + TRACKPOINT_WORKING_DIRECORY;
 const QString TRACKPOINT_OPTIONS_FILE = "OptionsOO.txt";
@@ -38,5 +37,7 @@ const QString TRACKPOINT_PROPERTY_DEFAULT_FILE = "defaultTrackPointSettings.ini"
 const QString TRACKPOINT_PROPERTY_QUICK_FILE = "quickfile_trackpoint.ini";
 const QString CALIBRATION_PARAMETERLIST_FILE = PROPERTY_PATH + "/parameterList.txt";
 
-
+// Armand & Nathan - 24/06/2024 - constants for the default path to the executables
+const QString TRACKPOINT_EXECUTABLE_NAME = "TrackPoint_VS13_Proj_PG_GPU.exe";
+const QString TRACKPOINT_EXECUTABLE_DIRECTORY = "CameraManager/executable";
 #endif // CONSTANTS_H

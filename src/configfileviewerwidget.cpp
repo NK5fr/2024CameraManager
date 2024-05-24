@@ -18,6 +18,7 @@
 
 
 #include <iostream>
+#include <qmessagebox.h>
 #include <qprocess.h>
 
 /* Constructor */
@@ -26,7 +27,6 @@ ConfigFileViewerWidget::ConfigFileViewerWidget(QString filePath) : textEditable(
 
   loadAllParameters = false;
   this->path = filePath;
-
   if (path.contains("option")) isTextViewOnly = false; //use wizard view also
   else isTextViewOnly = true;
 
@@ -207,9 +207,21 @@ void ConfigFileViewerWidget::changeView() {
 
 void ConfigFileViewerWidget::launchTrackPointFunc()
 {
-    qInfo() << QDir::currentPath();
-    QString file(QDir::currentPath().append("/CameraManager/test.exe"));
-    QProcess::startDetached(file);
+    QFile file = QFile(execFilePath);
+    if (file.exists()) {
+        QProcess::startDetached(execFilePath);
+    } else {
+        QMessageBox::information(this, "Not a valid exe file!", execFilePath.append("\ndoes not exist!"));
+    }
+}
+
+void ConfigFileViewerWidget::changeExecFunc()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose Executable"), executablePath, tr("Executable (*.exe)"));
+    if (!fileName.isNull() && !fileName.isEmpty()) {
+        this->execFilePath = fileName;
+        this->currentExecPathLabel->setText(fileName);
+    }
 }
 
 /* Show file as a text view */
@@ -399,9 +411,14 @@ void ConfigFileViewerWidget::   createWizard() {
   wizard->addRow(saveButton, emptyLabel);
 
   /*TrackPoint exec button*/
-  QPushButton *launchTrackPointButton = new QPushButton("launch trackpoint");
+  QPushButton *launchTrackPointButton = new QPushButton("  launch trackpoint  ");
   connect(launchTrackPointButton, SIGNAL(clicked()), this, SLOT(launchTrackPointFunc()));
-  wizard->addRow(launchTrackPointButton, emptyLabel);
+  QPushButton *changeExecButton = new QPushButton("change path to executable");
+  connect(changeExecButton, SIGNAL(clicked()), this, SLOT(changeExecFunc()));
+  wizard->addRow(launchTrackPointButton, changeExecButton);
+  QLabel *test = new QLabel("current path to executable");
+  wizard->addRow(test, this->currentExecPathLabel);
+
 
   connect(wizardWrapper, SIGNAL(customContextMenuRequested(QPoint)),this, SLOT(onRightClic()));
   tabs->addTab(wizardScrollArea, "wizard");
@@ -492,7 +509,7 @@ QComboBox * ConfigFileViewerWidget::wizardAddComboBox(QString name, QList<QStrin
   for (int i = 0; i < possibleValues->size(); i++) {
     comboBox->addItem(possibleValues->at(i));
   }
-  connect(comboBox, SIGNAL(currentIndexChanged()),
+  connect(comboBox, SIGNAL(currentIndexChanged(int)),
     this, SLOT(WizardSave()));
   wizard->addRow(name, comboBox);
   return comboBox;

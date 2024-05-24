@@ -64,6 +64,9 @@ private slots:
 
     //Launch Trackpoint
     void launchTrackPointFunc();
+
+    //Change the path to the executable
+    void changeExecFunc();
 private:
 	//Show the text view
     void showTextView();
@@ -128,6 +131,13 @@ private:
 
 	QList<QLineEdit *> *wizardLineEdit;
 	QList<int> *wizardLineEditParameterPosition;
+
+    // Armand & Nathan - 24/05/2024 - Launch TrackPoint from the wizard
+    QString executablePath = TRACKPOINT_EXECUTABLE_DIRECTORY;
+    QString executableFile = TRACKPOINT_EXECUTABLE_NAME;
+    QString execFilePath = executablePath.append("/").append(executableFile);
+
+    QLabel* currentExecPathLabel = new QLabel(execFilePath);
 };
 
 #endif // CONFIGFILEVIEWERWIDGET_H
