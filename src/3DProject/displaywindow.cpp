@@ -23,9 +23,7 @@ DisplayWindow::DisplayWindow(QWidget *parent) : QOpenGLWidget(parent) {
 }
 
 void DisplayWindow::setViewPort() {
-    qInfo() << "test";
     glViewport(0, 0, width(), height());
-    qInfo() << "test!";
 }
 
 void DisplayWindow::setProjection() {
@@ -81,6 +79,8 @@ void DisplayWindow::removePickedIndex(int index) {
 void DisplayWindow::initializeGL()
 {
     initializeOpenGLFunctions();//THIS MUST BE CALLED TO INIT OPENGL
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     qDebug() << "initializeGL()";
 }
 
@@ -88,10 +88,10 @@ void DisplayWindow::paintGL()
 {
     qDebug() << "paintGL";
     glPointSize(3.0);
-    glClearColor(0.0, 0.0 ,0.0, 0.0);
+    glClearColor(0.0 / 255.0, 18.0 / 255.0, 53.0 / 255.0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-    qDebug() << "4";
     if(data != NULL) {
+        paintFloor();
         paintMarkers();
         paintMarkersWithRedCross();
         if(lineBeingDrawn) {
@@ -112,15 +112,50 @@ void DisplayWindow::paintGL()
     }
 }
 
+void DisplayWindow::drawLine(QVector3D begin, QVector3D end) {
+    glVertex3f(begin.x(), begin.y(), begin.z());
+    glVertex3f(end.x(), end.y(), end.z());
+}
+
+void DisplayWindow::drawFloorLine(float x, float y) {
+    if (x <= -floorLength) {
+        return;
+    } else {
+        QVector3D beginHorizontal = QVector3D(floorLength, y, 0);
+        QVector3D endHorizontal = QVector3D(-floorLength, y, 0);
+        QVector3D beginVertical = QVector3D(x, floorLength, 0);
+        QVector3D endVertical = QVector3D(x, -floorLength, 0);
+        //qInfo() << x << "\t" << (int)x;
+        if (x == (int)x) {
+            glColor4f(1.0, 1.0, 1.0, 0.5);
+        } else {
+            glColor4f(1.0, 1.0, 1.0, 0.2);
+        }
+        drawLine(beginHorizontal, endHorizontal);
+        drawLine(beginVertical, endVertical);
+        drawFloorLine(x-0.5, y-0.5);
+    }
+}
+
+void DisplayWindow::paintFloor()
+{
+    makeCurrent();
+    glBegin(GL_LINES);
+    drawFloorLine(floorLength, floorLength);
+    glEnd();
+}
+
+void drawSquare(QVector3D begin, QVector3D end, QVector3D middle) {
+
+}
+
 void DisplayWindow::paintMarkers() {
     makeCurrent();
     glBegin(GL_POINTS);
-    glColor3f(1.0, 1.0, 1.0);
-    qInfo() << currentStep;
+    glColor4f(1.0, 1.0, 1.0, 1.0);
     QVector<Marker> vector = data->get1Vector(currentStep);
     QList<Marker> list = QList<Marker>(vector.begin(), vector.end());
     for(auto marker : list) {
-        qInfo() << "x \t" << marker.getX() << "y \t" << marker.getY() << "z \t" << marker.getZ();
         glVertex3f(marker.getX() / 1500, marker.getY() / 1500, marker.getZ() / 1500);
     }
     glEnd();
@@ -133,29 +168,28 @@ void DisplayWindow::paintSelectedMarkers() {
     glBegin(GL_POINTS);
     for(auto index : selectedMarkerIndexes) {
         color = new QColor(Qt::GlobalColor(colorsAvailable.at(colorIndex)));
-        glColor3f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0);
-        glVertex3f(data->get1Marker(currentStep, index).getX() / 1500, data->get1Marker(currentStep, index).getY() / 1500, data->get1Marker(currentStep, index).getZ() / 1500);
+        glColor4f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0, 1.0);        glVertex3f(data->get1Marker(currentStep, index).getX() / 1500, data->get1Marker(currentStep, index).getY() / 1500, data->get1Marker(currentStep, index).getZ() / 1500);
         delete color;
         colorIndex++;
     }
-    glColor3f(1.0, 1.0, 1.0);
+    glColor4f(1.0, 1.0, 1.0, 1.0);
     glEnd();
 }
 
 void DisplayWindow::paintAxes() {
     makeCurrent();
     glBegin(GL_LINES);
-        glColor3f(1.0, 0.0, 0.0);
+        glColor4f(1.0, 0.0, 0.0, 1.0);
         glVertex3f(0.0, 0.0, 0.0);
         glVertex3f(1.0, 0.0, 0.0);
     glEnd();
     glBegin(GL_LINES);
-        glColor3f(0.0, 1.0, 0.0);
+        glColor4f(0.0, 1.0, 0.0, 1.0);
         glVertex3f(0.0, 0.0, 0.0);
         glVertex3f(0.0, 1.0, 0.0);
     glEnd();
     glBegin(GL_LINES);
-        glColor3f(0.0, 0.0, 1.0);
+        glColor4f(0.0, 0.0, 1.0, 1.0);
         glVertex3f(0.0, 0.0, 0.0);
         glVertex3f(0.0, 0.0, 1.0);
     glEnd();
@@ -164,7 +198,7 @@ void DisplayWindow::paintAxes() {
 void DisplayWindow::paintMarkerWithCross() {
     makeCurrent();
     glBegin(GL_LINES);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor4f(1.0, 1.0, 1.0, 1.0);
         glVertex3f((getMarkerWithCross().getX() + 50) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ()) / 1500);
         glVertex3f((getMarkerWithCross().getX() - 50) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ()) / 1500);
         glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY() + 50) / 1500, (getMarkerWithCross().getZ()) / 1500);
@@ -177,7 +211,7 @@ void DisplayWindow::paintMarkerWithCross() {
 void DisplayWindow::paintMarkersWithRedCross() {
     makeCurrent();
     glBegin(GL_LINES);
-    glColor3f(1.0, 0.0, 0.0);
+    glColor4f(1.0, 0.0, 0.0, 1.0);
     for(auto index : markersToBeSwapedIndexes) {
         if(index != -1) {
             glVertex3f((data->get1Marker(currentStep, index).getX() + 50) /1500, data->get1Marker(currentStep, index).getY() / 1500, data->get1Marker(currentStep, index).getZ()/ 1500);
@@ -214,14 +248,14 @@ void DisplayWindow::paintFormerSteps() {
         colorIndex = selectedMarkerIndexes.indexOf(i);
         if(colorIndex != -1) {
             color = new QColor(Qt::GlobalColor(colorsAvailable.at(colorIndex)));
-            glColor3f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0);
+            glColor4f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0, 1.0);
             delete color;
             colorIndex++;
             while(j <= currentStep) {
                 glVertex3f(data->get1Marker(j, i).getX() / 1500, data->get1Marker(j, i).getY() / 1500, data->get1Marker(j, i).getZ() / 1500);
                 j++;
             }
-            glColor3f(1.0, 1.0, 1.0);
+            glColor4f(1.0, 1.0, 1.0, 1.0);
         }
         else if(!formerStepsSelectedMarkers){
             while(j <= currentStep) {
@@ -249,7 +283,7 @@ void DisplayWindow::paintFurtherSteps() {
         j = currentStep;
         color = new QColor(Qt::GlobalColor(colorsAvailable.at(colorIndex)));
         glBegin(GL_LINE_STRIP);
-        glColor3f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0);
+        glColor4f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0, 1.0);
         delete color;
         colorIndex++;
         while(j < limitOfStepsDisplayed + 1) {
@@ -263,7 +297,7 @@ void DisplayWindow::paintFurtherSteps() {
 void DisplayWindow::paintLinkedMarkers() {
     makeCurrent();
     glBegin(GL_LINES);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor4f(1.0, 1.0, 1.0, 1.0);
         for(int i = 0 ; i < linkedMarkersIndexes.size() - 1 ; i++) {
             glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getY() / 1500,
                     data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getZ() / 1500);
@@ -307,7 +341,7 @@ int DisplayWindow::pickMarker() {
     for(auto marker : data->get1Vector(currentStep)) {
         glPointSize(3.0);
         glBegin(GL_POINTS);
-            glColor3f(marker.getRedId() / 255.0, marker.getGreenId() / 255.0, marker.getBlueId() / 255.0);
+            glColor4f(marker.getRedId() / 255.0, marker.getGreenId() / 255.0, marker.getBlueId() / 255.0, 1.0);
             glVertex3f(marker.getX() / 1500, marker.getY() / 1500, marker.getZ() / 1500);
         glEnd();
     }
@@ -383,7 +417,7 @@ int DisplayWindow::pickLink() {
         redId = ((i + 1) & 0x000000FF);
         greenId = ((i + 1) & 0x0000FF00) >>  8;
         blueId = ((i + 1) & 0x00FF0000) >> 16;
-        glColor3f(redId / 255.0, greenId / 255.0, blueId / 255.0);
+        glColor4f(redId / 255.0, greenId / 255.0, blueId / 255.0, 1.0);
         glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getY() / 1500,
             data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getZ() / 1500);
             glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getY() / 1500,
@@ -472,7 +506,7 @@ void DisplayWindow::moveCamera(QMouseEvent *event) {
     int zAngle = 0;
     int yAngle = 0;
     zAngle = (event->position().x() - mouseXStartPosition) / 4;
-    yAngle = (mouseYStartPosition - event->position().x()) / 8;
+    yAngle = (mouseYStartPosition - event->position().y()) / 4;
     glRotatef(-yAngle, 0, 1, 0);
     glRotatef(yAngle, 1, 0, 0);
 

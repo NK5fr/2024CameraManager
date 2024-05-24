@@ -49,6 +49,7 @@ public:
 private slots:
     void onRightClic();
 	//Menu
+    /* Click on a menu item */
     void menuProjectAction_triggered(QAction*);
     //Allow file editing
 	void allowFileEditing();
@@ -61,6 +62,11 @@ private slots:
 	//Switch the view between the text view and wizard view.
 	void changeView();
 
+    //Launch Trackpoint
+    void launchTrackPointFunc();
+
+    //Change the path to the executable
+    void changeExecFunc();
 private:
 	//Show the text view
     void showTextView();
@@ -103,6 +109,7 @@ private:
 
 	QAction *fileEdition;
     QAction *save;
+    QAction *launchTrackPoint;
 
 	char debugstr;
 
@@ -124,6 +131,13 @@ private:
 
 	QList<QLineEdit *> *wizardLineEdit;
 	QList<int> *wizardLineEditParameterPosition;
+
+    // Armand & Nathan - 24/05/2024 - Launch TrackPoint from the wizard
+    QString executablePath = TRACKPOINT_EXECUTABLE_DIRECTORY;
+    QString executableFile = TRACKPOINT_EXECUTABLE_NAME;
+    QString execFilePath = executablePath.append("/").append(executableFile);
+
+    QLabel* currentExecPathLabel = new QLabel(execFilePath);
 };
 
 #endif // CONFIGFILEVIEWERWIDGET_H

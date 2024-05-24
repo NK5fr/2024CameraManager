@@ -322,6 +322,11 @@ void SocketViewerWidget::show3DView() {
     setWidget(widgetGLWindow);
 }
 
+void SocketViewerWidget::closeEvent(QCloseEvent *closeEvent) {
+
+    swappingCorrectorWidget->close();
+}
+
 // Make all the sroll bars moving at the same time
 // with the same value
 void SocketViewerWidget::areaBarsMoved(int newValue) {
