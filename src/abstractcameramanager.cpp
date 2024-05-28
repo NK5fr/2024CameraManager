@@ -800,12 +800,12 @@ void AbstractCameraManager::on_propertyValue_changed() {
 }
 
 void AbstractCameraManager::uncheckAllCameras() {
-    // for(int i = 0; i < cameraTree.item(0)->rowCount(); ++i){
-    //     if(cameraTree.item(0)->child(i)->checkState() == Qt::Checked){
-    //         cameraTree.item(0)->child(i)->setCheckState(Qt::Unchecked);
-    //         cameraTree.item(0)->child(i)->setCheckState(Qt::Checked);
-    //     }
-    // }
 
     cameraTree.item(0)->setCheckState(Qt::Unchecked);
+
+    for(int i = 0; i < cameraTree.item(0)->rowCount(); ++i){
+        if(cameraTree.item(0)->child(i)->checkState() == Qt::Checked){
+            cameraTree.item(0)->child(i)->setCheckState(Qt::Unchecked);
+        }
+    }
 }
