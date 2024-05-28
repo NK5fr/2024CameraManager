@@ -314,8 +314,8 @@ void ImageViewerWidget::initGUI() {
     connect(&numSubRegionsX, SIGNAL(valueChanged(int)), this, SLOT(numSubRegionsXChanged(int)));
     connect(&numSubRegionsY, SIGNAL(valueChanged(int)), this, SLOT(numSubRegionsYChanged(int)));
     connect(&imageFileSlider, SIGNAL(valueChanged(int)), this, SLOT(imageFileSliderChanged(int)));
-    connect(&zoomFactorComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(zoomFactorChanged(const QString&)));
-    connect(&zoomAreaSizeComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(zoomAreaSizeChanged(const QString&)));
+    connect(&zoomFactorComboBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(zoomFactorChanged(const QString&)));
+    connect(&zoomAreaSizeComboBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(zoomAreaSizeChanged(const QString&)));
     connect(&enablePointSeries, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(enablePointStateChanged(Qt::CheckState)));
     connect(&enablePointStringLabel, SIGNAL(checkStateChanged(Qt::CheckState)), this, SLOT(customPointStringStateChanged(Qt::CheckState)));
     connect(&singlePointSeries, SIGNAL(clicked()), this, SLOT(singlePointClicked()));

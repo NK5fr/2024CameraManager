@@ -431,7 +431,7 @@ void ImageOpenGLWidget::paintGL() {
                 if (trackPointProperty->showCoordinates && !showZoomArea) {
                     QPainter painter(this);
                     QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
-                    painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
+                    painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::gray);
                     if (enableSubImages) {
                         painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(fmod(points[i].x, subImageWidth), 'f', 2) + " ,Y: " + QString::number(fmod(points[i].y, subImageHeight), 'f', 2));
                     } else {

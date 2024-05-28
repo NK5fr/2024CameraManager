@@ -151,7 +151,6 @@ void ConfigFileViewerWidget::menuProjectAction_triggered(QAction* action){
 
 /*Save the file with the string in the QTextEdit*/
 void ConfigFileViewerWidget::saveFile() {
-    qInfo() << "saved";
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){ return; }
     QTextStream out(&file);
