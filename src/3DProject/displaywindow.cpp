@@ -1,5 +1,7 @@
 #include "displaywindow.h"
 
+#include <QApplication>
+
 DisplayWindow::DisplayWindow(QWidget *parent) : QOpenGLWidget(parent) {
     data = NULL;
     currentStep = 0;
@@ -20,6 +22,9 @@ DisplayWindow::DisplayWindow(QWidget *parent) : QOpenGLWidget(parent) {
     for(int i = 7 ; i < 19 ; i++) {
         colorsAvailable.append(i);
     }
+    installEventFilter(this);
+    this->setObjectName("DisplayWindow");
+    this->grabKeyboard();
 }
 
 void DisplayWindow::setViewPort() {
@@ -60,9 +65,9 @@ const std::array<int, 2>& DisplayWindow::getMarkersToBeSwaped() const {
     return markersToBeSwapedIndexes;
 }
 
- const QVector<std::array<int, 2>>& DisplayWindow::getLinkedMarkersIndexes() const {
-     return linkedMarkersIndexes;
- }
+const QVector<std::array<int, 2>>& DisplayWindow::getLinkedMarkersIndexes() const {
+    return linkedMarkersIndexes;
+}
 
 void DisplayWindow::removePickedIndex(int index) {
     for(int i=0;i<2;i++){
@@ -88,12 +93,19 @@ void DisplayWindow::paintGL()
 {
     qDebug() << "paintGL";
     glPointSize(3.0);
-    glClearColor(0.0 / 255.0, 18.0 / 255.0, 53.0 / 255.0, 1);
+    glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
     glClear(GL_COLOR_BUFFER_BIT);
     if(data != NULL) {
         paintFloor();
+        // glColor4f(0.8, 0.4, 1.0, 1.0);
+        // glBegin(GL_POINTS);
+        // glVertex3f(0.5,0.5,0.5);
+        // glEnd();
         paintMarkers();
         paintMarkersWithRedCross();
+        if (dragActive) {
+            paintDragZone();
+        }
         if(lineBeingDrawn) {
             paintMarkerWithCross();
         }
@@ -127,14 +139,92 @@ void DisplayWindow::drawFloorLine(float x, float y) {
         QVector3D endVertical = QVector3D(x, -floorLength, 0);
         //qInfo() << x << "\t" << (int)x;
         if (x == (int)x) {
-            glColor4f(1.0, 1.0, 1.0, 0.5);
+            glColor4f(gridColor.redF(), gridColor.greenF(), gridColor.blueF(), 0.5);
         } else {
-            glColor4f(1.0, 1.0, 1.0, 0.2);
+            glColor4f(gridColor.redF(), gridColor.greenF(), gridColor.blueF(), 0.2);
         }
         drawLine(beginHorizontal, endHorizontal);
         drawLine(beginVertical, endVertical);
         drawFloorLine(x-0.5, y-0.5);
     }
+}
+
+void DisplayWindow::paintDragZone()
+{
+    qInfo() << "DRAW SHIT BRO";
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLint viewport[4];
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    /*
+     *
+    */
+    GLfloat winX = 0.0, winY = 0.0, winZ = 0.0;
+    winX = (GLfloat)mouseDragPosX;
+    winY = (GLfloat)(viewport[3] - mouseDragPosY);
+
+    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+
+    GLdouble posX = 0.0, posY = 0.0, posZ = 0.0;
+    gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+
+    makeCurrent();
+    glBegin(GL_POINTS);
+    //glColor4f(dragColor.redF(), dragColor.greenF(), dragColor.blueF(), 0.2);
+    glVertex3f(posX, posY, posZ);
+    glEnd();
+}
+
+bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
+{
+
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_Shift) {
+            shiftPressed= true;
+        }
+    }
+    else if (event->type() == QEvent::KeyRelease) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_Shift) {
+            shiftPressed= false;
+        }
+    }
+
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        this->mouseClickX = mouseEvent->pos().x();
+        this->mouseClickY = mouseEvent->pos().y();
+    }
+    else if (event->type() == QEvent::MouseButtonRelease) {
+        qInfo() << "test";
+        mouseClickX = -1;
+        mouseClickY = -1;
+        mouseDragPosX = -1;
+        mouseDragPosY = -1;
+        dragActive = false;
+    }
+    else if (event->type() == QEvent::MouseMove) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        if (shiftPressed) {
+            dragActive = true;
+            mouseDragPosX = mouseEvent->pos().x();
+            mouseDragPosY = mouseEvent->pos().y();
+        } else {
+            dragActive = false;
+            mouseDragPosX = -1;
+            mouseDragPosY = -1;
+        }
+        if (!shiftPressed && mouseDragPosX == -1) {
+            moveCamera(mouseEvent);
+        }
+    }
+    qInfo() << dragActive;
+    update();
+    return QOpenGLWidget::eventFilter(watched, event);
 }
 
 void DisplayWindow::paintFloor()
@@ -179,19 +269,19 @@ void DisplayWindow::paintSelectedMarkers() {
 void DisplayWindow::paintAxes() {
     makeCurrent();
     glBegin(GL_LINES);
-        glColor4f(1.0, 0.0, 0.0, 1.0);
-        glVertex3f(0.0, 0.0, 0.0);
-        glVertex3f(1.0, 0.0, 0.0);
+    glColor4f(1.0, 0.0, 0.0, 1.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(1.0, 0.0, 0.0);
     glEnd();
     glBegin(GL_LINES);
-        glColor4f(0.0, 1.0, 0.0, 1.0);
-        glVertex3f(0.0, 0.0, 0.0);
-        glVertex3f(0.0, 1.0, 0.0);
+    glColor4f(0.0, 1.0, 0.0, 1.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(0.0, 1.0, 0.0);
     glEnd();
     glBegin(GL_LINES);
-        glColor4f(0.0, 0.0, 1.0, 1.0);
-        glVertex3f(0.0, 0.0, 0.0);
-        glVertex3f(0.0, 0.0, 1.0);
+    glColor4f(0.0, 0.0, 1.0, 1.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(0.0, 0.0, 1.0);
     glEnd();
 }
 
@@ -199,12 +289,12 @@ void DisplayWindow::paintMarkerWithCross() {
     makeCurrent();
     glBegin(GL_LINES);
     glColor4f(1.0, 1.0, 1.0, 1.0);
-        glVertex3f((getMarkerWithCross().getX() + 50) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ()) / 1500);
-        glVertex3f((getMarkerWithCross().getX() - 50) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ()) / 1500);
-        glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY() + 50) / 1500, (getMarkerWithCross().getZ()) / 1500);
-        glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY() - 50) / 1500, (getMarkerWithCross().getZ()) / 1500);
-        glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ() + 50) / 1500);
-        glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ() - 50) / 1500);
+    glVertex3f((getMarkerWithCross().getX() + 50) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ()) / 1500);
+    glVertex3f((getMarkerWithCross().getX() - 50) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ()) / 1500);
+    glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY() + 50) / 1500, (getMarkerWithCross().getZ()) / 1500);
+    glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY() - 50) / 1500, (getMarkerWithCross().getZ()) / 1500);
+    glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ() + 50) / 1500);
+    glVertex3f((getMarkerWithCross().getX()) / 1500, (getMarkerWithCross().getY()) / 1500, (getMarkerWithCross().getZ() - 50) / 1500);
     glEnd();
 }
 
@@ -298,12 +388,12 @@ void DisplayWindow::paintLinkedMarkers() {
     makeCurrent();
     glBegin(GL_LINES);
     glColor4f(1.0, 1.0, 1.0, 1.0);
-        for(int i = 0 ; i < linkedMarkersIndexes.size() - 1 ; i++) {
-            glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getY() / 1500,
-                    data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getZ() / 1500);
-            glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getY() / 1500,
-                    data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getZ() / 1500);
-        }
+    for(int i = 0 ; i < linkedMarkersIndexes.size() - 1 ; i++) {
+        glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getY() / 1500,
+                   data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getZ() / 1500);
+        glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getY() / 1500,
+                   data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getZ() / 1500);
+    }
     glEnd();
 }
 
@@ -314,7 +404,10 @@ const Marker& DisplayWindow::getMarkerWithCross() const {
 void DisplayWindow::mousePressEvent(QMouseEvent *event) {
     mouseXStartPosition = event->position().x();
     mouseYStartPosition = event->position().y();
+    qInfo() << mouseXStartPosition;
+    qInfo() << mouseYStartPosition;
     if(selectMarkerMode) {
+        qInfo() << "selectMarker()";
         selectMarker();
     }
     else if(linkMarkerMode) {
@@ -328,12 +421,11 @@ void DisplayWindow::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void DisplayWindow::mouseMoveEvent(QMouseEvent *event) {
-    moveCamera(event);
-}
 
 int DisplayWindow::pickMarker() {
-    makeCurrent();
+    QOpenGLWidget::makeCurrent();
+    glPointSize(3.0);
+    qInfo() << "hello?";
     unsigned char pixelRead[3];
     glDrawBuffer(GL_BACK);
     glClearColor(0.0, 0.0 ,0.0, 0.0);
@@ -341,12 +433,14 @@ int DisplayWindow::pickMarker() {
     for(auto marker : data->get1Vector(currentStep)) {
         glPointSize(3.0);
         glBegin(GL_POINTS);
-            glColor4f(marker.getRedId() / 255.0, marker.getGreenId() / 255.0, marker.getBlueId() / 255.0, 1.0);
-            glVertex3f(marker.getX() / 1500, marker.getY() / 1500, marker.getZ() / 1500);
+        glColor4f(marker.getRedId() / 255.0, marker.getGreenId() / 255.0, marker.getBlueId() / 255.0, 1.0);
+        glVertex3f(marker.getX() / 1500, marker.getY() / 1500, marker.getZ() / 1500);
         glEnd();
     }
     glFlush();
     glReadPixels(mouseXStartPosition, height() - mouseYStartPosition, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixelRead);
+
+    qInfo() << "1:" << (int)pixelRead[0] << "\t2:" << (int)pixelRead[1] *256  << "\t3:" << (int)pixelRead[3] * 256 *256 - 1;
     update();
     /* As the background is black, its index is going to be equal to zero (rgb (0, 0, 0) == black).
         this means that when the user is going to click on the background, the marker at the index 0 will be "picked".
@@ -359,6 +453,7 @@ int DisplayWindow::pickMarker() {
 void DisplayWindow::selectMarker() {
     int index = pickMarker();
     if(selectedMarkerIndexes.size() < 12 && index != -1 && selectedMarkerIndexes.indexOf(index) == -1) {
+        qInfo() << "append?";
         selectedMarkerIndexes.append(index);
         emit markerPicked(index, colorsAvailable.at(selectedMarkerIndexes.size() - 1));
         for(int i = 0 ; i < 2 ; i++) {
@@ -371,6 +466,7 @@ void DisplayWindow::selectMarker() {
 }
 
 void DisplayWindow::linkMarkerLine() {
+    makeCurrent();
     int index = pickMarker();
     // if the index is equal to -1 (the black background) or to the first index picked
     // then the array is reset
@@ -419,9 +515,9 @@ int DisplayWindow::pickLink() {
         blueId = ((i + 1) & 0x00FF0000) >> 16;
         glColor4f(redId / 255.0, greenId / 255.0, blueId / 255.0, 1.0);
         glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getY() / 1500,
-            data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getZ() / 1500);
-            glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getY() / 1500,
-            data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getZ() / 1500);
+                   data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[0])).getZ() / 1500);
+        glVertex3f(data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getX() / 1500, data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getY() / 1500,
+                   data->get1Marker(currentStep,(linkedMarkersIndexes.at(i)[1])).getZ() / 1500);
         glEnd();
     }
     glFlush();
@@ -506,7 +602,7 @@ void DisplayWindow::moveCamera(QMouseEvent *event) {
     int zAngle = 0;
     int yAngle = 0;
     zAngle = (event->position().x() - mouseXStartPosition) / 4;
-    yAngle = (mouseYStartPosition - event->position().y()) / 4;
+    yAngle = (mouseYStartPosition -event->position().y()) / 4;
     glRotatef(-yAngle, 0, 1, 0);
     glRotatef(yAngle, 1, 0, 0);
 

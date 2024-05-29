@@ -50,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     defaultDir.cd("../../..");
     QDir::setCurrent(defaultDir.absolutePath());
 
+    qInfo() << QApplication::primaryScreen()->size();
+
     // Armand & Nathan on 21/06/2024
     checkFiles();
 
