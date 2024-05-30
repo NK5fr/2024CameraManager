@@ -73,6 +73,7 @@ bool Texture::updateTexture(unsigned char* buffer, unsigned int bufferSize) {
     } else {
         textureFormat = GL_RGBA;
     }
+
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, textureWidth, textureHeight, textureFormat, GL_UNSIGNED_BYTE, buffer);
     //glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, textureWidth, textureHeight, 0, textureFormat, GL_UNSIGNED_BYTE, buffer);
@@ -105,6 +106,7 @@ void Texture::createEmptyTexture(int imageWidth, int imageHeight, PixelFormat pi
     textureHeight = imageHeight;
     imageBuffer.createBuffer(imageWidth * imageHeight * numchannels);
     imageBuffer.zeroBuffer();
+
     glTexImage2D(GL_TEXTURE_2D, 0, textureFormat, textureWidth, textureHeight, 0, textureFormat, GL_UNSIGNED_BYTE, imageBuffer.getDataBuffer());
 }
 
