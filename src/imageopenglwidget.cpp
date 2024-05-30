@@ -73,7 +73,7 @@ void ImageOpenGLWidget::updateView() {
     //glViewport(0, 0, this->width(), this->height());
     // qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
     qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
-    glViewport(0, 0, this->width(), this->height());
+    glViewport(0, 0, this->width() * this->devicePixelRatio(), this->height() * this->devicePixelRatio());
     glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
