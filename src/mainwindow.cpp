@@ -175,6 +175,7 @@ void MainWindow::modifySubWindow(QMdiSubWindow* in, bool add) {
     Q_CHECK_PTR(ui);
     Q_CHECK_PTR(ui->centralwidget);
     Q_CHECK_PTR(in);
+
     if (add){
         (ui->centralwidget->addSubWindow(in))->show();
     }else{

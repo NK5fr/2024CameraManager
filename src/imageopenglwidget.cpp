@@ -72,8 +72,8 @@ void ImageOpenGLWidget::updateView() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glViewport(0, 0, this->width(), this->height());
     // qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
-    // qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
-    glViewport(0, 0,this->width(),this->height());
+    qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
+    glViewport(0, 0, this->width(), this->height());
     glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
