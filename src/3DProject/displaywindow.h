@@ -4,10 +4,12 @@
 
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QOpenGLFunctions_2_0>
+#include <QOpenGLFUnctions>
 #include <QDebug>
 #include <QMatrix4x4>
 #include <QFile>
 #include <QMouseEvent>
+#include <QColor>
 #if defined(WIN32) || defined(_WIN32)
 #include <Windows.h>
 #endif
@@ -43,10 +45,6 @@ private:
     std::array<int, 2> markersToBeSwapedIndexes;
     // Stores the current value of the slider (current time step)
     int currentStep;
-    // the x position of the mouse on the screen
-    int mouseXStartPosition;
-    // the y position of the mouse on the screen
-    int mouseYStartPosition;
     // sets the number of previous steps to be displayed
     int numberOfFormerStepsDisplayed;
     // sets the number of further steps to be displayed
@@ -73,13 +71,31 @@ private:
     bool formerStepsPoints;
 
     // int length of the floor
-    float floorLength = 50.0;
+    float floorLength = 10.0;
 
     // New camera tracking
     int lastMouseX = -1;
     int lastMouseY = -1;
     double rotX;
     double rotY;
+
+    // Simpler way to change colors if needed
+    QColor backgroundColor = QColor(0,18,53);
+    QColor gridColor = QColor(255,255,255);
+    QColor dragColor = QColor(255, 204, 0);
+
+    //dragNdropValues
+    bool shiftPressed = false;
+    int mouseClickX = -1;
+    int mouseClickY = -1;
+    int mouseDragPosX = -1;
+    int mouseDragPosY = -1;
+    bool dragActive = false;
+    // the x position of the mouse on the screen ON MOUSEPRESS
+    int mouseXStartPosition;
+    // the y position of the mouse on the screen ON MOUSEPRESS
+    int mouseYStartPosition;
+
 public:
 
     /**
@@ -500,14 +516,14 @@ protected:
      */
     void mousePressEvent(QMouseEvent *event);
 
-    /**
-     * @brief mouseMoveEvent
-     * Method called when the mouse is moved. As tracking is disabled, this method is called only when one of the buttons of the mouse is clicked.
-     * Calls the moveCamera method.
-     * @param event
-     *          the event corresponding to the mouse last motion.
-     */
-    void mouseMoveEvent(QMouseEvent *mouseEvent);
+    // /**
+    //  * @brief mouseMoveEvent
+    //  * Method called when the mouse is moved. As tracking is disabled, this method is called only when one of the buttons of the mouse is clicked.
+    //  * Calls the moveCamera method.
+    //  * @param event
+    //  *          the event corresponding to the mouse last motion.
+    //  */
+    // void mouseMoveEvent(QMouseEvent *mouseEvent);
 
     /**
      * @brief moveCamera
@@ -518,6 +534,10 @@ protected:
     void moveCamera(QMouseEvent *event);
 
     void drawFloorLine(float x, float y);
+
+    void paintDragZone();
+
+    bool eventFilter(QObject *watched, QEvent *event);
 };
 
 #endif // DISPLAYWINDOW_H
