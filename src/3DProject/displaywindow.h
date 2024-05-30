@@ -4,7 +4,7 @@
 
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QOpenGLFunctions_2_0>
-#include <QOpenGLFUnctions>
+#include <QOpenGLFunctions>
 #include <QDebug>
 #include <QMatrix4x4>
 #include <QFile>
