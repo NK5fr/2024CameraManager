@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
     //app.setFont(serifFont);
     MainWindow window;
 
-    qInfo() << QApplication::primaryScreen()->size();
+    // qInfo() << QApplication::primaryScreen()->size();
 
     window.show();
     return app.exec();

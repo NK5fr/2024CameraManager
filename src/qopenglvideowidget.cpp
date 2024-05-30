@@ -41,7 +41,7 @@ void QOpenglVideoWidget::receiveUpdate() {
 
 void QOpenglVideoWidget::initializeGL() {
     glEnable(GL_TEXTURE_2D);
-    glViewport(0, 0, width(), height());
+    glViewport(0, 0, width() * this->devicePixelRatio(), height() * this->devicePixelRatio());
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 

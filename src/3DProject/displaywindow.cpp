@@ -28,7 +28,7 @@ DisplayWindow::DisplayWindow(QWidget *parent) : QOpenGLWidget(parent) {
 }
 
 void DisplayWindow::setViewPort() {
-    glViewport(0, 0, width(), height());
+    glViewport(0, 0, width() * this->devicePixelRatio(), height() * this->devicePixelRatio());
 }
 
 void DisplayWindow::setProjection() {
