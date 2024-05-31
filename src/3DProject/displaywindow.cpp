@@ -196,8 +196,8 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
 
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        this->mouseClickX = mouseEvent->pos().x();
-        this->mouseClickY = mouseEvent->pos().y();
+        this->mouseClickX = mouseEvent->pos().x() * this->devicePixelRatio();
+        this->mouseClickY = mouseEvent->pos().y() * this->devicePixelRatio();
     }
     else if (event->type() == QEvent::MouseButtonRelease) {
         qInfo() << "test";
@@ -211,8 +211,8 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         if (shiftPressed) {
             dragActive = true;
-            mouseDragPosX = mouseEvent->pos().x();
-            mouseDragPosY = mouseEvent->pos().y();
+            mouseDragPosX = mouseEvent->pos().x() * this->devicePixelRatio();
+            mouseDragPosY = mouseEvent->pos().y() * this->devicePixelRatio();
         } else {
             dragActive = false;
             mouseDragPosX = -1;
