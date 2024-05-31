@@ -501,7 +501,37 @@ void ImageOpenGLWidget::paintGL() {
         //glLineWidth(1);
     }
 
+    if(crosshairActivate){
+
+        QPointF mPos = mousePos - scaledImageArea.topLeft();
+
+        glColor4f(1, 0, 0, 1);
+
+        glBegin(GL_LINES);
+        glVertex3d(0 - scaledImageArea.left(), mPos.y(), 0);
+        glVertex3d(mPos.x() - 5, mPos.y(), 0);
+        glEnd();
+
+        glBegin(GL_LINES);
+        glVertex3d(this->width(), mPos.y(), 0);
+        glVertex3d(mPos.x() + 5, mPos.y(), 0);
+        glEnd();
+
+        glBegin(GL_LINES);
+        glVertex3d(mPos.x(), 0, 0);
+        glVertex3d(mPos.x(), mPos.y() - 5, 0);
+        glEnd();
+
+        glBegin(GL_LINES);
+        glVertex3d(mPos.x(), this->height(), 0);
+        glVertex3d(mPos.x(), mPos.y() + 5, 0);
+        glEnd();
+
+        glColor4f(1, 1, 1, 1);
+    }
+
     if (showMouseCross && mouseIn) {
+
         float crossWingSize = (width() / scaledImageArea.width()) * 50;
         QPointF mPos = mousePos - scaledImageArea.topLeft();
         glColor4f(1, 0, 0, 1);

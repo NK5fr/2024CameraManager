@@ -76,8 +76,8 @@ private:
     // New camera tracking
     int lastMouseX = -1;
     int lastMouseY = -1;
-    double rotX;
-    double rotY;
+    int rotX = 0;
+    int rotY = 0;
 
     // Simpler way to change colors if needed
     QColor backgroundColor = QColor(0,18,53);

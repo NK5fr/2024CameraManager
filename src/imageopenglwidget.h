@@ -33,6 +33,7 @@ public:
     void setShowPointSeries(bool showPointSeries) { this->showPointSeries = showPointSeries; }
     void setShowPointSeriesLabel(bool showPointSeriesLabel) { this->showPointSeriesString = showPointSeriesLabel; }
     void setSinglePointSeries(bool singlePointSeries) { this->singlePointsOnly = singlePointSeries; }
+    void setCrosshairState(bool crosshairState) {crosshairActivate = crosshairState;}
 
     const OpenGL::Texture* getTexture() { return &this->texture; }
     unsigned int getNumSubImagesX() { return this->numImageGroupsX; }
@@ -71,6 +72,7 @@ protected:
     bool showBoundingAreas;
     bool showPointSeries = true;
     bool showZoomArea = false; // Drawing of zoom-area at cursor, controlled by holding left mouse-button
+    bool crosshairActivate = false;
 
     void initializeGL();
     void paintGL();

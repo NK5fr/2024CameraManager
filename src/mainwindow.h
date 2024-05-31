@@ -75,6 +75,7 @@ public:
     //void execute(QString command, QProcess &p);
 
     bool isColorModeActivate(){ return colorModeActivate; }
+    bool isCrosshairActivate();
 
 private slots:
     /* All of them could probably be private */
