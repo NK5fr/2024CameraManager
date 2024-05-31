@@ -4,7 +4,7 @@
 
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QOpenGLFunctions_2_0>
-#include <QOpenGLFUnctions>
+#include <QOpenGLFunctions>
 #include <QDebug>
 #include <QMatrix4x4>
 #include <QFile>
@@ -76,8 +76,8 @@ private:
     // New camera tracking
     int lastMouseX = -1;
     int lastMouseY = -1;
-    double rotX;
-    double rotY;
+    int rotX = 0;
+    int rotY = 0;
 
     // Simpler way to change colors if needed
     QColor backgroundColor = QColor(0,18,53);

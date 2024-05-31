@@ -359,11 +359,10 @@ void SpinCamera::startAutoCapture(){
 
         // 20/05/2024, Armand & Nathan : send frame only if the image is not null
 
-        if(image != nullptr && coloredImage != nullptr) {
+        if(image != nullptr && coloredImage != nullptr && capturing) {
             AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight(), false);
             AbstractCamera::sendFrame(coloredImage->GetData(), coloredImage->GetBufferSize(), coloredImage->GetWidth(), coloredImage->GetHeight(), true);
         }
-
     }
     try{
         //cam->AcquisitionStop.Execute();
@@ -371,7 +370,7 @@ void SpinCamera::startAutoCapture(){
     }catch (Spinnaker::Exception &ex){
         std::cout << "Error : " << ex.what() << std::endl;
     }
-    printf("Stopped autoCapture!\n");
+    qInfo() << "Stopped autoCapture!!";
 
 
 }

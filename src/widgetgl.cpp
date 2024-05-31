@@ -65,7 +65,7 @@ void WidgetGL::updateProjection(int width, int height, double fov) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glViewport((WidgetGL::width() - width), (WidgetGL::height() - height), (WidgetGL::width() - width) + width, (WidgetGL::height() - height) + height);
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width * this->devicePixelRatio(), height * this->devicePixelRatio());
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if (showOrtho) {
@@ -145,6 +145,7 @@ void WidgetGL::paintGL() {
         //glRotated(180, 0, 1, 0);
         //glPopMatrix();
     } else {*/
+
         if (showOrtho) {
             gluLookAt(cos(rotY) * sin(rotX), cos(rotY) * cos(rotX), sin(rotY), 0, 0, 0, 0, 0, 1);
         } else {
@@ -533,18 +534,18 @@ bool WidgetGL::eventFilter(QObject *obj, QEvent *event) {
 void WidgetGL::mouseMoveEvent(QMouseEvent* mouseEvent) {
     if (mouseEvent->buttons() & Qt::LeftButton && !showFromCamera) {
         if (lastMouseX < 0 || lastMouseY < 0) {
-            lastMouseX = mouseEvent->localPos().x();
-            lastMouseY = mouseEvent->localPos().y();
+            lastMouseX = mouseEvent->position().x();
+            lastMouseY = mouseEvent->position().y();
             return;
         }
         const double speed = 0.005;
         double maxVerticalAngle = PI / 2; // 90 degrees in radians...
-        rotX += (lastMouseX - mouseEvent->localPos().x()) * speed;
-        rotY = qMax(-maxVerticalAngle, qMin(rotY + ((lastMouseY - mouseEvent->localPos().y()) * speed), maxVerticalAngle));
+        rotX += (lastMouseX - mouseEvent->position().x()) * speed;
+        rotY = qMax(-maxVerticalAngle, qMin(rotY + ((lastMouseY - mouseEvent->position().y()) * speed), maxVerticalAngle));
         update();
     }
-    lastMouseX = mouseEvent->localPos().x();
-    lastMouseY = mouseEvent->localPos().y();
+    lastMouseX = mouseEvent->position().x();
+    lastMouseY = mouseEvent->position().y();
 }
 
 void WidgetGL::clickOnMenu(QAction *action) {

@@ -515,11 +515,20 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             /*
              * 13/05/2024
              * Armand & Nathan - changed the connect, as the prior one was referencing soemthing that did not exist.
-             * This connection activates the mouse tracking, and shows the coordinates of the mouse relative to the window in the top left corner
+             * This connection activates crossHair
             */
-            // connect(mainWindow, &MainWindow::activateCrosshair, videoWidget, [videoWidget](bool state){
-            //     videoWidget->setMouseTracking(state);
-            // });
+            connect(mainWindow, &MainWindow::activateCrosshair, videoWidget, [videoWidget, coloredVideoWidget](bool state){
+                videoWidget->setCrosshairState(state);
+                coloredVideoWidget->setCrosshairState(state);
+            });
+
+            /*
+             * 31/05/2024
+             * Armand & Nathan - set the crosshair state when a camera is activated
+            */
+            videoWidget->setCrosshairState(mainWindow->isCrosshairActivate());
+            coloredVideoWidget->setCrosshairState(mainWindow->isCrosshairActivate());
+
             if(liveView) entry.camera->startCapture(qobject_cast<VideoOpenGLWidget *>(entry.window->widget()), qobject_cast<VideoOpenGLWidget *>(entry.coloredWindow->widget()));
 
         }

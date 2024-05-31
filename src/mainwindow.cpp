@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     defaultDir.cd("../../..");
     QDir::setCurrent(defaultDir.absolutePath());
 
-    qInfo() << QApplication::primaryScreen()->size();
+    // qInfo() << QApplication::primaryScreen()->size();
 
     // Armand & Nathan on 21/06/2024
     checkFiles();
@@ -175,6 +175,7 @@ void MainWindow::modifySubWindow(QMdiSubWindow* in, bool add) {
     Q_CHECK_PTR(ui);
     Q_CHECK_PTR(ui->centralwidget);
     Q_CHECK_PTR(in);
+
     if (add){
         (ui->centralwidget->addSubWindow(in))->show();
     }else{
@@ -252,6 +253,7 @@ void MainWindow::on_actionColor_toggled(bool arg1) {
     cameraManagers.at(selectedCameraManager)->uncheckAllCameras();
     ui->actionLiveView->setChecked(false);
     cameraManagers.at(selectedCameraManager)->activateLiveView(false);
+    loadDefaultTrackPointSettings_clicked();
 
     //cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
 }
@@ -450,6 +452,11 @@ void MainWindow::startUpdateProperties() {
         cameraManagers.at(selectedCameraManager)->updateSpinProperties();
         QThread::msleep(250);
     }
+}
+
+bool MainWindow::isCrosshairActivate()
+{
+    return ui->actionCrosshair->isChecked();
 }
 
 

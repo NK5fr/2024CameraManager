@@ -168,7 +168,7 @@ void CalibrationFileOpenGLWidget::resizeGL(int w, int h) {
     QOpenGLWidget::resizeGL(w, h);
     int width = w;
     int height = h;
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width * this->devicePixelRatio(), height * this->devicePixelRatio());
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     

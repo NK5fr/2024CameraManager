@@ -7,6 +7,9 @@ int main(int argc, char** argv) {
     //QFont serifFont("Times", 4);
     //app.setFont(serifFont);
     MainWindow window;
+
+    // qInfo() << QApplication::primaryScreen()->size();
+
     window.show();
     return app.exec();
 }
