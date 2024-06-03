@@ -105,10 +105,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /* SIGNALS/SLOTS */
     connect(ui->cameraTree, SIGNAL(clicked(const QModelIndex)), this, SLOT(cameraTree_itemClicked(const QModelIndex)));
     connect(ui->cameraTree, SIGNAL(doubleClicked(const QModelIndex)), this, SLOT(cameraTree_itemDoubleClicked(const QModelIndex)));
-    connect(bar->getFile(), SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
-    connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
-    connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
-    connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
+
+    connect(bar, &QMenuBar::triggered, this, &MainWindow::menuBarClicked);
+
+    //connect(bar->getFile(), SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
+    //connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
+    //connect(bar->getWindow(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
+    //connect(bar->getTrackPoint(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
     //Hugo Fournier - 03.06.2019 - IMPLEMENT FLY/SPIN
 ;
     //tomas
@@ -234,12 +237,13 @@ void MainWindow::on_actionCrosshair_toggled(bool arg1) {
     bar->getActivateCoordinates()->setChecked(arg1);
 
     /* Need to discheck and disable the real coordinates button */
-    ui->actionCrosshairReal->setEnabled(arg1);
-    bar->getIntegerCoordinates()->setEnabled(arg1);
-    if (arg1 == false) {
-        ui->actionCrosshairReal->setChecked(false);
-        bar->getIntegerCoordinates()->setChecked(false);
-    }
+    // ui->actionCrosshairReal->setEnabled(arg1);
+    // bar->getIntegerCoordinates()->setEnabled(arg1);
+    // if (arg1 == false) {
+    //     ui->actionCrosshairReal->setChecked(false);
+    //     bar->getIntegerCoordinates()->setChecked(false);
+    // }
+
     emit activateCrosshair(Ui::crosshair);
 }
 
@@ -258,10 +262,11 @@ void MainWindow::on_actionColor_toggled(bool arg1) {
     //cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
 }
 
-/* Clic on ActionCrosshairReal button */
+/* Clic on ActionRealCoordinate button */
 void MainWindow::on_actionCrosshairReal_toggled(bool arg1) {
     bar->getIntegerCoordinates()->setChecked(arg1);
     Ui::crosshairReal = arg1;
+    emit activateRealCoordinate(Ui::crosshairReal);
 }
 
 /* Clic on actionHighQuality button */
@@ -382,8 +387,11 @@ void MainWindow::menuBarClicked(QAction* action) {
     } else if (action->text() == "Camera Autodetection") {
         detectCameras = bar->getCameraAutoDetection()->isChecked();
         if (detectCameras) {
-            tdc.start();
-            //timer->start(200);
+            //tdc.start();
+            timer->start(200);
+        }else{
+            //tdc.wait()
+            timer->stop();
         }
     } else if (action->text() == "Activate Coordinates"){
         bool b = bar->getActivateCoordinates()->isChecked();
@@ -432,6 +440,8 @@ void MainWindow::menuBarClicked(QAction* action) {
         trackPointProcess->start(QFileInfo(trackPointExecutable).absoluteFilePath());
         ui->centralwidget->addSubWindow(trackPointProcess->getTextEdit());
         trackPointProcess->getTextEdit()->showMaximized();
+    } else {
+        menuProjectAction_triggered(action);
     }
 }
 
@@ -461,6 +471,11 @@ void MainWindow::startUpdateProperties() {
 bool MainWindow::isCrosshairActivate()
 {
     return ui->actionCrosshair->isChecked();
+}
+
+bool MainWindow::isRealCoordinateActivate()
+{
+    return ui->actionCrosshairReal->isChecked();
 }
 
 

@@ -122,7 +122,8 @@ public:
         actionCrosshairReal = new QAction(MainWindow);
         actionCrosshairReal->setObjectName(QStringLiteral("actionCrosshairReal"));
         actionCrosshairReal->setCheckable(true);
-        actionCrosshairReal->setEnabled(false);
+        actionCrosshairReal->setChecked(true);
+        actionCrosshairReal->setEnabled(true);
         actionHighQuality = new QAction(MainWindow);
         actionHighQuality->setObjectName(QStringLiteral("actionHighQuality"));
         actionHighQuality->setCheckable(true);

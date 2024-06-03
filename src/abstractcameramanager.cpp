@@ -523,11 +523,28 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             });
 
             /*
+             * 03/06/2024
+             * Armand & Nathan - added the connect.
+             * This connection activates coordinates
+            */
+            connect(mainWindow, &MainWindow::activateRealCoordinate, videoWidget, [videoWidget, coloredVideoWidget](bool state){
+                videoWidget->setMouseTracking(state);
+                coloredVideoWidget->setMouseTracking(state);
+            });
+
+            /*
              * 31/05/2024
              * Armand & Nathan - set the crosshair state when a camera is activated
             */
             videoWidget->setCrosshairState(mainWindow->isCrosshairActivate());
             coloredVideoWidget->setCrosshairState(mainWindow->isCrosshairActivate());
+
+            /*
+             * 03/06/2024
+             * Armand & Nathan - set the coordinates state when a camera is activated
+            */
+            videoWidget->setMouseTracking(mainWindow->isRealCoordinateActivate());
+            coloredVideoWidget->setMouseTracking(mainWindow->isRealCoordinateActivate());
 
             if(liveView) entry.camera->startCapture(qobject_cast<VideoOpenGLWidget *>(entry.window->widget()), qobject_cast<VideoOpenGLWidget *>(entry.coloredWindow->widget()));
 

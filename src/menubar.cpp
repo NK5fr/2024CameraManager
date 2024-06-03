@@ -10,6 +10,9 @@ MenuBar::MenuBar(){
     loadProject = new QAction(tr("Load project"), this);
     loadProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
 
+    closeProject = new QAction(tr("Close project"), this);
+    closeProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
+
     loadConfigFile = new QAction(tr("Load Config File"), this);
     loadConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
 
@@ -18,6 +21,7 @@ MenuBar::MenuBar(){
 
     file->addAction(newProject);
     file->addAction(loadProject);
+    file->addAction(closeProject);
     file->addSeparator();
     file->addAction(loadConfigFile);
     file->addAction(saveConfigFile);
@@ -38,14 +42,15 @@ MenuBar::MenuBar(){
     camerasAutoDetection->setCheckable(true);
     camerasAutoDetection->setChecked(true);
 
-    coordinates = new QAction(tr("Activate Coordinates"), this);
+    coordinates = new QAction(tr("Activate Crosshair"), this);
     coordinates->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
     coordinates->setCheckable(true);
 
     integerCoordinates = new QAction(tr("Integer Coordinates"), this);
     integerCoordinates->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
     integerCoordinates->setCheckable(true);
-    integerCoordinates->setDisabled(true);
+    integerCoordinates->setChecked(true);
+    integerCoordinates->setDisabled(false);
 
     liveView->addAction(runLiveView);
     liveView->addAction(updateImage);
