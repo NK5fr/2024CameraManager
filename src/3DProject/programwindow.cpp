@@ -379,6 +379,7 @@ void ProgramWindow::displayFile(){
 void ProgramWindow::pickMode() {
     if(sender() == (QObject*)selectModeButton) {
         if(selectModeButton->isChecked()) {
+
             screen->setSelectMarkerMode(true);
             screen->setLinkMarkerMode(false);
             screen->setEraseOneLinkMode(false);

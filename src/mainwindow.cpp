@@ -369,6 +369,7 @@ void MainWindow::menuCameraAction_triggered(QAction *action) {
  * is only another way to do things */
 void MainWindow::menuBarClicked(QAction* action) {
     if (action->text() == "Run Live View"){
+
         bool b = bar->getRunLiveView()->isChecked();
         on_actionLiveView_toggled(b);
         ui->actionLiveView->setChecked(b);
@@ -416,10 +417,13 @@ void MainWindow::menuBarClicked(QAction* action) {
         // Code for traversing from working-directory to executable-directory
         QDir workPathProper(QFileInfo(trackPointExecutable).absoluteDir());
 
+
+
         if (!workPathProper.cd(TRACKPOINT_BINARY_TO_PROJECT)) { // If changing directory fails go to: 'constants.h'
             QMessageBox::information(this, "ERROR", "Could not traverse to working-directory: \'" + workPathProper.absolutePath() + "'\nGo to file: " + QString(__FILE__) + ", line-number: " + QString::number(__LINE__), QMessageBox::Ok);
             return;
         }
+
 
         trackPointProcess = new ExternalProcess();
         //trackPointProcess->setProcessChannelMode(QProcess::MergedChannels);

@@ -91,7 +91,7 @@ void DisplayWindow::initializeGL()
 
 void DisplayWindow::paintGL()
 {
-    qDebug() << "paintGL";
+    //qDebug() << "paintGL";
     glPointSize(3.0);
     glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
     glClear(GL_COLOR_BUFFER_BIT);
@@ -104,6 +104,7 @@ void DisplayWindow::paintGL()
         paintMarkers();
         paintMarkersWithRedCross();
         if (dragActive) {
+            glColor4f(1.0, 0.0, 0.0, 1.0);
             paintDragZone();
         }
         if(lineBeingDrawn) {
@@ -151,7 +152,7 @@ void DisplayWindow::drawFloorLine(float x, float y) {
 
 void DisplayWindow::paintDragZone()
 {
-    qInfo() << "DRAW SHIT BRO";
+    //qInfo() << "DRAW SHIT BRO";
     GLdouble modelview[16];
     GLdouble projection[16];
     GLint viewport[4];
@@ -200,7 +201,7 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
         this->mouseClickY = mouseEvent->pos().y() * this->devicePixelRatio();
     }
     else if (event->type() == QEvent::MouseButtonRelease) {
-        qInfo() << "test";
+        //qInfo() << "test";
         mouseClickX = -1;
         mouseClickY = -1;
         mouseDragPosX = -1;
@@ -222,7 +223,7 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
             moveCamera(mouseEvent);
         }
     }
-    qInfo() << dragActive;
+    //qInfo() << dragActive;
     update();
     return QOpenGLWidget::eventFilter(watched, event);
 }
@@ -402,12 +403,12 @@ const Marker& DisplayWindow::getMarkerWithCross() const {
 }
 
 void DisplayWindow::mousePressEvent(QMouseEvent *event) {
-    mouseXStartPosition = event->position().x();
-    mouseYStartPosition = event->position().y();
-    qInfo() << mouseXStartPosition;
-    qInfo() << mouseYStartPosition;
+    mouseXStartPosition = event->position().x() * devicePixelRatio();
+    mouseYStartPosition = event->position().y() * devicePixelRatio();
+    // qInfo() << mouseXStartPosition;
+    // qInfo() << mouseYStartPosition;
     if(selectMarkerMode) {
-        qInfo() << "selectMarker()";
+        //qInfo() << "selectMarker()";
         selectMarker();
     }
     else if(linkMarkerMode) {
@@ -425,7 +426,7 @@ void DisplayWindow::mousePressEvent(QMouseEvent *event) {
 int DisplayWindow::pickMarker() {
     QOpenGLWidget::makeCurrent();
     glPointSize(3.0);
-    qInfo() << "hello?";
+    //qInfo() << "hello?";
     unsigned char pixelRead[3];
     glDrawBuffer(GL_BACK);
     glClearColor(0.0, 0.0 ,0.0, 0.0);
@@ -438,9 +439,9 @@ int DisplayWindow::pickMarker() {
         glEnd();
     }
     glFlush();
-    glReadPixels(mouseXStartPosition, height() - mouseYStartPosition, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixelRead);
+    glReadPixels(mouseXStartPosition, height() * devicePixelRatio() - mouseYStartPosition, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixelRead);
 
-    qInfo() << "1:" << (int)pixelRead[0] << "\t2:" << (int)pixelRead[1] *256  << "\t3:" << (int)pixelRead[3] * 256 *256 - 1;
+    qInfo() << "1:" << (int)pixelRead[0] << "\t2:" << (int)pixelRead[1] *256  << "\t3:" << (int)pixelRead[3] * 256 * 256 - 1;
     update();
     /* As the background is black, its index is going to be equal to zero (rgb (0, 0, 0) == black).
         this means that when the user is going to click on the background, the marker at the index 0 will be "picked".
@@ -452,8 +453,9 @@ int DisplayWindow::pickMarker() {
 
 void DisplayWindow::selectMarker() {
     int index = pickMarker();
+
     if(selectedMarkerIndexes.size() < 12 && index != -1 && selectedMarkerIndexes.indexOf(index) == -1) {
-        qInfo() << "append?";
+        //qInfo() << "append?";
         selectedMarkerIndexes.append(index);
         emit markerPicked(index, colorsAvailable.at(selectedMarkerIndexes.size() - 1));
         for(int i = 0 ; i < 2 ; i++) {
@@ -601,14 +603,14 @@ void DisplayWindow::moveCamera(QMouseEvent *event) {
     glMatrixMode(GL_MODELVIEW);
     int zAngle = 0;
     int yAngle = 0;
-    zAngle = (event->position().x() - mouseXStartPosition) / 4;
-    yAngle = (mouseYStartPosition -event->position().y()) / 4;
+    zAngle = (event->position().x() * devicePixelRatio() - mouseXStartPosition) / 4;
+    yAngle = (mouseYStartPosition - event->position().y() * devicePixelRatio()) / 4;
     glRotatef(-yAngle, 0, 1, 0);
     glRotatef(yAngle, 1, 0, 0);
 
     glRotatef(zAngle, 0, 0, 1);
-    mouseXStartPosition = event->position().x();
-    mouseYStartPosition = event->position().y();
+    mouseXStartPosition = event->position().x() * devicePixelRatio();
+    mouseYStartPosition = event->position().y() * devicePixelRatio();
     update();
 }
 
