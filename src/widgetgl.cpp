@@ -51,6 +51,7 @@ WidgetGL::WidgetGL(SocketViewerWidget* socket) : QOpenGLWidget(socket), svw(sock
 }
 
 WidgetGL::~WidgetGL() {
+
 }
 
 void WidgetGL::initializeGL() {
