@@ -58,3 +58,7 @@ include(camera_manager.pri)
 
 DISTFILES += \
     src/mainwindow.qdoc
+
+HEADERS +=
+
+SOURCES +=

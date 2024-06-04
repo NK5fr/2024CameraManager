@@ -2,6 +2,10 @@
 
 #include <QApplication>
 
+
+
+static const double PI = 3.1415926535;
+
 DisplayWindow::DisplayWindow(QWidget *parent) : QOpenGLWidget(parent) {
     data = NULL;
     currentStep = 0;
@@ -95,16 +99,14 @@ void DisplayWindow::paintGL()
     glPointSize(3.0);
     glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
     glClear(GL_COLOR_BUFFER_BIT);
+
+
+
     if(data != NULL) {
         paintFloor();
-        // glColor4f(0.8, 0.4, 1.0, 1.0);
-        // glBegin(GL_POINTS);
-        // glVertex3f(0.5,0.5,0.5);
-        // glEnd();
         paintMarkers();
         paintMarkersWithRedCross();
-        if (dragActive) {
-            glColor4f(1.0, 0.0, 0.0, 1.0);
+        if (dragSelectActive) {
             paintDragZone();
         }
         if(lineBeingDrawn) {
@@ -121,6 +123,9 @@ void DisplayWindow::paintGL()
             paintFurtherSteps();
         }
         paintAxes();
+        if (points.size() > 0) {
+            paintPoints();
+        }
         glFlush();
     }
 }
@@ -128,6 +133,37 @@ void DisplayWindow::paintGL()
 void DisplayWindow::drawLine(QVector3D begin, QVector3D end) {
     glVertex3f(begin.x(), begin.y(), begin.z());
     glVertex3f(end.x(), end.y(), end.z());
+}
+
+void DisplayWindow::drawSquare(QVector3D begin, QVector3D end) {
+    glColor4f(dragColor.redF(), dragColor.greenF(), dragColor.blueF(), 0.5);
+    QVector3D corner1 = begin;
+    QVector3D corner2 = QVector3D(end.x(), begin.y(), begin.z());
+    QVector3D corner3 = end;
+    QVector3D corner4 = QVector3D(begin.x(), end.y(), end.z());
+    while (!points.empty()) {
+        points.removeLast();
+    }
+    points.append(corner1);
+    points.append(corner2);
+    points.append(corner3);
+    points.append(corner4);
+}
+
+void DisplayWindow::paintPoints()
+{
+    makeCurrent();
+    glColor4f(dragColor.redF(), dragColor.greenF(), dragColor.blueF(), 0.5);
+    glPointSize(5.0);
+    glLineWidth(5.0);
+    glBegin(GL_POLYGON);
+    for (int i=0; i < points.size() ; i++) {
+        //qInfo() << i << "\t" << points.at(i);
+        glVertex3f(points.at(i).x(), points.at(i).y(), points.at(i).z());
+    }
+    glEnd();
+    glPointSize(1.0);
+    glLineWidth(1.0);
 }
 
 void DisplayWindow::drawFloorLine(float x, float y) {
@@ -138,7 +174,6 @@ void DisplayWindow::drawFloorLine(float x, float y) {
         QVector3D endHorizontal = QVector3D(-floorLength, y, 0);
         QVector3D beginVertical = QVector3D(x, floorLength, 0);
         QVector3D endVertical = QVector3D(x, -floorLength, 0);
-        //qInfo() << x << "\t" << (int)x;
         if (x == (int)x) {
             glColor4f(gridColor.redF(), gridColor.greenF(), gridColor.blueF(), 0.5);
         } else {
@@ -152,78 +187,132 @@ void DisplayWindow::drawFloorLine(float x, float y) {
 
 void DisplayWindow::paintDragZone()
 {
-    //qInfo() << "DRAW SHIT BRO";
+    GLdouble modelview[16];
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+
+    QMatrix4x4 modelviewMatrix;
+    for (int i = 0; i < 16; i++) {
+        modelviewMatrix.data()[i] = static_cast<float>(modelview[i]);
+    }
+
+    QMatrix4x4 inverseModelviewMatrix = modelviewMatrix.inverted();
+
+    // Near plane 3D coordinates
+    QVector3D start = get3DPos(mouseClickX * this->devicePixelRatio(), mouseClickY * this->devicePixelRatio());
+    QVector3D current = get3DPos(mouseDragPosX * this->devicePixelRatio(), mouseDragPosY * this->devicePixelRatio());
+
+    // View space coordinates
+    QVector3D startViewSpace = transformToViewSpace(start, modelviewMatrix);
+    QVector3D currentViewSpace = transformToViewSpace(current, modelviewMatrix);
+
+    // Test that both have the same z coordinate
+    float nearPlaneZ = startViewSpace.z();
+    startViewSpace.setZ(nearPlaneZ);
+    currentViewSpace.setZ(nearPlaneZ);
+
+    // Transform to world space
+    QVector3D startAligned = transformFromViewSpace(startViewSpace, inverseModelviewMatrix);
+    QVector3D currentAligned = transformFromViewSpace(currentViewSpace, inverseModelviewMatrix);
+
+    makeCurrent();
+    drawSquare(startAligned, currentAligned);
+}
+
+QVector3D DisplayWindow::get3DPos(int x, int y) {
     GLdouble modelview[16];
     GLdouble projection[16];
     GLint viewport[4];
+
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
     glGetDoublev(GL_PROJECTION_MATRIX, projection);
     glGetIntegerv(GL_VIEWPORT, viewport);
+    GLfloat winX = (GLfloat)x;
+    GLfloat winZ = (GLfloat) 0.0f;
+    GLfloat winY = (GLfloat)(viewport[3] - y);
 
-    /*
-     *
-    */
-    GLfloat winX = 0.0, winY = 0.0, winZ = 0.0;
-    winX = (GLfloat)mouseDragPosX;
-    winY = (GLfloat)(viewport[3] - mouseDragPosY);
-
-    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-    GLdouble posX = 0.0, posY = 0.0, posZ = 0.0;
+    // obtain global coordinates
+    double posX, posY, posZ;
     gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    return QVector3D(static_cast<float>(posX), static_cast<float>(posY), static_cast<float>(posZ));
+}
 
-    makeCurrent();
-    glBegin(GL_POINTS);
-    //glColor4f(dragColor.redF(), dragColor.greenF(), dragColor.blueF(), 0.2);
-    glVertex3f(posX, posY, posZ);
-    glEnd();
+QVector3D DisplayWindow::transformToViewSpace(const QVector3D& point, const QMatrix4x4& modelview) {
+    QVector4D homogenousPoint = QVector4D(point, 1.0f);
+    QVector4D viewSpacePoint = modelview * homogenousPoint;
+    return viewSpacePoint.toVector3D();
+
+}
+
+QVector3D DisplayWindow::transformFromViewSpace(const QVector3D& point, const QMatrix4x4& inverseModelview) {
+    QVector4D homogenousPoint = QVector4D(point, 1.0f);
+    QVector4D viewSpacePoint = inverseModelview * homogenousPoint;
+    return viewSpacePoint.toVector3D();
+}
+
+void DisplayWindow::mousePressEvent(QMouseEvent *event) {
+    mouseXStartPosition = event->position().x() * devicePixelRatio();
+    mouseYStartPosition = event->position().y() * devicePixelRatio();
+    // qInfo() << mouseXStartPosition;
+    // qInfo() << mouseYStartPosition;
+    if(selectMarkerMode) {
+        //qInfo() << "selectMarker()";
+        selectMarker();
+    }
+    else if(linkMarkerMode) {
+        linkMarkerLine();
+    }
+    else if(swapMode) {
+        swapMarkers();
+    }
+    else if(eraseOneLinkMode && displayLinks) {
+        removePickedLink();
+    }
 }
 
 bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
 {
 
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_Shift) {
-            shiftPressed= true;
-        }
-    }
-    else if (event->type() == QEvent::KeyRelease) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_Shift) {
-            shiftPressed= false;
-        }
-    }
-
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        this->mouseClickX = mouseEvent->pos().x() * this->devicePixelRatio();
-        this->mouseClickY = mouseEvent->pos().y() * this->devicePixelRatio();
-    }
-    else if (event->type() == QEvent::MouseButtonRelease) {
-        //qInfo() << "test";
-        mouseClickX = -1;
-        mouseClickY = -1;
-        mouseDragPosX = -1;
-        mouseDragPosY = -1;
-        dragActive = false;
-    }
-    else if (event->type() == QEvent::MouseMove) {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        if (shiftPressed) {
-            dragActive = true;
-            mouseDragPosX = mouseEvent->pos().x() * this->devicePixelRatio();
-            mouseDragPosY = mouseEvent->pos().y() * this->devicePixelRatio();
+        mouseClickX = mouseEvent->pos().x() * this->devicePixelRatio();
+        mouseClickY = mouseEvent->pos().y() * this->devicePixelRatio();
+        if ((selectMarkerMode || linkMarkerMode || swapMode || (eraseOneLinkMode && displayLinks))) {
         } else {
-            dragActive = false;
-            mouseDragPosX = -1;
-            mouseDragPosY = -1;
+            dragSelectActive = (mouseEvent->button() == Qt::RightButton);
         }
-        if (!shiftPressed && mouseDragPosX == -1) {
+    }
+    if (event->type() == QEvent::MouseButtonRelease) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        mouseClickX = 0;
+        mouseClickY = 0;
+        mouseDragPosX = 0;
+        mouseDragPosY = 0;
+        if (dragSelectActive) { dragSelectActive = false;}
+
+    }
+    if (event->type() == QEvent::MouseMove) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        mouseDragPosX = mouseEvent->pos().x();
+        mouseDragPosY = mouseEvent->pos().y();
+        if (mouseEvent->buttons() == Qt::LeftButton) {
             moveCamera(mouseEvent);
         }
     }
-    //qInfo() << dragActive;
+    if (event->type() == QEvent::Wheel) {
+        QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
+        qInfo() << wheelEvent->angleDelta();
+        // if (wheelEvent->angleDelta().y() > 0) {
+        //     camDistance += 0.1f;
+        // } else {
+        //     camDistance -= 0.1f;
+        // }
+    }
+
+    if (dragSelectActive) {
+        backgroundColor.setBlue(0);
+    } else {
+        backgroundColor.setBlue(58);
+    }
     update();
     return QOpenGLWidget::eventFilter(watched, event);
 }
@@ -234,10 +323,6 @@ void DisplayWindow::paintFloor()
     glBegin(GL_LINES);
     drawFloorLine(floorLength, floorLength);
     glEnd();
-}
-
-void drawSquare(QVector3D begin, QVector3D end, QVector3D middle) {
-
 }
 
 void DisplayWindow::paintMarkers() {
@@ -259,7 +344,8 @@ void DisplayWindow::paintSelectedMarkers() {
     glBegin(GL_POINTS);
     for(auto index : selectedMarkerIndexes) {
         color = new QColor(Qt::GlobalColor(colorsAvailable.at(colorIndex)));
-        glColor4f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0, 1.0);        glVertex3f(data->get1Marker(currentStep, index).getX() / 1500, data->get1Marker(currentStep, index).getY() / 1500, data->get1Marker(currentStep, index).getZ() / 1500);
+        glColor4f(color->red() / 255.0, color->green() / 255.0, color->blue() / 255.0, 1.0);
+        glVertex3f(data->get1Marker(currentStep, index).getX() / 1500, data->get1Marker(currentStep, index).getY() / 1500, data->get1Marker(currentStep, index).getZ() / 1500);
         delete color;
         colorIndex++;
     }
@@ -402,26 +488,6 @@ const Marker& DisplayWindow::getMarkerWithCross() const {
     return data->get1Marker(currentStep,linkedMarkersIndexes.last()[0]);
 }
 
-void DisplayWindow::mousePressEvent(QMouseEvent *event) {
-    mouseXStartPosition = event->position().x() * devicePixelRatio();
-    mouseYStartPosition = event->position().y() * devicePixelRatio();
-    // qInfo() << mouseXStartPosition;
-    // qInfo() << mouseYStartPosition;
-    if(selectMarkerMode) {
-        //qInfo() << "selectMarker()";
-        selectMarker();
-    }
-    else if(linkMarkerMode) {
-        linkMarkerLine();
-    }
-    else if(swapMode) {
-        swapMarkers();
-    }
-    else if(eraseOneLinkMode && displayLinks) {
-        removePickedLink();
-    }
-}
-
 
 int DisplayWindow::pickMarker() {
     QOpenGLWidget::makeCurrent();
@@ -453,9 +519,12 @@ int DisplayWindow::pickMarker() {
 
 void DisplayWindow::selectMarker() {
     int index = pickMarker();
+    qInfo() << index;
+    selectMarker(index);
+}
 
+void DisplayWindow::selectMarker(int index) {
     if(selectedMarkerIndexes.size() < 12 && index != -1 && selectedMarkerIndexes.indexOf(index) == -1) {
-        //qInfo() << "append?";
         selectedMarkerIndexes.append(index);
         emit markerPicked(index, colorsAvailable.at(selectedMarkerIndexes.size() - 1));
         for(int i = 0 ; i < 2 ; i++) {
@@ -605,13 +674,27 @@ void DisplayWindow::moveCamera(QMouseEvent *event) {
     int yAngle = 0;
     zAngle = (event->position().x() * devicePixelRatio() - mouseXStartPosition) / 4;
     yAngle = (mouseYStartPosition - event->position().y() * devicePixelRatio()) / 4;
-    glRotatef(-yAngle, 0, 1, 0);
-    glRotatef(yAngle, 1, 0, 0);
+    //glRotatef(-yAngle, 0, 1, 0);
+    //glRotatef(yAngle, 1, 0, 0);
 
     glRotatef(zAngle, 0, 0, 1);
     mouseXStartPosition = event->position().x() * devicePixelRatio();
     mouseYStartPosition = event->position().y() * devicePixelRatio();
     update();
+}
+
+void DisplayWindow::updateProjection(int width, int height, double fov) {
+    if (height == 0) height = 1;
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    GLdouble aspect = (GLdouble) width / (GLdouble) height;
+    const double zNear = 1;
+    const double zFar = 160000;
+    gluPerspective(fov, aspect, zNear, zFar);
 }
 
 void DisplayWindow::resetCamera() {

@@ -26,6 +26,7 @@ CoordinatesWindow::CoordinatesWindow(QWidget *parent) : QWidget(parent)
 }
 
 void CoordinatesWindow::addLineCoordinates(int index, int color) {
+    qInfo() << "index to add: " << index;
     selectedMarkersIndexes.append(index);
     int row = layout->rowCount();
     xyzVector.append(QVector<QLineEdit*>());
@@ -40,14 +41,38 @@ void CoordinatesWindow::addLineCoordinates(int index, int color) {
         layout->addWidget(xyzVector.last().last(), row, i);
     }
     palette.setColor(QPalette::Base, QColor(Qt::GlobalColor(color)));
+
     xyzVector.last().at(0)->setPalette(palette);
     xyzVector.last().at(1)->setText(QString::number(data->get1Marker(currentStep, index).getX()));
     xyzVector.last().at(2)->setText(QString::number(data->get1Marker(currentStep, index).getY()));
     xyzVector.last().at(3)->setText(QString::number(data->get1Marker(currentStep, index).getZ()));
     //colorIndex++;
-    buttonVector.append(new QPushButton("remove", this));
+    QPushButton *button = new QPushButton("remove", this);
+    button->setObjectName(QString::number(index));
+    buttonVector.append(button);
     connect(buttonVector.last(), SIGNAL(clicked(bool)), this, SLOT(removeLineCoordinates()));
     layout->addWidget(buttonVector.last(), row, 5);
+}
+
+void CoordinatesWindow::removeLineCoordinates(int i) {
+    // this removeLineCoordinates already knows which marker it wants to remove, so it needs to
+    if (selectedMarkersIndexes.size() > i) {
+        selectedMarkersIndexes.remove(i);
+        emit lineRemoved(i);
+        layout->removeWidget(labelVector.at(i));
+        delete labelVector.at(i);
+        labelVector.remove(i);
+        updateLabelNumber(i);
+        for(auto textField : xyzVector.at(i)) {
+            layout->removeWidget(textField);
+            delete textField;
+        }
+        xyzVector.remove(i);
+        layout->removeWidget(buttonVector.at(i));
+        delete buttonVector.at(i);
+        buttonVector.remove(i);
+    }
+
 }
 
 void CoordinatesWindow::setData(const Data *pointerToData) {
@@ -70,14 +95,15 @@ void CoordinatesWindow::updateCoordinates() {
 }
 
 void CoordinatesWindow::removeLineCoordinates() {
-    int i = 0;
-    // We look for the index of the button that have sent the signal in the QVector of "remove" buttons
-    while(sender() != (QObject*)buttonVector.at(i)) {
-        i++;
-    }
+    // the index of the selected marker is stored in the sender's objectName
+    qInfo() << this->selectedMarkersIndexes;
+    int i = selectedMarkersIndexes.indexOf(sender()->objectName().toInt());
+    qInfo() << "real marker number" <<  sender()->objectName();
+    qInfo() << "i: " << i;
     // once we have found the index we can remove all the widget of the line that corresponds to this index
     selectedMarkersIndexes.remove(i);
     emit lineRemoved(i);
+    emit removedMarker(sender()->objectName().toInt());
     layout->removeWidget(labelVector.at(i));
     delete labelVector.at(i);
     labelVector.remove(i);
@@ -103,7 +129,7 @@ void CoordinatesWindow::updateLabelNumber(int index) {
 void CoordinatesWindow::swapCoordinates(const std::array<int, 2>& markersToBeSwaped) {
     // a temporary array used to store the coordinates of the first marker to be swapped
     std::array<QString, 3> temp({xyzVector.at(markersToBeSwaped.at(0)).at(1)->text(), xyzVector.at(markersToBeSwaped.at(0)).at(2)->text(),
-                                xyzVector.at(markersToBeSwaped.at(0)).at(3)->text()});
+                                 xyzVector.at(markersToBeSwaped.at(0)).at(3)->text()});
     for(int i = 0 ; i < 3 ; i++) {
         xyzVector.at(markersToBeSwaped.at(0)).at(i + 1)->setText(xyzVector.at(markersToBeSwaped.at(1)).at(i + 1)->text());
         xyzVector.at(markersToBeSwaped.at(1)).at(i + 1)->setText(temp.at(i));

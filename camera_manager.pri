@@ -50,7 +50,8 @@ HEADERS += \
     $$PWD/src/3DProject/markercoordinateswidget.h \
     $$PWD/src/3DProject/programwindow.h \
     $$PWD/src/3DProject/swappingcorrectorprogram.h \
-    $$PWD/src/3DProject/swapwindow.h
+    $$PWD/src/3DProject/swapwindow.h \
+    $$PWD/src/3DProject/viewmarkerwindow.h
     # $$PWD/include/Spinnaker/AVIRecorder.h \
     # $$PWD/include/Spinnaker/ArrivalEvent.h \
     # $$PWD/include/Spinnaker/BasePtr.h \
@@ -246,5 +247,6 @@ SOURCES += $$PWD/src/abstractcamera.cpp \
     $$PWD/src/3DProject/markercoordinateswidget.cpp \
     $$PWD/src/3DProject/programwindow.cpp \
     $$PWD/src/3DProject/swappingcorrectorprogram.cpp \
-    $$PWD/src/3DProject/swapwindow.cpp
+    $$PWD/src/3DProject/swapwindow.cpp \
+    $$PWD/src/3DProject/viewmarkerwindow.cpp
 RESOURCES += CameraManager/cameramanager.qrc

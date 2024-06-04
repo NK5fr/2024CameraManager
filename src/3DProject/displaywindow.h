@@ -74,10 +74,8 @@ private:
     float floorLength = 10.0;
 
     // New camera tracking
-    int lastMouseX = -1;
-    int lastMouseY = -1;
-    int rotX = 0;
-    int rotY = 0;
+    float yaw;
+    float pitch;
 
     // Simpler way to change colors if needed
     QColor backgroundColor = QColor(0,18,53);
@@ -90,12 +88,14 @@ private:
     int mouseClickY = -1;
     int mouseDragPosX = -1;
     int mouseDragPosY = -1;
-    bool dragActive = false;
+    bool dragSelectActive = false;
     // the x position of the mouse on the screen ON MOUSEPRESS
     int mouseXStartPosition;
     // the y position of the mouse on the screen ON MOUSEPRESS
     int mouseYStartPosition;
 
+
+    QVector<QVector3D> points;
 public:
 
     /**
@@ -305,7 +305,7 @@ public:
      */
     bool alreadyLinkedMarkers(std::array<int, 2>& linkedMarkers);
 public slots:
-
+    void selectMarker(int index);
     /**
      * @brief resetCamera
      * Moves the camera to its initial position. Resets the modelView matrix.
@@ -379,6 +379,8 @@ signals:
      *          the color of the marker once selected.
      */
     void markerPicked(int index, int color);
+
+    void markerRemoved(int index);
 
     /**
      * @brief markerToBeSwappedPicked
@@ -538,6 +540,17 @@ protected:
     void paintDragZone();
 
     bool eventFilter(QObject *watched, QEvent *event);
+
+    void drawSquare(QVector3D begin, QVector3D end);
+
+    void paintPoints();
+
+    QVector3D get3DPos(int x, int y);
+    QVector3D transformToViewSpace(const QVector3D &point, const QMatrix4x4 &modelview);
+    QVector3D transformFromViewSpace(const QVector3D &point, const QMatrix4x4 &inverseModelview);
+    void updateViewMatrix();
+    void updateProjection(int width, int height, double fov);
+    void magicGL();
 };
 
 #endif // DISPLAYWINDOW_H
