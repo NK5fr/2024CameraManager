@@ -76,7 +76,7 @@ public:
 
     bool isColorModeActivate(){ return colorModeActivate; }
     bool isCrosshairActivate();
-
+    bool isRealCoordinateActivate();
 private slots:
     /* All of them could probably be private */
     /** TOOL BAR **/
@@ -133,7 +133,7 @@ private slots:
 
 signals:
     void activateCrosshair(bool);
-
+    void activateRealCoordinate(bool);
 protected:
     /** CAMERA TREE **/
     /* Could probably be private */

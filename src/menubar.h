@@ -34,6 +34,7 @@ private:
 
     QAction *newProject;
     QAction *loadProject;
+    QAction *closeProject;
     QAction *loadConfigFile;
     QAction *saveConfigFile;
 

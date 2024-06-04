@@ -28,7 +28,7 @@
  * </ul>
  */
 
-class DisplayWindow : public QOpenGLWidget, protected QOpenGLFunctions_2_0
+class DisplayWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 private:
