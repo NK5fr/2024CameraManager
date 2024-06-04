@@ -114,6 +114,8 @@ public slots:
      */
     void removeLineCoordinates();
 
+    void removeLineCoordinates(int i);
+
 signals:
 
     /**
@@ -124,6 +126,8 @@ signals:
      *              the index at which is the index to be removed.
      */
     void lineRemoved(int index);
+
+    void removedMarker(int index);
 };
 
 #endif // COORDINATESWINDOW_H

@@ -36,6 +36,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
 
     coordinatesWindow = new CoordinatesWindow;
     swapWindow = new SwapWindow;
+    viewMarkerWindow = new ViewMarkerWindow;
 
     resetButton = new QPushButton("Reset Camera", this);
 
@@ -191,19 +192,21 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     swappingTabLayout->addWidget(scrollAreaSwapping, 1, 0, 1, 4);
     swappingTab->setLayout(swappingTabLayout);
 
+    QWidget *viewMarkersTab = new QWidget(tabWidget);
+    QVBoxLayout *viewMarkerslayout = new QVBoxLayout(viewMarkersTab);
+    viewMarkerslayout->addWidget(viewMarkerWindow);
+
     tabWidget->addTab(cameraTab, "Camera");
     tabWidget->addTab(fileTab, "File");
     tabWidget->addTab(selectionTab, "Selection");
     tabWidget->addTab(linkTab, "Link");
     tabWidget->addTab(formerFurtherStepsTab, "Former/Further Steps");
     tabWidget->addTab(swappingTab, "Swapping");
+    tabWidget->addTab(viewMarkersTab, "View Markers");
     layout->addWidget(tabWidget, 4, 0, 1, 5);
 
-    qInfo() << "ouais?";
     show();
-    qInfo() << "ouais";
     configureScreen();
-    qInfo() << "ouais!";
 }
 
 ProgramWindow::ProgramWindow(QString& fileName, QWidget *parent) : ProgramWindow(parent) {
@@ -234,6 +237,7 @@ void ProgramWindow::setData(QString& fileName) {
     swapWindow->setData(&data);
     coordinatesWindow->setData(&data);
     filewindow->setData(&data);
+    viewMarkerWindow->setData(&data);
     slider->setMaximum(data.getDataCoordinatesSize() - 1);
     for(int i = 0 ; i < data.getDataCoordinatesSize() ; i++) {
         numberOfFormerSteps->addItem(QString::number(i));
@@ -262,7 +266,9 @@ void ProgramWindow::connectWidgets() {
     connect(saveDataButton, SIGNAL(clicked(bool)), this, SLOT(saveData()));
     connect(saveSkeletonButton, SIGNAL(clicked(bool)), this, SLOT(saveSkeleton()));
     connect(screen, SIGNAL(markerPicked(int, int)), this, SLOT(fillCoordinatesWindow(int, int)));
+    connect(screen, SIGNAL(markerRemoved(int)), this, SLOT(removeMarkerCoordinatesWindow(int)));
     connect(coordinatesWindow, SIGNAL(lineRemoved(int)), screen, SLOT(removePickedIndex(int)));
+    connect(coordinatesWindow, SIGNAL(removedMarker(int)), viewMarkerWindow, SLOT(removedPickedMarker(int)));
     connect(formerSteps, SIGNAL(clicked(bool)), this, SLOT(enableDisplayFormerSteps()));
     connect(numberOfFormerSteps, SIGNAL(currentIndexChanged(int)), screen, SLOT(setNumberOfFormerStepsDisplayed(int)));
     connect(displayFormerStepsSelectedMarkers, SIGNAL(clicked(bool)), this, SLOT(enableDisplayFormerStepsSelectedMarkers()));
@@ -278,11 +284,14 @@ void ProgramWindow::connectWidgets() {
     connect(screen, SIGNAL(markerToBeSwappedPicked(int,int,int)), swapWindow, SLOT(addSelectedMarker(int,int,int)));
     connect(screen, SIGNAL(removeMarkerToBeSwapped(int)), swapWindow, SLOT(removeSelectedMarker(int)));
     connect(screen, SIGNAL(changeColorMarkerToBeSwapped(int,int)), swapWindow, SLOT(changeMarkerColorToBeSwapped(int,int)));
+
+    connect(viewMarkerWindow, SIGNAL(markerPicked(int)), screen, SLOT(selectMarker(int)));
 }
 
 void ProgramWindow::changeStep(int index) {
     screen->setCurrentStep(index);
     label->setText("Step number : " + QString::number(index + 1));
+    viewMarkerWindow->setCurrentStep(index);
     swapWindow->setCurrentStep(index);
     coordinatesWindow->setCurrentStep(index);
 
@@ -301,6 +310,11 @@ void ProgramWindow::keyPressEvent(QKeyEvent *event) {
 
 void ProgramWindow::fillCoordinatesWindow(int index, int color) {
     coordinatesWindow->addLineCoordinates(index, color);
+}
+
+void ProgramWindow::removeMarkerCoordinatesWindow(int index) {
+    qInfo() << "removeMarkerCoordinatesWindow";
+    coordinatesWindow->removeLineCoordinates(index);
 }
 
 void ProgramWindow::demoPlaying() {

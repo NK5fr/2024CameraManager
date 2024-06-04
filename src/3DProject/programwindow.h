@@ -17,7 +17,7 @@
 #include "coordinateswindow.h"
 #include "filewindow.h"
 #include "swapwindow.h"
-
+#include "viewmarkerwindow.h"
 /**
  * @brief The ProgramWindow class
  * ProgramWindow is the main class of the program. It contains all the different widgets, buttons and classes involved in the application.
@@ -34,6 +34,7 @@ private:
     CoordinatesWindow *coordinatesWindow;
     FileWindow *filewindow;
     SwapWindow *swapWindow;
+    ViewMarkerWindow *viewMarkerWindow;
     Data data;
     QLabel *label;
     QLabel *swapLabel;
@@ -225,6 +226,9 @@ public slots:
      * SwapWindow attribute to swap the correct amount of steps. After swapping, the CoordinatesWindow and the SwapWindow objects are updated.
      */
     void swapMarkers();
+
+    void removeMarkerCoordinatesWindow(int index);
+
 
 signals:
 
