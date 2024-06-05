@@ -3,7 +3,6 @@
 FileWindow::FileWindow(QWidget *parent) : QWidget(parent){
 
     this->setGeometry(100,100,600,400);
-    qInfo() << "FileWindow";
 }
 
 void FileWindow::setViewMrHolt(){

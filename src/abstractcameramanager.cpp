@@ -161,7 +161,7 @@ void setPropFromSettings(QSettings& settings, std::vector<CameraProperty>& prop,
 
 //Helper function for gettings Spinnaker SDK values
 //wrote on 11/06/2019 by French students
-void setSpinPropFromSettings(QSettings& settings, std::vector<SpinCameraProperty>& prop, CameraManagerSpin::PropertyType val) {
+void    setSpinPropFromSettings(QSettings& settings, std::vector<SpinCameraProperty>& prop, CameraManagerSpin::PropertyType val) {
     SpinCameraProperty camProp(val,
         settings.value("text").toString(),
         settings.value("min").toFloat(),

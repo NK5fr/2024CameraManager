@@ -370,7 +370,6 @@ void SpinCamera::startAutoCapture(){
     }catch (Spinnaker::Exception &ex){
         std::cout << "Error : " << ex.what() << std::endl;
     }
-    qInfo() << "Stopped autoCapture!!";
 
 
 }

@@ -669,7 +669,6 @@ void MainWindow::on_FilteredImageChecked(Qt::CheckState state) {
 }
 
 void MainWindow::on_ShowCoordinateLabelChecked(Qt::CheckState state) {
-    //qInfo() << "mm";
     trackPointProperty.showCoordinates = (state == Qt::Checked);
     //cameraManagers[selectedCameraManager]->updateContainer();
     QList<QMdiSubWindow*> windows = ui->centralwidget->subWindowList();

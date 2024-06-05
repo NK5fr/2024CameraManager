@@ -22,11 +22,9 @@ CoordinatesWindow::CoordinatesWindow(QWidget *parent) : QWidget(parent)
     layout->setSpacing(0.0);
 
     this->setLayout(layout);
-    qInfo() << "coordinateWindow";
 }
 
 void CoordinatesWindow::addLineCoordinates(int index, int color) {
-    qInfo() << "index to add: " << index;
     selectedMarkersIndexes.append(index);
     int row = layout->rowCount();
     xyzVector.append(QVector<QLineEdit*>());
@@ -96,10 +94,7 @@ void CoordinatesWindow::updateCoordinates() {
 
 void CoordinatesWindow::removeLineCoordinates() {
     // the index of the selected marker is stored in the sender's objectName
-    qInfo() << this->selectedMarkersIndexes;
     int i = selectedMarkersIndexes.indexOf(sender()->objectName().toInt());
-    qInfo() << "real marker number" <<  sender()->objectName();
-    qInfo() << "i: " << i;
     // once we have found the index we can remove all the widget of the line that corresponds to this index
     selectedMarkersIndexes.remove(i);
     emit lineRemoved(i);

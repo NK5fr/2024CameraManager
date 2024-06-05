@@ -18,7 +18,6 @@ void ViewMarkerWindow::setData(const Data *pointerToData) {
 
 void ViewMarkerWindow::populateContainer(int step) {
     clearContainer();
-    qInfo() << step;
     QVector<Marker> listMarkers = data->get1Vector(step);
     for (int i = 0 ; i < listMarkers.size() ; i++) {
         QHBoxLayout *markerLayout = addMarker(listMarkers.at(i), i);
@@ -41,7 +40,6 @@ void ViewMarkerWindow::clearContainer() {
 }
 
 void ViewMarkerWindow::selectMarker() {
-    qInfo() << sender()->objectName();
     QPushButton *senderButton = static_cast<QPushButton*>(sender());
     senderButton->setEnabled(false);
     int index = sender()->objectName().toInt();
@@ -50,7 +48,6 @@ void ViewMarkerWindow::selectMarker() {
 
 void ViewMarkerWindow::removedPickedMarker(int index)
 {
-    qInfo() << "ViewMarkerWindow remove picked marker num"<< index;
     QHBoxLayout *goodLayout = static_cast<QHBoxLayout*>(markerContainer->itemAt(index));
     for (int i = 0 ; i < goodLayout->count() ; i++) {
         QLayoutItem *item = goodLayout->itemAt(i);

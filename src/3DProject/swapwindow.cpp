@@ -14,7 +14,6 @@ SwapWindow::SwapWindow(QWidget *parent) : QWidget(parent)
     for(int i = 0 ; i < 2 ; i++) {
         markersToBeSwappedIndexes[i] = -1;
     }
-    qInfo() << "swapWindow";
 }
 
 void SwapWindow::addSelectedMarker(int position, int index, int color) {
