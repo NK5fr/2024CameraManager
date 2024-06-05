@@ -47,8 +47,6 @@ void ImageOpenGLWidget::initializeGL() {
 }
 
 void ImageOpenGLWidget::updateImage(unsigned char* imgBuffer, unsigned int bufferSize, unsigned int imageWidth, unsigned int imageHeight) {
-    //qInfo() << "ioglw" << this->size();
-    //qInfo() << "ioglw" << this->size();
 
     if (imgBuffer == nullptr) return;
     if (this->imageWidth != imageWidth || this->imageHeight != imageHeight) {
@@ -71,8 +69,6 @@ void ImageOpenGLWidget::updateView() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glViewport(0, 0, this->width(), this->height());
-    // qInfo() << "image w/h \t\t" << imageWidth << "/" << imageHeight;
-    // qInfo() << "subwin w/h \t\t" << this->width() << "/" << this->height();
     glViewport(0, 0, this->width() * this->devicePixelRatio(), this->height() * this->devicePixelRatio());
     glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_PROJECTION);

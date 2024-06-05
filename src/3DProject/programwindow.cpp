@@ -210,20 +210,15 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
 }
 
 ProgramWindow::ProgramWindow(QString& fileName, QWidget *parent) : ProgramWindow(parent) {
-    qInfo() << "********************* PROGRAMWINDOW *********************";
     setData(fileName);
     screen->setLinkedMarkersVector(data.loadSkeleton());
     connectWidgets();
 }
 
 void ProgramWindow::configureScreen() {
-    qInfo() << "oui?";
     screen->setViewPort();
-    qInfo() << "oui";
     screen->setProjection();
-    qInfo() << "oui.";
     screen->setModelView();
-    qInfo() << "oui!";
 }
 
 void ProgramWindow::setData(QString& fileName) {
@@ -313,7 +308,6 @@ void ProgramWindow::fillCoordinatesWindow(int index, int color) {
 }
 
 void ProgramWindow::removeMarkerCoordinatesWindow(int index) {
-    qInfo() << "removeMarkerCoordinatesWindow";
     coordinatesWindow->removeLineCoordinates(index);
 }
 

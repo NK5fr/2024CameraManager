@@ -158,7 +158,6 @@ void DisplayWindow::paintPoints()
     glLineWidth(5.0);
     glBegin(GL_POLYGON);
     for (int i=0; i < points.size() ; i++) {
-        //qInfo() << i << "\t" << points.at(i);
         glVertex3f(points.at(i).x(), points.at(i).y(), points.at(i).z());
     }
     glEnd();
@@ -252,10 +251,7 @@ QVector3D DisplayWindow::transformFromViewSpace(const QVector3D& point, const QM
 void DisplayWindow::mousePressEvent(QMouseEvent *event) {
     mouseXStartPosition = event->position().x() * devicePixelRatio();
     mouseYStartPosition = event->position().y() * devicePixelRatio();
-    // qInfo() << mouseXStartPosition;
-    // qInfo() << mouseYStartPosition;
     if(selectMarkerMode) {
-        //qInfo() << "selectMarker()";
         selectMarker();
     }
     else if(linkMarkerMode) {
@@ -300,7 +296,6 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
     }
     if (event->type() == QEvent::Wheel) {
         QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
-        qInfo() << wheelEvent->angleDelta();
         // if (wheelEvent->angleDelta().y() > 0) {
         //     camDistance += 0.1f;
         // } else {
@@ -492,7 +487,6 @@ const Marker& DisplayWindow::getMarkerWithCross() const {
 int DisplayWindow::pickMarker() {
     QOpenGLWidget::makeCurrent();
     glPointSize(3.0);
-    //qInfo() << "hello?";
     unsigned char pixelRead[3];
     glDrawBuffer(GL_BACK);
     glClearColor(0.0, 0.0 ,0.0, 0.0);
@@ -506,8 +500,6 @@ int DisplayWindow::pickMarker() {
     }
     glFlush();
     glReadPixels(mouseXStartPosition, height() * devicePixelRatio() - mouseYStartPosition, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixelRead);
-
-    qInfo() << "1:" << (int)pixelRead[0] << "\t2:" << (int)pixelRead[1] *256  << "\t3:" << (int)pixelRead[3] * 256 * 256 - 1;
     update();
     /* As the background is black, its index is going to be equal to zero (rgb (0, 0, 0) == black).
         this means that when the user is going to click on the background, the marker at the index 0 will be "picked".
@@ -519,7 +511,6 @@ int DisplayWindow::pickMarker() {
 
 void DisplayWindow::selectMarker() {
     int index = pickMarker();
-    qInfo() << index;
     selectMarker(index);
 }
 
