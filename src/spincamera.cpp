@@ -108,7 +108,15 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 if(cam->Gain == NULL || cam->Gain.GetAccessMode() != RW){
                     std::cout << "Unable to access the gain property." << std::endl;
                 }else{
-                    cam->Gain.SetValue(p->getValue());
+                    if (p->getValue() >= cam->Gain.GetMin() && p->getValue() <= cam->Gain.GetMax()) {
+                        cam->Gain.SetValue(p->getValue()); // Set the value
+                    } else if(p->getValue() < cam->Gain.GetMin()){
+                        std::cout << "Wanted gain value was not within the limits, setting to minimum available value..." << std::endl;
+                        cam->Gain.SetValue(cam->Gain.GetMin());
+                    } else {
+                        std::cout << "Wanted gain value was not within the limits, setting to maximum available value..." << std::endl;
+                        cam->Gain.SetValue(cam->Gain.GetMax());
+                    }
                 }
             }
         }
@@ -154,7 +162,15 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
                 if (cam->AcquisitionFrameRate == NULL || cam->AcquisitionFrameRate.GetAccessMode() != RW){
                     std::cout << "Unable to access the frame rate property." << std::endl << std::endl;
                 }else{
-                    cam->AcquisitionFrameRate.SetValue(p->getValue());
+                    if (p->getValue() >= cam->AcquisitionFrameRate.GetMin() && p->getValue() <= cam->AcquisitionFrameRate.GetMax()) {
+                        cam->AcquisitionFrameRate.SetValue(p->getValue()); // Set the value
+                    } else if(p->getValue() < cam->AcquisitionFrameRate.GetMin()){
+                        std::cout << "Wanted frame rate value was not within the limits, setting to minimum available value..." << std::endl;
+                        cam->AcquisitionFrameRate.SetValue(cam->AcquisitionFrameRate.GetMin());
+                    } else {
+                        std::cout << "Wanted frame rate value was not within the limits, setting to maximum available value..." << std::endl;
+                        cam->AcquisitionFrameRate.SetValue(cam->AcquisitionFrameRate.GetMax());
+                    }
                 }
             }
         }

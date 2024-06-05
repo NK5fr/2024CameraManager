@@ -80,6 +80,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) 
 }
 
 SocketViewerWidget::~SocketViewerWidget() {
+
 }
 
 void SocketViewerWidget::appendPoints(std::vector<Vector3d*> pos) {
@@ -142,7 +143,7 @@ void SocketViewerWidget::showSwappingCorrectorFunc()
 {
     if (swappingCorrectorWidget->isVisible()) {
         swappingCorrectorWidget->hide();
-    } else {
+    } else if (!fullPath.isEmpty()){
         swappingCorrectorWidget->show();
     }
 }
@@ -217,7 +218,11 @@ void SocketViewerWidget::init() {
 
     // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
     showSwappingCorrector = new QPushButton("Open Swapping Corrector");
-    swappingCorrectorWidget = new SwappingCorrectorProgram(this->fullPath);
+    if(!fullPath.isEmpty()){
+        swappingCorrectorWidget = new SwappingCorrectorProgram(this->fullPath);
+    }else{
+        swappingCorrectorWidget = new SwappingCorrectorProgram();
+    }
     swappingCorrectorWidget->hide();
     this->parentArea = (QMdiArea*) this->parent();
 
