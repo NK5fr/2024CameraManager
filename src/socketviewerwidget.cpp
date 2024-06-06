@@ -80,7 +80,7 @@ SocketViewerWidget::SocketViewerWidget(QWidget* parent) : QMdiSubWindow(parent) 
 }
 
 SocketViewerWidget::~SocketViewerWidget() {
-
+    delete swappingCorrectorWidget;
 }
 
 void SocketViewerWidget::appendPoints(std::vector<Vector3d*> pos) {
@@ -511,7 +511,15 @@ HostAddressDialog::HostAddressDialog(QWidget* parent, SocketViewerWidget* svw) :
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(socketConnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readSocketLine()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+
+    /*
+     * 05/06/2024 - Nathan & Armand
+     * outdated
+    */
+
+    //connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+
+    connect(tcpSocket, &QAbstractSocket::errorOccurred, this, &HostAddressDialog::displayError);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(hostLabel,    0, 0);
