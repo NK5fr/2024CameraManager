@@ -94,6 +94,10 @@ private:
     // the y position of the mouse on the screen ON MOUSEPRESS
     int mouseYStartPosition;
 
+    QVector3D cameraPos;
+    QVector3D cameraCenter;
+    int zAngle = 0;
+
 
     QVector<QVector3D> points;
 public:
@@ -551,6 +555,8 @@ protected:
     void updateViewMatrix();
     void updateProjection(int width, int height, double fov);
     void magicGL();
+    void changeCameraPosition(int x, int y, int z);
+    void updateViewFromCameraPos();
 };
 
 #endif // DISPLAYWINDOW_H
