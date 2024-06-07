@@ -407,6 +407,11 @@ QModelIndex AbstractCameraManager::detectNewCamerasAndExpand(SystemManager *sm) 
         }
         if (!found){ //remove if disconnected
             if(selectedCamera == cam){
+                QString str = "";
+                bool editable, deleteable;
+                int icon = 0;
+                QModelIndex index = cameraTree.item(0)->index();
+                cameraTree_itemClicked(index, str, icon, editable, deleteable);
                 selectedCamera = nullptr;
             }
             activateCamera(cam, item, false);
@@ -580,6 +585,7 @@ void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QSt
     editable = true;
     deleteable = true;
     if (clicked->data(CameraRole).isValid()) {
+
         icon = 0;
         deleteable = false;
         first = clicked;
@@ -588,14 +594,16 @@ void AbstractCameraManager::cameraTree_itemClicked(const QModelIndex &index, QSt
         textIndex = getModel()->index(index.row(), 2, index.parent());
         string.append(getModel()->itemFromIndex(textIndex)->text());
     } else {
+
         if (clicked == &newCameraList) {
             //cout << "clicked == newCameraList" << endl;
             editable = false;
             deleteable = false;
         }
         first = cameraTree_recursiveFirstCamera(clicked);
-        if (first == nullptr) icon = 1;
-        else {
+        if (first == nullptr) {
+            icon = 1;
+        }else {
             icon = 2;
             // Lars Aksel - 27.01.2015 - Removed unnecessary text
             //string = clicked->text() + " <br /> (" + first->text() + ")";
@@ -630,6 +638,7 @@ void AbstractCameraManager::cameraTree_recursiveCheck(QStandardItem* parent, Qt:
 // get first AbstractCamera in QStandardItem
 // @return first found AbstractCamera
 QStandardItem* AbstractCameraManager::cameraTree_recursiveFirstCamera(QStandardItem* parent){
+
     QVariant data = parent->data(CameraRole);
     if(data.isValid()) return parent;
 
@@ -823,15 +832,4 @@ void AbstractCameraManager::on_propertyValue_changed() {
     prop->setValue(valueS.toFloat());
     slider->setValue(prop->getValueToSlider());
     cameraTree_recursiveSetSpinProperty(selectedItem, prop);
-}
-
-void AbstractCameraManager::uncheckAllCameras() {
-
-    cameraTree.item(0)->setCheckState(Qt::Unchecked);
-
-    for(int i = 0; i < cameraTree.item(0)->rowCount(); ++i){
-        if(cameraTree.item(0)->child(i)->checkState() == Qt::Checked){
-            cameraTree.item(0)->child(i)->setCheckState(Qt::Unchecked);
-        }
-    }
 }
