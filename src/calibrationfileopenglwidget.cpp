@@ -47,6 +47,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
             scaleString = "millimeter";
         }
         QPainter painter(this);
+        painter.setPen(QPen(Qt::black));
         QPoint pos(4, 4);
         painter.fillRect(pos.x(), pos.y(), 60 + (scaleString.size() * 5), 13, Qt::white);
         painter.drawText(pos + QPoint(3, 10), "Gridscale: " + scaleString);
@@ -138,6 +139,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
         glEnd();
 
         QPainter painter(this);
+        painter.setPen(QPen(Qt::black));
         float camX = (cameraArea[i].right() + cameraAreaMargin) * screenFactorX;
         float camY = (cameraArea[i].top() + cameraAreaMargin) * screenFactorY;
         QPointF pos = QPointF(camX + abs(leftBottomOffsetX), camY + abs(leftBottomOffsetY));
@@ -146,6 +148,7 @@ void CalibrationFileOpenGLWidget::paintGL() {
     }
     if (enteredCameraWindow) {
         QPainter painter(this);
+        painter.setPen(QPen(Qt::black));
         QPointF pos = QPointF(((cameraArea[enteredCameraArea].left() - cameraAreaMargin) * screenFactorX) - leftBottomOffsetX, ((cameraArea[enteredCameraArea].top() + cameraAreaMargin) * screenFactorY) - leftBottomOffsetY);
         painter.fillRect(pos.x(), pos.y(), 12, 13, Qt::white);
         painter.drawText(pos + QPoint(3, 10), QString::number(enteredCameraArea));

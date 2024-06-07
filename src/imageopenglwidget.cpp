@@ -432,8 +432,9 @@ void ImageOpenGLWidget::paintGL() {
 
                 if (trackPointProperty->showCoordinates && !showZoomArea) {
                     QPainter painter(this);
+                    painter.setPen(QPen(Qt::black));
                     QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
-                    painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::gray);
+                    painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
                     if (enableSubImages) {
                         painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(fmod(points[i].x, subImageWidth), 'f', 2) + " ,Y: " + QString::number(fmod(points[i].y, subImageHeight), 'f', 2));
                     } else {
@@ -487,6 +488,7 @@ void ImageOpenGLWidget::paintGL() {
             if (showPointSeriesString) {
                 QString s = pointSeries[i]->string;
                 QPainter painter(this);
+                painter.setPen(QPen(Qt::black));
                 painter.setFont(QFont("Courier"));
                 QPoint pos = scaledImageArea.topLeft() + QPoint(xPos, yPos);
                 painter.fillRect(pos.x(), pos.y(), 10 * s.size(), 12, Qt::white);
@@ -647,8 +649,9 @@ void ImageOpenGLWidget::paintGL() {
 
     if (showMouseOverCoordinateLabel) {
         QPainter painter(this);
+        painter.setPen(QPen(Qt::black));
         QPoint pos = scaledImageArea.topLeft();
-        painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::gray);
+        painter.fillRect(pos.x(), pos.y(), 110, 12, Qt::white);
         if (enableSubImages && subImageWidth > 0 && subImageHeight > 0) {
             painter.drawText(pos + QPoint(2, 10), "X: " + QString::number(std::fmod(mousePosInImage.x(), subImageWidth), 'f', 2) + " ,Y: " + QString::number(std::fmod(mousePosInImage.y(), subImageHeight), 'f', 2));
         } else {

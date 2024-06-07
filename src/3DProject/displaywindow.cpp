@@ -45,12 +45,10 @@ void DisplayWindow::setProjection() {
 }
 
 void DisplayWindow::setModelView() {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    QMatrix4x4 view;
-    view.lookAt(QVector3D(2, -2, 0.5), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-    float * tab = view.data();
-    glMultMatrixf(tab);
+    cameraPos = QVector3D(2, -2, 0.5);
+    zAngle= 0;
+    cameraCenter = QVector3D(0,0,0);
+    updateViewFromCameraPos();
 }
 
 void DisplayWindow::setData(const Data * pointerToData) {
@@ -277,7 +275,7 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
             dragSelectActive = (mouseEvent->button() == Qt::RightButton);
         }
     }
-    if (event->type() == QEvent::MouseButtonRelease) {
+    else if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         mouseClickX = 0;
         mouseClickY = 0;
@@ -286,7 +284,7 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
         if (dragSelectActive) { dragSelectActive = false;}
 
     }
-    if (event->type() == QEvent::MouseMove) {
+    else if (event->type() == QEvent::MouseMove) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         mouseDragPosX = mouseEvent->pos().x();
         mouseDragPosY = mouseEvent->pos().y();
@@ -294,14 +292,32 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
             moveCamera(mouseEvent);
         }
     }
-    if (event->type() == QEvent::Wheel) {
+    else if (event->type() == QEvent::Wheel) {
         QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
-        // if (wheelEvent->angleDelta().y() > 0) {
-        //     camDistance += 0.1f;
-        // } else {
-        //     camDistance -= 0.1f;
-        // }
+        if (wheelEvent->angleDelta().y() > 0) {
+            changeCameraPosition(0,0,1);
+        } else {
+            changeCameraPosition(0,0,-1);
+        }
     }
+    // else if (event->type() == QEvent::KeyPress) {
+    //     QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+    //     switch(keyEvent->key()) {
+    //     case(Qt::Key_Up):
+    //         changeCameraPosition(0,1,0);
+    //         break;
+    //     case(Qt::Key_Down):
+    //         changeCameraPosition(0,-1,0);
+    //         break;
+    //     case(Qt::Key_Left):
+    //         changeCameraPosition(-1,0,0);
+    //         break;
+    //     case(Qt::Key_Right):
+    //         changeCameraPosition(1,0,0);
+    //         break;
+    //     }
+    //}
+
 
     if (dragSelectActive) {
         backgroundColor.setBlue(0);
@@ -661,14 +677,14 @@ void DisplayWindow::swapMarkers() {
 void DisplayWindow::moveCamera(QMouseEvent *event) {
     makeCurrent();
     glMatrixMode(GL_MODELVIEW);
-    int zAngle = 0;
-    int yAngle = 0;
-    zAngle = (event->position().x() * devicePixelRatio() - mouseXStartPosition) / 4;
-    yAngle = (mouseYStartPosition - event->position().y() * devicePixelRatio()) / 4;
+    //int zAngle = 0;
+    //int yAngle = 0;
+    zAngle += (event->position().x() * devicePixelRatio() - mouseXStartPosition) / 4;
+    //yAngle = (mouseYStartPosition - event->position().y() * devicePixelRatio()) / 4;
     //glRotatef(-yAngle, 0, 1, 0);
     //glRotatef(yAngle, 1, 0, 0);
 
-    glRotatef(zAngle, 0, 0, 1);
+    updateViewFromCameraPos();
     mouseXStartPosition = event->position().x() * devicePixelRatio();
     mouseYStartPosition = event->position().y() * devicePixelRatio();
     update();
@@ -695,44 +711,51 @@ void DisplayWindow::resetCamera() {
 }
 
 void DisplayWindow::moveCameraToFrontSide() {
-    makeCurrent();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    QMatrix4x4 view;
-    view.lookAt(QVector3D(2, 2, 0.5), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-    float * tab = view.data();
-    glMultMatrixf(tab);
-    update();
+    cameraPos = QVector3D(2, 2, 0.5);
+    cameraCenter = QVector3D(0,0,0);
+    zAngle = 0;
+    updateViewFromCameraPos();
 }
 
 void DisplayWindow::moveCameraToBackSide() {
-    makeCurrent();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    QMatrix4x4 view;
-    view.lookAt(QVector3D(-2, -2, 0.5), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-    float * tab = view.data();
-    glMultMatrixf(tab);
-    update();
+    cameraPos = QVector3D(-2, -2, 0.5);
+    cameraCenter = QVector3D(0,0,0);
+    zAngle = 0;
+    updateViewFromCameraPos();
 }
 
 void DisplayWindow::moveCameraToLeftSide() {
-    makeCurrent();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    QMatrix4x4 view;
-    view.lookAt(QVector3D(2, -2, 0.5), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-    float * tab = view.data();
-    glMultMatrixf(tab);
-    update();
+    cameraPos = QVector3D(2, -2, 0.5);
+    cameraCenter = QVector3D(0,0,0);
+    zAngle = 0;
+    updateViewFromCameraPos();
 }
 
 void DisplayWindow::moveCameraToRightSide() {
+    cameraPos = QVector3D(-2, 2, 0.5);
+    cameraCenter = QVector3D(0,0,0);
+    zAngle = 0;
+    updateViewFromCameraPos();
+}
+
+void DisplayWindow::changeCameraPosition(int x, int y, int z) {
+    cameraPos.setX(cameraPos.x() + x);
+    cameraPos.setY(cameraPos.y() + y);
+    cameraPos.setZ(cameraPos.z() + z);
+
+    // cameraCenter.setX(cameraCenter.x() + x);
+    // cameraCenter.setY(cameraCenter.y() + y);
+    // cameraCenter.setZ(cameraCenter.z() + z);
+    updateViewFromCameraPos();
+}
+
+void DisplayWindow::updateViewFromCameraPos() {
     makeCurrent();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     QMatrix4x4 view;
-    view.lookAt(QVector3D(-2, 2, 0.5), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
+    view.lookAt(cameraPos, cameraCenter, QVector3D(0.0, 0.0, 1.0));
+    view.rotate(zAngle, 0, 0, 1);
     float * tab = view.data();
     glMultMatrixf(tab);
     update();
