@@ -119,7 +119,6 @@ private:
     QPushButton* disconnectButton;
 
     // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
-    QMdiArea* parentArea;
     QPushButton* showSwappingCorrector;
     SwappingCorrectorProgram* swappingCorrectorWidget;
 

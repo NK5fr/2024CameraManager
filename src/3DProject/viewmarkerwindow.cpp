@@ -64,8 +64,11 @@ QHBoxLayout* ViewMarkerWindow::addMarker(Marker marker, int index) {
 
     // Add coordinates
     QLabel *coordX = new QLabel(QString::number(marker.getX()), this);
+    coordX->setObjectName(QString("coordX"));
     QLabel *coordY = new QLabel(QString::number(marker.getY()), this);
+    coordY->setObjectName(QString("coordY"));
     QLabel *coordZ = new QLabel(QString::number(marker.getZ()), this);
+    coordZ->setObjectName(QString("coordZ"));
 
     // Add ActionButtons
     QPushButton *select = new QPushButton("select", this);

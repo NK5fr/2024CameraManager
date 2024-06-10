@@ -143,7 +143,7 @@ void SocketViewerWidget::showSwappingCorrectorFunc()
 {
     if (swappingCorrectorWidget->isVisible()) {
         swappingCorrectorWidget->hide();
-    } else if (!fullPath.isEmpty()){
+    } else {
         swappingCorrectorWidget->show();
     }
 }
@@ -218,13 +218,13 @@ void SocketViewerWidget::init() {
 
     // Armand & Nathan - 23/05/2024 - Integration of Swapping Corrector
     showSwappingCorrector = new QPushButton("Open Swapping Corrector");
+
     if(!fullPath.isEmpty()){
         swappingCorrectorWidget = new SwappingCorrectorProgram(this->fullPath);
     }else{
         swappingCorrectorWidget = new SwappingCorrectorProgram();
     }
     swappingCorrectorWidget->hide();
-    this->parentArea = (QMdiArea*) this->parent();
 
     camDistanceSlider = new QSlider(Qt::Orientation::Horizontal);
     camDistanceSlider->setMaximum(20000);
@@ -249,7 +249,9 @@ void SocketViewerWidget::init() {
     showPlaneButtonLayout->addWidget(showXYPlane);
     showPlaneButtonLayout->addWidget(showXZPlane);
     showPlaneButtonLayout->addWidget(showYZPlane);
-    showPlaneButtonLayout->addWidget(showSwappingCorrector);
+    if (!this->fullPath.isEmpty()) {
+        showPlaneButtonLayout->addWidget(showSwappingCorrector);
+    }
     showPlaneButtonLayout->addLayout(sliderLayout);
 
     QHBoxLayout* buttonCheckBoxLayout = new QHBoxLayout();

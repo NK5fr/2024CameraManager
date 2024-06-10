@@ -86,8 +86,10 @@ void DisplayWindow::removePickedIndex(int index) {
 void DisplayWindow::initializeGL()
 {
     initializeOpenGLFunctions();//THIS MUST BE CALLED TO INIT OPENGL
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     qDebug() << "initializeGL()";
 }
 
@@ -96,6 +98,7 @@ void DisplayWindow::paintGL()
     //qDebug() << "paintGL";
     glPointSize(3.0);
     glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), backgroundColor.alphaF());
+
     glClear(GL_COLOR_BUFFER_BIT);
 
 
