@@ -199,8 +199,6 @@ class AbstractCameraManager : public QObject {
 
         const std::vector<activeCameraEntry>& getActiveCameraEntries() { return this->activeCameras; }
          void loadPropertiesDefaultsInit();
-
-        void uncheckAllCameras();
     protected:
         /**
          * @brief constructor

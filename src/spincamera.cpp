@@ -184,7 +184,9 @@ void SpinCamera::setSpinProperty(CameraManagerSpin::SpinCameraProperty* p) {
 
 
 // Lars Aksel - 30.01.2015 - Added support to ImageDetect
-ImagePtr SpinCamera::captureImage(bool colored) {
+std::vector<Spinnaker::ImagePtr> SpinCamera::captureImage() {
+
+    std::vector<Spinnaker::ImagePtr> result;
 
     // 20/05/2024 Armand & Nathan added enableTrigger condition to execute this part only if the user retrieves image using trigger
     if(enableTrigger == 0 && trigger==0){
@@ -198,7 +200,8 @@ ImagePtr SpinCamera::captureImage(bool colored) {
         }
     }
     ImagePtr image = nullptr;
-    ImagePtr convertedImage = nullptr;
+    ImagePtr monoImage = nullptr;
+    ImagePtr coloredImage = nullptr;
     try {
 
 
@@ -222,20 +225,22 @@ ImagePtr SpinCamera::captureImage(bool colored) {
 
             try {
                 image = cam->GetNextImage(1000);
-                if(colored){
-                    convertedImage = processor.Convert(image, PixelFormat_RGB8);
-                }else{
-                    convertedImage = processor.Convert(image, PixelFormat_Mono8);
-                }
+                monoImage = processor.Convert(image, PixelFormat_Mono8);
+                coloredImage = processor.Convert(image, PixelFormat_RGB8);
             } catch (Exception e) {
                 std::cout << e.what() << std::endl;
-                convertedImage = nullptr;
+                monoImage = nullptr;
+                coloredImage = nullptr;
             }
 
         } else {
             std::cout <<" not streaming" << std::endl;
         }
-        return convertedImage;
+
+        result.push_back(monoImage);
+        result.push_back(coloredImage);
+
+        return result;
 
     }catch(Spinnaker::Exception &e) {
         std::cout << "Error : " << e.what() << std::endl;
@@ -370,10 +375,13 @@ void SpinCamera::startAutoCapture(){
     }
     std::cout << "valeur de capoturing: " << capturing << std::endl;
     while(capturing){
-        ImagePtr image = captureImage();
-        ImagePtr coloredImage = captureImage(true);
 
-        // 20/05/2024, Armand & Nathan : send frame only if the image is not null
+        std::vector<Spinnaker::ImagePtr> images = captureImage();
+
+        ImagePtr image = images.at(0);
+        ImagePtr coloredImage = images.at(1);
+
+        //20/05/2024, Armand & Nathan : send frame only if the image is not null
 
         if(image != nullptr && coloredImage != nullptr && capturing) {
             AbstractCamera::sendFrame(image->GetData(), image->GetBufferSize(), image->GetWidth(), image->GetHeight(), false);
@@ -414,7 +422,16 @@ unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int*
     cam->BeginAcquisition();
 
     //printf("Retrieving 1...\n");
-    ImagePtr image = captureImage(colored);
+
+    std::vector<Spinnaker::ImagePtr> images = captureImage();
+
+    ImagePtr image = nullptr;
+
+    if(colored){
+        image = images.at(1);
+    }else{
+        image = images.at(0);
+    }
 
     *bufferSize = image->GetBufferSize();
     *imageWidth = image->GetWidth();

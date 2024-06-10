@@ -55,7 +55,7 @@ public:
 
 private:
     Spinnaker::CameraPtr cam;
-    Spinnaker::ImagePtr captureImage(bool colored = false);
+    std::vector<Spinnaker::ImagePtr> captureImage();
 
 };
 
