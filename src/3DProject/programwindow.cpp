@@ -294,13 +294,13 @@ void ProgramWindow::changeStep(int index) {
 }
 
 void ProgramWindow::keyPressEvent(QKeyEvent *event) {
-    slider->setFocus();
-    if(event->key() == Qt::Key_Left) {
-        slider->setValue(slider->value() - 1);
-    }
-    if(event->key() == Qt::Key_Right) {
-        slider->setValue(slider->value() + 1);
-    }
+    // slider->setFocus();
+    // if(event->key() == Qt::Key_Left) {
+    //     slider->setValue(slider->value() - 1);
+    // }
+    // if(event->key() == Qt::Key_Right) {
+    //     slider->setValue(slider->value() + 1);
+    // }
 }
 
 void ProgramWindow::fillCoordinatesWindow(int index, int color) {

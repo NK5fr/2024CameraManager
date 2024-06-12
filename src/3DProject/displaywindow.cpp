@@ -303,23 +303,31 @@ bool DisplayWindow::eventFilter(QObject *watched, QEvent *event)
             changeCameraPosition(0,0,-1);
         }
     }
-    // else if (event->type() == QEvent::KeyPress) {
-    //     QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-    //     switch(keyEvent->key()) {
-    //     case(Qt::Key_Up):
-    //         changeCameraPosition(0,1,0);
-    //         break;
-    //     case(Qt::Key_Down):
-    //         changeCameraPosition(0,-1,0);
-    //         break;
-    //     case(Qt::Key_Left):
-    //         changeCameraPosition(-1,0,0);
-    //         break;
-    //     case(Qt::Key_Right):
-    //         changeCameraPosition(1,0,0);
-    //         break;
-    //     }
-    //}
+    else if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        switch(keyEvent->key()) {
+        case(Qt::Key_Up):
+            // changeCameraPosition(0,1,0);
+            changeCameraPosition(0,0,1);
+            break;
+        case(Qt::Key_Down):
+            //changeCameraPosition(0,-1,0);
+            changeCameraPosition(0,0,-1);
+            break;
+        case(Qt::Key_Left):
+            //changeCameraPosition(-1,0,0);
+            zAngle += 15;
+            zAngle = zAngle%360;
+            updateViewFromCameraPos();
+            break;
+        case(Qt::Key_Right):
+            //changeCameraPosition(1,0,0);
+            zAngle -= 15;
+            zAngle = zAngle%360;
+            updateViewFromCameraPos();
+            break;
+        }
+    }
 
 
     if (dragSelectActive) {
@@ -683,6 +691,7 @@ void DisplayWindow::moveCamera(QMouseEvent *event) {
     //int zAngle = 0;
     //int yAngle = 0;
     zAngle += (event->position().x() * devicePixelRatio() - mouseXStartPosition) / 4;
+    zAngle = zAngle%360;
     //yAngle = (mouseYStartPosition - event->position().y() * devicePixelRatio()) / 4;
     //glRotatef(-yAngle, 0, 1, 0);
     //glRotatef(yAngle, 1, 0, 0);
