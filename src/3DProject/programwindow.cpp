@@ -215,6 +215,15 @@ ProgramWindow::ProgramWindow(QString& fileName, QWidget *parent) : ProgramWindow
     connectWidgets();
 }
 
+ProgramWindow::~ProgramWindow()
+{
+    delete viewMarkerWindow;
+    delete swapWindow;
+    delete filewindow;
+    delete coordinatesWindow;
+    delete screen;
+}
+
 void ProgramWindow::configureScreen() {
     screen->setViewPort();
     screen->setProjection();

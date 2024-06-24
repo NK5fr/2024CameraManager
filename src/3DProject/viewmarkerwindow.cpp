@@ -4,11 +4,35 @@
 #include <QException>
 #include <QLabel>
 #include <QPushButton>
+#include <qmenu.h>
 
 ViewMarkerWindow::ViewMarkerWindow(QWidget *parent)
     : QWidget{parent}
 {
-    markerContainer = new QVBoxLayout(this);
+    markerContainer = new QGridLayout(this);
+    QLabel *numberHeader = new QLabel("number",this);
+    QLabel *xCoordHeader = new QLabel("(X,",this);
+    QLabel *yCoordHeader = new QLabel("Y,",this);
+    QLabel *zCoordHeader = new QLabel("Z)",this);
+    QLabel *selectHeader = new QLabel("selection",this);
+
+    markerContainer->addWidget(numberHeader, 0, numberColumn, Qt::AlignCenter);
+    markerContainer->addWidget(xCoordHeader, 0, xColumn, Qt::AlignCenter);
+    markerContainer->addWidget(yCoordHeader, 0, yColumn, Qt::AlignCenter);
+    markerContainer->addWidget(zCoordHeader, 0, zColumn, Qt::AlignCenter);
+    markerContainer->addWidget(selectHeader, 0, selectColumn, Qt::AlignCenter);
+}
+
+ViewMarkerWindow::~ViewMarkerWindow() {
+    for (int rowIndex = 0; rowIndex < markerContainer->rowCount(); ++rowIndex) {
+        for (int columnIndex = 0; columnIndex < markerContainer->columnCount(); ++columnIndex) {
+            QLayoutItem* item = markerContainer->itemAtPosition(rowIndex,columnIndex);
+            if (item != nullptr) {
+                delete item;
+            }
+        }
+    }
+    delete markerContainer;
 }
 /**
  * @brief ViewMarkerWindow::setData
@@ -17,7 +41,18 @@ ViewMarkerWindow::ViewMarkerWindow(QWidget *parent)
  */
 void ViewMarkerWindow::setData(const Data *pointerToData) {
     data = pointerToData;
-    populateContainer(0);
+    populateContainer();
+    loadData(0);
+}
+
+void ViewMarkerWindow::loadData(int step) {
+    QVector<Marker> currentMarkerVector = data->get1Vector(step);
+    for (int i = 0 ; i < currentMarkerVector.size() ; i++) {
+        Marker marker = currentMarkerVector.at(i);
+        this->findChild<QLabel*>(QString::number(xColumn*10+i))->setText(QString::number(marker.getX()));
+        this->findChild<QLabel*>(QString::number(yColumn*10+i))->setText(QString::number(marker.getY()));
+        this->findChild<QLabel*>(QString::number(zColumn*10+i))->setText(QString::number(marker.getZ()));
+    }
 }
 
 /**
@@ -25,30 +60,32 @@ void ViewMarkerWindow::setData(const Data *pointerToData) {
  * This function makes a Layout filled with the data we need to display for every marker.
  * @param step the current frame the data is on
  */
-void ViewMarkerWindow::populateContainer(int step) {
-    clearContainer();
-    QVector<Marker> listMarkers = data->get1Vector(step);
-    for (int i = 0 ; i < listMarkers.size() ; i++) {
-        QHBoxLayout *markerLayout = addMarker(listMarkers.at(i), i);
-        markerContainer->addLayout(markerLayout);
+void ViewMarkerWindow::populateContainer() {
+    if (data != nullptr && data->getDataCoordinatesSize() > 0) {
+        QVector<Marker> firstVector = data->get1Vector(0);
+        for (int i = 0 ; i < firstVector.size() ; i++) {
+            QLabel *numberLabel= new QLabel(QString::number(i),this);
+            numberLabel->setObjectName(QString::number(numberColumn*10 + i));
+            QLabel *xCoordLabel= new QLabel("X",this);
+            xCoordLabel->setObjectName(QString::number(xColumn*10 + i));
+            QLabel *yCoordLabel= new QLabel("Y",this);
+            yCoordLabel->setObjectName(QString::number(yColumn*10 + i));
+            QLabel *zCoordLabel= new QLabel("Z",this);
+            zCoordLabel->setObjectName(QString::number(zColumn*10 + i));
+            QPushButton *selectButton= new QPushButton("select",this);
+            selectButton->setObjectName(QString::number(i));
+
+            connect(selectButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
+            markerContainer->addWidget(numberLabel, i+1, numberColumn, Qt::AlignCenter);
+            markerContainer->addWidget(xCoordLabel, i+1, xColumn, Qt::AlignCenter);
+            markerContainer->addWidget(yCoordLabel, i+1, yColumn, Qt::AlignCenter);
+            markerContainer->addWidget(zCoordLabel, i+1, zColumn, Qt::AlignCenter);
+            markerContainer->addWidget(selectButton, i+1, selectColumn, Qt::AlignCenter);
+        }
     }
 }
-/**
- * @brief ViewMarkerWindow::clearContainer
- * This function empties markerContainer.
- */
-void ViewMarkerWindow::clearContainer() {
-    //QList<QHBoxLayout*> markerLayouts = this->layout()->findChildren<QHBoxLayout*>();
-    QHBoxLayout *currentItem;
-    while (currentItem = static_cast<QHBoxLayout*>(markerContainer->takeAt(0))) {
-        QLayoutItem *currentNestedItem;
-        while (currentNestedItem = currentItem->takeAt(0)) {
-            delete currentNestedItem->widget();
-            delete currentNestedItem;
-        }
-        delete currentItem->widget();
-        delete currentItem;
-    }
+
+void ViewMarkerWindow::updateContainer(int step) {
 }
 /**
  * @brief ViewMarkerWindow::selectMarker
@@ -69,13 +106,7 @@ void ViewMarkerWindow::selectMarker() {
  */
 void ViewMarkerWindow::removedPickedMarker(int index)
 {
-    QHBoxLayout *goodLayout = static_cast<QHBoxLayout*>(markerContainer->itemAt(index));
-    for (int i = 0 ; i < goodLayout->count() ; i++) {
-        QLayoutItem *item = goodLayout->itemAt(i);
-        if (item->widget()->objectName() == QString::number(index)) {
-            item->widget()->setEnabled(true);
-        }
-    }
+    this->findChild<QPushButton*>(QString::number(index))->setEnabled(true);
 }
 
 /**
@@ -102,13 +133,13 @@ QHBoxLayout* ViewMarkerWindow::addMarker(Marker marker, int index) {
     QPushButton *select = new QPushButton("select", this);
     select->setObjectName(QString::number(index));
 
+
     // Add to layout
     markerLayout->addWidget(number);
     markerLayout->addWidget(coordX);
     markerLayout->addWidget(coordY);
     markerLayout->addWidget(coordZ);
     markerLayout->addWidget(select);
-
 
     connect(select, SIGNAL(clicked()), this, SLOT(selectMarker()));
     return markerLayout;
@@ -120,5 +151,5 @@ QHBoxLayout* ViewMarkerWindow::addMarker(Marker marker, int index) {
  */
 void ViewMarkerWindow::setCurrentStep(int newIndex)
 {
-    populateContainer(newIndex);
+    loadData(newIndex);
 }

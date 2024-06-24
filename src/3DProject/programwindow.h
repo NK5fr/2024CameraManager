@@ -87,6 +87,8 @@ public:
      */
     ProgramWindow(QString& fileName, QWidget *parent = Q_NULLPTR);
 
+    ~ProgramWindow();
+
     /**
      * @brief configureScreen
      * Configures the DisplayWindow attribute. Calls the DisplayWindow methods setViewPort, setProjection and setModelView.
