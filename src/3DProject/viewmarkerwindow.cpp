@@ -82,7 +82,17 @@ void ViewMarkerWindow::populateContainer() {
             QPushButton *selectButton= new QPushButton("select",this);
             selectButton->setObjectName(QString::number(i) + "-select");
 
+            QPushButton *swapButton= new QPushButton("swap",this);
+            swapButton->setObjectName(QString::number(i) + "-swap");
+
+            QPushButton *linkButton= new QPushButton("link",this);
+            linkButton->setObjectName(QString::number(i) + "-link");
+
+
             connect(selectButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
+            connect(swapButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
+            connect(linkButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
+
             markerContainer->addWidget(numberLabel, i+1, numberColumn, Qt::AlignCenter);
             markerContainer->addWidget(xCoordLabel, i+1, xColumn, Qt::AlignCenter);
             markerContainer->addWidget(yCoordLabel, i+1, yColumn, Qt::AlignCenter);
@@ -104,6 +114,16 @@ void ViewMarkerWindow::selectMarker() {
     senderButton->setEnabled(false);
     int index = sender()->objectName().first(1).toInt();
     emit markerPicked(index);
+}
+
+void ViewMarkerWindow::swapMarkers()
+{
+
+}
+
+void ViewMarkerWindow::linkMarker()
+{
+
 }
 
 /**

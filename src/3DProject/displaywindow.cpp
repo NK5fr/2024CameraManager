@@ -557,8 +557,10 @@ void DisplayWindow::selectMarker(int index) {
 void DisplayWindow::linkMarkerLine() {
     makeCurrent();
     int index = pickMarker();
-    // if the index is equal to -1 (the black background) or to the first index picked
-    // then the array is reset
+    linkMarkerLine(index);
+}
+
+void DisplayWindow::linkMarkerLine(int index) {
     if(index == -1 || index == linkedMarkersIndexes.last()[0]) {
         linkedMarkersIndexes.last()[0] = -1;
         lineBeingDrawn = false;
@@ -587,6 +589,7 @@ void DisplayWindow::linkMarkerLine() {
     }
     update();
 }
+
 
 int DisplayWindow::pickLink() {
     makeCurrent();
@@ -640,6 +643,10 @@ void DisplayWindow::resetLinkedMarkersIndexes() {
 
 void DisplayWindow::swapMarkers() {
     int index = pickMarker();
+    swapMarkers(index);
+}
+
+void DisplayWindow::swapMarkers(int index) {
     int color = -1;
     if(selectedMarkerIndexes.indexOf(index) != -1) {
         color = colorsAvailable.at(selectedMarkerIndexes.indexOf(index));

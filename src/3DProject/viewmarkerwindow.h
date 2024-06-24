@@ -27,11 +27,15 @@ private:
     const int swapColumn = 6;
     const int linkColumn = 7;
 
+
+
     void loadData(int step);
 signals:
     void markerPicked(int index);
 private slots:
     void selectMarker();
+    void swapMarkers();
+    void linkMarker();
     void removedPickedMarker(int);
 };
 
