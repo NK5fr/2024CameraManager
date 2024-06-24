@@ -17,7 +17,6 @@ public slots:
 private:
     QGridLayout *markerContainer;
     const Data *data;
-    QHBoxLayout* addMarker(Marker marker, int index);
     void populateContainer();
 
     const int numberColumn = 0;
@@ -25,6 +24,8 @@ private:
     const int yColumn = 2;
     const int zColumn = 3;
     const int selectColumn = 5;
+    const int swapColumn = 6;
+    const int linkColumn = 7;
 
     void loadData(int step);
 signals:

@@ -15,24 +15,28 @@ ViewMarkerWindow::ViewMarkerWindow(QWidget *parent)
     QLabel *yCoordHeader = new QLabel("Y,",this);
     QLabel *zCoordHeader = new QLabel("Z)",this);
     QLabel *selectHeader = new QLabel("selection",this);
+    QLabel *swapHeader = new QLabel("swap",this);
+    QLabel *linkHeader = new QLabel("link",this);
 
     markerContainer->addWidget(numberHeader, 0, numberColumn, Qt::AlignCenter);
     markerContainer->addWidget(xCoordHeader, 0, xColumn, Qt::AlignCenter);
     markerContainer->addWidget(yCoordHeader, 0, yColumn, Qt::AlignCenter);
     markerContainer->addWidget(zCoordHeader, 0, zColumn, Qt::AlignCenter);
     markerContainer->addWidget(selectHeader, 0, selectColumn, Qt::AlignCenter);
+    markerContainer->addWidget(swapHeader, 0, swapColumn, Qt::AlignCenter);
+    markerContainer->addWidget(linkHeader, 0, linkColumn, Qt::AlignCenter);
 }
 
 ViewMarkerWindow::~ViewMarkerWindow() {
-    for (int rowIndex = 0; rowIndex < markerContainer->rowCount(); ++rowIndex) {
-        for (int columnIndex = 0; columnIndex < markerContainer->columnCount(); ++columnIndex) {
-            QLayoutItem* item = markerContainer->itemAtPosition(rowIndex,columnIndex);
-            if (item != nullptr) {
-                delete item;
-            }
-        }
-    }
-    delete markerContainer;
+    // for (int rowIndex = 0; rowIndex < markerContainer->rowCount(); ++rowIndex) {
+    //     for (int columnIndex = 0; columnIndex < markerContainer->columnCount(); ++columnIndex) {
+    //         QLayoutItem* item = markerContainer->itemAtPosition(rowIndex,columnIndex);
+    //         if (item != nullptr) {
+    //             delete item;
+    //         }
+    //     }
+    // }
+    // delete markerContainer;
 }
 /**
  * @brief ViewMarkerWindow::setData
@@ -64,6 +68,9 @@ void ViewMarkerWindow::populateContainer() {
     if (data != nullptr && data->getDataCoordinatesSize() > 0) {
         QVector<Marker> firstVector = data->get1Vector(0);
         for (int i = 0 ; i < firstVector.size() ; i++) {
+
+
+
             QLabel *numberLabel= new QLabel(QString::number(i),this);
             numberLabel->setObjectName(QString::number(numberColumn*10 + i));
             QLabel *xCoordLabel= new QLabel("X",this);
@@ -73,7 +80,7 @@ void ViewMarkerWindow::populateContainer() {
             QLabel *zCoordLabel= new QLabel("Z",this);
             zCoordLabel->setObjectName(QString::number(zColumn*10 + i));
             QPushButton *selectButton= new QPushButton("select",this);
-            selectButton->setObjectName(QString::number(i));
+            selectButton->setObjectName(QString::number(i) + "-select");
 
             connect(selectButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
             markerContainer->addWidget(numberLabel, i+1, numberColumn, Qt::AlignCenter);
@@ -95,7 +102,7 @@ void ViewMarkerWindow::updateContainer(int step) {
 void ViewMarkerWindow::selectMarker() {
     QPushButton *senderButton = static_cast<QPushButton*>(sender());
     senderButton->setEnabled(false);
-    int index = sender()->objectName().toInt();
+    int index = sender()->objectName().first(1).toInt();
     emit markerPicked(index);
 }
 
@@ -106,43 +113,7 @@ void ViewMarkerWindow::selectMarker() {
  */
 void ViewMarkerWindow::removedPickedMarker(int index)
 {
-    this->findChild<QPushButton*>(QString::number(index))->setEnabled(true);
-}
-
-/**
- * @brief ViewMarkerWindow::addMarker
- * This function creates a Layout containing the name, coordinates and buttons associated with a marker.
- * @param marker the instance of the selected marker, it contains the necessary data.
- * @param index the index of the marker
- * @return an instance of QHBoxLayout that's then added to markerContainer.
- */
-QHBoxLayout* ViewMarkerWindow::addMarker(Marker marker, int index) {
-    QHBoxLayout *markerLayout = new QHBoxLayout();
-    // Add number
-    QLabel *number = new QLabel(QString::number(index), this);
-
-    // Add coordinates
-    QLabel *coordX = new QLabel(QString::number(marker.getX()), this);
-    coordX->setObjectName(QString("coordX"));
-    QLabel *coordY = new QLabel(QString::number(marker.getY()), this);
-    coordY->setObjectName(QString("coordY"));
-    QLabel *coordZ = new QLabel(QString::number(marker.getZ()), this);
-    coordZ->setObjectName(QString("coordZ"));
-
-    // Add ActionButtons
-    QPushButton *select = new QPushButton("select", this);
-    select->setObjectName(QString::number(index));
-
-
-    // Add to layout
-    markerLayout->addWidget(number);
-    markerLayout->addWidget(coordX);
-    markerLayout->addWidget(coordY);
-    markerLayout->addWidget(coordZ);
-    markerLayout->addWidget(select);
-
-    connect(select, SIGNAL(clicked()), this, SLOT(selectMarker()));
-    return markerLayout;
+    this->findChild<QPushButton*>(QString::number(index)+"-select")->setEnabled(true);
 }
 /**
  * @brief ViewMarkerWindow::setCurrentStep

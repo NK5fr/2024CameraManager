@@ -221,7 +221,6 @@ ProgramWindow::~ProgramWindow()
     delete swapWindow;
     delete filewindow;
     delete coordinatesWindow;
-    delete screen;
 }
 
 void ProgramWindow::configureScreen() {
