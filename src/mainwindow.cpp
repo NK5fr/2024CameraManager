@@ -147,6 +147,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
     setFocusPolicy(Qt::TabFocus);
+
+    installEventFilter(this);
 }
 
 // Armand & Nathan on 13/05/2024 : Useless because we only use Spinnaker
@@ -1106,6 +1108,17 @@ void MainWindow::saveLastProject(QString projectPath){
     if (!lastProjectFile.open(QIODevice::WriteOnly | QIODevice::Text)) return;
     QTextStream out(&lastProjectFile);
     out << projectPath;
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if(event->type() == QEvent::KeyPress){
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if((keyEvent->key() == Qt::Key_O)  && (keyEvent->modifiers().testFlag(Qt::ControlModifier))){
+            qInfo() << "open project";
+        }
+    }
+    return false;
 }
 
 /*
