@@ -220,6 +220,8 @@ private:
         MainWindow *window;
     };
     ThreadUpdateProperties tup;
+    QString getLastProject();
+    void saveLastProject(QString projectPath);
 };
 
 #endif // MAINWINDOW_H

@@ -13,6 +13,9 @@ MenuBar::MenuBar(){
     closeProject = new QAction(tr("Close project"), this);
     closeProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
 
+    lastProject = new QAction(tr("Last project"), this);
+    lastProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
+
     loadConfigFile = new QAction(tr("Load Config File"), this);
     loadConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
 
@@ -22,6 +25,7 @@ MenuBar::MenuBar(){
     file->addAction(newProject);
     file->addAction(loadProject);
     file->addAction(closeProject);
+    file->addAction(lastProject);
     file->addSeparator();
     file->addAction(loadConfigFile);
     file->addAction(saveConfigFile);

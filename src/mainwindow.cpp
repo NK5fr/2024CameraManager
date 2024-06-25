@@ -537,6 +537,7 @@ void MainWindow::projectTree_customContextMenuRequested(const QPoint &pos) {
     QMenu *menu = new QMenu();
     menu->addAction("Load project");
     menu->addAction("Close project");
+    menu->addAction("Last project");
     menu->popup(cursor().pos());
     connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
 }
@@ -567,10 +568,17 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
 
     QString menuText = action->text();
 
-    if (menuText == "Load project"){
+    if (menuText == "Load project" || menuText == "Last project"){
         QFileSystemModel *model = new QFileSystemModel;
 
-        QString selectedFolderPath = QFileDialog::getExistingDirectory(this, "Open the trackpoint folder", "/", QFileDialog::ShowDirsOnly); // grethe 2015.01.22, snu slashen
+        QString selectedFolderPath;
+
+        if(menuText == "Last project"){
+            selectedFolderPath = getLastProject();
+        }else{
+            selectedFolderPath = QFileDialog::getExistingDirectory(this, "Open the trackpoint folder", "/", QFileDialog::ShowDirsOnly); // grethe 2015.01.22, snu slashen
+        }
+
         bool okFolder =  isOkProjectFolderPath(selectedFolderPath);
 
         if (!okFolder){
@@ -581,6 +589,7 @@ void MainWindow::menuProjectAction_triggered(QAction *action) {
         /*projectsPath = "/home/tomash/kode/fou/_TrackPoint_SEPT_2015/TrackPoint_SEPT_2015";//for testing
         calibrationPath = "/home/tomash/kode/fou/_TrackPoint_SEPT_2015/TrackPoint_SEPT_2015/input";*/
 
+        saveLastProject(selectedFolderPath);
         projectsPath    = selectedFolderPath;//update our projectsPath
         calibrationPath = projectsPath + "/input";
 
@@ -1083,6 +1092,20 @@ void MainWindow::checkFiles()
     if (!trackPointFile.exists()) {
         QMessageBox::information(this, "Error", QString("No default trackpoint properties file found at ").append(defaultCamPath));
     }
+}
+
+QString MainWindow::getLastProject(){
+    QFile lastProjectFile(QDir::currentPath() + "/" + FILES_PATH + "/" + LAST_PROJECT_FILE);
+    if (!lastProjectFile.open(QIODevice::ReadOnly | QIODevice::Text)) return QString();
+    QTextStream in(&lastProjectFile);
+    return in.readLine();
+}
+
+void MainWindow::saveLastProject(QString projectPath){
+   QFile lastProjectFile(QDir::currentPath() + "/" + FILES_PATH + "/" + LAST_PROJECT_FILE);
+    if (!lastProjectFile.open(QIODevice::WriteOnly | QIODevice::Text)) return;
+    QTextStream out(&lastProjectFile);
+    out << projectPath;
 }
 
 /*

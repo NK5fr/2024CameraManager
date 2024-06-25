@@ -518,7 +518,7 @@ void AbstractCameraManager::activateCamera(AbstractCamera* camera, QStandardItem
             activeCameras.push_back(entry);
 
             /*
-             * 13/05/2024
+             * 31/05/2024
              * Armand & Nathan - changed the connect, as the prior one was referencing soemthing that did not exist.
              * This connection activates crossHair
             */

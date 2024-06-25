@@ -40,4 +40,8 @@ const QString CALIBRATION_PARAMETERLIST_FILE = PROPERTY_PATH + "/parameterList.t
 // Armand & Nathan - 24/06/2024 - constants for the default path to the executables
 const QString TRACKPOINT_EXECUTABLE_NAME = "TrackPoint_VS13_Proj_PG_GPU.exe";
 const QString TRACKPOINT_EXECUTABLE_DIRECTORY = "CameraManager/executable";
+
+const QString FILES_PATH = "CameraManager";
+const QString LAST_PROJECT_FILE = "lastProject.txt";
+
 #endif // CONSTANTS_H
