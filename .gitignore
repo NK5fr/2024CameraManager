@@ -198,3 +198,5 @@ FakesAssemblies/
 GeneratedFiles/qrc_cameramanager.cpp
 camera_manager.vcxproj
 camera_manager.vcxproj.filters
+
+lastProject.txt
