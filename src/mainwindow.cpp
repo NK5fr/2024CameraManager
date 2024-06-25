@@ -375,6 +375,7 @@ void MainWindow::menuCameraAction_triggered(QAction *action) {
  * Mostly, this function calls already existring function or slots because the MenuBar
  * is only another way to do things */
 void MainWindow::menuBarClicked(QAction* action) {
+
     if (action->text() == "Run Live View"){
 
         bool b = bar->getRunLiveView()->isChecked();
@@ -1108,17 +1109,6 @@ void MainWindow::saveLastProject(QString projectPath){
     if (!lastProjectFile.open(QIODevice::WriteOnly | QIODevice::Text)) return;
     QTextStream out(&lastProjectFile);
     out << projectPath;
-}
-
-bool MainWindow::eventFilter(QObject *object, QEvent *event)
-{
-    if(event->type() == QEvent::KeyPress){
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        if((keyEvent->key() == Qt::Key_O)  && (keyEvent->modifiers().testFlag(Qt::ControlModifier))){
-            qInfo() << "open project";
-        }
-    }
-    return false;
 }
 
 /*

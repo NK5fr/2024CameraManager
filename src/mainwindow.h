@@ -222,7 +222,6 @@ private:
     ThreadUpdateProperties tup;
     QString getLastProject();
     void saveLastProject(QString projectPath);
-    bool eventFilter(QObject *object, QEvent *event);
 };
 
 #endif // MAINWINDOW_H

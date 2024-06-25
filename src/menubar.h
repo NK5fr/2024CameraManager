@@ -48,7 +48,7 @@ private:
     QAction *mosaicView;
     QAction *highQuality;
     QAction *hideCameraWidget;
-    QAction *hideToolBarWidget;
+    QAction *hideToolBarWidget;    
 };
 
 #endif // MENUBAR_H

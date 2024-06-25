@@ -17,7 +17,7 @@ MenuBar::MenuBar(){
     lastProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
 
     loadConfigFile = new QAction(tr("Load Config File"), this);
-    loadConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+    loadConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
 
     saveConfigFile = new QAction(tr("Save Config File"), this);
     saveConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
@@ -47,7 +47,7 @@ MenuBar::MenuBar(){
     camerasAutoDetection->setChecked(true);
 
     coordinates = new QAction(tr("Activate Crosshair"), this);
-    coordinates->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    coordinates->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     coordinates->setCheckable(true);
 
     integerCoordinates = new QAction(tr("Integer Coordinates"), this);
