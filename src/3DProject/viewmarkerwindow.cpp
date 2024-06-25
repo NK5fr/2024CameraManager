@@ -90,40 +90,60 @@ void ViewMarkerWindow::populateContainer() {
 
 
             connect(selectButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
-            connect(swapButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
-            connect(linkButton, SIGNAL(clicked()), this, SLOT(selectMarker()));
+            connect(swapButton, SIGNAL(clicked()), this, SLOT(swapMarkers()));
+            connect(linkButton, SIGNAL(clicked()), this, SLOT(linkMarkers()));
 
             markerContainer->addWidget(numberLabel, i+1, numberColumn, Qt::AlignCenter);
             markerContainer->addWidget(xCoordLabel, i+1, xColumn, Qt::AlignCenter);
             markerContainer->addWidget(yCoordLabel, i+1, yColumn, Qt::AlignCenter);
             markerContainer->addWidget(zCoordLabel, i+1, zColumn, Qt::AlignCenter);
             markerContainer->addWidget(selectButton, i+1, selectColumn, Qt::AlignCenter);
+            markerContainer->addWidget(swapButton, i+1, swapColumn, Qt::AlignCenter);
+            markerContainer->addWidget(linkButton, i+1, linkColumn, Qt::AlignCenter);
         }
     }
 }
 
-void ViewMarkerWindow::updateContainer(int step) {
+
+int ViewMarkerWindow::getCorrectIndexFromButton(QPushButton* object)
+{
+    return object->objectName().first(1).toInt();
 }
-/**
- * @brief ViewMarkerWindow::selectMarker
- * This function sends a signal so that coordinateWindow so that it knows which marker has been selected.
- * It also locks the button that lets you select a marker
- */
+
 void ViewMarkerWindow::selectMarker() {
     QPushButton *senderButton = static_cast<QPushButton*>(sender());
     senderButton->setEnabled(false);
-    int index = sender()->objectName().first(1).toInt();
-    emit markerPicked(index);
+    emit markerPicked(getCorrectIndexFromButton(senderButton));
 }
 
 void ViewMarkerWindow::swapMarkers()
 {
-
+    QPushButton *senderButton = static_cast<QPushButton*>(sender());
+    int index= getCorrectIndexFromButton(senderButton);
+    if (selectedSwapMarkers[0] == -1) {
+        //senderButton->setEnabled(false);
+        selectedSwapMarkers[0] = index;
+    } else {
+        selectedSwapMarkers[1] = index;
+    }
+    qInfo() << selectedSwapMarkers[0];
+    qInfo() << selectedSwapMarkers[1];
+    emit swapMarker(index);
 }
 
-void ViewMarkerWindow::linkMarker()
+void ViewMarkerWindow::linkMarkers()
 {
-
+    QPushButton *senderButton = static_cast<QPushButton*>(sender());
+    int index= getCorrectIndexFromButton(senderButton);
+    if (alreadySelectedLink.isEmpty()) {
+        qInfo() << alreadySelectedLink;
+        senderButton->setEnabled(false);
+        alreadySelectedLink = senderButton->objectName();
+    } else {
+        this->findChild<QPushButton*>(alreadySelectedLink)->setEnabled(true);
+        alreadySelectedLink = QString();
+    }
+    emit linkMarker(index);
 }
 
 /**
