@@ -289,6 +289,8 @@ void ProgramWindow::connectWidgets() {
     connect(screen, SIGNAL(changeColorMarkerToBeSwapped(int,int)), swapWindow, SLOT(changeMarkerColorToBeSwapped(int,int)));
 
     connect(viewMarkerWindow, SIGNAL(markerPicked(int)), screen, SLOT(selectMarker(int)));
+    connect(viewMarkerWindow, SIGNAL(swapMarker(int)), screen, SLOT(swapMarkers(int)));
+    connect(viewMarkerWindow, SIGNAL(linkMarker(int)), screen, SLOT(linkMarkerLine(int)));
 }
 
 void ProgramWindow::changeStep(int index) {

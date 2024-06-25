@@ -181,13 +181,6 @@ public:
     void linkMarkerLine();
 
     /**
-     * @brief linkMarkerLine
-     * Adds the index of the marker picked in an array of two integers contained in a QVector. if the array of integers holds two indexes, a line
-     * can be drawn between the markers corresponding to these indexes.
-     */
-    void linkMarkerLine(int index);
-
-    /**
      * @brief pickLink
      * Returns the index in the linkedMarkersIndexes attribute of the link picked. this method is used by the removePickedLink() method.
      * if the background is picked, the value returned is -1.
@@ -210,17 +203,6 @@ public:
      * Once a marker is added or removed, a signal is sent to the SwapWindow to add or remove a MarkerCoordinatesWidget.
      */
     void swapMarkers();
-
-
-    /**
-     * @brief swapMarkers
-     * Adds the index of the marker picked in the markersToBeSwapedIndexes array. each integer is initialized to -1
-     * if two markers are already contained in the array when a marker is
-     * picked, then the index at index 1 is removed. if an already picked marker is picked again then it is removed from the array.
-     * Clicking on the background sets the last element to -1 and the first element to -1 if the last element is already equal to -1.
-     * Once a marker is added or removed, a signal is sent to the SwapWindow to add or remove a MarkerCoordinatesWidget.
-     */
-    void swapMarkers(int index);
 
     /**
      * @brief setLinkedMarkersVector
@@ -328,6 +310,24 @@ public:
     bool alreadyLinkedMarkers(std::array<int, 2>& linkedMarkers);
 public slots:
     void selectMarker(int index);
+
+    /**
+     * @brief swapMarkers
+     * Adds the index of the marker picked in the markersToBeSwapedIndexes array. each integer is initialized to -1
+     * if two markers are already contained in the array when a marker is
+     * picked, then the index at index 1 is removed. if an already picked marker is picked again then it is removed from the array.
+     * Clicking on the background sets the last element to -1 and the first element to -1 if the last element is already equal to -1.
+     * Once a marker is added or removed, a signal is sent to the SwapWindow to add or remove a MarkerCoordinatesWidget.
+     */
+    void swapMarkers(int index);
+
+    /**
+     * @brief linkMarkerLine
+     * Adds the index of the marker picked in an array of two integers contained in a QVector. if the array of integers holds two indexes, a line
+     * can be drawn between the markers corresponding to these indexes.
+     */
+    void linkMarkerLine(int index);
+
     /**
      * @brief resetCamera
      * Moves the camera to its initial position. Resets the modelView matrix.
