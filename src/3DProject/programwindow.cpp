@@ -125,10 +125,10 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     /*
      * QTabWidget
      */
-    QTabWidget *tabWidget = new QTabWidget(this);
+    tabWidget = new QTabWidget(this);
     tabWidget->setMaximumHeight(250);
 
-    QWidget *cameraTab = new QWidget(tabWidget);
+    cameraTab = new QWidget(tabWidget);
     QGridLayout *cameraTabLayout = new QGridLayout(cameraTab);
     cameraTabLayout->addWidget(resetButton,2,1);
     cameraTabLayout->addWidget(backSideCamera,1,1);
@@ -137,7 +137,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     cameraTabLayout->addWidget(frontSideCamera, 3, 1);
     cameraTab->setLayout(cameraTabLayout);
 
-    QWidget *fileTab = new QWidget(tabWidget);
+    fileTab = new QWidget(tabWidget);
     QGridLayout *fileTabLayout = new QGridLayout(fileTab);
 
     fileTabLayout->addWidget(displayChoice1, 0, 0);
@@ -146,7 +146,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     fileTabLayout->addWidget(saveDataButton, 2, 1);
     fileTab->setLayout(fileTabLayout);
 
-    QWidget *selectionTab = new QWidget(tabWidget);
+    selectionTab = new QWidget(tabWidget);
     QVBoxLayout *selectionTabLayout = new QVBoxLayout(selectionTab);
     selectionTabLayout->addWidget(selectModeButton);
     QScrollArea *scrollAreaSelection = new QScrollArea(selectionTab);
@@ -158,7 +158,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     selectionTabLayout->addWidget(scrollAreaSelection);
     selectionTab->setLayout(selectionTabLayout);
 
-    QWidget *linkTab = new QWidget(tabWidget);
+    linkTab = new QWidget(tabWidget);
     QGridLayout *linkTabLayout = new QGridLayout(linkTab);
     linkTabLayout->addWidget(linkModeButton, 0, 0);
     linkTabLayout->addWidget(displayLinksButton, 0, 1);
@@ -167,7 +167,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     linkTabLayout->addWidget(saveSkeletonButton, 1, 0);
     linkTab->setLayout(linkTabLayout);
 
-    QWidget *formerFurtherStepsTab = new QWidget(tabWidget);
+    formerFurtherStepsTab = new QWidget(tabWidget);
     QGridLayout *formerFurtherStepsTabLayout = new QGridLayout(formerFurtherStepsTab);
     formerFurtherStepsTabLayout->addWidget(formerSteps, 0, 0);
     formerFurtherStepsTabLayout->addWidget(numberOfFormerSteps, 0, 1);
@@ -177,7 +177,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     formerFurtherStepsTabLayout->addWidget(furtherSteps, 1, 0);
     formerFurtherStepsTab->setLayout(formerFurtherStepsTabLayout);
 
-    QWidget *swappingTab = new QWidget(tabWidget);
+    swappingTab = new QWidget(tabWidget);
     QGridLayout *swappingTabLayout = new QGridLayout(swappingTab);
     swappingTabLayout->addWidget(swapModeButton,0, 0);
     swappingTabLayout->addWidget(swapLabel,0,1);
@@ -192,7 +192,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     swappingTabLayout->addWidget(scrollAreaSwapping, 1, 0, 1, 4);
     swappingTab->setLayout(swappingTabLayout);
 
-    QWidget *viewMarkersTab = new QWidget(tabWidget);
+    viewMarkersTab = new QWidget(tabWidget);
     QVBoxLayout *viewMarkerslayout = new QVBoxLayout(viewMarkersTab);
     viewMarkerslayout->addWidget(viewMarkerWindow);
 
@@ -203,6 +203,7 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
     tabWidget->addTab(formerFurtherStepsTab, "Former/Further Steps");
     tabWidget->addTab(swappingTab, "Swapping");
     tabWidget->addTab(viewMarkersTab, "View Markers");
+
     layout->addWidget(tabWidget, 4, 0, 1, 5);
 
     show();
@@ -307,13 +308,36 @@ void ProgramWindow::changeStep(int index) {
 }
 
 void ProgramWindow::keyPressEvent(QKeyEvent *event) {
-    // slider->setFocus();
-    // if(event->key() == Qt::Key_Left) {
-    //     slider->setValue(slider->value() - 1);
-    // }
-    // if(event->key() == Qt::Key_Right) {
-    //     slider->setValue(slider->value() + 1);
-    // }
+    if(event->key() == Qt::Key_A) {
+        slider->setFocus();
+        slider->setValue(slider->value() - 1);
+    }else if(event->key() == Qt::Key_P) {
+        slider->setFocus();
+        slider->setValue(slider->value() + 1);
+    }else if(event->key() == Qt::Key_S && event->modifiers().testFlag(Qt::ControlModifier)){
+        if(demoButton->isEnabled()) startDemo();
+    }else if(event->key() == Qt::Key_C && event->modifiers().testFlag(Qt::ControlModifier)){
+        if(pauseButton->isEnabled()) pauseDemo();
+    }else if(event->key() == Qt::Key_X && event->modifiers().testFlag(Qt::ControlModifier)){
+        if(stopButton->isEnabled()) stopDemo();
+    }else if(event->key() == Qt::Key_M && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(cameraTab);
+    }else if(event->key() == Qt::Key_F && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(fileTab);
+    }else if(event->key() == Qt::Key_E && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(selectionTab);
+    }else if(event->key() == Qt::Key_L && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(linkTab);
+    }else if(event->key() == Qt::Key_U && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(formerFurtherStepsTab);
+    }else if(event->key() == Qt::Key_W && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(swappingTab);
+    }else if(event->key() == Qt::Key_V && event->modifiers().testFlag(Qt::ControlModifier)){
+        tabWidget->setCurrentWidget(viewMarkersTab);
+    }else if(event->key() == Qt::Key_Space){
+        int newIndex = tabWidget->currentIndex()+1;
+        tabWidget->setCurrentIndex(newIndex % tabWidget->count());
+    }
 }
 
 void ProgramWindow::fillCoordinatesWindow(int index, int color) {
