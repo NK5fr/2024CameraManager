@@ -120,14 +120,6 @@ void ViewMarkerWindow::swapMarkers()
 {
     QPushButton *senderButton = static_cast<QPushButton*>(sender());
     int index= getCorrectIndexFromButton(senderButton);
-    if (selectedSwapMarkers[0] == -1) {
-        //senderButton->setEnabled(false);
-        selectedSwapMarkers[0] = index;
-    } else {
-        selectedSwapMarkers[1] = index;
-    }
-    qInfo() << selectedSwapMarkers[0];
-    qInfo() << selectedSwapMarkers[1];
     emit swapMarker(index);
 }
 
@@ -145,6 +137,28 @@ void ViewMarkerWindow::linkMarkers()
     }
     emit linkMarker(index);
 }
+void ViewMarkerWindow::updateButtonColors(QPushButton* button, bool activated) {
+    if (activated) {
+        //button->setStyleSheet("background-color: red;");
+        button->setText("activated");
+    } else {
+        //button->setStyleSheet("");
+        button->setText("swap");
+    }
+}
+
+void ViewMarkerWindow::updateSwapButtonColors() {
+    for (int i= 0 ; i < data->get1Vector(0).size() ; i++) {
+        QPushButton* button = this->findChild<QPushButton*>(QString::number(i)+"-swap");
+        int *found =std::find(std::begin(selectedSwapMarkers), std::end(selectedSwapMarkers), i);
+        if (found !=std::end(selectedSwapMarkers)) {
+            button->setText("activated");
+        } else {
+            button->setText("swap");
+        }
+    }
+}
+
 
 /**
  * @brief ViewMarkerWindow::removedPickedMarker
@@ -154,6 +168,18 @@ void ViewMarkerWindow::linkMarkers()
 void ViewMarkerWindow::removedPickedMarker(int index)
 {
     this->findChild<QPushButton*>(QString::number(index)+"-select")->setEnabled(true);
+}
+
+void ViewMarkerWindow::addSwapMarker(int position, int index)
+{
+    this->selectedSwapMarkers[position] = index;
+    updateSwapButtonColors();
+}
+
+void ViewMarkerWindow::removedSwapMarker(int position)
+{
+    this->selectedSwapMarkers[position] = -1;
+    updateSwapButtonColors();
 }
 /**
  * @brief ViewMarkerWindow::setCurrentStep

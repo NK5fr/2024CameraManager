@@ -285,12 +285,15 @@ void ProgramWindow::connectWidgets() {
     connect(displayChoice2,SIGNAL(toggled(bool)),this,SLOT(changeChoice2()));
     connect(displayFileCoordinates,SIGNAL(clicked(bool)),this,SLOT(displayFile()));
     connect(screen, SIGNAL(markerToBeSwappedPicked(int,int,int)), swapWindow, SLOT(addSelectedMarker(int,int,int)));
-    connect(screen, SIGNAL(removeMarkerToBeSwapped(int)), swapWindow, SLOT(removeSelectedMarker(int)));
+    connect(screen, SIGNAL(removeMarkerToBeSwapped(int, int)), swapWindow, SLOT(removeSelectedMarker(int)));
     connect(screen, SIGNAL(changeColorMarkerToBeSwapped(int,int)), swapWindow, SLOT(changeMarkerColorToBeSwapped(int,int)));
 
     connect(viewMarkerWindow, SIGNAL(markerPicked(int)), screen, SLOT(selectMarker(int)));
     connect(viewMarkerWindow, SIGNAL(swapMarker(int)), screen, SLOT(swapMarkers(int)));
     connect(viewMarkerWindow, SIGNAL(linkMarker(int)), screen, SLOT(linkMarkerLine(int)));
+    connect(screen, SIGNAL(removeMarkerToBeSwapped(int, int)), viewMarkerWindow, SLOT(removedSwapMarker(int, int)));
+    connect(screen, SIGNAL(markerToBeSwappedPicked(int,int,int)), viewMarkerWindow, SLOT(addSwapMarker(int,int)));
+
 }
 
 void ProgramWindow::changeStep(int index) {

@@ -31,6 +31,9 @@ private:
 
     void loadData(int step);
     int getCorrectIndexFromButton(QPushButton* object);
+    void updateButtonColors(QPushButton *button, bool activated);
+    void updateSwapButtonColors();
+
 signals:
     void markerPicked(int index);
     void swapMarker(int index);
@@ -39,7 +42,10 @@ private slots:
     void selectMarker();
     void swapMarkers();
     void linkMarkers();
-    void removedPickedMarker(int);
+    void removedPickedMarker(int index);
+
+    void addSwapMarker(int position, int index);
+    void removedSwapMarker(int position);
 };
 
 #endif // VIEWMARKERWINDOW_H

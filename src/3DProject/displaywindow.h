@@ -12,6 +12,7 @@
 #include <QColor>
 #if defined(WIN32) || defined(_WIN32)
 #include <Windows.h>
+#include <qpainter.h>
 #endif
 #include <GL/glu.h>
 #include "data.h"
@@ -152,13 +153,6 @@ public:
     const QVector<int>& getSelectedMarkerIndexes() const;
 
     /**
-     * @brief getMarkersToBeSwaped
-     * Returns a const-cast reference to an array containing the indexes of the markers that have been picked in swap mode.
-     * @return a const-cast reference to an array of the two markers to be swapped.
-     */
-    const std::array<int, 2>& getMarkersToBeSwaped() const;
-
-    /**
      * @brief pickMarker
      * Returns the index of the marker picked. this method is used by the selectMarker(), linkMarkerLine() and swapMarkers() methods.
      * if the background is picked, the value returned is -1.
@@ -212,7 +206,6 @@ public:
      */
 
     void setLinkedMarkersVector(QVector<std::array<int, 2>> linkedMarkers);
-
     /**
      * @brief setLinkMarkerMode
      * Sets the linkMarkerMode attribute to the given boolean.
@@ -310,6 +303,13 @@ public:
     bool alreadyLinkedMarkers(std::array<int, 2>& linkedMarkers);
 public slots:
     void selectMarker(int index);
+
+    /**
+     * @brief getMarkersToBeSwaped
+     * Returns a const-cast reference to an array containing the indexes of the markers that have been picked in swap mode.
+     * @return a const-cast reference to an array of the two markers to be swapped.
+     */
+    const std::array<int, 2>& getMarkersToBeSwaped() const;
 
     /**
      * @brief swapMarkers
@@ -429,7 +429,7 @@ signals:
      * @param position
      *          the position of the MarkerCoordinatesWidget to remove.
      */
-    void removeMarkerToBeSwapped(int position);
+    void removeMarkerToBeSwapped(int position, int index);
 
     /**
      * @brief changeColorMarkerToBeSwapped
@@ -442,6 +442,7 @@ signals:
      *          the color to set the marker to in the SwapWindow.
      */
     void changeColorMarkerToBeSwapped(int position, int color);
+
 
 protected:
 

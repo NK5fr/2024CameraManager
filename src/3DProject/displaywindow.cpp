@@ -355,6 +355,7 @@ void DisplayWindow::paintMarkers() {
     QList<Marker> list = QList<Marker>(vector.begin(), vector.end());
     for(auto marker : list) {
         glVertex3f(marker.getX() / 1500, marker.getY() / 1500, marker.getZ() / 1500);
+        qInfo() << "3D COORDS- \tx" << marker.getX() / 1500 << "\t" << marker.getY() / 1500 << "\t" << marker.getZ() / 1500;
     }
     glEnd();
 }
@@ -661,7 +662,8 @@ void DisplayWindow::swapMarkers(int index) {
         if(markersToBeSwapedIndexes.at(1) == -1) {
             if(index == markersToBeSwapedIndexes.at(0) || index == -1) {
                 markersToBeSwapedIndexes.at(0) = -1;
-                emit removeMarkerToBeSwapped(0);
+                emit removeMarkerToBeSwapped(0, index);
+
             }
             else {
                 markersToBeSwapedIndexes.at(1) = index;
@@ -671,18 +673,18 @@ void DisplayWindow::swapMarkers(int index) {
         else {
             if(index == markersToBeSwapedIndexes.at(1)) {
                 markersToBeSwapedIndexes.at(1) = -1;
-                emit removeMarkerToBeSwapped(1);
+                emit removeMarkerToBeSwapped(1, index);
             }
             else if(index == markersToBeSwapedIndexes.at(0)){
                 markersToBeSwapedIndexes.at(0)=markersToBeSwapedIndexes.at(1);
                 markersToBeSwapedIndexes.at(1)=-1;
-                emit removeMarkerToBeSwapped(0);
+                emit removeMarkerToBeSwapped(0, index);
                 emit markerToBeSwappedPicked(0, index, color);
-                emit removeMarkerToBeSwapped(1);
+                emit removeMarkerToBeSwapped(1, index);
             }
             else {
                 markersToBeSwapedIndexes.at(1) = index;
-                emit removeMarkerToBeSwapped(1);
+                emit removeMarkerToBeSwapped(1, index);
                 if(index != -1) {
                     emit markerToBeSwappedPicked(1, index, color);
                 }
