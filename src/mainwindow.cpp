@@ -106,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->cameraTree, SIGNAL(clicked(const QModelIndex)), this, SLOT(cameraTree_itemClicked(const QModelIndex)));
     connect(ui->cameraTree, SIGNAL(doubleClicked(const QModelIndex)), this, SLOT(cameraTree_itemDoubleClicked(const QModelIndex)));
 
-    connect(bar, &QMenuBar::triggered, this, &MainWindow::menuBarClicked);
+    connect(bar, &MenuBar::actionTriggered, this, &MainWindow::menuBarClicked);
 
     //connect(bar->getFile(), SIGNAL(triggered(QAction*)), this, SLOT(menuProjectAction_triggered(QAction*)));
     //connect(bar->getLiveView(), SIGNAL(triggered(QAction*)), this, SLOT(menuBarClicked(QAction*)));
@@ -396,7 +396,7 @@ void MainWindow::menuBarClicked(QAction* action) {
             //tdc.wait()
             timer->stop();
         }
-    } else if (action->text() == "Activate Coordinates"){
+    } else if (action->text() == "Activate Crosshair"){
         bool b = bar->getActivateCoordinates()->isChecked();
         ui->actionCrosshair->setChecked(b);
         on_actionCrosshair_toggled(b);

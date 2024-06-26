@@ -6,21 +6,27 @@ MenuBar::MenuBar(){
 
     newProject = new QAction(tr("New project"), this);
     newProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    connect(newProject, &QAction::triggered, this, [this](){emit actionTriggered(newProject);});
 
     loadProject = new QAction(tr("Load project"), this);
     loadProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    connect(loadProject, &QAction::triggered, this, [this](){emit actionTriggered(loadProject);});
 
     closeProject = new QAction(tr("Close project"), this);
     closeProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
+    connect(closeProject, &QAction::triggered, this, [this](){emit actionTriggered(closeProject);});
 
     lastProject = new QAction(tr("Last project"), this);
     lastProject->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
+    connect(lastProject, &QAction::triggered, this, [this](){emit actionTriggered(lastProject);});
 
     loadConfigFile = new QAction(tr("Load Config File"), this);
     loadConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+    connect(loadConfigFile, &QAction::triggered, this, [this](){emit actionTriggered(loadConfigFile);});
 
     saveConfigFile = new QAction(tr("Save Config File"), this);
     saveConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    connect(saveConfigFile, &QAction::triggered, this, [this](){emit actionTriggered(saveConfigFile);});
 
     file->addAction(newProject);
     file->addAction(loadProject);
@@ -37,24 +43,29 @@ MenuBar::MenuBar(){
     runLiveView = new QAction(tr("Run Live View"), this);
     runLiveView->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     runLiveView->setCheckable(true);
+    connect(runLiveView, &QAction::triggered, this, [this](){emit actionTriggered(runLiveView);});
 
     updateImage = new QAction(tr("Update Image"), this);
     updateImage->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_U));
+    connect(updateImage, &QAction::triggered, this, [this](){emit actionTriggered(updateImage);});
 
     camerasAutoDetection = new QAction(tr("Camera Autodetection"), this);
     camerasAutoDetection->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
     camerasAutoDetection->setCheckable(true);
     camerasAutoDetection->setChecked(true);
+    connect(camerasAutoDetection, &QAction::triggered, this, [this](){emit actionTriggered(camerasAutoDetection);});
 
     coordinates = new QAction(tr("Activate Crosshair"), this);
     coordinates->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     coordinates->setCheckable(true);
+    connect(coordinates, &QAction::triggered, this, [this](){emit actionTriggered(coordinates);});
 
     integerCoordinates = new QAction(tr("Integer Coordinates"), this);
     integerCoordinates->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
     integerCoordinates->setCheckable(true);
     integerCoordinates->setChecked(true);
     integerCoordinates->setDisabled(false);
+    connect(integerCoordinates, &QAction::triggered, this, [this](){emit actionTriggered(integerCoordinates);});
 
     liveView->addAction(runLiveView);
     liveView->addAction(updateImage);
@@ -68,18 +79,22 @@ MenuBar::MenuBar(){
 
     mosaicView = new QAction(tr("Mosaic View"), this);
     mosaicView->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
+    connect(mosaicView, &QAction::triggered, this, [this](){emit actionTriggered(mosaicView);});
 
     highQuality = new QAction(tr("High Quality"), this);
     highQuality->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     highQuality->setCheckable(true);
+    connect(highQuality, &QAction::triggered, this, [this](){emit actionTriggered(highQuality);});
 
     hideCameraWidget = new QAction(tr("Hide Left Menu"), this);
     hideCameraWidget->setShortcut(QKeySequence(tr("Ctrl+H, Ctrl+M")));
     hideCameraWidget->setCheckable(true);
+    connect(hideCameraWidget, &QAction::triggered, this, [this](){emit actionTriggered(hideCameraWidget);});
 
     hideToolBarWidget = new QAction(tr("Hide ToolBar"), this);
     hideToolBarWidget->setShortcut(QKeySequence(tr("Ctrl+H, Ctrl+T")));
     hideToolBarWidget->setCheckable(true);
+    connect(hideToolBarWidget, &QAction::triggered, this, [this](){emit actionTriggered(hideToolBarWidget);});
 
     window->addAction(mosaicView);
     window->addAction(highQuality);
@@ -88,8 +103,17 @@ MenuBar::MenuBar(){
     window->addAction(hideToolBarWidget);
 
     trackpoint = new QMenu("Trackpoint");
-    trackpoint->addAction("Run Trackpoint");
-    trackpoint->addAction("Connect to Server");
+
+    runTrackpoint = new QAction(tr("Run Trackpoint"), this);
+    runTrackpoint->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+    connect(runTrackpoint, &QAction::triggered, this, [this](){emit actionTriggered(runTrackpoint);});
+
+    connectToServer = new QAction(tr("Connect to Server"), this);
+    connectToServer->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_V));
+    connect(connectToServer, &QAction::triggered, this, [this](){emit actionTriggered(connectToServer);});
+
+    trackpoint->addAction(runTrackpoint);
+    trackpoint->addAction(connectToServer);
 
 
     addMenu(file);

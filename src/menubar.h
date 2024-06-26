@@ -6,6 +6,7 @@
 #include <QtWidgets/qaction.h>
 
 class MenuBar : public QMenuBar {
+    Q_OBJECT
 public:
     MenuBar();
 
@@ -48,7 +49,13 @@ private:
     QAction *mosaicView;
     QAction *highQuality;
     QAction *hideCameraWidget;
-    QAction *hideToolBarWidget;    
+    QAction *hideToolBarWidget;
+
+    QAction *runTrackpoint;
+    QAction *connectToServer;
+
+signals:
+    void actionTriggered(QAction* action);
 };
 
 #endif // MENUBAR_H
