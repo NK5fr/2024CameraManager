@@ -70,6 +70,15 @@ private:
     QComboBox *numberOfSwapedSteps;
     QTimer *timer;
 
+    QTabWidget *tabWidget;
+    QWidget *cameraTab;
+    QWidget *fileTab;
+    QWidget *selectionTab;
+    QWidget *linkTab;
+    QWidget *formerFurtherStepsTab;
+    QWidget *swappingTab;
+    QWidget *viewMarkersTab;
+
 public:
 
     /**
