@@ -355,7 +355,6 @@ void DisplayWindow::paintMarkers() {
     QList<Marker> list = QList<Marker>(vector.begin(), vector.end());
     for(auto marker : list) {
         glVertex3f(marker.getX() / 1500, marker.getY() / 1500, marker.getZ() / 1500);
-        qInfo() << "3D COORDS- \tx" << marker.getX() / 1500 << "\t" << marker.getY() / 1500 << "\t" << marker.getZ() / 1500;
     }
     glEnd();
 }
@@ -570,13 +569,14 @@ void DisplayWindow::linkMarkerLine(int index) {
         // if an index has already been picked
         if(linkedMarkersIndexes.last()[0] != -1) {
             linkedMarkersIndexes.last()[1] = index;
-            // if these indexes are already linked, there is no need to put them again in the list
+            // if these indexes are already linked, we can simply remove them
             if(alreadyLinkedMarkers(linkedMarkersIndexes.last())) {
                 linkedMarkersIndexes.last()[0] = -1;
                 linkedMarkersIndexes.last()[1] = -1;
             }
             // else we append a new array at the end of the list for the future link
             else {
+                emit linkAdded(linkedMarkersIndexes.last()[0], linkedMarkersIndexes.last()[1]);
                 linkedMarkersIndexes.append(std::array<int, 2>({-1, -1}));
             }
             lineBeingDrawn = false;
@@ -622,6 +622,7 @@ int DisplayWindow::pickLink() {
 void DisplayWindow::removePickedLink() {
     int index = pickLink();
     if(index != -1) {
+        emit linkRemoved(index);
         linkedMarkersIndexes.remove(index);
     }
 }
@@ -635,10 +636,10 @@ bool DisplayWindow::alreadyLinkedMarkers(std::array<int, 2>& linkedMarkers) {
     }
     return false;
 }
-
 void DisplayWindow::resetLinkedMarkersIndexes() {
     linkedMarkersIndexes = QVector<std::array<int, 2>>();
     linkedMarkersIndexes.append(std::array<int, 2>({-1, -1}));
+    lineBeingDrawn = false;
     update();
 }
 
@@ -662,7 +663,7 @@ void DisplayWindow::swapMarkers(int index) {
         if(markersToBeSwapedIndexes.at(1) == -1) {
             if(index == markersToBeSwapedIndexes.at(0) || index == -1) {
                 markersToBeSwapedIndexes.at(0) = -1;
-                emit removeMarkerToBeSwapped(0, index);
+                emit removeMarkerToBeSwapped(0);
 
             }
             else {
@@ -673,18 +674,18 @@ void DisplayWindow::swapMarkers(int index) {
         else {
             if(index == markersToBeSwapedIndexes.at(1)) {
                 markersToBeSwapedIndexes.at(1) = -1;
-                emit removeMarkerToBeSwapped(1, index);
+                emit removeMarkerToBeSwapped(1);
             }
             else if(index == markersToBeSwapedIndexes.at(0)){
                 markersToBeSwapedIndexes.at(0)=markersToBeSwapedIndexes.at(1);
                 markersToBeSwapedIndexes.at(1)=-1;
-                emit removeMarkerToBeSwapped(0, index);
+                emit removeMarkerToBeSwapped(0);
                 emit markerToBeSwappedPicked(0, index, color);
-                emit removeMarkerToBeSwapped(1, index);
+                emit removeMarkerToBeSwapped(1);
             }
             else {
                 markersToBeSwapedIndexes.at(1) = index;
-                emit removeMarkerToBeSwapped(1, index);
+                emit removeMarkerToBeSwapped(1);
                 if(index != -1) {
                     emit markerToBeSwappedPicked(1, index, color);
                 }

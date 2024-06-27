@@ -13,6 +13,9 @@ public:
     void setData(const Data *pointerToData);
     void setCurrentStep(int newIndex);
 public slots:
+    void addLink(int index1, int index2);
+    void removeLink(int indexOfLink);
+    void resetLinks();
 private:
     QGridLayout *markerContainer;
     const Data *data;
@@ -26,16 +29,24 @@ private:
     const int swapColumn = 6;
     const int linkColumn = 7;
 
+
+    QVector<bool> selectedMarkers;
     int selectedSwapMarkers[2] = {-1,-1};
-    QString alreadySelectedLink;
+    QVector<std::array<int, 2>>alreadySelectedLink;
+    bool isFirstLinkClicked = true;
 
     void loadData(int step);
     int getCorrectIndexFromButton(QPushButton* object);
     void updateButtonColors(QPushButton *button, bool activated);
     void updateSwapButtonColors();
+    void updateLinkButton(int index);
+    void resetLinkIndicators();
 
+    QPushButton* findButton(int index,QString suffix);
+    void selectPickedMarker(int index);
 signals:
     void markerPicked(int index);
+    void markerRemoved(int index);
     void swapMarker(int index);
     void linkMarker(int index);
 private slots:
