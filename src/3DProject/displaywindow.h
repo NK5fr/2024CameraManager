@@ -302,6 +302,7 @@ public:
      */
     bool alreadyLinkedMarkers(std::array<int, 2>& linkedMarkers);
 public slots:
+
     void selectMarker(int index);
 
     /**
@@ -429,7 +430,7 @@ signals:
      * @param position
      *          the position of the MarkerCoordinatesWidget to remove.
      */
-    void removeMarkerToBeSwapped(int position, int index);
+    void removeMarkerToBeSwapped(int position);
 
     /**
      * @brief changeColorMarkerToBeSwapped
@@ -443,6 +444,8 @@ signals:
      */
     void changeColorMarkerToBeSwapped(int position, int color);
 
+    void linkAdded(int index1, int index2);
+    void linkRemoved(int indexOfLink);
 
 protected:
 
