@@ -16,6 +16,15 @@ public slots:
     void addLink(int index1, int index2);
     void removeLink(int indexOfLink);
     void resetLinks();
+    void linkMarkers();
+
+    void swapMarkers();
+    void addSwapMarker(int position, int index);
+    void removedSwapMarker(int position);
+
+    void selectMarker();
+    void setSelectMarkerTrue(int index);
+    void setSelectMarkerFalse(int index);
 private:
     QGridLayout *markerContainer;
     const Data *data;
@@ -43,20 +52,11 @@ private:
     void resetLinkIndicators();
 
     QPushButton* findButton(int index,QString suffix);
-    void selectPickedMarker(int index);
 signals:
     void markerPicked(int index);
     void markerRemoved(int index);
     void swapMarker(int index);
-    void linkMarker(int index);
-private slots:
-    void selectMarker();
-    void swapMarkers();
-    void linkMarkers();
-    void removedPickedMarker(int index);
-
-    void addSwapMarker(int position, int index);
-    void removedSwapMarker(int position);
+    void linkMarker(int index);    
 };
 
 #endif // VIEWMARKERWINDOW_H

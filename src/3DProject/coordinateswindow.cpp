@@ -54,7 +54,7 @@ void CoordinatesWindow::addLineCoordinates(int index, int color) {
 
 void CoordinatesWindow::removeLineCoordinates(int i) {
     // this removeLineCoordinates already knows which marker it wants to remove, so it needs to
-    if (selectedMarkersIndexes.size() > i) {
+    if (selectedMarkersIndexes.size() > i && selectedMarkersIndexes.contains(i)) {
         selectedMarkersIndexes.remove(i);
         emit lineRemoved(i);
         layout->removeWidget(labelVector.at(i));
