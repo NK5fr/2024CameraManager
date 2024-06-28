@@ -270,9 +270,7 @@ void ProgramWindow::connectWidgets() {
     connect(saveDataButton, SIGNAL(clicked(bool)), this, SLOT(saveData()));
     connect(saveSkeletonButton, SIGNAL(clicked(bool)), this, SLOT(saveSkeleton()));
     connect(screen, SIGNAL(markerPicked(int, int)), this, SLOT(fillCoordinatesWindow(int, int)));
-    connect(screen, SIGNAL(markerRemoved(int)), this, SLOT(removeMarkerCoordinatesWindow(int)));
     connect(coordinatesWindow, SIGNAL(lineRemoved(int)), screen, SLOT(removePickedIndex(int)));
-    connect(coordinatesWindow, SIGNAL(removedMarker(int)), viewMarkerWindow, SLOT(removedPickedMarker(int)));
     connect(formerSteps, SIGNAL(clicked(bool)), this, SLOT(enableDisplayFormerSteps()));
     connect(numberOfFormerSteps, SIGNAL(currentIndexChanged(int)), screen, SLOT(setNumberOfFormerStepsDisplayed(int)));
     connect(displayFormerStepsSelectedMarkers, SIGNAL(clicked(bool)), this, SLOT(enableDisplayFormerStepsSelectedMarkers()));
@@ -289,20 +287,20 @@ void ProgramWindow::connectWidgets() {
     connect(screen, SIGNAL(removeMarkerToBeSwapped(int)), swapWindow, SLOT(removeSelectedMarker(int)));
     connect(screen, SIGNAL(changeColorMarkerToBeSwapped(int,int)), swapWindow, SLOT(changeMarkerColorToBeSwapped(int,int)));
 
-    connect(viewMarkerWindow, SIGNAL(markerPicked(int)), screen, SLOT(selectMarker(int)));
-    connect(viewMarkerWindow, SIGNAL(markerRemoved(int)), this, SLOT(removeMarkerCoordinatesWindow(int)));
-
     connect(viewMarkerWindow, SIGNAL(swapMarker(int)), screen, SLOT(swapMarkers(int)));
-    connect(viewMarkerWindow, SIGNAL(linkMarker(int)), screen, SLOT(linkMarkerLine(int)));
 
     connect(screen, SIGNAL(removeMarkerToBeSwapped(int)), viewMarkerWindow, SLOT(removedSwapMarker(int)));
     connect(screen, SIGNAL(markerToBeSwappedPicked(int,int,int)), viewMarkerWindow, SLOT(addSwapMarker(int,int)));
 
+    connect(viewMarkerWindow, SIGNAL(linkMarker(int)), screen, SLOT(linkMarkerLine(int)));
     connect(screen, SIGNAL(linkAdded(int,int)), viewMarkerWindow, SLOT(addLink(int,int)));
     connect(screen, SIGNAL(linkRemoved(int)), viewMarkerWindow, SLOT(removeLink(int)));
     connect(eraseLinks, SIGNAL(clicked(bool)), viewMarkerWindow, SLOT(resetLinks()));
 
-
+    connect(viewMarkerWindow, SIGNAL(markerPicked(int)), screen, SLOT(selectMarker(int)));
+    connect(viewMarkerWindow, SIGNAL(markerRemoved(int)), coordinatesWindow, SLOT(removeLineCoordinates(int)));
+    connect(screen, SIGNAL(markerPicked(int,int)), viewMarkerWindow, SLOT(setSelectMarkerTrue(int)));
+    connect(coordinatesWindow, SIGNAL(removedMarker(int)), viewMarkerWindow, SLOT(setSelectMarkerFalse(int)));
 }
 
 void ProgramWindow::changeStep(int index) {

@@ -118,29 +118,24 @@ void ViewMarkerWindow::selectMarker() {
     QPushButton *senderButton = static_cast<QPushButton*>(sender());
     int index = getCorrectIndexFromButton(senderButton);
     if (selectedMarkers.at(index)) {
-        removedPickedMarker(index);
+        setSelectMarkerFalse(index);
+        emit markerRemoved(index);
     } else {
-        selectPickedMarker(index);
+        setSelectMarkerTrue(index);
+        emit markerPicked(index);
     }
 }
 
-void ViewMarkerWindow::selectPickedMarker(int index)
-{
+void ViewMarkerWindow::setSelectMarkerTrue(int index) {
     this->selectedMarkers[index] = true;
     this->findButton(index, "select")->setText("selected");
-    emit markerPicked(index);
+    qInfo() << selectedMarkers;
 }
 
-/**
- * @brief ViewMarkerWindow::removedPickedMarker
- * This function is a SLOT that gets called when you click the "remove" button in coordinateWindow, it lets you be able to click the "select" button again.
- * @param index the index of the marker that got "un"-selected.
- */
-void ViewMarkerWindow::removedPickedMarker(int index)
-{
+void ViewMarkerWindow::setSelectMarkerFalse(int index) {
     this->selectedMarkers[index] = false;
     this->findButton(index, "select")->setText("select");
-    emit markerRemoved(index);
+    qInfo() << selectedMarkers;
 }
 
 void ViewMarkerWindow::swapMarkers()
@@ -223,6 +218,7 @@ void ViewMarkerWindow::addSwapMarker(int position, int index)
 void ViewMarkerWindow::removedSwapMarker(int position)
 {
     this->selectedSwapMarkers[position] = -1;
+    updateSwapButtonColors();
 }
 
 void ViewMarkerWindow::addLink(int index1, int index2) {
