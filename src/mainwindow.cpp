@@ -260,6 +260,9 @@ void MainWindow::on_actionColor_toggled(bool arg1) {
     ui->actionLiveView->setChecked(false);
     cameraManagers.at(selectedCameraManager)->activateLiveView(false);
     loadDefaultTrackPointSettings_clicked();
+    ui->projectTree->setModel(nullptr);
+    ui->centralwidget->closeAllSubWindows();
+
 
     //cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
 }
