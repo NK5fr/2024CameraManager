@@ -18,6 +18,7 @@ public:
     QAction *getRunLiveView();
     QAction *getActivateCoordinates();
     QAction *getUpdateImage();
+    QAction *getTakePicture();
     QAction *getCameraAutoDetection();
     QAction *getIntegerCoordinates();
     QAction *getHighQuality();
@@ -42,6 +43,7 @@ private:
 
     QAction *runLiveView;
     QAction *updateImage;
+    QAction *takePicture;
     QAction *camerasAutoDetection;
     QAction *coordinates;
     QAction *integerCoordinates;

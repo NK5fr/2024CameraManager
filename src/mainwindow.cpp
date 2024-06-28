@@ -211,6 +211,7 @@ void MainWindow::on_SelectCameras_currentIndexChanged(int index) {
 void MainWindow::on_actionLiveView_toggled(bool arg1) {
     bar->getRunLiveView()->setChecked(arg1);
     ui->actionUpdateImages->setEnabled(!arg1);
+    ui->actionTakePicture->setEnabled(arg1);
     cameraManagers.at(selectedCameraManager)->activateLiveView(arg1);
     cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
     if (arg1) tup.start();
@@ -222,6 +223,11 @@ void MainWindow::on_actionUpdateImages_triggered() {
     cameraManagers.at(selectedCameraManager)->setTrackPointProperty(&trackPointProperty);
     cameraManagers.at(selectedCameraManager)->updateImages();
     cameraManagers.at(selectedCameraManager)->updateContainer();
+}
+
+/* Click on TakePicutre button */
+void MainWindow::on_actionTakePicture_triggered() {
+    cameraManagers.at(selectedCameraManager)->takePicture();
 }
 
 /* Click on mosaic button */
@@ -385,11 +391,14 @@ void MainWindow::menuBarClicked(QAction* action) {
         on_actionLiveView_toggled(b);
         ui->actionLiveView->setChecked(b);
         bar->getUpdateImage()->setDisabled(b);
+        bar->getTakePicture()->setEnabled(b);
         if (!tup.isRunning())
            tup.start();
 
     } else if (action->text() == "Update Image") {
         on_actionUpdateImages_triggered();
+    } else if (action->text() == "Take Picture") {
+        on_actionTakePicture_triggered();
     } else if (action->text() == "Camera Autodetection") {
         detectCameras = bar->getCameraAutoDetection()->isChecked();
         if (detectCameras) {

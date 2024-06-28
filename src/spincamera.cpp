@@ -471,3 +471,18 @@ std::string SpinCamera::getString(){
     ss << cam->GetUniqueID();
     return ss.str();
 }
+
+ImagePtr SpinCamera::getImage(bool colored)
+{
+    std::vector<Spinnaker::ImagePtr> images = captureImage();
+
+    ImagePtr image = nullptr;
+
+    if(colored){
+        image = images.at(1);
+    }else{
+        image = images.at(0);
+    }
+
+    return image;
+}

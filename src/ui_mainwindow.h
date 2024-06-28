@@ -36,6 +36,7 @@ public:
     QAction *actionRemoveWindows;
     QAction *actionMosaic;
     QAction *actionUpdateImages;
+    QAction *actionTakePicture;
     QAction *actionLiveView;
     QAction *actionCrosshair;
     QAction *actionQuitter;
@@ -101,6 +102,12 @@ public:
         QIcon icon1;
         icon1.addFile(QStringLiteral(":/icons/one"), QSize(), QIcon::Normal, QIcon::Off);
         actionUpdateImages->setIcon(icon1);
+        actionTakePicture = new QAction(MainWindow);
+        actionTakePicture->setObjectName(QStringLiteral("actionTakePicture"));
+        actionTakePicture->setDisabled(true);
+        QIcon icon7;
+        icon7.addFile(QStringLiteral(":/icons/file"), QSize(), QIcon::Normal, QIcon::Off);
+        actionTakePicture->setIcon(icon7);
         actionLiveView = new QAction(MainWindow);
         actionLiveView->setObjectName(QStringLiteral("actionLiveView"));
         actionLiveView->setCheckable(true);
@@ -257,6 +264,7 @@ public:
 
         toolBar->addAction(actionLiveView);
         toolBar->addAction(actionUpdateImages);
+        toolBar->addAction(actionTakePicture);
         toolBar->addSeparator();
         toolBar->addAction(actionCrosshair);
         toolBar->addAction(actionCrosshairReal);
@@ -282,8 +290,8 @@ public:
         actionRemoveWindows->setToolTip(QApplication::translate("MainWindow", "Remove all sub-windows", 0));
 #endif // QT_NO_TOOLTIP
         actionUpdateImages->setText(QApplication::translate("MainWindow", "UpdateImages (Space)", 0));
-        actionUpdateImages->setShortcut(QApplication::translate("MainWindow", "Space", 0));
         actionLiveView->setText(QApplication::translate("MainWindow", "LiveView", 0));
+        actionTakePicture->setText(QApplication::translate("MainWindow", "TakePicture", 0));
         actionCrosshair->setText(QApplication::translate("MainWindow", "crosshair", 0));
         actionColor->setText(QApplication::translate("MainWindow", "color", 0));
 #ifndef QT_NO_TOOLTIP

@@ -75,6 +75,7 @@ class AbstractCameraManager : public QObject {
 
         //may be changed
         void updateImages();
+        void takePicture();
         void updateProperties();
 
         // Lars Aksel - 27.01.2015
@@ -237,6 +238,8 @@ class AbstractCameraManager : public QObject {
         void cameraTree_recursiveSetSpinProperty(QStandardItem* parent, CameraManagerSpin::SpinCameraProperty* prop);
         void cameraTree_getCameraList(QStandardItem* parent, std::vector<QStandardItem*> *list);
         AbstractCamera* getSelectedCamera();
+    private:
+        std::string getTime();
 };
 
 #endif // ABSTRACTCAMERAMANAGER_H
