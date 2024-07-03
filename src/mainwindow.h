@@ -82,6 +82,7 @@ private slots:
     /** TOOL BAR **/
     void on_actionLiveView_toggled(bool arg1);
     void on_actionUpdateImages_triggered();
+    void on_actionTakePicture_triggered();
     void on_actionCrosshair_toggled(bool arg1);
     void on_actionColor_toggled(bool arg1);
     void on_actionCrosshairReal_toggled(bool arg1);

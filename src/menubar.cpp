@@ -49,6 +49,11 @@ MenuBar::MenuBar(){
     updateImage->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_U));
     connect(updateImage, &QAction::triggered, this, [this](){emit actionTriggered(updateImage);});
 
+    takePicture = new QAction(tr("Take Picture"), this);
+    takePicture->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
+    takePicture->setDisabled(true);
+    connect(takePicture, &QAction::triggered, this, [this](){emit actionTriggered(takePicture);});
+
     camerasAutoDetection = new QAction(tr("Camera Autodetection"), this);
     camerasAutoDetection->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
     camerasAutoDetection->setCheckable(true);
@@ -69,6 +74,7 @@ MenuBar::MenuBar(){
 
     liveView->addAction(runLiveView);
     liveView->addAction(updateImage);
+    liveView->addAction(takePicture);
     liveView->addSeparator();
     liveView->addAction(camerasAutoDetection);
     liveView->addSeparator();
@@ -139,6 +145,8 @@ QAction *MenuBar::getHighQuality(){ return highQuality; }
 QAction *MenuBar::getRunLiveView(){ return runLiveView; }
 
 QAction *MenuBar::getUpdateImage(){ return updateImage; }
+
+QAction *MenuBar::getTakePicture(){ return takePicture; }
 
 QAction *MenuBar::getCameraAutoDetection(){ return camerasAutoDetection; }
 

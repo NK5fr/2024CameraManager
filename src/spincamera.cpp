@@ -404,6 +404,7 @@ void SpinCamera::stopAutoCapture(){
 }
 
 unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight, bool colored) {
+
     if (capturing) return nullptr;
     capturing = true;
     //printf("Images begin to be retrieved\n");
@@ -412,8 +413,20 @@ unsigned char* SpinCamera::retrieveImage(unsigned int* bufferSize, unsigned int*
     if (!isAlreadyInit) {
         cam->Init();
     }
-    Spinnaker::TriggerModeEnums oldTriggerValue =  cam->TriggerMode.GetValue();
-    cam->TriggerMode.SetValue(TriggerModeEnums::TriggerMode_Off);
+
+    Spinnaker::TriggerModeEnums oldTriggerValue;
+
+    try {
+        oldTriggerValue = cam->TriggerMode.GetValue();
+        cam->TriggerMode.SetValue(TriggerModeEnums::TriggerMode_Off);
+    } catch (Spinnaker::Exception e) {
+        qInfo() << e.what();
+        if (!isAlreadyInit) {
+            cam = nullptr;
+        }
+        capturing = false;
+        return nullptr;
+    }
 
     //printf("Retrieving images...\n");
     //cam->AcquisitionStart.Execute(); <- Old version
@@ -470,4 +483,19 @@ std::string SpinCamera::getString(){
     std::ostringstream ss;
     ss << cam->GetUniqueID();
     return ss.str();
+}
+
+ImagePtr SpinCamera::getImage(bool colored)
+{
+    std::vector<Spinnaker::ImagePtr> images = captureImage();
+
+    ImagePtr image = nullptr;
+
+    if(colored){
+        image = images.at(1);
+    }else{
+        image = images.at(0);
+    }
+
+    return image;
 }

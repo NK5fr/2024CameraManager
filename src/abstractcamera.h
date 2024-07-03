@@ -81,6 +81,8 @@ public:
         */
     virtual unsigned char* retrieveImage(unsigned int* bufferSize, unsigned int* imageWidth, unsigned int* imageHeight, bool colored = false) = 0;
 
+    virtual Spinnaker::ImagePtr getImage(bool colored = false) = 0;
+
     /**
         * @brief start liveview capture from manager
         * @param videoWidget VideoOpenGLWidget that will receive the frames

@@ -75,6 +75,52 @@ void AbstractCameraManager::updateImages(){
     }
 }
 
+void AbstractCameraManager::takePicture(){
+    QString selectedFolderPath = "/";
+    std::vector<ImagePtr> images;
+    for(int i=activeCameras.size()-1; i>=0; i--){
+        activeCameraEntry& camEntry = activeCameras.at(i);
+
+        ImagePtr image = camEntry.camera->getImage(mainWindow->isColorModeActivate());
+
+        if(image == nullptr) continue;
+
+        images.push_back(image);
+    }
+
+    for(int i = 0; i < images.size(); ++i){
+
+        QString title = "Select folder for the camera ";
+        title.append(std::to_string(i+1));
+        title.append(" image");
+        selectedFolderPath = QFileDialog::getExistingDirectory(mainWindow, title, selectedFolderPath, QFileDialog::ShowDirsOnly);
+
+        if(selectedFolderPath.isEmpty()) continue;
+
+        std::ostringstream filename;
+        filename << selectedFolderPath.toStdString() << "/image_camera" << i+1 << "_" << getTime() << ".png";
+        try {
+            images.at(i)->Save(filename.str().c_str());
+        } catch(Spinnaker::Exception exception) {
+            qInfo() << "Could not save image to folder, try changing the folder!";
+        }
+
+    }
+}
+
+std::string AbstractCameraManager::getTime()
+{
+    QDateTime time = QDateTime::currentDateTime();
+    std::string stringTime = time.toString().toStdString();
+    for(int i = 0; i < stringTime.length(); i++)
+    {
+        if(stringTime[i] == ' ' || stringTime[i] == ':')
+            stringTime[i] = '-';
+    }
+    qInfo() << stringTime;
+    return stringTime;
+}
+
 void AbstractCameraManager::updateProperties() {
     AbstractCamera* selected = selectedCamera;
     if (selected == nullptr) return;
