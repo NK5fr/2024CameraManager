@@ -28,15 +28,6 @@ ViewMarkerWindow::ViewMarkerWindow(QWidget *parent)
 }
 
 ViewMarkerWindow::~ViewMarkerWindow() {
-    // for (int rowIndex = 0; rowIndex < markerContainer->rowCount(); ++rowIndex) {
-    //     for (int columnIndex = 0; columnIndex < markerContainer->columnCount(); ++columnIndex) {
-    //         QLayoutItem* item = markerContainer->itemAtPosition(rowIndex,columnIndex);
-    //         if (item != nullptr) {
-    //             delete item;
-    //         }
-    //     }
-    // }
-    // delete markerContainer;
 }
 /**
  * @brief ViewMarkerWindow::setData
