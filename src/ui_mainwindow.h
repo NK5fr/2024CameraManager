@@ -106,7 +106,7 @@ public:
         actionTakePicture->setObjectName(QStringLiteral("actionTakePicture"));
         actionTakePicture->setDisabled(true);
         QIcon icon7;
-        icon7.addFile(QStringLiteral(":/icons/file"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QStringLiteral(":/icons/folder_camera"), QSize(), QIcon::Normal, QIcon::Off);
         actionTakePicture->setIcon(icon7);
         actionLiveView = new QAction(MainWindow);
         actionLiveView->setObjectName(QStringLiteral("actionLiveView"));
