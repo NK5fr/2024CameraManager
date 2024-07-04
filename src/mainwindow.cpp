@@ -408,6 +408,8 @@ void MainWindow::menuBarClicked(QAction* action) {
             //tdc.wait()
             timer->stop();
         }
+    } else if (action->text() == "Quit") {
+        close();
     } else if (action->text() == "Activate Crosshair"){
         bool b = bar->getActivateCoordinates()->isChecked();
         ui->actionCrosshair->setChecked(b);
