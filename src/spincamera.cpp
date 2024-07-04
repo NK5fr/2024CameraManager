@@ -191,13 +191,18 @@ std::vector<Spinnaker::ImagePtr> SpinCamera::captureImage() {
     // 20/05/2024 Armand & Nathan added enableTrigger condition to execute this part only if the user retrieves image using trigger
     if(enableTrigger == 0 && trigger==0){
 
-        CCommandPtr ptrSoftwareTriggerCommand = cam->GetNodeMap().GetNode("TriggerSoftware");
-        if (!IsAvailable(ptrSoftwareTriggerCommand) || !IsWritable(ptrSoftwareTriggerCommand))
-        {
-            std::cout << "Unable to execute trigger. Aborting..." << std::endl;
-        }else{
-           ptrSoftwareTriggerCommand->Execute();
+        try {
+            CCommandPtr ptrSoftwareTriggerCommand = cam->GetNodeMap().GetNode("TriggerSoftware");
+            if (!IsAvailable(ptrSoftwareTriggerCommand) || !IsWritable(ptrSoftwareTriggerCommand))
+            {
+                std::cout << "Unable to execute trigger. Aborting..." << std::endl;
+            }else{
+                ptrSoftwareTriggerCommand->Execute();
+            }
+        } catch (Exception e) {
+            qInfo() << e.what();
         }
+
     }
     ImagePtr image = nullptr;
     ImagePtr monoImage = nullptr;
