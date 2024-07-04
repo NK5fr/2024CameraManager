@@ -280,6 +280,8 @@ public:
         tabWidget->setCurrentIndex(0);
 
         QMetaObject::connectSlotsByName(MainWindow);
+
+        centralwidget->setBackground(QBrush(QColor(100,100,100)));
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow) {

@@ -2,9 +2,6 @@
 #include <QtWidgets/qapplication.h>
 
 int main(int argc, char** argv) {
-    #if defined(WIN32) || defined(_WIN32)
-        qputenv("QT_QPA_PLATFORM", "windows:darkmode=0");
-    #endif
     QApplication app(argc, argv);
 
     app.setStyle(QStyleFactory::create("Fusion"));
@@ -25,8 +22,7 @@ int main(int argc, char** argv) {
     lightPalette.setColor(QPalette::HighlightedText, QColor(255, 255, 255));
 
     app.setPalette(lightPalette);
-    //QFont serifFont("Times", 4);
-    //app.setFont(serifFont);
+
     MainWindow window;
     window.show();
     return app.exec();
