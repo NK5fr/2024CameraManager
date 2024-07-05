@@ -40,6 +40,7 @@ private:
     QAction *lastProject;
     QAction *loadConfigFile;
     QAction *saveConfigFile;
+    QAction *quit;
 
     QAction *runLiveView;
     QAction *updateImage;

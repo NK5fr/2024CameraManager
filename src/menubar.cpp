@@ -28,6 +28,10 @@ MenuBar::MenuBar(){
     saveConfigFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     connect(saveConfigFile, &QAction::triggered, this, [this](){emit actionTriggered(saveConfigFile);});
 
+    quit = new QAction(tr("Quit"), this);
+    quit->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    connect(quit, &QAction::triggered, this, [this](){emit actionTriggered(quit);});
+
     file->addAction(newProject);
     file->addAction(loadProject);
     file->addAction(closeProject);
@@ -36,7 +40,7 @@ MenuBar::MenuBar(){
     file->addAction(loadConfigFile);
     file->addAction(saveConfigFile);
     file->addSeparator();
-    file->addAction("Quit");
+    file->addAction(quit);
 
     liveView = new QMenu(tr("Live View"));
 
@@ -88,7 +92,7 @@ MenuBar::MenuBar(){
     connect(mosaicView, &QAction::triggered, this, [this](){emit actionTriggered(mosaicView);});
 
     highQuality = new QAction(tr("High Quality"), this);
-    highQuality->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    highQuality->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     highQuality->setCheckable(true);
     connect(highQuality, &QAction::triggered, this, [this](){emit actionTriggered(highQuality);});
 
