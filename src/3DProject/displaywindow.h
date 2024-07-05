@@ -91,9 +91,9 @@ private:
     int mouseDragPosY = -1;
     bool dragSelectActive = false;
     // the x position of the mouse on the screen ON MOUSEPRESS
-    int mouseXStartPosition;
+    float mouseXStartPosition;
     // the y position of the mouse on the screen ON MOUSEPRESS
-    int mouseYStartPosition;
+    float mouseYStartPosition;
 
     QVector3D cameraPos;
     QVector3D cameraCenter;
