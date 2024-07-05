@@ -116,6 +116,7 @@ public slots:
 
     void removeLineCoordinates(int i);
 
+    void removeMarkerCoordinates(int index);
 signals:
 
     /**

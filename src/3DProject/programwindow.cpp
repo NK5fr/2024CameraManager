@@ -298,7 +298,7 @@ void ProgramWindow::connectWidgets() {
     connect(eraseLinks, SIGNAL(clicked(bool)), viewMarkerWindow, SLOT(resetLinks()));
 
     connect(viewMarkerWindow, SIGNAL(markerPicked(int)), screen, SLOT(selectMarker(int)));
-    connect(viewMarkerWindow, SIGNAL(markerRemoved(int)), coordinatesWindow, SLOT(removeLineCoordinates(int)));
+    connect(viewMarkerWindow, SIGNAL(markerRemoved(int)), coordinatesWindow, SLOT(removeMarkerCoordinates(int)));
     connect(screen, SIGNAL(markerPicked(int,int)), viewMarkerWindow, SLOT(setSelectMarkerTrue(int)));
     connect(coordinatesWindow, SIGNAL(removedMarker(int)), viewMarkerWindow, SLOT(setSelectMarkerFalse(int)));
 }
