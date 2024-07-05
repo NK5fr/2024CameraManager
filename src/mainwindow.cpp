@@ -258,7 +258,8 @@ void MainWindow::on_actionCrosshair_toggled(bool arg1) {
 /* Clic on ActionColor button */
 void MainWindow::on_actionColor_toggled(bool arg1) {
     colorModeActivate = arg1;
-    bar->setDisabled(arg1);
+    bar->getFile()->setDisabled(arg1);
+    bar->getTrackPoint()->setDisabled(arg1);
     ui->projectsWidget->setDisabled(arg1);
     ui->trackPointWidget->setDisabled(arg1);
 
