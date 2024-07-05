@@ -120,13 +120,11 @@ void ViewMarkerWindow::selectMarker() {
 void ViewMarkerWindow::setSelectMarkerTrue(int index) {
     this->selectedMarkers[index] = true;
     this->findButton(index, "select")->setText("selected");
-    qInfo() << selectedMarkers;
 }
 
 void ViewMarkerWindow::setSelectMarkerFalse(int index) {
     this->selectedMarkers[index] = false;
     this->findButton(index, "select")->setText("select");
-    qInfo() << selectedMarkers;
 }
 
 void ViewMarkerWindow::swapMarkers()
@@ -213,12 +211,10 @@ void ViewMarkerWindow::removedSwapMarker(int position)
 }
 
 void ViewMarkerWindow::addLink(int index1, int index2) {
-    qInfo() << "ADDED LINK:";
     alreadySelectedLink.append(std::array<int, 2>({index1, index2}));
 }
 
 void ViewMarkerWindow::removeLink(int indexOfLink) {
-    qInfo() << "REMOVED LINK:";
     alreadySelectedLink.remove(indexOfLink);
 }
 

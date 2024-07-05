@@ -25,6 +25,7 @@ CoordinatesWindow::CoordinatesWindow(QWidget *parent) : QWidget(parent)
 }
 
 void CoordinatesWindow::addLineCoordinates(int index, int color) {
+    qInfo() << "added line for index: " << index;
     selectedMarkersIndexes.append(index);
     int row = layout->rowCount();
     xyzVector.append(QVector<QLineEdit*>());
@@ -52,27 +53,41 @@ void CoordinatesWindow::addLineCoordinates(int index, int color) {
     layout->addWidget(buttonVector.last(), row, 5);
 }
 
+/**
+ * @brief CoordinatesWindow::removeLineCoordinates
+ * @param i
+ * This removes the LINE designated by the int you give in its param, it doesnt remove the index of the marker you give it.
+ */
 void CoordinatesWindow::removeLineCoordinates(int i) {
+    qInfo() << "removeLineCoordinates(int " << i << ")";
     // this removeLineCoordinates already knows which marker it wants to remove, so it needs to
-    if (selectedMarkersIndexes.size() > i && selectedMarkersIndexes.contains(i)) {
-        selectedMarkersIndexes.remove(i);
-        emit lineRemoved(i);
-        layout->removeWidget(labelVector.at(i));
-        delete labelVector.at(i);
-        labelVector.remove(i);
-        updateLabelNumber(i);
-        for(auto textField : xyzVector.at(i)) {
-            layout->removeWidget(textField);
-            delete textField;
-        }
-        xyzVector.remove(i);
-        layout->removeWidget(buttonVector.at(i));
-        delete buttonVector.at(i);
-        buttonVector.remove(i);
+    selectedMarkersIndexes.remove(i);
+    emit lineRemoved(i);
+    layout->removeWidget(labelVector.at(i));
+    delete labelVector.at(i);
+    labelVector.remove(i);
+    updateLabelNumber(i);
+    for(auto textField : xyzVector.at(i)) {
+        layout->removeWidget(textField);
+        delete textField;
     }
-
+    xyzVector.remove(i);
+    layout->removeWidget(buttonVector.at(i));
+    delete buttonVector.at(i);
+    buttonVector.remove(i);
 }
 
+
+void CoordinatesWindow::removeMarkerCoordinates(int index) {
+    for(int i= 0 ; i < buttonVector.size() ; i++) {
+        int indexOfButton = buttonVector.at(i)->objectName().toInt();
+        if (index == indexOfButton) {
+            qInfo() << selectedMarkersIndexes.at(i);
+            removeLineCoordinates(i);
+            return;
+        }
+    }
+}
 void CoordinatesWindow::setData(const Data *pointerToData) {
     data = pointerToData;
 }
@@ -93,6 +108,7 @@ void CoordinatesWindow::updateCoordinates() {
 }
 
 void CoordinatesWindow::removeLineCoordinates() {
+    qInfo() << "removeLineCoordinates()";
     // the index of the selected marker is stored in the sender's objectName
     int i = selectedMarkersIndexes.indexOf(sender()->objectName().toInt());
     // once we have found the index we can remove all the widget of the line that corresponds to this index
