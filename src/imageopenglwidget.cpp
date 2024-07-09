@@ -501,28 +501,42 @@ void ImageOpenGLWidget::paintGL() {
 
     if(crosshairActivate){
 
-        QPointF mPos = mousePos - scaledImageArea.topLeft();
+        QPointF mPos = mousePos;
+
+        float left;
+        float top;
+
+        int width = this->width();
+        int height = this->height();
+
+        if (((float) width / height) > ((float) imageWidth / imageHeight)) {
+            top = 0;
+            left = (width - (((float) imageWidth / imageHeight) * height)) / 2;
+        } else {
+            top = (height - (((float) imageHeight / imageWidth) * width)) / 2;
+            left = 0;
+        }
 
         glColor4f(1, 0, 0, 1);
 
         glBegin(GL_LINES);
-        glVertex3d(0 - scaledImageArea.left(), mPos.y(), 0);
-        glVertex3d(mPos.x() - 5, mPos.y(), 0);
+        glVertex3d(0 - left, mPos.y() - top, 0);
+        glVertex3d(mPos.x() - 5 - left, mPos.y() - top, 0);
         glEnd();
 
         glBegin(GL_LINES);
-        glVertex3d(this->width(), mPos.y(), 0);
-        glVertex3d(mPos.x() + 5, mPos.y(), 0);
+        glVertex3d(this->width(), mPos.y() - top, 0);
+        glVertex3d(mPos.x() + 5 - left, mPos.y() - top, 0);
         glEnd();
 
         glBegin(GL_LINES);
-        glVertex3d(mPos.x(), 0, 0);
-        glVertex3d(mPos.x(), mPos.y() - 5, 0);
+        glVertex3d(mPos.x() - left, 0 - top, 0);
+        glVertex3d(mPos.x() - left, mPos.y() - 5 - top, 0);
         glEnd();
 
         glBegin(GL_LINES);
-        glVertex3d(mPos.x(), this->height(), 0);
-        glVertex3d(mPos.x(), mPos.y() + 5, 0);
+        glVertex3d(mPos.x() - left, this->height(), 0);
+        glVertex3d(mPos.x() - left, mPos.y() + 5 - top, 0);
         glEnd();
 
         glColor4f(1, 1, 1, 1);
