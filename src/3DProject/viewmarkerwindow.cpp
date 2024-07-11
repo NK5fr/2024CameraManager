@@ -16,7 +16,7 @@ ViewMarkerWindow::ViewMarkerWindow(QWidget *parent)
     QLabel *zCoordHeader = new QLabel("Z)",this);
     QLabel *selectHeader = new QLabel("selection",this);
     QLabel *swapHeader = new QLabel("swap",this);
-    QLabel *linkHeader = new QLabel("link",this);
+    QLabel *linkHeader = new QLabel("connect",this);
 
     markerContainer->addWidget(numberHeader, 0, numberColumn, Qt::AlignCenter);
     markerContainer->addWidget(xCoordHeader, 0, xColumn, Qt::AlignCenter);
@@ -80,7 +80,7 @@ void ViewMarkerWindow::populateContainer() {
             QPushButton *swapButton= new QPushButton("swap",this);
             swapButton->setObjectName(QString::number(i) + "-swap");
 
-            QPushButton *linkButton= new QPushButton("link",this);
+            QPushButton *linkButton= new QPushButton("connect",this);
             linkButton->setObjectName(QString::number(i) + "-link");
 
 
@@ -172,7 +172,7 @@ void ViewMarkerWindow::updateSwapButtonColors() {
 void ViewMarkerWindow::updateLinkButton(int index) {
     if (isFirstLinkClicked) {
         QPushButton* buttonToLink = findButton(index, "link");
-        buttonToLink->setText("to link");
+        buttonToLink->setText("to connect");
         for (int i = 0 ; i < alreadySelectedLink.size() ; i++) {
             std::array<int, 2> currentLink = alreadySelectedLink.at(i);
             if (std::find(std::begin(currentLink), std::end(currentLink), index) != std::end(currentLink)) {
@@ -183,7 +183,7 @@ void ViewMarkerWindow::updateLinkButton(int index) {
                     indexLinked = currentLink.at(0);
                 }
                 QPushButton* buttonLinked = findButton(indexLinked, "link");
-                buttonLinked->setText("linked");
+                buttonLinked->setText("connected");
             }
         }
     } else {
@@ -194,7 +194,7 @@ void ViewMarkerWindow::updateLinkButton(int index) {
 void ViewMarkerWindow::resetLinkIndicators()
 {
     for (int i = 0 ; i < data->get1Vector(0).size() ; i++) {
-        findButton(i, "link")->setText("link");
+        findButton(i, "link")->setText("connect");
     }
 }
 

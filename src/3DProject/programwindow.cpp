@@ -194,6 +194,16 @@ ProgramWindow::ProgramWindow(QWidget *parent) : QWidget(parent)
 
     viewMarkersTab = new QWidget(tabWidget);
     QVBoxLayout *viewMarkerslayout = new QVBoxLayout(viewMarkersTab);
+    QPushButton* helpButton = new QPushButton(this);
+    helpButton->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
+    viewMarkerslayout->addWidget(helpButton, 0, Qt::AlignRight);
+    connect(helpButton, &QPushButton::clicked, this, [helpButton, this]() {
+        QMessageBox::about(this,"Instructions",
+                           "\nEach marker has three different buttons. \n \n \n"
+                           "'Select' show the buttons in the 3D view with a color, \n\n"
+                           "'Swap' lets you choose two markers you'll then be able to swap in the 'Swap' window, \n\n"
+                           "'Connect' lets you choose two markers and make a line between them that you can see in the 3D view");
+    });
     viewMarkerslayout->addWidget(viewMarkerWindow);
 
     tabWidget->addTab(cameraTab, "Camera");
