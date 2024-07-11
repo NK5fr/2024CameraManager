@@ -614,7 +614,7 @@ int DisplayWindow::pickLink() {
         glEnd();
     }
     glFlush();
-    glReadPixels(mouseXStartPosition, height() - mouseYStartPosition, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixelRead);
+    glReadPixels(mouseXStartPosition, height() * devicePixelRatio() - mouseYStartPosition, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixelRead);
     update();
     return (int)pixelRead[0] + (int)pixelRead[1] *256 + (int)pixelRead[2] * 256 *256 - 1;
 }
